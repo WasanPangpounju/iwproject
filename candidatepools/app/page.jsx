@@ -4,13 +4,13 @@ import Link from 'next/link'
 export default function Home() {
   return (
     <div className="flex text-sm justify-center gap-32 mt-10 items-center ">
-      <Image className="w-80 h-80" src="/image/main/mainlogo1.png" height={1000} width={1000} priority></Image>
+      <Image className="w-80 h-80" src="/image/main/postermain.png" height={1000} width={1000} priority></Image>
       <div >
         <div className="flex ">
-          <div className="hover:cursor-pointer text-center w-6/12 bg-orange-500 text-white font-thin px-7 rounded-lg py-3">
+          <div className="hover:cursor-pointer text-center w-6/12 bg-[#F97201] text-white font-thin px-7 rounded-lg py-3">
             นักศึกษาพิการ
           </div>
-          <div className="hover:cursor-pointer text-center w-6/12 bg-green-400 text-white font-thin px-7 rounded-lg py-3">
+          <div className="hover:cursor-pointer text-center w-6/12 bg-[#75C7C2] text-white font-thin px-7 rounded-lg py-3">
             ผู้ดูแลระบบ
           </div>
         </div>
@@ -20,17 +20,17 @@ export default function Home() {
             <input className="w-72 border py-2 px-5 rounded-lg" type="text" placeholder="อีเมล์" />
             <div className="relative">
               <input className="w-72 border py-2 px-5 rounded-lg" type="password" placeholder="รหัสผ่าน" />
-              <Image className="absolute top-[14px] right-5 w-4 h-4" src="/image/main/eye.png" height={1000} width={1000} priority></Image>
+              <Image className="hover:cursor-pointer absolute top-[11px] right-5 w-4 h-4" src="/image/main/eye.png" height={1000} width={1000} priority></Image>
             </div>
           </div>
           <div className="self-end mt-4">
             <Link className="text-blue-500 hover:cursor-pointer hover:underline" href="#">ลืมรหัสผ่าน ?</Link>
           </div>
           <div className="mt-5">
-            <button className="bg-orange-500 text-white py-2 px-5 rounded-lg" type="submit">เข้าสู่ระบบ</button>
+            <button className="bg-[#F97201] text-white py-2 px-5 rounded-lg" type="submit">เข้าสู่ระบบ</button>
           </div>
           <p className="mt-4">ยังไม่ได้เป็นสมาชิก?
-            <Link className="mx-2 text-orange-500 hover:cursor-pointer hover:underline" href="#">
+            <Link className="mx-2 text-[#F97201] hover:cursor-pointer hover:underline" href="/register">
               สมัครสมาชิก
             </Link>
           </p>
