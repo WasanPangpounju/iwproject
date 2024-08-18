@@ -1,10 +1,12 @@
 import React from 'react'
 import Image from 'next/image'
+import Icon from '@mdi/react';
+import { mdiMonitor } from '@mdi/js';
 
 function Navbar() {
     return (
         <div>
-            <div className='bg-orange-500 px-5 py-2 flex items-center '>
+            <div className='bg-[#F97201] px-5 py-2 flex items-center '>
                 <div className='bg-white rounded-full w-6 h-6 flex items-center justify-center text-black font-bold text-sm'>
                     A
                 </div>
@@ -21,7 +23,7 @@ function Navbar() {
                     </div>
                 </div>
                 <div className='ms-4 bg-white p1 w-6 h-6 rounded-full flex items-center justify-center'>
-                    <Image className='w-4 h-4' src="/image/main/monitor.png" height={1000} width={1000} ></Image>
+                <Icon path={mdiMonitor} size={.7} />
                 </div>
                 <p className='text-white font-thin text-sm ms-2'>แสดงผล</p>
                 <div className='flex gap-2 ms-4'>
@@ -36,10 +38,10 @@ function Navbar() {
                     </div>
                 </div>
             </div>
-            <div className='relative gap-2 flex justify-end p-6 border-b-8  border-green-300'>
-                <Image className='w-14 h-14' src="/image/main/mainlogo1.png" height={1000} width={1000} ></Image>
-                <Image className='w-14 h-14' src="/image/main/iw.png" height={1000} width={1000} ></Image>
-                <Image className='w-14 h-14' src="/image/main/sss.png" height={1000} width={1000} ></Image>
+            <div className='relative gap-1 flex justify-end p-6 border-b-8  border-[#75C7C2]'>
+                <Image className='w-auto h-14' src="/image/main/eee.png" height={1000} width={1000} ></Image>
+                <Image className='w-auto h-14' src="/image/main/iw.png" height={1000} width={1000} ></Image>
+                <Image className='w-auto h-14' src="/image/main/sss.png" height={1000} width={1000} ></Image>
                 <div className="-z-10 bg-orange-200 w-10 h-14 rounded-tl-full absolute bottom-0 right-0"></div>
             </div>
         </div>
