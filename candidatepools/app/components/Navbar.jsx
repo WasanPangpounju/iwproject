@@ -1,22 +1,29 @@
+"use client"
+
 import React from 'react'
 import Icon from '@mdi/react';
 import { mdiMonitor } from '@mdi/js';
+import { useState } from 'react';
 
 function Navbar() {
+
+    //font-size
+    const [fontSize,setFontSize] = useState('normal-font')
+
     return (
         <div className='bg-[#F97201] px-5 py-2 flex items-center '>
-            <div className='bg-white rounded-full w-6 h-6 flex items-center justify-center text-black font-bold text-sm'>
+            <div className={`${fontSize} bg-white rounded-full w-6 h-6 flex items-center justify-center text-black font-bold`}>
                 A
             </div>
             <p className='text-white font-thin text-sm ms-2'>ขนาดตัวอักษร</p>
-            <div className='flex gap-2 text-xs ms-4'>
-                <div className='hover:cursor-pointer bg-white py-1 px-3 rounded-lg text h-6 flex justify-center items-center'>
+            <div className='flex gap-2 ms-4'>
+                <div onClick={() => setFontSize('small-font')} className='small-font hover:cursor-pointer bg-white py-1 px-3 rounded-lg h-6 flex justify-center items-center'>
                     เล็ก
                 </div>
-                <div className='hover:cursor-pointer bg-white  px-3 rounded-lg text h-6 text-sm flex justify-center items-center'>
+                <div onClick={() => setFontSize('normal-font')} className='normal-font hover:cursor-pointer bg-white  px-3 rounded-lg  h-6 flex justify-center items-center'>
                     ปกติ
                 </div>
-                <div className='hover:cursor-pointer bg-white py-1 px-3 rounded-lg h-6 text-base flex justify-center items-center'>
+                <div onClick={() => setFontSize('big-font')} className='bit-font hover:cursor-pointer bg-white py-1 px-3 rounded-lg h-6  flex justify-center items-center'>
                     ใหญ่
                 </div>
             </div>
@@ -29,10 +36,10 @@ function Navbar() {
                     อักษรขาวพื้นดำ
                 </div>
                 <div className='hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-white text-black py-1 px-2 text-xs font-thin'>
-                    อักษรขาวพื้นดำ
+                    ปกติ
                 </div>
-                <div className='hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-black text-yellow-400 py-1 px-2 text-xs font-thin'>
-                    อักษรขาวพื้นดำ
+                <div className='hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-black text-[#e7e703] py-1 px-2 text-xs font-thin'>
+                    อักษรเหลืองพื้นดำ
                 </div>
             </div>
         </div>

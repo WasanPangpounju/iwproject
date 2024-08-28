@@ -8,6 +8,8 @@ import { useState, useEffect } from 'react';
 import NavbarLogo from '../components/NavbarLogo';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
+import Loader from '../components/Loader';
+import { useSession } from 'next-auth/react';
 
 function Register() {
 
@@ -20,30 +22,60 @@ function Register() {
     const [university, setUniversity] = useState('');
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
-    const router = useRouter();
 
+    //validate session
+    const { status, data: session } = useSession();
+    const router = useRouter()
+    useEffect(() => {
+        if (status === 'loading') {
+            return;
+        }
+
+        if (session) {
+            router.replace('/main')
+        };
+    }, [session], [router])
+
+    //loader
+    const [loader, setLoader] = useState(true)
+    useEffect(() => {
+        setLoader(false);
+    }, [])
+    useEffect(() => {
+        if (loader) {
+            document.body.classList.add('no_scroll')
+        } else {
+            document.body.classList.remove('no_scroll')
+        }
+    }, [loader])
+
+    //submit register
     async function handleRegister(e) {
         e.preventDefault();
-
+        setLoader(true);
 
         if (!user || !password || !confirmPassword || !firstName || !lastName || !typeUser || !university || !email) {
-            setError('กรุณากรอกข้อมูลให้ครบทุกช่อง')
+            setError('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+            setLoader(false);
             return;
         }
 
         const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (!passwordRegex.test(password)) {
             setError('รหัสผ่านต้องมีตัวอักษรภาษาอังกฤษ ตัวเลข และสัญลักษณ์พิเศษอย่างน้อย 1 ตัว และความยาวไม่ต่ำกว่า 8 ตัวอักษร');
+            setLoader(false);
             return;
         }
 
         if (password !== confirmPassword) {
             setError('รหัสผ่านไม่ตรงกัน');
+            setLoader(false);
             return;
         }
 
         if (typeUser === '0') {
             setError('กรุณาเลือกประเภทความพิการ');
+            setLoader(false);
             return;
         }
 
@@ -57,17 +89,20 @@ function Register() {
             })
 
             if (!resCheckUser.ok) {
-                throw new Error("Error fetch api checkuser.")
+                setLoader(false);
+                throw new Error("Error fetch api checkuser.");
             }
 
             const { user: userExists, email: emailExists } = await resCheckUser.json();
 
             if (userExists) {
                 setError("username มีการใช้งานแล้ว");
+                setLoader(false);
                 return;
             }
             if (emailExists) {
                 setError("email นี้มีการใช้งานแล้ว");
+                setLoader(false);
                 return;
             }
 
@@ -80,6 +115,7 @@ function Register() {
             })
 
             if (res.ok) {
+                setLoader(false);
                 Swal.fire({
                     title: "ลงทะเบียนสำเร็จ",
                     icon: "success",
@@ -91,6 +127,7 @@ function Register() {
                     }
                 });
             } else {
+                setLoader(false);
                 Swal.fire({
                     title: "เกิดข้อผิดพลาด",
                     text: "ลงทะเบียนไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
@@ -103,6 +140,7 @@ function Register() {
 
 
         } catch (err) {
+            setLoader(false);
             console.log(err);
         }
 
@@ -178,6 +216,9 @@ function Register() {
                         </button>
                     </div>
                 </form>
+            </div>
+            <div className={loader ? "" : "hidden"}>
+                <Loader />
             </div>
         </div>
     )
