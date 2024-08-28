@@ -2,6 +2,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import '@fontsource/ibm-plex-sans-thai';
+import Footer from "./components/Footer";
+import { AuthProvider } from "./Provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,10 +17,12 @@ export default function RootLayout({ children }) {
     <html lang="en">
 
       <body className={inter.className}>
-        <Navbar />
-        {children}
-        
-        </body>
+        <AuthProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </AuthProvider>
+      </body>
     </html>
   );
 }
