@@ -3,12 +3,18 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { mongoDB } from "@/lib/mongodb";
 import Users from "@/models/user";
 import GoogleProvider from "next-auth/providers/google";
+import LineProvider from 'next-auth/providers/line';
+
 
 const authOption = {
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET
+        }),
+        LineProvider({
+            clientId: process.env.LINE_CLIENT_ID,
+            clientSecret: process.env.LINE_CLIENT_SECRET
         }),
         
         CredentialsProvider({
@@ -26,9 +32,9 @@ const authOption = {
                     }
 
                     if (user.password !== password) {
-                        return null; 
+                        return null;
                     }
-            
+
 
                     return user;
 

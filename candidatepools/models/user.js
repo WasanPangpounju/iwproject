@@ -33,7 +33,7 @@ const UserSchema = new Schema(
         role:{
             type: String,
             require: true,
-            default: "User"
+            default: "user"
         }
     },
     {
