@@ -78,7 +78,7 @@ function MainPage() {
                 <Loader />
             </div>
             {/* Button to navigate to testPage */}
-            <Link href="/testPage">
+            <Link href="/main">
                 <button className="border p-3 bg-blue-400 mt-4">Go to Test Page</button>
             </Link>
         </div>
