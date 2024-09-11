@@ -16,7 +16,7 @@ const authOption = {
             clientId: process.env.LINE_CLIENT_ID,
             clientSecret: process.env.LINE_CLIENT_SECRET
         }),
-        
+
         CredentialsProvider({
             name: 'credentials',
             credentials: {},
@@ -25,21 +25,29 @@ const authOption = {
 
                 try {
                     await mongoDB();
-                    const user = await Users.findOne({ email });
 
-                    if (!user) {
+                    // ค้นหาผู้ใช้ตามอีเมลหรือชื่อผู้ใช้
+                    const userDocument = await Users.findOne({
+                        $or: [{ email: email }, { user: email }] 
+                    });
+
+                    if (!userDocument) {
+                        // ไม่พบผู้ใช้
                         return null;
                     }
 
-                    if (user.password !== password) {
+                    // ตรวจสอบรหัสผ่าน
+                    if (userDocument.password !== password) {
+                        // รหัสผ่านไม่ถูกต้อง
                         return null;
                     }
 
-
-                    return user;
+                    // ส่งคืนข้อมูลผู้ใช้หากสำเร็จ
+                    return userDocument;
 
                 } catch (err) {
-                    console.log(err)
+                    console.error('เกิดข้อผิดพลาดระหว่างการตรวจสอบ:', err);
+                    return null; 
                 }
             }
         })

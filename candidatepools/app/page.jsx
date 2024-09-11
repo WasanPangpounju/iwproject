@@ -17,7 +17,7 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('')
-  
+
 
 
   //eye show password
@@ -63,7 +63,6 @@ export default function Home() {
       return;
     }
 
-
     try {
       const res = await signIn("credentials", {
         email, password, redirect: false
@@ -90,7 +89,7 @@ export default function Home() {
             setLoader(false);
             return;
           } else {
-            setError("อีเมลของคุณไม่ถูกต้อง");
+            setError("อีเมลหรือชื่อผู้ใช้ ของคุณไม่ถูกต้อง");
             setLoader(false);
             return;
           }
@@ -120,8 +119,6 @@ export default function Home() {
       setLoader(false);
       console.log(err);
     }
-
-
   }
 
   return (
@@ -141,7 +138,7 @@ export default function Home() {
           <form onSubmit={handleSubmit} className="relative bottom-[5px] rounded-lg bg-white p-14 flex flex-col justify-center items-center ">
             <p>{loginMod === 'user' ? "เข้าสู่ระบบสำหรับผู้สมัครงาน" : "เข้าสู่ระบบสำหรับผู้ดูแลระบบ"}</p>
             <div className="mt-7 flex flex-col gap-5">
-              <input onChange={(e) => setEmail(e.target.value)} className="w-72 border py-2 px-5 rounded-lg" type="text" placeholder="อีเมล์" />
+              <input onChange={(e) => setEmail(e.target.value)} className="w-72 border py-2 px-5 rounded-lg" type="text" placeholder="อีเมล์ หรือ ชื่อผู้ใช้" />
               <div className="relative">
                 <input onChange={(e) => setPassword(e.target.value)} className="w-72 border py-2 px-5 rounded-lg" type={showPassword ? "text" : "password"} placeholder="รหัสผ่าน" />
                 <Image onClick={(e) => setShowPassword(e => !e)} alt="icon-eye" className="hover:cursor-pointer absolute top-[11px] right-5 w-4 h-4" src="/image/main/eye.png" height={1000} width={1000} priority />
