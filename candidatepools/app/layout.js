@@ -101,7 +101,7 @@ const inter = Inter({ subsets: ["latin"] });
 export default function RootLayout({ children }) {
   const [fontSize, setFontSize] = useState('normal-font'); // Manage font size state
   // const [bgColor, setBgColor] = useState('bg-white'); // Manage background color state
-  const [bgColor, setBgColor] = useState('bg-white text-black'); // Define bgColor state
+  const [bgColor, setBgColor] = useState('bg-[#F4F6FA] text-black'); // Define bgColor state
   const [bgColorNavbar , setBgColorNavbar] = useState('bg-[#F97201]'); // Define bgColor state
 
   // const [bgColor, setBgColor] = useState('bg-[#F97201]'); // Default background color

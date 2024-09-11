@@ -258,7 +258,7 @@ function Navbar({ setFontSize, setBgColor,setBgColorNavbar, fontSize,bgColorNavb
                 </div>
                 <div 
                     onClick={() => {
-                        setBgColor('bg-white text-black'); // Reset to default background and text color
+                        setBgColor('bg-[#F4F6FA] text-black'); // Reset to default background and text color
                         setBgColorNavbar('bg-[#F97201]');
                     }}
                     className='hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-white text-black py-1 px-2 text-xs font-thin'>
