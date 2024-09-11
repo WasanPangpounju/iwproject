@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react';
 import Loader from '../components/Loader';
 import Swal from 'sweetalert2';
+import Link from 'next/link'; 
 
 function MainPage() {
     const router = useRouter();
