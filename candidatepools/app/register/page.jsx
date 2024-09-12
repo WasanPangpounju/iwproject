@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import Loader from '../components/Loader';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Image from 'next/image';
+import Footer from '../components/Footer';
 
 function Register() {
 
@@ -353,6 +354,7 @@ function Register() {
                     </div>
                 </form>
             </div>
+            <Footer/>
             <div className={loader ? "" : "hidden"}>
                 <Loader />
             </div>
