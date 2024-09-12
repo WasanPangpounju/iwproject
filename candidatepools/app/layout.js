@@ -87,7 +87,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import '@fontsource/ibm-plex-sans-thai';
-import Footer from "./components/Footer";
 import { AuthProvider } from "./Provider";
 import { useState } from 'react'; // Import useState
 
@@ -128,7 +127,6 @@ export default function RootLayout({ children }) {
           <div className={fontSize}>
             {children}
           </div>
-          <Footer />
         </AuthProvider>
       </body>
     </html>

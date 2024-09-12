@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Swal from 'sweetalert2';
 import Loader from "./components/Loader";
-
+import Footer from "./components/Footer";
 
 
 export default function Home() {
@@ -17,8 +17,7 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('')
-
-
+  const [loader, setLoader] = useState(true)
 
   //eye show password
   const [showPassword, setShowPassword] = useState(false);
@@ -40,10 +39,11 @@ export default function Home() {
   }, [session], [router])
 
   //loader
-  const [loader, setLoader] = useState(true)
+
   useEffect(() => {
     setLoader(false)
   }, [])
+
   useEffect(() => {
     if (loader) {
       document.body.classList.add('no_scroll')
@@ -178,6 +178,7 @@ export default function Home() {
           </form>
         </div>
       </div>
+      <Footer />
       <div className={loader ? "" : "hidden"}>
         <Loader />
       </div>

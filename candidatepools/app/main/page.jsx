@@ -6,7 +6,10 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react';
 import Loader from '../components/Loader';
 import Swal from 'sweetalert2';
-import Link from 'next/link'; 
+import Link from 'next/link';
+import NavbarLogo from '../components/NavbarLogo';
+import NavbarMain from '../components/NavbarMain';
+import Image from 'next/image';
 
 function MainPage() {
     const router = useRouter();
@@ -27,7 +30,7 @@ function MainPage() {
 
         if (session?.user?.email) {
             getUser(session.user.email);
-        }else{
+        } else {
             router.replace('/register');
         }
 
@@ -35,7 +38,7 @@ function MainPage() {
     // Redirect to register if dataUser is empty or null
     useEffect(() => {
         if (dataUser === null) {
-            return; 
+            return;
         }
 
         if (!dataUser || Object.keys(dataUser).length === 0) {
@@ -58,12 +61,12 @@ function MainPage() {
             }
 
             const data = await res.json();
-            setDataUser(data.user || {}); 
+            setDataUser(data.user || {});
 
         } catch (err) {
             console.error("Error fetching API", err);
         } finally {
-            setLoader(false); 
+            setLoader(false);
         }
     }
 
@@ -92,19 +95,31 @@ function MainPage() {
 
     return (
         <div>
-            <button className="border p-3 bg-red-400" onClick={handleLogout}>Signout</button>
-            {/* <Image className="w-10 h-10 rounded-full" src={session?.user?.image || ""} height={1000} width={1000} alt="profile" priority /> */}
-            {loader ? (
+            <NavbarLogo />
+            <NavbarMain status="main" />
+            <div className="float-left absolute w-10/12 ms-60  px-7 py-5 ">
+                <div className=" bg-white rounded-lg p-5">
+                    <h1 className="text-2xl font-bold">ข่าวประชาสัมพันธ์</h1>
+                    <div className="mt-5 flex justify-between border">
+                        <div >
+                            <p className="font-bold text-lg">ยินดีรับสมัครนักศึกษาจบใหม่เข้าร่วมงาน</p>
+                            <p className="mt-3">บริษัท ยินดีรับศึกษาจบใหม่เข้าร่วมงาน....................อ่านต่อ</p>
+                        </div>
+                        <Image className="rounded-lg w-96 h-64 border bg-red-400" src="/image/main/postermain.png" height={1000} width={1000} priority alt="photo-post"></Image>
+                    </div>
+                    <div className="mt-5 flex justify-between border">
+                        <div >
+                            <p className="font-bold text-lg">ยินดีรับสมัครนักศึกษาจบใหม่เข้าร่วมงาน</p>
+                            <p className="mt-3">บริษัท ยินดีรับศึกษาจบใหม่เข้าร่วมงาน....................อ่านต่อ</p>
+                        </div>
+                        <Image className="rounded-lg w-96 h-64 border bg-red-400" src="/image/main/postermain.png" height={1000} width={1000} priority alt="photo-post"></Image>
+                    </div>
+                    
+                </div>
+            </div>
+            {loader && (
                 <div>
                     <Loader />
-                </div>
-            ) : (
-                <div>
-                    <p>Username: <span>{dataUser?.user || "-"}</span></p>
-                    <p>Email: {dataUser?.email || session?.user?.email || "-"}</p>
-                    <p>ชื่อ: {dataUser?.firstName || "-"} {dataUser?.lastName || ""}</p>
-                    <p>ประเภทความพิการ: {dataUser?.typeUser || "-"}</p>
-                    <p>มหาวิทยาลัย: {dataUser?.university || "-"}</p>
                 </div>
             )}
         </div>
