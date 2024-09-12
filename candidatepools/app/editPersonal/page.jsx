@@ -6,7 +6,7 @@ import NavbarMain from '../components/NavbarMain'
 import Loader from '../components/Loader'
 import { useState, useEffect } from 'react'
 import Icon from '@mdi/react';
-import { mdiArrowDownDropCircle } from '@mdi/js';
+import { mdiContentSave, mdiArrowDownDropCircle, mdiCloseCircle } from '@mdi/js';
 
 function EditPersonal() {
 
@@ -25,7 +25,7 @@ function EditPersonal() {
             <div className="flex">
                 <NavbarMain status="edit" />
                 <div className="w-10/12 px-7 py-5">
-                    <div className=" bg-white rounded-lg p-5">
+                    <div className=" bg-white rounded-lg p-5 pb-10">
                         <form className="flex gap-x-10 gap-y-5 gap- flex-wrap">
                             <div className=" flex flex-col">
                                 <label>คำนำหน้า <span className="text-red-500">*</span></label>
@@ -116,7 +116,7 @@ function EditPersonal() {
                             <div className="flex col flex-col">
                                 <label>เลขบัตรประจำตัวคนพิการ <span className="text-red-500">*</span></label>
                                 <input type="text" className='mt-1 w-64 border border-gray-400 py-2 px-4 rounded-lg' />
-                            </div> 
+                            </div>
                             <div className="flex gap-x-10 flex-wrap">
                                 <div className="flex col flex-col">
                                     <label>ที่อยู่ตามบัตรประชาชน <span className="text-red-500">*</span></label>
@@ -278,6 +278,25 @@ function EditPersonal() {
                                     <label>รายละเอียดเพิ่มเติม </label>
                                     <input type="text" className='mt-1 w-60 border border-gray-400 py-2 px-4 rounded-lg' />
                                 </div>
+                            </div>
+                            <div className="w-full flex">
+                                <div className="flex col flex-col ">
+                                    <label>รายละเอียดเพิ่มเติม </label>
+                                    <div className="mt-1">
+                                        <div className="border rounded-lg py-2 px-4 text-center bg-gray-300 cursor-pointer">Choose File</div>
+                                        <input type="file" className='' hidden />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex gap-10 w-full justify-center mt-5">
+                                <div className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
+                                    <Icon path={mdiCloseCircle} size={1} />
+                                    <p>ยกเลิก</p>
+                                </div>
+                                <button type='submit' className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'>
+                                    <Icon path={mdiContentSave} size={1} />
+                                    <p>ลงทะเบียน</p>
+                                </button>
                             </div>
                         </form>
                     </div>
