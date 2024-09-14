@@ -240,7 +240,7 @@ function Register() {
                     </div>
                     {session && (
                         <div className='w-96 self-end flex justify-center mt-5'>
-                            <Image alt="profile" className={`w-32 h-32 rounded-full`} src={session?.user?.image || "/image/main/google.png"} height={1000} width={1000} priority></Image>
+                            <Image alt="profile" className={`w-32 h-32`} src={"/image/main/user.png"} height={1000} width={1000} priority></Image>
                         </div>
                     )}
                     <div className=' mt-7 w-[35rem] font-bold  flex justify-between items-center'>
