@@ -16,8 +16,8 @@ export default function Home() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('')
-  const [loader, setLoader] = useState(true)
+  const [error, setError] = useState('');
+  const [loader, setLoader] = useState(true);
 
   //eye show password
   const [showPassword, setShowPassword] = useState(false);

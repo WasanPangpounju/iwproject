@@ -77,7 +77,7 @@ function MainPage() {
 
     return (
         <div>
-            <NavbarLogo />
+            <NavbarLogo dataUser={dataUser}/>
             <div className="flex">
                 <NavbarMain status="main"/>
                 <div className="w-10/12 px-7 py-5">
