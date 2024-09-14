@@ -104,8 +104,8 @@ export default function RootLayout({ children }) {
   const [bgColorNavbar , setBgColorNavbar] = useState('bg-[#F97201]'); // Define bgColor state
 
   // const [bgColor, setBgColor] = useState('bg-[#F97201]'); // Default background color
-  console.log('bgColorNavbar',bgColorNavbar);
-  console.log('bgColor',bgColor);
+  // console.log('bgColorNavbar',bgColorNavbar);
+  // console.log('bgColor',bgColor);
 
   return (
     <html lang="en">

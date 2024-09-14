@@ -20,7 +20,7 @@ function Register() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [typeUser, setTypeUser] = useState('');
+    const [typeDisabled, setTypeDisabled] = useState([]);
     const [university, setUniversity] = useState('');
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
@@ -75,7 +75,7 @@ function Register() {
         setLoader(true);
 
         if (!session) {
-            if (!user || !password || !confirmPassword || !firstName || !lastName || !typeUser || !university || !email) {
+            if (!user || !password || !confirmPassword || !firstName || !lastName || !typeDisabled || !university || !email) {
                 setError('กรุณากรอกข้อมูลให้ครบทุกช่อง');
                 setLoader(false);
                 return;
@@ -95,13 +95,13 @@ function Register() {
             }
         }
 
-        if (!user || !firstName || !lastName || !typeUser || !university || !email) {
+        if (!user || !firstName || !lastName || !typeDisabled || !university || !email) {
             setError('กรุณากรอกข้อมูลให้ครบทุกช่อง');
             setLoader(false);
             return;
         }
 
-        if (typeUser === '0') {
+        if (typeDisabled === '0') {
             setError('กรุณาเลือกประเภทความพิการ');
             setLoader(false);
             return;
@@ -139,9 +139,9 @@ function Register() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ user, password, firstName, lastName, typeUser, university, email })
+                body: JSON.stringify({ user, password, firstName, lastName, typeDisabled, university, email })
             })
-
+                                
             if (!res.ok) {
                 setLoader(false);
                 Swal.fire({
@@ -296,7 +296,7 @@ function Register() {
                     <div className='mt-4 w-[35rem] font-bold  flex justify-between items-center'>
                         <label> ประเภทความพิการ:</label>
                         <div className="relative ">
-                            <select onChange={(e) => setTypeUser(e.target.value)} className='cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg' placeholder='กรอกชื่อผู้ใช้' style={{ appearance: 'none' }}>
+                            <select onChange={(e) => setTypeDisabled(e.target.value)} className='cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg' placeholder='กรอกชื่อผู้ใช้' style={{ appearance: 'none' }}>
                                 <option value="0">เลือกประเภทความพิการ</option>
                                 <option value="พิการทางการมองเห็น">พิการทางการมองเห็น</option>
                                 <option value="พิการทางการได้ยินหรือสื่อความหมาย">พิการทางการได้ยินหรือสื่อความหมาย</option>

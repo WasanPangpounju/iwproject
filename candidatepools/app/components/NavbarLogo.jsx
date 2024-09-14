@@ -44,13 +44,12 @@ function NavbarLogo() {
         <div className={`relative gap-1 flex justify-between border-b-8  border-[#75C7C2] `}>
             {dataUser ? (
                 <div className='flex items-center bg-[#eeeeee] py-4 px-5 w-60 gap-5'>
-                    <Image priority alt="icon" className='w-auto h-10 rounded-full' src={session?.user?.image || "/image/main/google.png"} height={1000} width={1000} />
+                    <Image priority alt="icon" className='w-11 h-11 ' src={dataUser.profile || "/image/main/user.png"} height={1000} width={1000} />
                     <p className=' font-bold'>{dataUser.firstName} {dataUser.lastName}</p>
                 </div>
             ):(
-                <div className='flex items-center bg-[#eeeeee] py-4 px-5 w-60 gap-5'>
-                    <Image priority alt="icon" className='w-auto h-10 rounded-full' src={"/image/main/google.png"} height={1000} width={1000} />
-                    <p className=' font-bold'>ชื่อ-นามสกุล</p>
+                <div className=''>
+                    
                 </div>
             )}
             <div className=" flex py-4 px-5">

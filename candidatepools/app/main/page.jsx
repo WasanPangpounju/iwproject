@@ -75,24 +75,6 @@ function MainPage() {
         document.body.classList.toggle('no_scroll', loader);
     }, [loader]);
 
-    //logout
-    function handleLogout() {
-        Swal.fire({
-            title: "ออกจากระบบสำเร็จ",
-            icon: "success",
-            confirmButtonText: "ตกลง",
-            confirmButtonColor: "#0d96f8",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                signOut().then(() => {
-                    router.replace("/");
-                }).catch((err) => {
-                    console.log("Sign out error :", err);
-                });
-            }
-        });
-    }
-
     return (
         <div>
             <NavbarLogo />
