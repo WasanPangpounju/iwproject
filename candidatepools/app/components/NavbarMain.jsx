@@ -33,7 +33,7 @@ function NavbarMain({ status }) {
     }
 
     return (
-        <div className="bg-white w-60">
+        <div className="bg-white w-60 min-h-screen">
             <Link href="/main" className={`${status === "main" ? "bg-[#fee2d9] text-[#ff7201] cursor-default" : "cursor-pointer hover:bg-[#fee2d9] hover:text-[#ff7201]"}  flex items-center px-7 gap-5 py-3`}>
                 <Icon path={mdiHomeAccount} size={1} />
                 <p className="font-extrabold whitespace-nowrap text-ellipsis">หน้าหลัก</p>

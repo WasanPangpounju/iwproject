@@ -2,9 +2,6 @@ import mongoose, { Schema } from "mongoose";
 
 const UserSchema = new Schema(
     {
-        profile:{
-            type: String,
-        },
         user:{
             type: String,
             required: true
@@ -20,17 +17,89 @@ const UserSchema = new Schema(
             type: String,
             required: true
         },
-        typeUser:{
+        profile:{
             type: String,
-            required: true
+        },
+        typeDisabled:{
+            type: [String],
+        },
+        detailDisabled:{
+            type: String,
         },
         university:{
             type: String,
-            required: true
         },
         email:{
             type: String,
-            required: true
+        },
+        prefix:{
+            type: String,
+        },
+        nickname:{
+            type: String,
+        },
+        sex:{
+            type: String,
+        },
+        dateBirthday:{
+            type: String,
+        },
+        monthBirthday:{
+            type: String,
+        },
+        yearBirthday:{
+            type: String,
+        },   
+        nationality:{
+            type: String,
+        },
+        religion:{
+            type: String,
+        },
+        idCard:{
+            type: String,
+        },
+        idCardDisabled:{
+            type: String,
+        },
+        addressIdCard:{
+            type: String,
+        },
+        addressIdCardProvince:{
+            type: String,
+        },
+        addressIdCardAmphor:{
+            type: String,
+        },
+        addressIdCardTambon:{
+            type: String,
+        },
+        addressIdCardZipCode:{
+            type: String,
+        },
+        address:{
+            type: String,
+        },
+        addressProvince:{
+            type: String,
+        },
+        addressAmphor:{
+            type: String,
+        },
+        addressTambon:{
+            type: String,
+        },
+        addressZipCode:{
+            type: String,
+        },
+        tel:{
+            type: String,
+        },
+        telEmergency:{
+            type: String,
+        },
+        relationship:{
+            type: String,
         },
         role:{
             type: String,
