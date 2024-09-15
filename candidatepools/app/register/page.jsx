@@ -54,8 +54,6 @@ function Register() {
         }
     }, [dataUser, router])
 
-    console.log(dataUser)
-
     //loader
     const [loader, setLoader] = useState(true)
     useEffect(() => {
