@@ -213,6 +213,11 @@ function EditPersonal() {
                 ?.tambon.find(t => t.name_th === dataUser.addressTambon)?.id || null
         );
 
+        if (dataUser.typeDisabled.length > 1) {
+            setSelectTypeDisabled('พิการมากกว่า 1 ประเภท');
+        } else {
+            setSelectTypeDisabled('พิการ 1 ประเภท');
+        }
     }, [dataUser])
 
     //get data from user
@@ -417,14 +422,14 @@ function EditPersonal() {
         }
 
         //validate address
-        if(addressIdCard.length < 2){
+        if (addressIdCard.length < 2) {
             setError("ระบุที่อยู่ที่ตามบัตรประชาชนที่ถูกต้อง");
             return;
         }
-        if(address.length < 2){
+        if (address.length < 2) {
             setError("ระบุที่อยู่ที่ปัจจุบันที่ถูกต้อง");
             return;
-        }        
+        }
 
         // //validate prefix
         // if(prefix){
@@ -629,12 +634,17 @@ function EditPersonal() {
 
     }, [imageUrl]);
 
-    //resetForm
-    function handleResetForm(e){
+
+    //EditMode
+    const [editMode, setEditMode] = useState(false);
+
+    //cancelEditMode
+    function handleCnaceelEditMode(e) {
         e.preventDefault();
-        
+
 
     }
+
 
     return (
         <div>
@@ -655,72 +665,92 @@ function EditPersonal() {
                                 <div className="relative col w-fit mt-1">
                                     <select
                                         onChange={(e) => setPrefix(e.target.value)}
-                                        className='w-32 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg'
+                                        className={` ${!editMode ? "  bg-gray-200 cursor-default " : "cursor-pointer"} w-32  border border-gray-400 py-2 px-4 rounded-lg`}
                                         placeholder='กรอกชื่อผู้ใช้'
                                         style={{ appearance: 'none' }}
+                                        disabled={!editMode}
                                     >
                                         <option value="0">{prefix || "-"}</option>
                                         <option value="นาย">นาย</option>
                                         <option value="นางสาว">นางสาว</option>
                                         <option value="นาง">นาง</option>
-                
+
                                     </select>
-                                    <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                    <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                 </div>
                             </div>
                             <div className="flex col flex-col">
                                 <label>ชื่อ <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
-                                    className={`placeholder-black focus:bg-white focus:cursor-text ${firstName ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                    className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                     onChange={(e) => { setFirstName(e.target.value) }}
                                     defaultValue={firstName || ""}
+                                    readOnly={!editMode}
                                 />
                             </div>
                             <div className="flex col flex-col">
                                 <label>นามสกุล <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
-                                    className={`placeholder-black focus:bg-white focus:cursor-text ${firstName ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                    className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                     onChange={(e) => { setLastName(e.target.value) }}
                                     defaultValue={lastName || ""}
+                                    readOnly={!editMode}
                                 />
                             </div>
                             <div className="flex col flex-col">
                                 <label>ชื่อเล่น </label>
                                 <input
                                     type="text"
-                                    className={`placeholder focus:bg-white focus:cursor-text ${nickname ? "bg-gray-200 cursor-default focus:outline-none" : " "} border-gray-400 mt-1 w-56 border py-2 px-4 rounded-lg`}
+                                    className={`placeholder ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} border-gray-400 mt-1 w-56 border py-2 px-4 rounded-lg`}
                                     onChange={(e) => { setNickname(e.target.value) }}
                                     defaultValue={nickname || ""}
                                     placeholder="ระบุชื่อเล่น"
+                                    readOnly={!editMode}
                                 />
                             </div>
                             <div className=" flex flex-col">
                                 <label>เพศ <span className="text-red-500">*</span></label>
                                 <div className="mt-1 relative col w-fit">
-                                    <select onChange={(e) => setSex(e.target.value)} className='w-32 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg' placeholder='กรอกชื่อผู้ใช้' style={{ appearance: 'none' }}>
+                                    <select
+                                        onChange={(e) => setSex(e.target.value)}
+                                        className={`${!editMode ? "bg-gray-200 cursor-default " : "cursor-pointer"} w-32 border border-gray-500 py-2 px-4 rounded-lg`}
+                                        placeholder='กรอกชื่อผู้ใช้'
+                                        style={{ appearance: 'none' }}
+                                        disabled={!editMode}
+                                    >
                                         <option value="0">{sex || "-"}</option>
                                         <option value="ชาย">ชาย</option>
                                         <option value="หญิง">หญิง</option>
                                     </select>
-                                    <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                    <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                 </div>
                             </div>
                             <div className=" flex flex-col ">
                                 <label>วันเกิด <span className="text-red-500">*</span></label>
                                 <div className="flex gap-3 flex-wrap">
                                     <div className="mt-1 relative col w-fit">
-                                        <select onChange={(e) => setYearBirthday(e.target.value)} className='w-32 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg' style={{ appearance: 'none' }}>
+                                        <select
+                                            onChange={(e) => setYearBirthday(e.target.value)}
+                                            className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
+                                            style={{ appearance: 'none' }}
+                                            disabled={!editMode}
+                                        >
                                             <option value="0">{yearBirthday || "ปี"}</option>
                                             {years.map((y, index) => (
                                                 <option key={index} value={y}>{y}</option>
                                             ))}
                                         </select>
-                                        <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                        <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                     </div>
                                     <div className="mt-1 relative col w-fit">
-                                        <select onChange={(e) => setMonthBirthday(e.target.value)} className='w-36 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg' style={{ appearance: 'none' }}>
+                                        <select
+                                            onChange={(e) => setMonthBirthday(e.target.value)}
+                                            className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-36 border border-gray-400 py-2 px-4 rounded-lg`}
+                                            style={{ appearance: 'none' }}
+                                            disabled={!editMode}
+                                        >
                                             <option value="0">{monthBirthday || "เดือน"}</option>
                                             {yearToday === Number(yearBirthday) ? (
                                                 filteredMonths.map((m, index) => (
@@ -732,10 +762,15 @@ function EditPersonal() {
                                                 ))
                                             )}
                                         </select>
-                                        <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                        <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                     </div>
                                     <div className="mt-1 relative col w-fit">
-                                        <select onChange={(e) => setDateBirthday(e.target.value)} className='w-20 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg' style={{ appearance: 'none' }}>
+                                        <select
+                                            onChange={(e) => setDateBirthday(e.target.value)}
+                                            className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-28 border border-gray-400 py-2 px-4 rounded-lg`}
+                                            style={{ appearance: 'none' }}
+                                            disabled={!editMode}
+                                        >
                                             <option value="0">{dateBirthday || "วันที่"}</option>
                                             {yearToday === Number(yearBirthday) && monthNameToday === monthBirthday ? (
                                                 filteredDate.map((m, index) => (
@@ -760,7 +795,7 @@ function EditPersonal() {
                                             )}
 
                                         </select>
-                                        <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                        <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                     </div>
                                 </div>
                             </div>
@@ -779,34 +814,48 @@ function EditPersonal() {
                             <div className=" flex flex-col">
                                 <label>สัญชาติ <span className="text-red-500">*</span></label>
                                 <div className="relative col w-fit mt-1">
-                                    <select onChange={(e) => setNationality(e.target.value)} className='w-40 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg' placeholder='กรอกชื่อผู้ใช้' style={{ appearance: 'none' }}>
+                                    <select
+                                        onChange={(e) => setNationality(e.target.value)}
+                                        className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-40 border border-gray-400 py-2 px-4 rounded-lg`}
+                                        style={{ appearance: 'none' }}
+                                        disabled={!editMode}
+                                    >
                                         <option value="0">{nationality || "-"}</option>
                                         <option value="ไทย">ไทย</option>
                                         <option value="ฝรั่งเศษ">ฝรั่งเศษ</option>
                                     </select>
-                                    <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                    <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                 </div>
                             </div>
                             <div className=" flex flex-col">
                                 <label> ศาสนา <span className="text-red-500">*</span></label>
                                 <div className="relative col w-fit mt-1">
-                                    <select onChange={(e) => setReligion(e.target.value)} className='w-40 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg' placeholder='กรอกชื่อผู้ใช้' style={{ appearance: 'none' }}>
+                                    <select
+                                        onChange={(e) => setReligion(e.target.value)}
+                                        className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-40 border border-gray-400 py-2 px-4 rounded-lg`}
+                                        style={{ appearance: 'none' }}
+                                        disabled={!editMode}
+                                    >
                                         <option value="0">{religion || "-"}</option>
                                         <option value="พุทธ">พุทธ</option>
                                         <option value="อิสลาม">อิสลาม</option>
                                         <option value="คริสต์">คริสต์</option>
                                     </select>
-                                    <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                    <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                 </div>
                             </div>
                             <div className="flex col flex-col w-64">
                                 <label>เลขบัตรประจำตัวประชาชน <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
-                                    className={` placeholder focus:bg-white focus:cursor-text ${idCard ? "bg-gray-200 cursor-default focus:outline-none" : " "} border-gray-400 mt-1 border py-2 px-4 rounded-lg`}
+                                    inputMode="numeric"
+                                    pattern="\d{13}"
+                                    maxLength={13}
+                                    className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                                     onChange={(e) => { setIdCard(e.target.value) }}
                                     defaultValue={idCard || ""}
                                     placeholder="เลขบัตร 13 หลัก"
+                                    readOnly={!editMode}
                                 />
                                 {errorIdCard && (
                                     <div className="text-xs text-red-500 w-full text-end mt-1 ">
@@ -818,10 +867,14 @@ function EditPersonal() {
                                 <label>เลขบัตรประจำตัวคนพิการ <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
-                                    className={` focus:bg-white focus:cursor-text ${idCardDisabled ? "bg-gray-200 cursor-default focus:outline-none" : " "} border-gray-400 mt-1 w-full border py-2 px-4 rounded-lg`}
+                                    inputMode="numeric"
+                                    pattern="\d{13}"
+                                    maxLength={13}
+                                    className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                                     onChange={(e) => { setIdCardDisabled(e.target.value) }}
                                     defaultValue={idCardDisabled || ""}
                                     placeholder="เลขบัตร 13 หลัก"
+                                    readOnly={!editMode}
                                 />
                                 {errorIdCardDisabled && (
                                     <div className="text-xs text-red-500 w-full text-end mt-1 text-ellipsis overflow-hidden whitespace-nowrap">
@@ -834,11 +887,11 @@ function EditPersonal() {
                                     <label>ที่อยู่ตามบัตรประชาชน <span className="text-red-500">*</span></label>
                                     <input
                                         type="text"
-                                        className={` focus:bg-white focus:cursor-text ${address ? "bg-gray-200 cursor-default focus:outline-none" : " "} border-gray-400 mt-1 w-72 border py-2 px-4 rounded-lg`}
+                                        className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} w-72 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                                         onChange={(e) => { setAddressIdCard(e.target.value) }}
                                         defaultValue={addressIdCard || ""}
                                         placeholder="บ้านเลขที่, หมู่บ้าน, หอพัก"
-
+                                        readOnly={!editMode}
                                     />
                                 </div>
                                 <div className=" flex flex-col ">
@@ -855,15 +908,16 @@ function EditPersonal() {
                                                 setAddressIdCardProvince(dataProvince.find(p => p.id === parseInt(e.target.value))
                                                     .name_th)
                                             }}
-                                            className='w-48 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg'
-                                            placeholder='กรอกชื่อผู้ใช้' style={{ appearance: 'none' }}
+                                            className={`${!editMode ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                                            style={{ appearance: 'none' }}
+                                            disabled={!editMode}
                                         >
                                             <option value="0">{addressIdCardProvince || "-"}</option>
                                             {dataProvince.map((d, index) => (
                                                 <option key={index} value={d.id}>{d.name_th}</option>
                                             ))}
                                         </select>
-                                        <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                        <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                     </div>
                                 </div>
                                 {IDaddressIdCardProvince ? (
@@ -879,14 +933,16 @@ function EditPersonal() {
                                                     setAddressIdCardAmphor(dataProvince.find(p => p.id === parseInt(IDaddressIdCardProvince))
                                                         .amphure.find(a => a.id === parseInt(e.target.value)).name_th)
                                                 }}
-                                                className=' w-48 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg'
-                                                style={{ appearance: 'none' }}>
+                                                className={`${!editMode ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                style={{ appearance: 'none' }}
+                                                disabled={!editMode}
+                                            >
                                                 <option value="0">{addressIdCardAmphor || "-"}</option>
                                                 {dataProvince.find(p => p.id === parseInt(IDaddressIdCardProvince)).amphure.map((d, index) => (
                                                     <option key={index} value={d.id}>{d.name_th}</option>
                                                 ))}
                                             </select>
-                                            <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                            <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                         </div>
                                     </div>
                                 ) : null}
@@ -902,14 +958,16 @@ function EditPersonal() {
                                                     setAddressIdCardZipCode(dataProvince.find(p => p.id === parseInt(IDaddressIdCardProvince)).amphure.find(a => a.id === parseInt(IDaddressIdCardAmphor))
                                                         .tambon.find(t => t.id === parseInt(e.target.value)).zip_code)
                                                 }}
-                                                className='w-48 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg'
-                                                style={{ appearance: 'none' }}>
+                                                className={`${!editMode  ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                style={{ appearance: 'none' }}
+                                                disabled={!editMode}
+                                            >
                                                 <option value="0">{addressIdCardTambon || "-"}</option>
                                                 {dataProvince.find(p => p.id === parseInt(IDaddressIdCardProvince)).amphure.find(a => a.id === parseInt(IDaddressIdCardAmphor)).tambon.map((d, index) => (
                                                     <option key={index} value={d.id}>{d.name_th}</option>
                                                 ))}
                                             </select>
-                                            <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                            <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                         </div>
                                     </div>
                                 ) : null}
@@ -932,22 +990,22 @@ function EditPersonal() {
                                 <div className="flex col flex-col">
                                     <div className="flex gap-x-2">
                                         <label>ที่อยู่ปัจจุบัน <span className="text-red-500">*</span></label>
-                                        <div className="flex gap-x-1">
+                                        <div className={`${!editMode ? "hidden" : ""} flex gap-x-1`}>
                                             <input
                                                 onClick={(e) => CheckAddressSameIDCard(e.target.checked)}
                                                 type="checkbox"
-                                                className="cursor-pointer w-3 h-full border"
+                                                className={`cursor-pointer w-3 h-full border`}
                                             />
                                             <p>(ตามบัตรประชาชน)</p>
                                         </div>
                                     </div>
                                     <input
                                         type="text"
-                                        className={`focus:bg-white focus:cursor-text ${address ? "bg-gray-200 cursor-default focus:outline-none" : " "} border-gray-400 mt-1 w-72 border py-2 px-4 rounded-lg`}
+                                        className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} w-72 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                                         onChange={(e) => { setAddress(e.target.value) }}
                                         defaultValue={statusSameAddress ? addressIdCard : address || ""}
                                         placeholder="บ้านเลขที่, หมู่บ้าน, หอพัก"
-
+                                        readOnly={!editMode}
                                     />
                                 </div>
                                 <div className=" flex flex-col">
@@ -964,15 +1022,16 @@ function EditPersonal() {
                                                 setAddressProvince(dataProvince.find(p => p.id === parseInt(e.target.value))
                                                     .name_th)
                                             }}
-                                            className='w-48 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg'
-                                            placeholder='กรอกชื่อผู้ใช้' style={{ appearance: 'none' }}
+                                            className={`${!editMode ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                                            style={{ appearance: 'none' }}
+                                            disabled={!editMode}
                                         >
                                             <option value="0">{statusSameAddress ? addressIdCardProvince : addressProvince || "-"}</option>
                                             {dataProvince.map((d, index) => (
                                                 <option key={index} value={d.id}>{d.name_th}</option>
                                             ))}
                                         </select>
-                                        <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                        <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                     </div>
                                 </div>
                                 {IDaddressProvince ? (
@@ -988,14 +1047,16 @@ function EditPersonal() {
                                                     setAddressAmphor(dataProvince.find(p => p.id === parseInt(IDaddressProvince))
                                                         .amphure.find(a => a.id === parseInt(e.target.value)).name_th)
                                                 }}
-                                                className='w-48 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg'
-                                                style={{ appearance: 'none' }}>
+                                                className={`${!editMode  ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                style={{ appearance: 'none' }}
+                                                disabled={!editMode}
+                                            >
                                                 <option value="0">{statusSameAddress ? addressIdCardAmphor : addressAmphor || "-"}</option>
                                                 {dataProvince.find(p => p.id === parseInt(IDaddressProvince)).amphure.map((d, index) => (
                                                     <option key={index} value={d.id}>{d.name_th}</option>
                                                 ))}
                                             </select>
-                                            <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                            <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                         </div>
                                     </div>
                                 ) : null}
@@ -1011,14 +1072,16 @@ function EditPersonal() {
                                                     setAddressZipCode(dataProvince.find(p => p.id === parseInt(IDaddressProvince)).amphure.find(a => a.id === parseInt(IDaddressAmphor))
                                                         .tambon.find(t => t.id === parseInt(e.target.value)).zip_code)
                                                 }}
-                                                className='w-48 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg'
-                                                style={{ appearance: 'none' }}>
+                                                className={`${!editMode ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                style={{ appearance: 'none' }}
+                                                disabled={!editMode}
+                                            >
                                                 <option value="0">{statusSameAddress ? addressIdCardTambon : addressTambon || "-"}</option>
                                                 {dataProvince.find(p => p.id === parseInt(IDaddressProvince)).amphure.find(a => a.id === parseInt(IDaddressAmphor)).tambon.map((d, index) => (
                                                     <option key={index} value={d.id}>{d.name_th}</option>
                                                 ))}
                                             </select>
-                                            <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                            <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                         </div>
                                     </div>
                                 ) : null}
@@ -1027,7 +1090,7 @@ function EditPersonal() {
                                         <label>รหัสไปรษณีย์ <span className="text-red-500">*</span></label>
                                         <div className=" col w-fit mt-1">
                                             <p
-                                                className='focus:outline-none cursor-default w-36 bg-gray-200  border border-gray-400 py-2 px-4 rounded-lg'
+                                                className={`focus:outline-none cursor-default w-36 bg-gray-200  border border-gray-400 py-2 px-4 rounded-lg`}
                                             >
                                                 {
                                                     statusSameAddress ? addressIdCardZipCode : addressZipCode || "-"
@@ -1044,10 +1107,11 @@ function EditPersonal() {
                                     inputMode="numeric"
                                     pattern="\d{10}"
                                     maxLength={10}
-                                    className={` focus:bg-white focus:cursor-text ${tel ? "bg-gray-200 cursor-default focus:outline-none" : " "} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
+                                    className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                                     onChange={(e) => { setTel(e.target.value) }}
                                     defaultValue={tel || ""}
                                     placeholder="หมายเลขโทรศัพท์ 10 หลัก"
+                                    readOnly={!editMode}
                                 />
                             </div>
                             <div className="flex col flex-col">
@@ -1057,20 +1121,22 @@ function EditPersonal() {
                                     inputMode="numeric"
                                     pattern="\d{10}"
                                     maxLength={10}
-                                    className={` focus:bg-white focus:cursor-text ${telEmergency ? "bg-gray-200 cursor-default focus:outline-none" : " "} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
+                                    className={` ${ !editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                                     onChange={(e) => { setTelEmergency(e.target.value) }}
                                     defaultValue={telEmergency || ""}
                                     placeholder="หมายเลขโทรศัพท์ 10 หลัก"
+                                    readOnly={!editMode}
                                 />
                             </div>
                             <div className="flex col flex-col">
                                 <label>ความสัมพันธ์ </label>
                                 <input
                                     type="text"
-                                    className={` focus:bg-white focus:cursor-text ${relationship ? "bg-gray-200 cursor-default focus:outline-none" : " "} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
+                                    className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                                     onChange={(e) => { setRelationship(e.target.value) }}
                                     defaultValue={relationship || ""}
                                     placeholder="บุลคลใกล้ชิด"
+                                    readOnly={!editMode}
                                 />
                             </div>
                             <div className="flex col flex-col">
@@ -1089,20 +1155,26 @@ function EditPersonal() {
                                         <select onChange={(e) => {
                                             setSelectTypeDisabled(e.target.value);
                                         }}
-                                            className='w-64 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg'
+                                            className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-64  border border-gray-400 py-2 px-4 rounded-lg`}
                                             style={{ appearance: 'none' }}
+                                            disabled={!editMode}
                                         >
-                                            <option value="0">-</option>
-                                            <option value="พิการ1ประเภท">พิการ 1 ประเภท</option>
-                                            <option value="พิการมากกว่า1ประเภท">พิการมากกว่า 1 ประเภท</option>
+                                            <option value="0">{selectTypeDisabled || "-"}</option>
+                                            <option value="พิการ 1 ประเภท">พิการ 1 ประเภท</option>
+                                            <option value="พิการมากกว่า 1 ประเภท">พิการมากกว่า 1 ประเภท</option>
                                         </select>
-                                        <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                                        <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                     </div>
                                 </div>
-                                <div style={{ display: selectTypeDisabled === "พิการ1ประเภท" ? "block" : "none" }} className=" flex flex-col">
+                                <div style={{ display: selectTypeDisabled === "พิการ 1 ประเภท" ? "block" : "none" }} className=" flex flex-col">
                                     <label>เลือกความพิการ<span className="text-red-500">*</span></label>
                                     <div className="relative col w-fit mt-1">
-                                        <select onChange={(e) => setTypeDisabled([e.target.value])} className='whitespace-nowrap text-ellipsis overflow-hidden w-64 cursor-pointer border border-gray-400 py-2 px-4 rounded-lg' style={{ appearance: 'none' }}>
+                                        <select 
+                                        onChange={(e) => setTypeDisabled([e.target.value])} 
+                                        className={`${typeDisabled && !editMode ? "bg-gray-200 cursor-default":"cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-64  border border-gray-400 py-2 px-4 rounded-lg`}
+                                        style={{ appearance: 'none' }}
+                                        disabled={!editMode}
+                                    >
                                             <option value={typeDisabled}>{typeDisabled}</option>
                                             <option value="พิการทางการมองเห็น">พิการทางการมองเห็น</option>
                                             <option value="พิการทางการได้ยินหรือสื่อความหมาย">พิการทางการได้ยินหรือสื่อความหมาย</option>
@@ -1114,96 +1186,105 @@ function EditPersonal() {
                                         </select>
                                     </div>
                                 </div>
-                                <div className=" flex flex-col my-5" style={{ display: selectTypeDisabled === "พิการมากกว่า1ประเภท" ? "block" : "none" }} >
-                                    <div className="flex gap-x-3 mt-2">
+                                <div className=" flex flex-col my-5" style={{ display: selectTypeDisabled === "พิการมากกว่า 1 ประเภท" ? "block" : "none" }} >
+                                    <div className={`${!typeDisabled.includes('พิการทางการมองเห็น') && !editMode ? "hidden" : ""} flex gap-x-3 mt-2`}>
                                         <input
                                             type="checkbox"
-                                            className="cursor-pointer w-10  border"
+                                            className={`cursor-pointer w-10  border`}
                                             onChange={() => handleCheckboxChange('พิการทางการมองเห็น')}
                                             checked={typeDisabled.includes('พิการทางการมองเห็น')}
+                                            hidden={!editMode}
                                         />
-                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap">พิการทางการมองเห็น</p>
+                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap"><span className={`${editMode ? "hidden" : ""}`}>-</span> พิการทางการมองเห็น</p>
                                     </div>
-                                    <div className="flex gap-x-3 mt-2">
+                                    <div className={`${!typeDisabled.includes('พิการทางการได้ยินหรือสื่อความหมาย') && !editMode ? "hidden" : ""} flex gap-x-3 mt-2`}>
                                         <input
                                             type="checkbox"
                                             className="cursor-pointer w-10  border"
                                             onChange={() => handleCheckboxChange('พิการทางการได้ยินหรือสื่อความหมาย')}
                                             checked={typeDisabled.includes('พิการทางการได้ยินหรือสื่อความหมาย')}
+                                            hidden={!editMode}
 
                                         />
-                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap">พิการทางการได้ยินหรือสื่อความหมาย</p>
+                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap"><span className={`${editMode ? "hidden" : ""}`}>-</span> พิการทางการได้ยินหรือสื่อความหมาย</p>
                                     </div>
-                                    <div className="flex gap-x-3 mt-2">
+                                    <div className={`${!typeDisabled.includes('พิการทางการเคลื่อนไหวหรือทางร่างกาย') && !editMode ? "hidden" : ""} flex gap-x-3 mt-2`}>
                                         <input
                                             type="checkbox"
                                             className="cursor-pointer w-10  border"
                                             onChange={() => handleCheckboxChange('พิการทางการเคลื่อนไหวหรือทางร่างกาย')}
                                             checked={typeDisabled.includes('พิการทางการเคลื่อนไหวหรือทางร่างกาย')}
+                                            hidden={!editMode}
 
                                         />
-                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap">พิการทางการเคลื่อนไหวหรือทางร่างกาย</p>
+                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap"><span className={`${editMode ? "hidden" : ""}`}>-</span> พิการทางการเคลื่อนไหวหรือทางร่างกาย</p>
                                     </div>
-                                    <div className="flex gap-x-3 mt-2">
+                                    <div className={`${!typeDisabled.includes('พิการทางจิตใจหรือพฤติกรรม') && !editMode ? "hidden" : ""} flex gap-x-3 mt-2`}>
                                         <input
                                             type="checkbox"
                                             className="cursor-pointer w-10  border"
                                             onChange={() => handleCheckboxChange('พิการทางจิตใจหรือพฤติกรรม')}
                                             checked={typeDisabled.includes('พิการทางจิตใจหรือพฤติกรรม')}
+                                            hidden={!editMode}
 
                                         />
-                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap">พิการทางจิตใจหรือพฤติกรรม</p>
+                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap"><span className={`${editMode ? "hidden" : ""}`}>-</span> พิการทางจิตใจหรือพฤติกรรม</p>
                                     </div>
-                                    <div className="flex gap-x-3 mt-2">
+                                    <div className={`${!typeDisabled.includes('พิการทางสติปัญญา') && !editMode ? "hidden" : ""} flex gap-x-3 mt-2`}>
                                         <input
                                             type="checkbox"
                                             className="cursor-pointer w-10  border"
                                             onChange={() => handleCheckboxChange('พิการทางสติปัญญา')}
                                             checked={typeDisabled.includes('พิการทางสติปัญญา')}
+                                            hidden={!editMode}
 
                                         />
-                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap">พิการทางสติปัญญา</p>
+                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap"><span className={`${editMode ? "hidden" : ""}`}>-</span> พิการทางสติปัญญา</p>
                                     </div>
 
-                                    <div className="flex gap-x-3 mt-2">
+                                    <div className={`${!typeDisabled.includes('พิการทางการเรียนรู้') && !editMode ? "hidden" : ""} flex gap-x-3 mt-2`}>
                                         <input
                                             type="checkbox"
                                             className="cursor-pointer w-10  border"
                                             onChange={() => handleCheckboxChange('พิการทางการเรียนรู้')}
                                             checked={typeDisabled.includes('พิการทางการเรียนรู้')}
+                                            hidden={!editMode}
 
                                         />
-                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap">พิการทางการเรียนรู้</p>
+                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap"><span className={`${editMode ? "hidden" : ""}`}>-</span> พิการทางการเรียนรู้</p>
                                     </div>
-                                    <div className="flex gap-x-3 mt-2">
+                                    <div className={`${!typeDisabled.includes('พิการทางการออทิสติก') && !editMode ? "hidden" : ""} flex gap-x-3 mt-2`}>
                                         <input
                                             type="checkbox"
                                             className="cursor-pointer w-10  border"
                                             onChange={() => handleCheckboxChange('พิการทางการออทิสติก')}
                                             checked={typeDisabled.includes('พิการทางการออทิสติก')}
+                                            hidden={!editMode}
+
                                         />
-                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap">พิการทางการออทิสติก</p>
+                                        <p className="text-ellipsis overflow-hidden whitespace-nowrap"><span className={`${editMode ? "hidden" : ""}`}>-</span> พิการทางการออทิสติก</p>
                                     </div>
                                 </div>
                                 <div className="flex col flex-col ">
                                     <label>รายละเอียดเพิ่มเติม </label>
                                     <input
                                         type="text"
-                                        className={` focus:bg-white focus:cursor-text ${detailDisabled ? "bg-gray-200 cursor-default focus:outline-none" : " "} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
+                                        className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : " "} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
                                         onChange={(e) => { setDetailDisabled(e.target.value) }}
                                         defaultValue={detailDisabled || ""}
                                         placeholder="เพิ่มเติม (ถ้ามี)"
+                                        readOnly={!editMode}
                                     />
                                 </div>
                             </div>
                             <div className="w-full flex">
                                 <div className="flex col flex-col ">
-                                    <label>อัปโหลดรูปโปรไฟล์ <span className="text-red-500">*</span></label>
+                                    <label className={`${!editMode ? "hidden":""}`}>อัปโหลดรูปโปรไฟล์ <span className="text-red-500">*</span></label>
 
                                     <div className="w-32 h-32 relative my-1">
                                         <Image onClick={openFileDialog}
                                             className="w-full h-full cursor-pointer"
-                                            src={profile || imageUrl || session?.user?.image || "/image/main/user.png"}
+                                            src={profile || imageUrl || "/image/main/user.png"}
                                             height={1000}
                                             width={1000}
                                             alt="profile"
@@ -1217,7 +1298,7 @@ function EditPersonal() {
 
                                     </div>
 
-                                    <div className="mt-1 flex items-center">
+                                    <div className={`${!editMode ? "hidden":""} mt-1 flex items-center`}>
                                         <input
                                             id="chooseProfile"
                                             ref={inputFileRef}
@@ -1246,25 +1327,35 @@ function EditPersonal() {
                                     * {error}
                                 </div>
                             ) : null}
-                            <div className="flex gap-10 w-full justify-center mt-5">
-                                <div onClick={handleResetForm} className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
-                                    <Icon path={mdiCloseCircle} size={1} />
-                                    <p>ยกเลิก</p>
+                            {editMode ? (
+                                <div className="flex gap-10 w-full justify-center mt-5">
+                                    <div onClick={() => setEditMode(false)} className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
+                                        <Icon path={mdiCloseCircle} size={1} />
+                                        <p>ยกเลิก</p>
+                                    </div>
+                                    <button type='submit' className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'>
+                                        <Icon path={mdiContentSave} size={1} />
+                                        <p>บันทึก</p>
+                                    </button>
                                 </div>
-                                <button type='submit' className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'>
-                                    <Icon path={mdiContentSave} size={1} />
-                                    <p>บันทึก</p>
-                                </button>
-                            </div>
+                            ) : (
+                                <div className=" flex w-full justify-center mt-5">
+                                    <div onClick={() => setEditMode(true)} className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
+                                        <Icon path={mdiCloseCircle} size={1} />
+                                        <p>แก้ไขข้อมูล</p>
+                                    </div>
+                                </div>
+                            )}
+
                         </form>
 
 
                     </div>
                 </div>
-            </div>
+            </div >
 
 
-        </div>
+        </div >
     )
 }
 
