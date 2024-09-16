@@ -6,7 +6,7 @@ import NavbarMain from '../components/NavbarMain'
 import Loader from '../components/Loader'
 import { useState, useEffect, useRef } from 'react'
 import Icon from '@mdi/react';
-import { mdiContentSave, mdiArrowDownDropCircle, mdiCloseCircle } from '@mdi/js';
+import { mdiAccountEdit, mdiContentSave, mdiArrowDownDropCircle, mdiCloseCircle } from '@mdi/js';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
@@ -14,6 +14,7 @@ import Image from 'next/image'
 import { uploadBytesResumable, ref, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/app/firebaseConfig';
 import { PulseLoader } from 'react-spinners';
+import { set } from 'mongoose'
 
 function EditPersonal() {
 
@@ -281,6 +282,8 @@ function EditPersonal() {
     async function handleEditSubmit(e) {
         e.preventDefault();
 
+        setLoader(true);
+
         console.log("in submit");
 
         // console.log("user:", user);
@@ -349,21 +352,25 @@ function EditPersonal() {
             !profile
         ) {
             setError("กรุณากรอกข้อมูลให้ครบทุกช่องที่มี *");
+            setLoader(false);
             return;
         }
 
         //validate name
         if (firstName.length < 2 || lastName.length < 2) {
             setError("ใส่ชื่อนามสกุลที่ถูกต้อง");
+            setLoader(false);
             return;
         }
         if (firstName.trim() !== firstName || lastName.trim() != lastName) {
             setError("ใส่ชื่อนามสกุลที่ถูกต้อง");
+            setLoader(false);
             return;
         }
         const invalidWhitespacePattern = /(?:^|\s)\s+|\s+(?=\s|$)/;
         if (invalidWhitespacePattern.test(firstName) || invalidWhitespacePattern.test(lastName)) {
             setError("ใส่ชื่อนามสกุลที่ถูกต้อง");
+            setLoader(false);
             return;
         }
 
@@ -371,14 +378,17 @@ function EditPersonal() {
         if (nickname.length > 0) {
             if (nickname.length < 2) {
                 setError("ใส่ชื่อเล่นที่ถูกต้อง");
+                setLoader(false);
                 return;
             }
             if (nickname.trim() !== nickname) {
                 setError("ใส่ชื่อเล่นที่ถูกต้อง");
+                setLoader(false);
                 return;
             }
             if (invalidWhitespacePattern.test(nickname)) {
                 setError("ใส่ชื่อเล่นที่ถูกต้อง");
+                setLoader(false);
                 return;
             }
         }
@@ -391,6 +401,7 @@ function EditPersonal() {
             Number(dateBirthday) > 30
         ) {
             setError("วันเกิดไม่ถูกต้อง ");
+            setLoader(false);
             return;
         }
         if (
@@ -399,6 +410,7 @@ function EditPersonal() {
             Number(dateBirthday) > 29
         ) {
             setError("วันเกิดไม่ถูกต้อง");
+            setLoader(false);
             return;
         } else if (
             monthBirthday === 'กุมภาพันธ์' &&
@@ -406,6 +418,7 @@ function EditPersonal() {
             Number(dateBirthday) > 28
         ) {
             setError("วันเกิดไม่ถูกต้อง");
+            setLoader(false);
             return;
         }
 
@@ -413,21 +426,25 @@ function EditPersonal() {
         if (idCard.length < 13 || idCard.length > 13 || !/^\d+$/.test(idCard)) {
             setErrorIdCard("เลขบัตรประจำตัวประชาชนให้ถูกต้อง");
             setError("เลขบัตรประจำตัวประชาชนให้ถูกต้อง");
+            setLoader(false);
             return;
         }
         if (idCardDisabled.length < 13 || idCardDisabled.length > 13 || !/^\d+$/.test(idCardDisabled)) {
             setErrorIdCardDisabled("เลขบัตรประจำตัวเลขบัตรประจำตัวคนพิการให้ถูกต้อง");
             setError("เลขบัตรประจำตัวเลขบัตรประจำตัวคนพิการให้ถูกต้อง");
+            setLoader(false);
             return;
         }
 
         //validate address
         if (addressIdCard.length < 2) {
             setError("ระบุที่อยู่ที่ตามบัตรประชาชนที่ถูกต้อง");
+            setLoader(false);
             return;
         }
         if (address.length < 2) {
             setError("ระบุที่อยู่ที่ปัจจุบันที่ถูกต้อง");
+            setLoader(false);
             return;
         }
 
@@ -522,7 +539,6 @@ function EditPersonal() {
                     }
                 }
             } else {
-
                 setErrorIdCard("");
                 setErrorIdCardDisabled("");
             }
@@ -555,16 +571,15 @@ function EditPersonal() {
                 icon: "success",
                 confirmButtonText: "ตกลง",
                 confirmButtonColor: "#0d96f8",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.reload();
-                }
+            }).then(() => {
+                window.location.reload();
             });
 
         } catch (err) {
             console.log(err);
         }
     }
+
 
     // Check address same address IDCard
     const [statusSameAddress, setSameAddress] = useState(false);
@@ -583,6 +598,8 @@ function EditPersonal() {
             setAddressTambon(addressIdCardTambon);
             setAddressZipCode(addressIdCardZipCode);
         }
+
+        console.log("as");
     }
 
     //upload profile
@@ -638,14 +655,6 @@ function EditPersonal() {
     //EditMode
     const [editMode, setEditMode] = useState(false);
 
-    //cancelEditMode
-    function handleCnaceelEditMode(e) {
-        e.preventDefault();
-
-
-    }
-
-
     return (
         <div>
             {loader && (
@@ -664,13 +673,17 @@ function EditPersonal() {
                                 <label>คำนำหน้า <span className="text-red-500">*</span></label>
                                 <div className="relative col w-fit mt-1">
                                     <select
-                                        onChange={(e) => setPrefix(e.target.value)}
+                                        onChange={(e) => {
+                                            setPrefix(e.target.value)
+                                            setSex(e.target.value === "0" ? "" : e.target.value === "นาย" ? "ชาย" : "หญิง")
+                                        }}
                                         className={` ${!editMode ? "  bg-gray-200 cursor-default " : "cursor-pointer"} w-32  border border-gray-400 py-2 px-4 rounded-lg`}
                                         placeholder='กรอกชื่อผู้ใช้'
                                         style={{ appearance: 'none' }}
                                         disabled={!editMode}
+                                        value={prefix || "0"}
                                     >
-                                        <option value="0">{prefix || "-"}</option>
+                                        <option value="0">-</option>
                                         <option value="นาย">นาย</option>
                                         <option value="นางสาว">นางสาว</option>
                                         <option value="นาง">นาง</option>
@@ -710,7 +723,18 @@ function EditPersonal() {
                                     readOnly={!editMode}
                                 />
                             </div>
-                            <div className=" flex flex-col">
+                            {prefix !== "0" && prefix && (
+                                <div className="flex col flex-col">
+                                    <label>เพศ</label>
+                                    <p
+                                        type="text"
+                                        className='mt-1 w-32 border bg-gray-200 cursor-default border-gray-400 py-2 px-4 rounded-lg'
+                                    >
+                                        {sex}
+                                    </p>
+                                </div>
+                            )}
+                            {/* <div className=" flex flex-col">
                                 <label>เพศ <span className="text-red-500">*</span></label>
                                 <div className="mt-1 relative col w-fit">
                                     <select
@@ -726,7 +750,7 @@ function EditPersonal() {
                                     </select>
                                     <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                 </div>
-                            </div>
+                            </div> */}
                             <div className=" flex flex-col ">
                                 <label>วันเกิด <span className="text-red-500">*</span></label>
                                 <div className="flex gap-3 flex-wrap">
@@ -736,8 +760,9 @@ function EditPersonal() {
                                             className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
                                             style={{ appearance: 'none' }}
                                             disabled={!editMode}
+                                            value={yearBirthday || "0"}
                                         >
-                                            <option value="0">{yearBirthday || "ปี"}</option>
+                                            <option value="0">-</option>
                                             {years.map((y, index) => (
                                                 <option key={index} value={y}>{y}</option>
                                             ))}
@@ -750,8 +775,9 @@ function EditPersonal() {
                                             className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-36 border border-gray-400 py-2 px-4 rounded-lg`}
                                             style={{ appearance: 'none' }}
                                             disabled={!editMode}
+                                            value={monthBirthday || "0"}
                                         >
-                                            <option value="0">{monthBirthday || "เดือน"}</option>
+                                            <option value="0">-</option>
                                             {yearToday === Number(yearBirthday) ? (
                                                 filteredMonths.map((m, index) => (
                                                     <option key={index} value={m}>{m}</option>
@@ -770,13 +796,14 @@ function EditPersonal() {
                                             className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-28 border border-gray-400 py-2 px-4 rounded-lg`}
                                             style={{ appearance: 'none' }}
                                             disabled={!editMode}
+                                            value={dateBirthday || "0"}
                                         >
-                                            <option value="0">{dateBirthday || "วันที่"}</option>
+                                            <option value="0">-</option>
                                             {yearToday === Number(yearBirthday) && monthNameToday === monthBirthday ? (
                                                 filteredDate.map((m, index) => (
                                                     <option key={index} value={m}>{m}</option>
                                                 ))
-                                            ) : monthBirthday === 'เมษายน' || monthBirthday === 'กันยายน' || monthBirthday === 'พฤศจิกายน' ? (
+                                            ) : monthBirthday === 'เมษายน' || monthBirthday === 'กันยายน' || monthBirthday === 'มิถุนายน' || monthBirthday === 'พฤศจิกายน' ? (
                                                 filteredDate30.map((m, index) => (
                                                     <option key={index} value={m}>{m}</option>
                                                 ))
@@ -819,8 +846,9 @@ function EditPersonal() {
                                         className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-40 border border-gray-400 py-2 px-4 rounded-lg`}
                                         style={{ appearance: 'none' }}
                                         disabled={!editMode}
+                                        value={nationality || "0"}
                                     >
-                                        <option value="0">{nationality || "-"}</option>
+                                        <option value="0">-</option>
                                         <option value="ไทย">ไทย</option>
                                         <option value="ฝรั่งเศษ">ฝรั่งเศษ</option>
                                     </select>
@@ -835,8 +863,9 @@ function EditPersonal() {
                                         className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-40 border border-gray-400 py-2 px-4 rounded-lg`}
                                         style={{ appearance: 'none' }}
                                         disabled={!editMode}
+                                        value={religion || "0"}
                                     >
-                                        <option value="0">{religion || "-"}</option>
+                                        <option value="0">-</option>
                                         <option value="พุทธ">พุทธ</option>
                                         <option value="อิสลาม">อิสลาม</option>
                                         <option value="คริสต์">คริสต์</option>
@@ -911,8 +940,9 @@ function EditPersonal() {
                                             className={`${!editMode ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                                             style={{ appearance: 'none' }}
                                             disabled={!editMode}
+                                            value={dataProvince.find(p => p.id === parseInt(IDaddressIdCardProvince))?.id || "0"}
                                         >
-                                            <option value="0">{addressIdCardProvince || "-"}</option>
+                                            <option value="0">-</option>
                                             {dataProvince.map((d, index) => (
                                                 <option key={index} value={d.id}>{d.name_th}</option>
                                             ))}
@@ -936,8 +966,9 @@ function EditPersonal() {
                                                 className={`${!editMode ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 style={{ appearance: 'none' }}
                                                 disabled={!editMode}
+                                                value={dataProvince.find(p => p.id === parseInt(IDaddressIdCardProvince)).amphure.find(a => a.id === parseInt(IDaddressIdCardAmphor))?.id || "0"}
                                             >
-                                                <option value="0">{addressIdCardAmphor || "-"}</option>
+                                                <option value="0">-</option>
                                                 {dataProvince.find(p => p.id === parseInt(IDaddressIdCardProvince)).amphure.map((d, index) => (
                                                     <option key={index} value={d.id}>{d.name_th}</option>
                                                 ))}
@@ -958,11 +989,12 @@ function EditPersonal() {
                                                     setAddressIdCardZipCode(dataProvince.find(p => p.id === parseInt(IDaddressIdCardProvince)).amphure.find(a => a.id === parseInt(IDaddressIdCardAmphor))
                                                         .tambon.find(t => t.id === parseInt(e.target.value)).zip_code)
                                                 }}
-                                                className={`${!editMode  ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 style={{ appearance: 'none' }}
                                                 disabled={!editMode}
+                                                value={dataProvince.find(p => p.id === parseInt(IDaddressIdCardProvince)).amphure.find(a => a.id === parseInt(IDaddressIdCardAmphor)).tambon.find(t => t.id === parseInt(IDaddressIdCardTambon))?.id || "0"}
                                             >
-                                                <option value="0">{addressIdCardTambon || "-"}</option>
+                                                <option value="0">-</option>
                                                 {dataProvince.find(p => p.id === parseInt(IDaddressIdCardProvince)).amphure.find(a => a.id === parseInt(IDaddressIdCardAmphor)).tambon.map((d, index) => (
                                                     <option key={index} value={d.id}>{d.name_th}</option>
                                                 ))}
@@ -992,9 +1024,10 @@ function EditPersonal() {
                                         <label>ที่อยู่ปัจจุบัน <span className="text-red-500">*</span></label>
                                         <div className={`${!editMode ? "hidden" : ""} flex gap-x-1`}>
                                             <input
-                                                onClick={(e) => CheckAddressSameIDCard(e.target.checked)}
+                                                onChange={(e) => CheckAddressSameIDCard(e.target.checked)}
                                                 type="checkbox"
                                                 className={`cursor-pointer w-3 h-full border`}
+                                                checked={statusSameAddress}
                                             />
                                             <p>(ตามบัตรประชาชน)</p>
                                         </div>
@@ -1025,8 +1058,11 @@ function EditPersonal() {
                                             className={`${!editMode ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                                             style={{ appearance: 'none' }}
                                             disabled={!editMode}
+                                            value={statusSameAddress ?
+                                                dataProvince.find(p => p.id === parseInt(IDaddressIdCardProvince))?.id
+                                                : dataProvince.find(p => p.id === parseInt(IDaddressProvince))?.id || "0"}
                                         >
-                                            <option value="0">{statusSameAddress ? addressIdCardProvince : addressProvince || "-"}</option>
+                                            <option value="0">-</option>
                                             {dataProvince.map((d, index) => (
                                                 <option key={index} value={d.id}>{d.name_th}</option>
                                             ))}
@@ -1047,11 +1083,14 @@ function EditPersonal() {
                                                     setAddressAmphor(dataProvince.find(p => p.id === parseInt(IDaddressProvince))
                                                         .amphure.find(a => a.id === parseInt(e.target.value)).name_th)
                                                 }}
-                                                className={`${!editMode  ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 style={{ appearance: 'none' }}
                                                 disabled={!editMode}
+                                                value={statusSameAddress ?
+                                                    dataProvince.find(p => p.id === parseInt(IDaddressIdCardProvince)).amphure.find(a => a.id === parseInt(IDaddressIdCardAmphor))?.id
+                                                    : dataProvince.find(p => p.id === parseInt(IDaddressProvince)).amphure.find(a => a.id === parseInt(IDaddressAmphor))?.id || "0"}
                                             >
-                                                <option value="0">{statusSameAddress ? addressIdCardAmphor : addressAmphor || "-"}</option>
+                                                <option value="0">-</option>
                                                 {dataProvince.find(p => p.id === parseInt(IDaddressProvince)).amphure.map((d, index) => (
                                                     <option key={index} value={d.id}>{d.name_th}</option>
                                                 ))}
@@ -1075,8 +1114,11 @@ function EditPersonal() {
                                                 className={`${!editMode ? " bg-gray-200 cursor-default" : "cursor-pointer"} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 style={{ appearance: 'none' }}
                                                 disabled={!editMode}
+                                                value={statusSameAddress ?
+                                                    dataProvince.find(p => p.id === parseInt(IDaddressIdCardProvince)).amphure.find(a => a.id === parseInt(IDaddressIdCardAmphor)).tambon.find(t => t.id === parseInt(IDaddressIdCardTambon))?.id
+                                                    : dataProvince.find(p => p.id === parseInt(IDaddressProvince)).amphure.find(a => a.id === parseInt(IDaddressAmphor)).tambon.find(t => t.id === parseInt(IDaddressTambon))?.id || "0"}
                                             >
-                                                <option value="0">{statusSameAddress ? addressIdCardTambon : addressTambon || "-"}</option>
+                                                <option value="0">-</option>
                                                 {dataProvince.find(p => p.id === parseInt(IDaddressProvince)).amphure.find(a => a.id === parseInt(IDaddressAmphor)).tambon.map((d, index) => (
                                                     <option key={index} value={d.id}>{d.name_th}</option>
                                                 ))}
@@ -1121,7 +1163,7 @@ function EditPersonal() {
                                     inputMode="numeric"
                                     pattern="\d{10}"
                                     maxLength={10}
-                                    className={` ${ !editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
+                                    className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                                     onChange={(e) => { setTelEmergency(e.target.value) }}
                                     defaultValue={telEmergency || ""}
                                     placeholder="หมายเลขโทรศัพท์ 10 หลัก"
@@ -1158,8 +1200,9 @@ function EditPersonal() {
                                             className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-64  border border-gray-400 py-2 px-4 rounded-lg`}
                                             style={{ appearance: 'none' }}
                                             disabled={!editMode}
+                                            value={selectTypeDisabled || "0"}
                                         >
-                                            <option value="0">{selectTypeDisabled || "-"}</option>
+                                            <option value="0">-</option>
                                             <option value="พิการ 1 ประเภท">พิการ 1 ประเภท</option>
                                             <option value="พิการมากกว่า 1 ประเภท">พิการมากกว่า 1 ประเภท</option>
                                         </select>
@@ -1169,13 +1212,14 @@ function EditPersonal() {
                                 <div style={{ display: selectTypeDisabled === "พิการ 1 ประเภท" ? "block" : "none" }} className=" flex flex-col">
                                     <label>เลือกความพิการ<span className="text-red-500">*</span></label>
                                     <div className="relative col w-fit mt-1">
-                                        <select 
-                                        onChange={(e) => setTypeDisabled([e.target.value])} 
-                                        className={`${typeDisabled && !editMode ? "bg-gray-200 cursor-default":"cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-64  border border-gray-400 py-2 px-4 rounded-lg`}
-                                        style={{ appearance: 'none' }}
-                                        disabled={!editMode}
-                                    >
-                                            <option value={typeDisabled}>{typeDisabled}</option>
+                                        <select
+                                            onChange={(e) => setTypeDisabled([e.target.value])}
+                                            className={`${typeDisabled && !editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-64  border border-gray-400 py-2 px-4 rounded-lg`}
+                                            style={{ appearance: 'none' }}
+                                            disabled={!editMode}
+                                            value={typeDisabled[0] || "0"}
+                                        >
+                                            <option value="0">-</option>
                                             <option value="พิการทางการมองเห็น">พิการทางการมองเห็น</option>
                                             <option value="พิการทางการได้ยินหรือสื่อความหมาย">พิการทางการได้ยินหรือสื่อความหมาย</option>
                                             <option value="พิการทางการเคลื่อนไหวหรือทางร่างกาย">พิการทางการเคลื่อนไหวหรือทางร่างกาย</option>
@@ -1279,7 +1323,7 @@ function EditPersonal() {
                             </div>
                             <div className="w-full flex">
                                 <div className="flex col flex-col ">
-                                    <label className={`${!editMode ? "hidden":""}`}>อัปโหลดรูปโปรไฟล์ <span className="text-red-500">*</span></label>
+                                    <label className={`${!editMode ? "hidden" : ""}`}>อัปโหลดรูปโปรไฟล์ <span className="text-red-500">*</span></label>
 
                                     <div className="w-32 h-32 relative my-1">
                                         <Image onClick={openFileDialog}
@@ -1298,7 +1342,7 @@ function EditPersonal() {
 
                                     </div>
 
-                                    <div className={`${!editMode ? "hidden":""} mt-1 flex items-center`}>
+                                    <div className={`${!editMode ? "hidden" : ""} mt-1 flex items-center`}>
                                         <input
                                             id="chooseProfile"
                                             ref={inputFileRef}
@@ -1329,7 +1373,11 @@ function EditPersonal() {
                             ) : null}
                             {editMode ? (
                                 <div className="flex gap-10 w-full justify-center mt-5">
-                                    <div onClick={() => setEditMode(false)} className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
+                                    <div onClick={() => {
+                                        setEditMode(false)
+                                        window.location.reload()
+                                    }
+                                    } className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
                                         <Icon path={mdiCloseCircle} size={1} />
                                         <p>ยกเลิก</p>
                                     </div>
@@ -1341,7 +1389,7 @@ function EditPersonal() {
                             ) : (
                                 <div className=" flex w-full justify-center mt-5">
                                     <div onClick={() => setEditMode(true)} className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
-                                        <Icon path={mdiCloseCircle} size={1} />
+                                        <Icon path={mdiAccountEdit} size={1} />
                                         <p>แก้ไขข้อมูล</p>
                                     </div>
                                 </div>
