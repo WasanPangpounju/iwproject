@@ -208,7 +208,7 @@ function Navbar({ setFontSize, setBgColor,setBgColorNavbar,setBgColorWhite, font
 
     return (
         // <div className='`${setBgColor}` px-5 py-2 flex items-center '>
-        <div className={`${bgColorNavbar} px-5 py-2 flex items-center `}>
+        <div className={`${bgColorNavbar} px-5 py-2 flex items-center`}>
 
             {/* <div className={`bg-white text-black rounded-full w-6 h-6 flex items-center justify-center  font-bold ${fontSize}`}> */}
             <div className={`${bgColor} rounded-full w-6 h-6 flex items-center justify-center  font-bold ${fontSize}`}>
@@ -263,7 +263,7 @@ function Navbar({ setFontSize, setBgColor,setBgColorNavbar,setBgColorWhite, font
                 </div>
                 <div 
                     onClick={() => {
-                        setBgColor('bg-white text-black'); // Reset to default background and text color
+                        setBgColor('bg-[#F4F6FA] text-black'); // Reset to default background and text color
                         setBgColorNavbar('bg-[#F97201]');
                         setBgColorWhite('text-white');
                     }}
@@ -272,6 +272,7 @@ function Navbar({ setFontSize, setBgColor,setBgColorNavbar,setBgColorWhite, font
                 </div>
             </div>
         </div>
+        
     );
 }
 

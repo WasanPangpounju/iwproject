@@ -1,88 +1,113 @@
 "use client"
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { signOut } from 'next-auth/react';
-import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react';
-import Image from 'next/image';
 import Loader from '../components/Loader';
-import Link from 'next/link'; // Import Link from Next.js
+import Swal from 'sweetalert2';
+import Link from 'next/link';
+import NavbarLogo from '../components/NavbarLogo';
+import NavbarMain from '../components/NavbarMain';
+import Image from 'next/image';
 
 function MainPage() {
-    const router = useRouter()
+    const router = useRouter();
     const { status, data: session } = useSession();
+    const [dataUser, setDataUser] = useState(null);
+    const [loader, setLoader] = useState(true);
 
-    //validate session
+    // Validate session and fetch user data
     useEffect(() => {
         if (status === 'loading') {
             return;
         }
 
         if (!session) {
-            router.replace('/')
-        };
+            router.replace('/');
+            return;
+        }
 
         if (session?.user?.email) {
-            getUser(session?.user?.email);
-        };
+            getUser(session.user.email);
+        } else {
+            router.replace('/register');
+        }
 
-    }, [session], [router])
+    }, [status, session, router]);
+    // Redirect to register if dataUser is empty or null
+    useEffect(() => {
+        if (dataUser === null) {
+            return;
+        }
 
-    //get data user
-    const [dataUser, setDataUser] = useState([]);
+        if (!dataUser || Object.keys(dataUser).length === 0) {
+            router.replace('/register');
+        }
 
+
+    }, [dataUser, router, session]);
+
+    // Fetch user data from API
     async function getUser(email) {
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${email}`, {
                 method: "GET",
                 cache: "no-store"
-            })
+            });
 
             if (!res.ok) {
-                throw new Error("Error get data from api")
+                throw new Error("Error getting data from API");
             }
 
             const data = await res.json();
-            setDataUser(data.user)
+            setDataUser(data.user || {});
 
         } catch (err) {
-            console.log("Error fetch api myfilePage", err);
+            console.error("Error fetching API", err);
+        } finally {
+            setLoader(false);
         }
     }
 
-    //loader
-    const [loader, setLoader] = useState(true)
+    // Manage loader state
     useEffect(() => {
-        setLoader(false);
-    }, [])
-    useEffect(() => {
-        if (loader) {
-            document.body.classList.add('no_scroll')
-        } else {
-            document.body.classList.remove('no_scroll')
-        }
-    }, [loader])
-    console.log(dataUser);
+        document.body.classList.toggle('no_scroll', loader);
+    }, [loader]);
 
     return (
         <div>
-            <button className="border p-3 bg-red-400" onClick={() => signOut()}>Signout</button>
-            {/* <Image className="w-10 h-10 rounded-full" src={session?.user?.image ? session?.user?.image:""} height={1000} width={1000} alt="profile" priority></Image> */}
-            <p>Username: <span>{dataUser ? dataUser.user : "-"}</span></p>
-            <p>Email: {dataUser ? dataUser.email : session?.user?.image ? session?.user?.email : "-"}</p>
-            <p>ชื่อ: {dataUser ? dataUser.firstName : "-"} {dataUser ? dataUser.lastName : ""}</p>
-            <p>ประเภทความพิการ: {dataUser ? dataUser.typeUser : "-"}</p>
-            <p>มหาวิทยาลัย: {dataUser ? dataUser.university : "-"}</p>
-            <div className={loader ? "" : "hidden"}>
-                <Loader />
+            <NavbarLogo dataUser={dataUser}/>
+            <div className="flex">
+                <NavbarMain status="main"/>
+                <div className="w-10/12 px-7 py-5">
+                    <div className=" bg-white rounded-lg p-5">
+                        <p className="text-2xl font-bold">ข่าวประชาสัมพันธ์</p>
+                        <div className="mt-5 flex justify-between border">
+                            <div >
+                                <p className="font-bold text-lg">ยินดีรับสมัครนักศึกษาจบใหม่เข้าร่วมงาน</p>
+                                <p className="mt-3">บริษัท ยินดีรับศึกษาจบใหม่เข้าร่วมงาน....................อ่านต่อ</p>
+                            </div>
+                            <Image className="rounded-lg w-96 h-64 border bg-red-400" src="/image/main/postermain.png" height={1000} width={1000} priority alt="photo-post"></Image>
+                        </div>
+                        <div className="mt-5 flex justify-between border">
+                            <div >
+                                <p className="font-bold text-lg">ยินดีรับสมัครนักศึกษาจบใหม่เข้าร่วมงาน</p>
+                                <p className="mt-3">บริษัท ยินดีรับศึกษาจบใหม่เข้าร่วมงาน....................อ่านต่อ</p>
+                            </div>
+                            <Image className="rounded-lg w-96 h-64 border bg-red-400" src="/image/main/postermain.png" height={1000} width={1000} priority alt="photo-post"></Image>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-            {/* Button to navigate to testPage */}
-            <Link href="/testPage">
-                <button className="border p-3 bg-blue-400 mt-4">Go to Test Page</button>
-            </Link>
+            {loader && (
+                <div>
+                    <Loader />
+                </div>
+            )}
         </div>
-    )
+    );
 }
 
-export default MainPage
+export default MainPage;
