@@ -103,7 +103,7 @@ export default function RootLayout({ children }) {
   // const [bgColor, setBgColor] = useState('bg-white'); // Manage background color state
   const [bgColor, setBgColor] = useState('bg-white text-black'); // Define bgColor state
   const [bgColorNavbar , setBgColorNavbar] = useState('bg-[#F97201]'); // Define bgColor state
-
+  const [bgColorWhite, setBgColorWhite] = useState('bg-white ');
   // const [bgColor, setBgColor] = useState('bg-[#F97201]'); // Default background color
   console.log('bgColorNavbar',bgColorNavbar);
   console.log('bgColor',bgColor);
@@ -121,8 +121,10 @@ export default function RootLayout({ children }) {
             setFontSize={setFontSize} 
             setBgColor={setBgColor} 
             setBgColorNavbar={setBgColorNavbar}
+            setBgColorWhite={setBgColorWhite}
             fontSize={fontSize} 
             bgColor={bgColor}
+            bgColorWhite={bgColorWhite}
             bgColorNavbar={bgColorNavbar} // Pass bgColor to Navbar
           />
           <div className={fontSize}>
