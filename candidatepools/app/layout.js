@@ -87,7 +87,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import '@fontsource/ibm-plex-sans-thai';
-import Footer from "./components/Footer";
 import { AuthProvider } from "./Provider";
 import { useState } from 'react'; // Import useState
 
@@ -101,12 +100,12 @@ const inter = Inter({ subsets: ["latin"] });
 export default function RootLayout({ children }) {
   const [fontSize, setFontSize] = useState('normal-font'); // Manage font size state
   // const [bgColor, setBgColor] = useState('bg-white'); // Manage background color state
-  const [bgColor, setBgColor] = useState('bg-white text-black'); // Define bgColor state
+  const [bgColor, setBgColor] = useState('bg-[#F4F6FA] text-black'); // Define bgColor state
   const [bgColorNavbar , setBgColorNavbar] = useState('bg-[#F97201]'); // Define bgColor state
   const [bgColorWhite, setBgColorWhite] = useState('bg-white ');
   // const [bgColor, setBgColor] = useState('bg-[#F97201]'); // Default background color
-  console.log('bgColorNavbar',bgColorNavbar);
-  console.log('bgColor',bgColor);
+  // console.log('bgColorNavbar',bgColorNavbar);
+  // console.log('bgColor',bgColor);
 
   return (
     <html lang="en">
@@ -130,7 +129,6 @@ export default function RootLayout({ children }) {
           <div className={fontSize}>
             {children}
           </div>
-          <Footer />
         </AuthProvider>
       </body>
     </html>

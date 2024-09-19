@@ -9,16 +9,15 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Swal from 'sweetalert2';
 import Loader from "./components/Loader";
-
+import Footer from "./components/Footer";
 
 
 export default function Home() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('')
-  
-
+  const [error, setError] = useState('');
+  const [loader, setLoader] = useState(true);
 
   //eye show password
   const [showPassword, setShowPassword] = useState(false);
@@ -40,10 +39,11 @@ export default function Home() {
   }, [session], [router])
 
   //loader
-  const [loader, setLoader] = useState(true)
+
   useEffect(() => {
     setLoader(false)
   }, [])
+
   useEffect(() => {
     if (loader) {
       document.body.classList.add('no_scroll')
@@ -62,7 +62,6 @@ export default function Home() {
       setLoader(false);
       return;
     }
-
 
     try {
       const res = await signIn("credentials", {
@@ -90,7 +89,7 @@ export default function Home() {
             setLoader(false);
             return;
           } else {
-            setError("อีเมลของคุณไม่ถูกต้อง");
+            setError("อีเมลหรือชื่อผู้ใช้ ของคุณไม่ถูกต้อง");
             setLoader(false);
             return;
           }
@@ -120,8 +119,6 @@ export default function Home() {
       setLoader(false);
       console.log(err);
     }
-
-
   }
 
   return (
@@ -141,7 +138,7 @@ export default function Home() {
           <form onSubmit={handleSubmit} className="relative bottom-[5px] rounded-lg bg-white p-14 flex flex-col justify-center items-center ">
             <p>{loginMod === 'user' ? "เข้าสู่ระบบสำหรับผู้สมัครงาน" : "เข้าสู่ระบบสำหรับผู้ดูแลระบบ"}</p>
             <div className="mt-7 flex flex-col gap-5">
-              <input onChange={(e) => setEmail(e.target.value)} className="w-72 border py-2 px-5 rounded-lg" type="text" placeholder="อีเมล์" />
+              <input onChange={(e) => setEmail(e.target.value)} className="w-72 border py-2 px-5 rounded-lg" type="text" placeholder="อีเมล์ หรือ ชื่อผู้ใช้" />
               <div className="relative">
                 <input onChange={(e) => setPassword(e.target.value)} className="w-72 border py-2 px-5 rounded-lg" type={showPassword ? "text" : "password"} placeholder="รหัสผ่าน" />
                 <Image onClick={(e) => setShowPassword(e => !e)} alt="icon-eye" className="hover:cursor-pointer absolute top-[11px] right-5 w-4 h-4" src="/image/main/eye.png" height={1000} width={1000} priority />
@@ -181,6 +178,7 @@ export default function Home() {
           </form>
         </div>
       </div>
+      <Footer />
       <div className={loader ? "" : "hidden"}>
         <Loader />
       </div>
