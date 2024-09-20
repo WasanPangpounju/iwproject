@@ -102,7 +102,7 @@ export default function RootLayout({ children }) {
   // const [bgColor, setBgColor] = useState('bg-white'); // Manage background color state
   const [bgColor, setBgColor] = useState('bg-[#F4F6FA] text-black'); // Define bgColor state
   const [bgColorNavbar , setBgColorNavbar] = useState('bg-[#F97201]'); // Define bgColor state
-  const [bgColorWhite, setBgColorWhite] = useState('bg-white ');
+  const [bgColorWhite, setBgColorWhite] = useState('text-white');
   // const [bgColor, setBgColor] = useState('bg-[#F97201]'); // Default background color
   // console.log('bgColorNavbar',bgColorNavbar);
   // console.log('bgColor',bgColor);
