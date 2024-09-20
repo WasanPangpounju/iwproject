@@ -16,7 +16,7 @@ import { storage } from '@/app/firebaseConfig';
 import { PulseLoader } from 'react-spinners';
 import { set } from 'mongoose'
 
-function EditPersonal() {
+function EditPersonal(bgColorNavbar) {
 
     const [dataUser, setDataUser] = useState(null);
     const [loader, setLoader] = useState(true);
@@ -666,8 +666,8 @@ function EditPersonal() {
             <div className="flex">
                 <NavbarMain status="edit" />
                 <div className="w-10/12 px-7 py-5">
-                    <div className=" bg-white rounded-lg p-5 pb-10">
-
+                    {/* <div className=" bg-white rounded-lg p-5 pb-10"> */}
+                    <div className={`${bgColorNavbar} rounded-lg p-5 pb-10`}>
                         <form onSubmit={handleEditSubmit} className=" flex gap-x-10 gap-y-5 gap- flex-wrap">
                             <div className=" flex flex-col">
                                 <label>คำนำหน้า <span className="text-red-500">*</span></label>

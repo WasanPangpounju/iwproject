@@ -11,7 +11,7 @@ import NavbarLogo from '../components/NavbarLogo';
 import NavbarMain from '../components/NavbarMain';
 import Image from 'next/image';
 
-function MainPage() {
+function MainPage(bgColorNavbar) {
     const router = useRouter();
     const { status, data: session } = useSession();
     const [dataUser, setDataUser] = useState(null);
@@ -81,7 +81,8 @@ function MainPage() {
             <div className="flex">
                 <NavbarMain status="main"/>
                 <div className="w-10/12 px-7 py-5">
-                    <div className=" bg-white rounded-lg p-5">
+                    {/* <div className={`bg-white rounded-lg p-5`}> */}
+                    <div className={`${bgColorNavbar} rounded-lg p-5`}>
                         <p className="text-2xl font-bold">ข่าวประชาสัมพันธ์</p>
                         <div className="mt-5 flex justify-between border">
                             <div >

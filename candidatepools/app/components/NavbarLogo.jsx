@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 
 
-function NavbarLogo({title,dataUser}) {
+function NavbarLogo({title,dataUser,bgColorNavbar}) {
 
     // const { data: session } = useSession();
     // const [dataUser, setDataUser] = useState(null);
@@ -41,10 +41,11 @@ function NavbarLogo({title,dataUser}) {
 
 
     return (
-        <div className={`relative gap-1 flex justify-between border-b-8  border-[#75C7C2] `}>
+        <div className={`${bgColorNavbar} relative gap-1 flex justify-between border-b-8  border-[#75C7C2] `}>
             {dataUser ? (
                 <div className=" flex items-end">
-                    <div className='h-full flex items-center bg-[#eeeeee] py-4 px-5 w-60 gap-5'>
+                    {/* <div className='h-full flex items-center bg-[#eeeeee] py-4 px-5 w-60 gap-5'> */}
+                    <div className={`h-full flex items-center ${bgColorNavbar} py-4 px-5 w-60 gap-5`}>
                         <Image priority alt="icon" className='w-11 h-11 ' src={dataUser.profile || "/image/main/user.png"} height={1000} width={1000} />
                         <p className=' font-bold'>{dataUser.firstName} {dataUser.lastName}</p>
                     </div>
