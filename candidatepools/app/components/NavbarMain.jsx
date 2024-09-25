@@ -12,6 +12,7 @@ import {
   mdiFileAccount,
   mdiFileEditOutline,
   mdiHomeAccount,
+  flowchage,
 } from "@mdi/js";
 import styles from "@/app/components/styles/NavbarMain.module.css";
 import { useState } from "react";
@@ -43,7 +44,7 @@ function NavbarMain({ status, bgColorNavbar }) {
 
   return (
     // <div className="bg-black w-60 min-h-screen">
-      <div className={`${bgColorNavbar} w-60 min-h-screen`}> 
+    <div className={`${bgColorNavbar} w-60 min-h-screen`}>
       <Link
         href="/main"
         className={`${
@@ -114,6 +115,19 @@ function NavbarMain({ status, bgColorNavbar }) {
           ช่วยเหลือ
         </p>
       </div>
+      <Link
+        href="/graph"
+        className={`${
+          status === "graph"
+            ? "bg-[#fee2d9] text-[#ff7201] cursor-default"
+            : "cursor-pointer hover:bg-[#fee2d9] hover:text-[#ff7201]"
+        }  flex items-center px-7 gap-5 py-3`}
+      >
+        <Icon path={mdiHomeAccount} size={1} />
+        <p className="font-extrabold whitespace-nowrap text-ellipsis">
+          flowchage
+        </p>
+      </Link>
       <div
         onClick={handleLogout}
         className="hover:bg-[#fee2d9] hover:text-[#ff7201] cursor-pointer cursor-pointer flex items-center px-7 gap-5 py-3"
