@@ -10,8 +10,31 @@ import Link from 'next/link';
 import NavbarLogo from '../components/NavbarLogo';
 import NavbarMain from '../components/NavbarMain';
 import Image from 'next/image';
+import { useTheme } from '../ThemeContext';
 
-function MainPage(bgColorNavbar) {
+function MainPage() {
+
+    const {
+        setFontSize,
+        setBgColor,
+        setBgColorNavbar,
+        setBgColorWhite,
+        setBgColorMain,
+        setBgColorMain2,
+        fontSize,
+        bgColorNavbar,
+        bgColor,
+        bgColorWhite,
+        bgColorMain,
+        bgColorMain2,
+        setLineBlack,
+        lineBlack,
+        setTextBlue,
+        textBlue,
+        setRegisterColor,
+          registerColor,
+      } = useTheme();
+
     const router = useRouter();
     const { status, data: session } = useSession();
     const [dataUser, setDataUser] = useState(null);
@@ -75,14 +98,16 @@ function MainPage(bgColorNavbar) {
         document.body.classList.toggle('no_scroll', loader);
     }, [loader]);
 
+    console.log('bgColorNavbar',bgColorNavbar);
+    console.log('bgColorWhite',bgColorWhite);
     return (
-        <div>
+        <div className={`${bgColorMain} ${bgColor}`}>
             <NavbarLogo dataUser={dataUser}/>
             <div className="flex">
                 <NavbarMain status="main"/>
                 <div className="w-10/12 px-7 py-5">
                     {/* <div className={`bg-white rounded-lg p-5`}> */}
-                    <div className={`${bgColorNavbar} rounded-lg p-5`}>
+                    <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
                         <p className="text-2xl font-bold">ข่าวประชาสัมพันธ์</p>
                         <div className="mt-5 flex justify-between border">
                             <div >

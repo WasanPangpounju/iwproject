@@ -112,18 +112,41 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <ThemeProvider>
-        <body className={`${bgColorMain, bgColorWhite}`}>
-        
-          <AuthProvider>
-            <Navbar />
-            <div>
-              {children}
-            </div>
-          </AuthProvider>
-       
+      <body className={`${fontSize}  ${bgColor} ${inter.className}`}>
+        {" "}
+        {/* Apply font size to body */}
+        <div></div>
+        <AuthProvider bgColorMain={bgColorMain}>
+          <Navbar
+            setFontSize={setFontSize}
+            setBgColor={setBgColor}
+            setBgColorNavbar={setBgColorNavbar}
+            setBgColorWhite={setBgColorWhite}
+            setBgColorMain={setBgColorMain}
+            fontSize={fontSize}
+            bgColor={bgColor}
+            bgColorWhite={bgColorWhite}
+            bgColorNavbar={bgColorNavbar} // Pass bgColor to Navbar
+          />
+          <div className={fontSize}>
+            {/* {children} */}
+            {/* {React.cloneElement(children, { bgColorMain })} Pass bgColorMain to children */}
+            {/* {React.cloneElement(children, { bgColor, bgColorNavbar })} */}
+            {React.cloneElement(children, { 
+              fontSize, 
+              setFontSize, 
+              bgColor, 
+              setBgColor, 
+              bgColorNavbar, 
+              setBgColorNavbar, 
+              bgColorWhite, 
+              setBgColorWhite, 
+              bgColorMain, 
+              setBgColorMain 
+            })}
+          </div>
+        </AuthProvider>
       </body>
-       </ThemeProvider>
     </html>
   );
 }
