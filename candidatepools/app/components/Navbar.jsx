@@ -198,20 +198,34 @@
 import React from "react";
 import Icon from "@mdi/react";
 import { mdiMonitor } from "@mdi/js";
+import { useTheme } from "../ThemeContext";
 
-function Navbar({
-  setFontSize,
-  setBgColor,
-  setBgColorNavbar,
-  setBgColorWhite,
-  fontSize,
-  bgColorNavbar,
-  bgColor,
-  bgColorWhite,
-}) {
+function Navbar({}) {
   // Accept setBgColor as a prop
   // console.log('bgColorNavbar',bgColorNavbar);
   // console.log('fontSize',fontSize);
+
+  const {
+    setFontSize,
+    setBgColor,
+    setBgColorNavbar,
+    setBgColorWhite,
+    setBgColorMain,
+    setBgColorMain2,
+    fontSize,
+    bgColorNavbar,
+    bgColor,
+    bgColorWhite,
+    bgColorMain,
+    setLineBlack,
+    lineBlack,
+    setTextBlue,
+    textBlue,
+    setRegisterColor,
+      registerColor,
+      setInputEditColor,
+      inputEditColor,
+  } = useTheme();
 
   return (
     // <div className='`${setBgColor}` px-5 py-2 flex items-center '>
@@ -258,25 +272,28 @@ function Navbar({
             setBgColor("bg-black text-white"); // Change background to black and text to white
             setBgColorNavbar("bg-black");
             setBgColorWhite("text-white");
+            setBgColorMain("bg-black");
+            setBgColorMain2("bg-black");
+            setLineBlack("border-white");
+            setTextBlue("text-white-500");
+            setRegisterColor("text-white");
+            setInputEditColor("bg-black-200");
           }}
           className="hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-black text-white py-1 px-2 text-xs font-thin"
         >
           อักษรขาวพื้นดำ
         </div>
-        {/* <div 
-                    onClick={() => {
-                        setBgColor('bg-black text-[#e7e703]'); // Change background to black and text to yellow
-                        setBgColorNavbar('bg-black');
-
-                    }}
-                    className='hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-black text-[#e7e703] py-1 px-2 text-xs font-thin'>
-                    อักษรเหลืองพื้นดำ
-                </div> */}
         <div
           onClick={() => {
             setBgColor("bg-black text-[#e7e703]"); // Change background to black and text to yellow
             setBgColorNavbar("bg-black"); // Change navbar background to black
             setBgColorWhite("text-[#e7e703]");
+            setBgColorMain("bg-black");
+            setBgColorMain2("bg-black");
+            setLineBlack("border-white");
+            setTextBlue("text-[#e7e703]-500");
+            setRegisterColor("text-[#e7e703]");
+            setInputEditColor("bg-black-200");
           }}
           className="hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-black text-[#e7e703] py-1 px-2 text-xs font-thin"
         >
@@ -286,7 +303,14 @@ function Navbar({
           onClick={() => {
             setBgColor("bg-[#F4F6FA] text-black"); // Reset to default background and text color
             setBgColorNavbar("bg-[#F97201]");
+            // setBgColorNavbar("bg-white");
             setBgColorWhite("text-white");
+            setBgColorMain("#e6ffff");
+            setBgColorMain2("bg-white");
+            setLineBlack("border-black");
+            setTextBlue("text-blue-500");
+            setRegisterColor("text-[#F97201]");
+            setInputEditColor("bg-gray-200");
           }}
           className="hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-white text-black py-1 px-2 text-xs font-thin"
         >

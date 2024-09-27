@@ -19,8 +19,31 @@ import { useState } from "react";
 import { signOut } from "next-auth/react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { useTheme } from "../ThemeContext";
 
-function NavbarMain({ status, bgColorNavbar }) {
+function NavbarMain({ status }) {
+
+  const {
+    setFontSize,
+    setBgColor,
+    setBgColorNavbar,
+    setBgColorWhite,
+    setBgColorMain,
+    setBgColorMain2,
+    fontSize,
+    bgColorNavbar,
+    bgColor,
+    bgColorWhite,
+    bgColorMain,
+    setLineBlack,
+    lineBlack,
+    setTextBlue,
+    textBlue,
+    setRegisterColor,
+      registerColor,
+  } = useTheme();
+
+
   const router = useRouter();
   //logout
   function handleLogout() {
@@ -44,7 +67,7 @@ function NavbarMain({ status, bgColorNavbar }) {
 
   return (
     // <div className="bg-black w-60 min-h-screen">
-    <div className={`${bgColorNavbar} w-60 min-h-screen`}>
+    <div className={`${bgColorNavbar} ${bgColorWhite} w-60 min-h-screen`}>
       <Link
         href="/main"
         className={`${
