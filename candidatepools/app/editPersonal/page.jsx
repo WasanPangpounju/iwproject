@@ -47,6 +47,7 @@ function EditPersonal() {
 
 
     //data value
+    const [typePerson, setTypePerson] = useState("");
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState("");
@@ -191,6 +192,7 @@ function EditPersonal() {
         setTel(dataUser.tel || "");
         setTelEmergency(dataUser.telEmergency || "");
         setRelationship(dataUser.relationship || "");
+        setTypePerson(dataUser.typePerson || "");
 
         setIDAddressIdCardProvince(dataProvince.find(p => p.name_th === dataUser.addressIdCardProvince)?.id || null);
         setIDAddressIdCardAmphor(
@@ -349,7 +351,8 @@ function EditPersonal() {
             !addressZipCode ||
             !tel ||
             !selectTypeDisabled ||
-            !profile
+            !profile ||
+            !typePerson
         ) {
             setError("กรุณากรอกข้อมูลให้ครบทุกช่องที่มี *");
             setLoader(false);
@@ -487,6 +490,7 @@ function EditPersonal() {
             tel,
             telEmergency,
             relationship,
+            typePerson,
         };
 
         try {
@@ -1326,7 +1330,7 @@ function EditPersonal() {
                                     <label className={`${!editMode ? "hidden" : ""}`}>อัปโหลดรูปโปรไฟล์ <span className="text-red-500">*</span></label>
 
                                     <div className="w-32 h-32 relative my-1">
-                                        <Image onClick={openFileDialog}
+                                        <Image onClick={editMode ? openFileDialog: null}  
                                             className="w-full h-full cursor-pointer"
                                             src={profile || imageUrl || "/image/main/user.png"}
                                             height={1000}

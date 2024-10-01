@@ -4,9 +4,9 @@ import Users from "@/models/user";
 
 export async function POST(req) {
     try {
-        const { user, password, firstName, lastName, typeDisabled, university, email } = await req.json();
+        const { user, password, firstName, lastName, typeDisabled, university, email, typePerson } = await req.json();
         await mongoDB();
-        await Users.create({ user: user, password: password, firstName: firstName, lastName: lastName, typeDisabled: typeDisabled, university: university, email: email });
+        await Users.create({ user: user, password: password, firstName: firstName, lastName: lastName, typeDisabled: typeDisabled, university: university, email: email, typePerson: typePerson });
         return NextResponse.json({ message: "Created User" }, { status: 201 })
     } catch {
         return NextResponse.json({ message: "Error Create User" }, { status: 500 })

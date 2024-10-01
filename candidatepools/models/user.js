@@ -105,7 +105,11 @@ const UserSchema = new Schema(
             type: String,
             require: true,
             default: "user"
-        }
+        },
+        typePerson:{
+            type: String,
+            required: true
+        },
     },
     {
         timestamps: true

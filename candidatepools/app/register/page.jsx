@@ -23,6 +23,7 @@ function Register() {
     const [typeDisabled, setTypeDisabled] = useState([]);
     const [university, setUniversity] = useState('');
     const [email, setEmail] = useState('');
+    const [typePerson, setTypePerson] = useState('');
     const [error, setError] = useState('');
 
     const [dataUser, setDataUser] = useState(null);
@@ -73,7 +74,7 @@ function Register() {
         setLoader(true);
 
         if (!session) {
-            if (!user || !password || !confirmPassword || !firstName || !lastName || !typeDisabled || !university || !email) {
+            if (!user || !password || !confirmPassword || !firstName || !lastName || !typeDisabled || !university || !email || !typePerson) {
                 setError('กรุณากรอกข้อมูลให้ครบทุกช่อง');
                 setLoader(false);
                 return;
@@ -137,7 +138,7 @@ function Register() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ user, password, firstName, lastName, typeDisabled, university, email })
+                body: JSON.stringify({ user, password, firstName, lastName, typeDisabled, university, email, typePerson })
             })
                                 
             if (!res.ok) {
@@ -309,7 +310,18 @@ function Register() {
 
                     </div>
                     <div className='mt-4 w-[35rem] font-bold  flex justify-between items-center'>
-                        <label>มหาวิทยาลัย:</label>
+                        <label> ประเภทบุลคล:</label>
+                        <div className="relative ">
+                            <select onChange={(e) => setTypePerson(e.target.value)} className='cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg' style={{ appearance: 'none' }}>
+                                <option value="0">เลือกประเภทบุลคล</option>
+                                <option value="นักศึกษา">นักศึกษา</option>
+                                <option value="เจ้าหน้าที่">เจ้าหน้าที่</option>
+                            </select>
+                            <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                        </div>
+                    </div>
+                    <div className='mt-4 w-[35rem] font-bold  flex justify-between items-center'>
+                        <label>สถาบันการศึกษา:</label>
                         <input
                             onChange={(e) => setUniversity(e.target.value)}
                             type="text"
