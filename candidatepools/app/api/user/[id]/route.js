@@ -47,7 +47,8 @@ export async function PUT(req) {
             addressZipCode,
             tel,
             telEmergency,
-            relationship
+            relationship,
+            typePerson
         } = await req.json();
 
         // อัปเดตข้อมูลผู้ใช้ในฐานข้อมูล
@@ -86,6 +87,7 @@ export async function PUT(req) {
                 tel,
                 telEmergency,
                 relationship,
+                typePerson,
             },
             { new: true } // ส่งกลับเอกสารที่อัปเดตใหม่
         );
