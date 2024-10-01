@@ -46,7 +46,7 @@ function NavbarLogo({title,dataUser}) {
                 <div className=" flex items-end">
                     <div className='h-full flex items-center bg-[#eeeeee] py-4 px-5 w-60 gap-5'>
                         <Image priority alt="icon" className='w-11 h-11 ' src={dataUser.profile || "/image/main/user.png"} height={1000} width={1000} />
-                        <p className=' font-bold'>{dataUser.firstName} {dataUser.lastName}</p>
+                        <p className=' font-bold text-ellipsis overflow-hidden whitespace-nowrap'>{dataUser.firstName} {dataUser.lastName}</p>
                     </div>
                     {title && (
                         <div className="mx-7 my-1 text-lg font-bold">
