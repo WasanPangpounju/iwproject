@@ -13,8 +13,16 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Footer from '../components/Footer';
 
-function Register() {
+function Register({ statusAgreement }) {
 
+    //check agreement
+    const [agreement,setAgreement] = useState(false);
+
+    useEffect(() => {
+        setAgreement(statusAgreement);
+    },[statusAgreement])
+
+    //value data
     const [user, setUser] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -32,6 +40,11 @@ function Register() {
     const { status, data: session } = useSession();
     const router = useRouter()
     useEffect(() => {
+
+        if(!agreement){
+            router.replace("/agreement");
+        }
+
         if (status === 'loading') {
             return;
         }

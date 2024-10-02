@@ -39,7 +39,6 @@ export default function Home() {
   }, [session], [router])
 
   //loader
-
   useEffect(() => {
     setLoader(false)
   }, [])
@@ -157,7 +156,7 @@ export default function Home() {
               <button type="submit" className="bg-[#F97201] text-white py-2 px-5 rounded-lg" >เข้าสู่ระบบ</button>
             </div>
             <p className="mt-4">ยังไม่ได้เป็นสมาชิก?
-              <Link className="mx-2 text-[#F97201] hover:cursor-pointer hover:underline" href="/register">
+              <Link className="mx-2 text-[#F97201] hover:cursor-pointer hover:underline" href="/agreement">
                 สมัครสมาชิก
               </Link>
             </p>

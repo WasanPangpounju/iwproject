@@ -31,7 +31,7 @@ function MainPage() {
         if (session?.user?.email) {
             getUser(session.user.email);
         } else {
-            router.replace('/register');
+            router.replace('/agreement');
         }
 
     }, [status, session, router]);
@@ -42,7 +42,7 @@ function MainPage() {
         }
 
         if (!dataUser || Object.keys(dataUser).length === 0) {
-            router.replace('/register');
+            router.replace('/agreement');
         }
 
 
