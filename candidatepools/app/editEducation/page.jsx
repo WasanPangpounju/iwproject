@@ -20,16 +20,37 @@ function editEducation() {
 
     //value data user
     const [typePerson, setTypePerson] = useState("");
-    const [university, setUniversity] = useState("");
-    const [faculty, setFaculty] = useState("");
-    const [branch, setBranch] = useState("");
-    const [level, setLevel] = useState("");
-    const [grade, setGrade] = useState("");
-    const [yearGraduation, setYearGraduation] = useState("");
-    const [nameDocumentUser, setNameDucumentUser] = useState("");
+    const [university, setUniversity] = useState([]);
+    const [campus, setCampus] = useState([]);
+    const [faculty, setFaculty] = useState([]);
+    const [branch, setBranch] = useState([]);
+    const [level, setLevel] = useState([]);
+    const [educationLevel, setEducationLevel] = useState([]);
+    const [grade, setGrade] = useState([]);
+    const [yearGraduation, setYearGraduation] = useState([]);
+    const [file, setFile] = useState([]);
+    const [nameFile, setNameFile] = useState([]);
+    const [sizeFile, setSizeFile] = useState([]);
+    const [nameDocumentUser, setNameDucumentUser] = useState([]);
     const [documentUser, setDucumentUser] = useState([]);
 
-    const [editMode, setEditMode] = useState(false);
+    const [newTypePerson, setNewTypePerson] = useState("");
+    const [newSetUniversity, setNewUniversity] = useState("");
+    const [newSetCampus, setNewCampus] = useState("");
+    const [newSetFaculty, setNewFaculty] = useState("");
+    const [newSetBranch, setNewBranch] = useState("");
+    const [newSetLevel, setNewLevel] = useState("");
+    const [newSetEducationLevel, setNewEducationLevel] = useState("");
+    const [newSetGrade, setNewGrade] = useState("");
+    const [newSetYearGraduation, setNewYearGraduation] = useState("");
+    const [newSetFile, setNewFile] = useState("");
+    const [newSetNameFile, setNewNameFile] = useState("");
+    const [newSetSizeFile, setNewSizeFile] = useState("");
+    const [newSetNameDocumentUser, setNewNameDocumentUser] = useState("");
+    const [newSetDocumentUser, setNewDocumentUser] = useState("");
+
+
+    const [editMode, setEditMode] = useState(true);
 
     const today = new Date();
     const yearToday = today.getFullYear();
@@ -139,11 +160,29 @@ function editEducation() {
 
     useEffect(() => {
         if (imageUrl) {
-            setProfile(imageUrl); // Assume setProfile is a function that updates profile state or context
+            setFile(imageUrl); // Assume setProfile is a function that updates profile state or context
         }
 
     }, [imageUrl]);
 
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        console.log("typePerson: " + typePerson);
+        console.log("university: " + university);
+        console.log("campus: " + campus);
+        console.log("faculty: " + faculty);
+        console.log("branch: " + branch);
+        console.log("level: " + level);
+        console.log("educationLevel: " + educationLevel);
+        console.log("grade: " + grade);
+        console.log("yearGraduation: " + yearGraduation);
+        console.log("file: " + file);
+        console.log("nameFile: " + nameFile);
+        console.log("sizeFile: " + sizeFile);
+        console.log("nameDocumentUser: " + nameDocumentUser);
+        console.log("documentUser: ", documentUser);
+    }
     return (
         <div>
             <NavbarLogo dataUser={dataUser} />
@@ -151,12 +190,12 @@ function editEducation() {
                 <NavbarMain status="edit" />
                 <div className="w-10/12 px-7 py-5">
                     <div className=" bg-white rounded-lg p-5">
-                        <form className=" flex gap-x-10 gap-y-5 gap- flex-wrap">
-                            <div className=" flex flex-col">
+                        <form onSubmit={handleSubmit} className=" flex gap-x-10 gap-y-5 gap- flex-wrap">
+                            <div className=" flex flex-col w-full">
                                 <label>ประเภทบุลคล</label>
                                 <div className="relative col w-fit mt-1">
                                     <select
-                                        onChange={(e) => setTypePerson([e.target.value])}
+                                        onChange={(e) => setNewTypePerson(e.target.value)}
                                         className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-64  border border-gray-400 py-2 px-4 rounded-lg`}
                                         style={{ appearance: 'none' }}
                                         disabled={!editMode}
@@ -169,48 +208,55 @@ function editEducation() {
                                     <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                 </div>
                             </div>
-                            <div className=" flex flex-col w-full">
+
+                            <div className=" flex flex-col">
                                 <label>ระดับชั้น</label>
                                 <div className="relative col w-fit mt-1">
                                     <select
-                                        onChange={(e) => setLevel([e.target.value])}
-                                        className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-64  border border-gray-400 py-2 px-4 rounded-lg`}
+                                        onChange={(e) => setNewEducationLevel(e.target.value)}
+                                        className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-36  border border-gray-400 py-2 px-4 rounded-lg`}
                                         style={{ appearance: 'none' }}
                                         disabled={!editMode}
-                                        value={level || "0"}
+                                        value={educationLevel || "0"}
                                     >
                                         <option value="0">-</option>
                                         <option value="ปริญญาตรี">ปริญญาตรี</option>
-                                        <option value="บัณฑิต">บัณฑิต</option>
                                         <option value="ปริญญาโท">ปริญญาโท</option>
-                                    </select>
-                                    <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
-                                </div>
-                            </div>
-                            <div className=" flex flex-col">
-                                <label>ปีที่จบการศึกษา</label>
-                                <div className="relative col w-fit mt-1">
-                                    <select
-                                        onChange={(e) => setYearGraduation(e.target.value)}
-                                        className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
-                                        style={{ appearance: 'none' }}
-                                        disabled={!editMode}
-                                        value={yearGraduation || "0"}
-                                    >
-                                        <option value="0">-</option>
-                                        {years.map((y, index) => (
-                                            <option key={index} value={y}>{y}</option>
-                                        ))}
+                                        <option value="ปริญญาเอก">ปริญญาเอก</option>
                                     </select>
                                     <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                 </div>
                             </div>
                             <div className="flex col flex-col">
+                                <label>สถาบันการศึกษา/มหาวิทยาลัย </label>
+                                <input
+                                    type="text"
+                                    className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                    onChange={(e) => { setNewUniversity(e.target.value) }}
+                                    defaultValue={university || ""}
+                                    readOnly={!editMode}
+                                    placeholder="ระบุสถานศึกษา"
+                                />
+                            </div>
+                            <div className="flex col flex-col">
+                                <label>วิทยาเขต </label>
+                                <input
+                                    type="text"
+                                    className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                    onChange={(e) => { setNewCampus(e.target.value) }}
+                                    defaultValue={campus || ""}
+                                    readOnly={!editMode}
+                                    placeholder="ระบุวิทยาเขตการศึกษา"
+                                />
+                            </div>
+
+
+                            <div className="flex col flex-col">
                                 <label>คณะ </label>
                                 <input
                                     type="text"
                                     className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                    onChange={(e) => { setFaculty(e.target.value) }}
+                                    onChange={(e) => { setNewFaculty(e.target.value) }}
                                     defaultValue={faculty || ""}
                                     readOnly={!editMode}
                                     placeholder="คณะที่สังกัด"
@@ -221,30 +267,60 @@ function editEducation() {
                                 <input
                                     type="text"
                                     className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                    onChange={(e) => { setBranch(e.target.value) }}
+                                    onChange={(e) => { setNewBranch(e.target.value) }}
                                     defaultValue={branch || ""}
                                     readOnly={!editMode}
                                     placeholder="สาขาที่สังกัด"
                                 />
                             </div>
-                            <div className="flex col flex-col">
-                                <label>สถาบันการศึกษา/มหาวิทยาลัย </label>
-                                <input
-                                    type="text"
-                                    className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                    onChange={(e) => { setUniversity(e.target.value) }}
-                                    defaultValue={university || ""}
-                                    readOnly={!editMode}
-                                    placeholder="ระบุสถานศึกษา"
-                                />
-                            </div>
+                            {typePerson === "บัณฑิตพิการ" ? (
+                                <div className=" flex flex-col">
+                                    <label>ปีที่จบการศึกษา</label>
+                                    <div className="relative col w-fit mt-1">
+                                        <select
+                                            onChange={(e) => setNewYearGraduation(e.target.value)}
+                                            className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
+                                            style={{ appearance: 'none' }}
+                                            disabled={!editMode}
+                                            value={yearGraduation || "0"}
+                                        >
+                                            <option value="0">-</option>
+                                            {years.map((y, index) => (
+                                                <option key={index} value={y}>{y}</option>
+                                            ))}
+                                        </select>
+                                        <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className=" flex flex-col">
+                                    <label>ชั้นปี</label>
+                                    <div className="relative col w-fit mt-1">
+                                        <select
+                                            onChange={(e) => setNewLevel(e.target.value)}
+                                            className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-32  border border-gray-400 py-2 px-4 rounded-lg`}
+                                            style={{ appearance: 'none' }}
+                                            disabled={!editMode}
+                                            value={level || "0"}
+                                        >
+                                            <option value="0">-</option>
+                                            <option value="1">ชั้นปี1</option>
+                                            <option value="2">ชั้นปี2</option>
+                                            <option value="3">ชั้นปี3</option>
+                                            <option value="4">ชั้นปี4</option>
+                                        </select>
+                                        <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="flex col flex-col">
                                 <label>เกรดเฉลี่ย </label>
                                 <input
                                     type="text"
                                     inputMode="numeric"
                                     className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-24 border border-gray-400 py-2 px-4 rounded-lg`}
-                                    onChange={(e) => { setGrade(e.target.value) }}
+                                    onChange={(e) => { setNewGrade(e.target.value) }}
                                     defaultValue={grade || ""}
                                     readOnly={!editMode}
                                     placeholder="Ex. 3.12"
@@ -259,7 +335,7 @@ function editEducation() {
                                             < input
                                                 type="text"
                                                 className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                                onChange={(e) => { setNameDucumentUser(e.target.value) }}
+                                                onChange={(e) => { setNewNameDocumentUser(e.target.value) }}
                                                 placeholder="ชื่อเอกสาร"
                                                 readOnly={!editMode}
                                             />

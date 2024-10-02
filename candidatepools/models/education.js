@@ -12,6 +12,9 @@ const EducationSchema = new Schema(
         yearGraduation: {
             type: [String],
         },
+        level: {
+            type: [String],
+        },
         faculty: {
             type: [String],
         },
