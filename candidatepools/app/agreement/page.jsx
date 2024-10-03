@@ -8,12 +8,14 @@ import Footer from '../components/Footer';
 import { useRouter } from 'next/navigation';
 import Register from '../register/page';
 import Loader from '../components/Loader';
+import { useSession } from 'next-auth/react';
 
 function Agreement() {
 
     const [statusAgreement, setStatusAgreement] = useState(false);
     const [error, setError] = useState('');
     const router = useRouter();
+    const [loader,setLoader] = useState(true);
 
     function handleAgreement() {
         const temp = document.getElementById('checkStatus').checked
@@ -26,8 +28,53 @@ function Agreement() {
         }
     }
     
+    //check session
+    const { status, data: session } = useSession();
+    const [dataUser, setDataUser] = useState(null);
+    // Validate session and fetch user data
+    useEffect(() => {
+        if (status === 'loading') {
+            return;
+        }
+        setLoader(false);
+
+        if (session?.user?.email) {
+            getUser(session.user.email);
+        } 
+
+    }, [status, session, router]);
+    useEffect(() => {
+        if(!dataUser) return;
+
+        if(dataUser.university){
+            router.replace("/main")
+        }
+
+    },[dataUser])
+
+     // Fetch user data from API
+     async function getUser(email) {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${email}`, {
+                method: "GET",
+                cache: "no-store"
+            });
+
+            if (!res.ok) {
+                throw new Error("Error getting data from API");
+            }
+
+            const data = await res.json();
+            setDataUser(data.user || {});
+
+        } catch (err) {
+            console.error("Error fetching API", err);
+        } finally {
+            setLoader(false);
+        }
+    }
+
     //loader
-    const [loader, setLoader] = useState(true)
     useEffect(() => {
         setLoader(false);
     }, [])
