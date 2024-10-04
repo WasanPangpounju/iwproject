@@ -11,8 +11,11 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import Image from 'next/image'
+
+//firebase
 import { uploadBytesResumable, ref, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/app/firebaseConfig';
+
 import { PulseLoader } from 'react-spinners';
 import { set } from 'mongoose'
 
