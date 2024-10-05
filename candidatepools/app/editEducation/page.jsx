@@ -60,35 +60,12 @@ function editEducation() {
         }
     }
 
-    const [defaultField, setDefaultField] = useState([])
-    //set Default Educations
-    useEffect(() => {
-        if (!dataEducations) return;
-
-        setUniversity(dataEducations.university)
-        setTypePerson(dataEducations.typePerson)
-        setCampus(dataEducations.campus)
-        setFaculty(dataEducations.faculty)
-        setBranch(dataEducations.branch)
-        setLevel(dataEducations.level)
-        setEducationLevel(dataEducations.educationLevel)
-        setGrade(dataEducations.grade)
-        setYearGraduation(dataEducations.yearGraduation)
-        setFiles(dataEducations.fileDocument)
-        setNameFiles(dataEducations.nameDocument)
-        setSizeFiles(dataEducations.sizeDocument)
-
-        setDefaultField(dataEducations.university)
-
-    }, [dataEducations])
-
     //add array
     const handleUniversity = (e, index) => {
         const newUniversity = e; // ค่าที่ได้รับจาก input
         setUniversity((prevUniversities) => {
-            const updatedUniversities = [...prevUniversities]; // ทำสำเนาของ array เดิม
+            const updatedUniversities = Array.isArray(prevUniversities) ? [...prevUniversities] : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
             updatedUniversities[index] = newUniversity; // อัปเดตค่าใหม่
-            // ขยับค่าทั้งหมดถ้ามีตำแหน่งที่ว่าง
             return updatedUniversities.filter(uni => uni !== "").concat(Array(updatedUniversities.length - updatedUniversities.filter(uni => uni !== "").length).fill(""));
         });
     };
@@ -96,7 +73,7 @@ function editEducation() {
     const handleFaculty = (e, index) => {
         const newFaculty = e; // ค่าที่ได้รับจาก input
         setFaculty((prevFaculties) => {
-            const updatedFaculties = [...prevFaculties]; // ทำสำเนาของ array เดิม
+            const updatedFaculties = Array.isArray(prevFaculties) ? [...prevFaculties] : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
             updatedFaculties[index] = newFaculty; // อัปเดตค่าใหม่
             // ขยับค่าทั้งหมดถ้ามีตำแหน่งที่ว่าง
             return updatedFaculties.filter(fac => fac !== "").concat(Array(updatedFaculties.length - updatedFaculties.filter(fac => fac !== "").length).fill(""));
@@ -106,7 +83,7 @@ function editEducation() {
     const handleBranch = (e, index) => {
         const newBranch = e; // ค่าที่ได้รับจาก input
         setBranch((prevBranches) => {
-            const updatedBranches = [...prevBranches]; // ทำสำเนาของ array เดิม
+            const updatedBranches = Array.isArray(prevBranches) ? [...prevBranches] : []; // ตรวจสอบว่า prevBranches เป็น array หรือไม่
             updatedBranches[index] = newBranch; // อัปเดตค่าใหม่
             // ขยับค่าทั้งหมดถ้ามีตำแหน่งที่ว่าง
             return updatedBranches.filter(branch => branch !== "").concat(Array(updatedBranches.length - updatedBranches.filter(branch => branch !== "").length).fill(""));
@@ -116,7 +93,7 @@ function editEducation() {
     const handleCampus = (e, index) => {
         const newCampus = e; // ค่าที่ได้รับจาก input
         setCampus((prevCampuses) => {
-            const updatedCampuses = [...prevCampuses]; // ทำสำเนาของ array เดิม
+            const updatedCampuses = Array.isArray(prevCampuses) ? [...prevCampuses] : []; // ตรวจสอบว่า prevCampuses เป็น array หรือไม่
             updatedCampuses[index] = newCampus; // อัปเดตค่าใหม่
             // ขยับค่าทั้งหมดถ้ามีตำแหน่งที่ว่าง
             return updatedCampuses.filter(campus => campus !== "").concat(Array(updatedCampuses.length - updatedCampuses.filter(campus => campus !== "").length).fill(""));
@@ -126,7 +103,7 @@ function editEducation() {
     const handleGrade = (e, index) => {
         const newGrade = e; // ค่าที่ได้รับจาก input
         setGrade((prevGrades) => {
-            const updatedGrades = [...prevGrades]; // ทำสำเนาของ array เดิม
+            const updatedGrades = Array.isArray(prevGrades) ? [...prevGrades] : []; // ตรวจสอบว่า prevGrades เป็น array หรือไม่
             updatedGrades[index] = newGrade; // อัปเดตค่าใหม่
             // ขยับค่าทั้งหมดถ้ามีตำแหน่งที่ว่าง
             return updatedGrades.filter(grade => grade !== "").concat(Array(updatedGrades.length - updatedGrades.filter(grade => grade !== "").length).fill(""));
@@ -137,8 +114,8 @@ function editEducation() {
     const [fields, setFields] = useState([]);
     const addField = (n) => {
 
-        const temp = n;
-        console.log(temp);
+        const temp = n - 1;
+
         if (typePerson === "0" || !typePerson) {
             setErrorEducation("ระบุข้อมูลให้ครบก่อนเพิ่มข้อมูล");
             return;
@@ -160,45 +137,79 @@ function editEducation() {
 
         setErrorEducation("");
 
-        if (defaultField.length - fields.length >= 3) return;
-        setFields([...fields, `Field ${fields.length + 1}`]);
+        if (temp >= 3) return;
+        setFields([...fields, `Field ${temp + 1}`]);
     };
 
     const deleteField = (index) => {
 
-        const temp = university.length-index;
-        // console.log(university.length);
-        // console.log(index);
-        // console.log(temp);
+        const temp = index;
         setErrorEducation("");
 
-        // ลบฟิลด์ที่มี index ตรงกัน
-        const newFields = fields.filter((_, i) => i !== index);
-        setFields(newFields); // ตั้งค่าใหม่ให้ fields หลังจากลบ
+        Swal.fire({
+            text: "คุณต้องการลบข้อมูลนี้?",
+            icon: "question",
+            confirmButtonText: "ใช่",
+            confirmButtonColor: "#f27474",
+            showCancelButton: true,
+            cancelButtonText: "ไม่"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // ลบฟิลด์ที่มี index ตรงกัน
+                const newFields = fields.filter((_, i) => i !== temp);
+                setFields(newFields); // อัปเดต fields ด้วย array ใหม่
 
-        const newUniversities = university.filter((_, i) => i !== temp); // ลบมหาวิทยาลัยที่มี index ตรงกัน
-        setUniversity(newUniversities); // ตั้งค่าใหม่ให้ university หลังจากลบ
+                const newUniversities = university.filter((_, i) => i !== temp); // ลบมหาวิทยาลัยที่มี index ตรงกัน
+                setUniversity(newUniversities); // ตั้งค่าใหม่ให้ university หลังจากลบ
 
-        const newEducationLevels = educationLevel.filter((_, i) => i !== temp);
-        setEducationLevel(newEducationLevels);
+                const newEducationLevels = educationLevel.filter((_, i) => i !== temp);
+                setEducationLevel(newEducationLevels);
 
-        const newFaculty = faculty.filter((_, i) => i !== temp);
-        setFaculty(newFaculty);
+                const newFaculty = faculty.filter((_, i) => i !== temp);
+                setFaculty(newFaculty);
 
-        const newBranch = branch.filter((_, i) => i !== temp);
-        setBranch(newBranch);
+                const newBranch = branch.filter((_, i) => i !== temp);
+                setBranch(newBranch);
 
-        const newCampus = campus.filter((_, i) => i !== temp);
-        setCampus(newCampus);
+                const newCampus = campus.filter((_, i) => i !== temp);
+                setCampus(newCampus);
 
-        const newGrade = grade.filter((_, i) => i !== temp);
-        setGrade(newGrade);
+                const newGrade = grade.filter((_, i) => i !== temp);
+                setGrade(newGrade);
 
-        const newYearGraduation = yearGraduation.filter((_, i) => i !== temp);
-        setYearGraduation(newYearGraduation);
-
+                const newYearGraduation = yearGraduation.filter((_, i) => i !== temp);
+                setYearGraduation(newYearGraduation);
+            }
+        });
     };
 
+    useEffect(() => {
+        if (!dataEducations) return; // เพิ่มการตรวจสอบทั้งสองกรณี
+
+        if (dataEducations) {
+            // set Default Educations
+            setUniversity(dataEducations.university);
+            setTypePerson(dataEducations.typePerson);
+            setCampus(dataEducations.campus);
+            setFaculty(dataEducations.faculty);
+            setBranch(dataEducations.branch);
+            setLevel(dataEducations.level);
+            setEducationLevel(dataEducations.educationLevel);
+            setGrade(dataEducations.grade);
+            setYearGraduation(dataEducations.yearGraduation);
+            setFiles(dataEducations.fileDocument);
+            setNameFiles(dataEducations.nameDocument);
+            setSizeFiles(dataEducations.sizeDocument);
+
+            // ตรวจสอบว่า dataEducations.university เป็น array หรือไม่
+            if (Array.isArray(dataEducations.university)) {
+                setFields(dataEducations.university);
+            } else {
+                setFields([dataEducations.university]); // ถ้าไม่ใช่ ให้ใส่เข้าไปใน array
+            }
+        }
+
+    }, [dataEducations]);
 
     const [editMode, setEditMode] = useState(true);
 
@@ -333,6 +344,7 @@ function editEducation() {
     async function handleSubmit(e, n) {
         e.preventDefault();
 
+        n -= 1; // ลดค่า n เพื่อใช้ index ที่ถูกต้อง
 
         console.log("typePerson: " + typePerson);
         console.log("university: " + university);
@@ -344,37 +356,56 @@ function editEducation() {
         console.log("EducationLevel: " + educationLevel);
         console.log("YearGraduation: " + yearGraduation);
         console.log("File: ");
-        file.map((e) => {
-            console.log(e);
-        })
         console.log("FileSize: " + sizeFile);
         console.log("----------- End -----------");
 
+        // ตรวจสอบว่า uploadProgress มีค่าหรือไม่
         if (uploadProgress !== 0) {
-            setError("เอกสารกำลังอัพโหลด")
-
+            setError("เอกสารกำลังอัพโหลด");
+            return;
         }
 
+        // ตรวจสอบ typePerson
         if (typePerson === "0" || !typePerson) {
             setError("ระบุข้อมูลให้ครบทุกช่อง");
             return;
         }
-        if (!university[n] || !branch[n] || !faculty[n] || !educationLevel[n] || !grade[n]) {
+
+        // ตรวจสอบ array และค่าใน index n
+        if (
+            !university ||
+            !branch ||
+            !faculty ||
+            !educationLevel ||
+            !grade ||
+            n < 0 ||
+            n >= university.length ||
+            !university[n] ||
+            !branch[n] ||
+            !faculty[n] ||
+            !educationLevel[n] ||
+            !grade[n]
+        ) {
             setError("ระบุข้อมูลให้ครบทุกช่อง");
             return;
-        } else if (typePerson === "นักศึกษาพิการ") {
+        }
+
+        // ตรวจสอบข้อมูลเฉพาะสำหรับนักศึกษาพิการ
+        if (typePerson === "นักศึกษาพิการ") {
             if (!level[0] || !campus[0]) {
                 setError("ระบุข้อมูลให้ครบทุกช่อง");
                 return;
             }
-        } else if (typePerson === "บัณฑิตพิการ") {
-            if (!yearGraduation[n]) {
+        }
+        // ตรวจสอบข้อมูลเฉพาะสำหรับบัณฑิตพิการ
+        else if (typePerson === "บัณฑิตพิการ") {
+            if (!yearGraduation || n >= yearGraduation.length || !yearGraduation[n]) {
                 setError("ระบุข้อมูลให้ครบทุกช่อง");
                 return;
             }
         }
 
-        setError("")
+        setError("");
 
         const bodyEducation = {
             email: session?.user?.email,
@@ -399,7 +430,7 @@ function editEducation() {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(bodyEducation)
-            })
+            });
 
             if (!res.ok) {
                 setLoader(false);
@@ -411,7 +442,7 @@ function editEducation() {
                     confirmButtonColor: "#f27474",
                 }).then(() => {
                     window.location.reload();
-                })
+                });
                 return;
             }
 
@@ -427,9 +458,11 @@ function editEducation() {
 
         } catch (err) {
             console.log(err);
-
+            setLoader(false);
+            setError("เกิดข้อผิดพลาดในการเชื่อมต่อ");
         }
     }
+
     return (
         <div>
             <NavbarLogo title="ประวัติการศึกษา" dataUser={dataUser} />
@@ -438,272 +471,213 @@ function editEducation() {
                 <div className="w-10/12 px-7 py-5">
                     <div className=" bg-white rounded-lg p-5">
                         <form onSubmit={(e) => handleSubmit(e, fields.length)} className=" flex gap-x-10 gap-y-5 gap- flex-wrap">
-                            <div className=" flex flex-col w-full">
-                                <label>ประเภทบุลคล</label>
-                                <div className="relative col w-fit mt-1">
-                                    <select
-                                        onChange={(e) => setTypePerson(e.target.value)}
-                                        className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-40  border border-gray-400 py-2 px-4 rounded-lg`}
-                                        style={{ appearance: 'none' }}
-                                        disabled={!editMode}
-                                        value={typePerson || "0"}
-                                    >
-                                        <option value="0">-</option>
-                                        <option value="นักศึกษาพิการ">นักศึกษาพิการ</option>
-                                        <option value="บัณฑิตพิการ">บัณฑิตพิการ</option>
-                                    </select>
-                                    <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
-                                </div>
-                            </div>
-
-                            {defaultField.map((n, index) => (
-                                <div key={index} className=" flex gap-x-10 gap-y-5 gap- flex-wrap" >
-                                    {index > 0 &&(
-                                        <div className={`w-full flex gap-5 items-end`}>
-                                            <div onClick={() => deleteField(index)} className={`${!editMode ? "hidden" : ""} w-fit cursor-pointer `}>
-                                                <Icon className={` text-red-400 `} path={mdiCloseCircle} size={1} />
+                            {dataUser && (
+                                fields.map((field, index) => (
+                                    <div className="flex gap-x-10 gap-y-5 flex-wrap" key={index}>
+                                        {/* ประเภทบุคล */}
+                                        {index === 0 && (
+                                            <div className="flex flex-col w-full">
+                                                <label>ประเภทบุลคล</label>
+                                                <div className="relative col w-fit mt-1">
+                                                    <select
+                                                        onChange={(e) => setTypePerson(e.target.value)}
+                                                        className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                        style={{ appearance: 'none' }}
+                                                        disabled={!editMode}
+                                                        value={typePerson || "-"}
+                                                    >
+                                                        <option value="0">-</option>
+                                                        <option value="นักศึกษาพิการ">นักศึกษาพิการ</option>
+                                                        <option value="บัณฑิตพิการ">บัณฑิตพิการ</option>
+                                                    </select>
+                                                    <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
-                                    <div className=" flex flex-col">
-                                        <label>ระดับชั้น</label>
-                                        <div className="relative col w-fit mt-1">
-                                            <select
-                                                onChange={(e) => {
-                                                    let newEducationLevels = [...educationLevel]; // คัดลอก array
-                                                    newEducationLevels[index] = e.target.value; // อัปเดตค่าตาม index
-                                                    setEducationLevel(newEducationLevels); // ตั้งค่าใหม่
-                                                }}
-                                                className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-40  border border-gray-400 py-2 px-4 rounded-lg`}
-                                                style={{ appearance: 'none' }}
-                                                disabled={!editMode}
-                                                value={educationLevel[index] || "0"}
-                                            >
-                                                <option value="0">-</option>
-                                                <option value="ปริญญาตรี">ปริญญาตรี</option>
-                                                <option value="ปริญญาโท">ปริญญาโท</option>
-                                                <option value="ปริญญาเอก">ปริญญาเอก</option>
-                                            </select>
-                                            <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
-                                        </div>
-                                    </div>
-                                    {typePerson === "บัณฑิตพิการ" || index > 0 && (
-                                        <div className=" flex flex-col">
-                                            <label>ปีที่จบการศึกษา</label>
+
+                                        )}
+                                        {index > 0 && (
+                                            <div className="w-full flex gap-5 items-end">
+                                                <div
+                                                    onClick={() => deleteField(index)}
+                                                    className={`${!editMode ? "hidden" : ""} w-fit cursor-pointer`}
+                                                >
+                                                    <Icon className="text-red-400" path={mdiCloseCircle} size={1} />
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* ส่วนที่เหลือ */}
+                                        <div className="flex flex-col">
+                                            <label>ระดับชั้น</label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
                                                     onChange={(e) => {
-                                                        let newData = [...yearGraduation]; // คัดลอก array
-                                                        newData[index] = e.target.value; // อัปเดตค่าตาม index
-                                                        setYearGraduation(newData); // ตั้งค่าใหม่
+                                                        let newEducationLevels = Array.isArray(educationLevel) ? [...educationLevel] : []; // ตรวจสอบว่า educationLevel เป็น array
+                                                        newEducationLevels[index] = e.target.value; // อัปเดตค่าตาม index
+                                                        setEducationLevel(newEducationLevels); // ตั้งค่าใหม่
                                                     }}
-                                                    className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-2 px-4 rounded-lg`}
                                                     style={{ appearance: 'none' }}
                                                     disabled={!editMode}
-                                                    value={yearGraduation[index] || "0"}
+                                                    value={Array.isArray(educationLevel) && educationLevel[index] !== undefined ? educationLevel[index] : "-"}
                                                 >
                                                     <option value="0">-</option>
-                                                    {years.map((y, index) => (
-                                                        <option key={index} value={y}>{y}</option>
-                                                    ))}
+                                                    <option value="ปริญญาตรี">ปริญญาตรี</option>
+                                                    <option value="ปริญญาโท">ปริญญาโท</option>
+                                                    <option value="ปริญญาเอก">ปริญญาเอก</option>
                                                 </select>
                                                 <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                             </div>
                                         </div>
-                                    )}
-                                    <div className="flex col flex-col">
-                                        <label>สถาบันการศึกษา/มหาวิทยาลัย </label>
-                                        <input
-                                            type="text"
-                                            className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                            onBlur={(e) => handleUniversity(e.target.value, index)}
-                                            defaultValue={university[index] || ""}
-                                            readOnly={!editMode}
-                                            placeholder="ระบุสถานศึกษา"
-                                        />
-                                    </div>
-                                    {typePerson === 'นักศึกษาพิการ' && index === 0 && (
+                                        {/* ปีที่จบการศึกษา */}
+                                        {index === 0 ? (
+                                            (typePerson === "บัณฑิตพิการ" || dataUser.typePerson === "บัณฑิตพิการ") && (
+                                                <div className="flex flex-col">
+                                                    <label>ปีที่จบการศึกษา</label>
+                                                    <div className="relative col w-fit mt-1">
+                                                        <select
+                                                            onChange={(e) => {
+                                                                let newData = Array.isArray(yearGraduation) ? [...yearGraduation] : []; // ตรวจสอบว่า yearGraduation เป็น array
+                                                                newData[index] = e.target.value; // อัปเดตค่าตาม index
+                                                                setYearGraduation(newData); // ตั้งค่าใหม่
+                                                            }}
+                                                            className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                            style={{ appearance: 'none' }}
+                                                            disabled={!editMode}
+                                                            value={Array.isArray(yearGraduation) && yearGraduation[index] !== undefined ? yearGraduation[index] : "-"}
+                                                        >
+                                                            <option value="0">-</option>
+                                                            {years.map((y, index) => (
+                                                                <option key={index} value={y}>{y}</option>
+                                                            ))}
+                                                        </select>
+                                                        <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                                                    </div>
+                                                </div>
+                                            )
+                                        ) : (
+                                            <div className="flex flex-col">
+                                                <label>ปีที่จบการศึกษา</label>
+                                                <div className="relative col w-fit mt-1">
+                                                    <select
+                                                        onChange={(e) => {
+                                                            let newData = Array.isArray(yearGraduation) ? [...yearGraduation] : []; // ตรวจสอบว่า yearGraduation เป็น array
+                                                            newData[index] = e.target.value; // อัปเดตค่าตาม index
+                                                            setYearGraduation(newData); // ตั้งค่าใหม่
+                                                        }}
+                                                        className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                        style={{ appearance: 'none' }}
+                                                        disabled={!editMode}
+                                                        value={Array.isArray(yearGraduation) && yearGraduation[index] !== undefined ? yearGraduation[index] : "-"}
+                                                    >
+                                                        <option value="0">-</option>
+                                                        {years.map((y, index) => (
+                                                            <option key={index} value={y}>{y}</option>
+                                                        ))}
+                                                    </select>
+                                                    <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                                                </div>
+                                            </div>
+                                        )}
+                                        {/* สถาบันการศึกษา */}
                                         <div className="flex col flex-col">
-                                            <label>วิทยาเขต </label>
+                                            <label>สถาบันการศึกษา/มหาวิทยาลัย</label>
                                             <input
                                                 type="text"
-                                                className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                                onBlur={(e) => handleCampus(e.target.value, index)}
-                                                defaultValue={campus[index] || ""}
+                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                onBlur={(e) => handleUniversity(e.target.value, index)}
+                                                defaultValue={Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
                                                 readOnly={!editMode}
-                                                placeholder="ระบุวิทยาเขตการศึกษา"
+                                                placeholder="ระบุสถานศึกษา"
                                             />
                                         </div>
-                                    )}
-                                    <div className="flex col flex-col">
-                                        <label>คณะ </label>
-                                        <input
-                                            type="text"
-                                            className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                            onBlur={(e) => handleFaculty(e.target.value, index)}
-                                            defaultValue={faculty[index] || ""}
-                                            readOnly={!editMode}
-                                            placeholder="คณะที่สังกัด"
-                                        />
-                                    </div>
-                                    <div className="flex col flex-col">
-                                        <label>สาขา </label>
-                                        <input
-                                            type="text"
-                                            className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                            onBlur={(e) => handleBranch(e.target.value, index)}
-                                            defaultValue={branch[index] || ""}
-                                            readOnly={!editMode}
-                                            placeholder="สาขาที่สังกัด"
-                                        />
-                                    </div>
-
-                                    {typePerson === "นักศึกษาพิการ" && index === 0 && (
-                                        <div className=" flex flex-col">
-                                            <label>ชั้นปี</label>
-                                            <div className="relative col w-fit mt-1">
-                                                <select
-                                                    onChange={(e) => {
-                                                        let newData = [...level]; // คัดลอก array
-                                                        newData[index] = e.target.value; // อัปเดตค่าตาม index
-                                                        setLevel(newData); // ตั้งค่าใหม่
-                                                    }}
-                                                    className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-32  border border-gray-400 py-2 px-4 rounded-lg`}
-                                                    style={{ appearance: 'none' }}
-                                                    disabled={!editMode}
-                                                    value={level[index] || "0"}
-                                                >
-                                                    <option value="0">-</option>
-                                                    <option value="1">ชั้นปี1</option>
-                                                    <option value="2">ชั้นปี2</option>
-                                                    <option value="3">ชั้นปี3</option>
-                                                    <option value="4">ชั้นปี4</option>
-                                                </select>
-                                                <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                                        {/* วิทยาเขต */}
+                                        {index === 0 && typePerson === 'นักศึกษาพิการ' && (
+                                            <div className="flex col flex-col">
+                                                <label>วิทยาเขต</label>
+                                                <input
+                                                    type="text"
+                                                    className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    onBlur={(e) => handleCampus(e.target.value, index)}
+                                                    defaultValue={Array.isArray(campus) && campus[index] !== undefined ? campus[index] : ""}
+                                                    readOnly={!editMode}
+                                                    placeholder="ระบุวิทยาเขตการศึกษา"
+                                                />
                                             </div>
+                                        )}
+                                        {/* คณะ */}
+                                        <div className="flex col flex-col">
+                                            <label>คณะ</label>
+                                            <input
+                                                type="text"
+                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                onBlur={(e) => handleFaculty(e.target.value, index)}
+                                                defaultValue={Array.isArray(faculty) && faculty[index] !== undefined ? faculty[index] : ""}
+                                                readOnly={!editMode}
+                                                placeholder="คณะที่สังกัด"
+                                            />
                                         </div>
-                                    )}
+                                        {/* สาขา */}
+                                        <div className="flex col flex-col">
+                                            <label>สาขา</label>
+                                            <input
+                                                type="text"
+                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                onBlur={(e) => handleBranch(e.target.value, index)}
+                                                defaultValue={Array.isArray(branch) && branch[index] !== undefined ? branch[index] : ""}
+                                                readOnly={!editMode}
+                                                placeholder="สาขาที่สังกัด"
+                                            />
+                                        </div>
+                                        {/* ชั้นปี */}
+                                        {index === 0 && typePerson === "นักศึกษาพิการ" && (
+                                            <div className="flex flex-col">
+                                                <label>ชั้นปี</label>
+                                                <div className="relative col w-fit mt-1">
+                                                    <select
+                                                        onChange={(e) => {
+                                                            let newData = Array.isArray(level) ? [...level] : []; // ตรวจสอบว่า level เป็น array
+                                                            newData[index] = e.target.value; // อัปเดตค่าตาม index
+                                                            setLevel(newData); // ตั้งค่าใหม่
+                                                        }}
+                                                        className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-32 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                        style={{ appearance: 'none' }}
+                                                        disabled={!editMode}
+                                                        value={Array.isArray(level) && level[index] !== undefined ? level[index] : "-"}
+                                                    >
+                                                        <option value="0">-</option>
+                                                        <option value="1">ชั้นปี1</option>
+                                                        <option value="2">ชั้นปี2</option>
+                                                        <option value="3">ชั้นปี3</option>
+                                                        <option value="4">ชั้นปี4</option>
+                                                    </select>
+                                                    <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                                                </div>
+                                            </div>
+                                        )}
+                                        {/* เกรดเฉลี่ย */}
+                                        <div className="flex col flex-col">
+                                            <label>เกรดเฉลี่ย</label>
+                                            <input
+                                                type="text"
+                                                inputMode="numeric"
+                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-24 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                onBlur={(e) => handleGrade(e.target.value, index)}
+                                                defaultValue={Array.isArray(grade) && grade[index] !== undefined ? grade[index] : ""}
+                                                readOnly={!editMode}
+                                                placeholder="Ex. 3.12"
+                                            />
+                                        </div>
+                                    </div>
+                                ))
+                            )}
 
-                                    <div className="flex col flex-col">
-                                        <label>เกรดเฉลี่ย </label>
-                                        <input
-                                            type="text"
-                                            inputMode="numeric"
-                                            className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-24 border border-gray-400 py-2 px-4 rounded-lg`}
-                                            onBlur={(e) => handleGrade(e.target.value, index)}
-                                            defaultValue={grade || ""}
-                                            readOnly={!editMode}
-                                            placeholder="Ex. 3.12"
-                                        />
-                                    </div>
-                                </div>
-                            ))}
-
-                            {fields.map((field, index) => (
-                                <div className=" flex gap-x-10 gap-y-5 gap- flex-wrap" key={index}>
-                                    <div className={`w-full flex gap-5 items-end`}>
-                                        <div onClick={() => deleteField(index)} className={`${!editMode ? "hidden" : ""} w-fit cursor-pointer `}>
-                                            <Icon className={` text-red-400 `} path={mdiCloseCircle} size={1} />
-                                        </div>
-                                    </div>
-                                    <div className=" flex flex-col">
-                                        <label>ระดับชั้น</label>
-                                        <div className="relative col w-fit mt-1">
-                                            <select
-                                                onChange={(e) => {
-                                                    let newEducationLevels = [...educationLevel]; // คัดลอก array
-                                                    newEducationLevels[index + 1 + (defaultField.length - 1)] = e.target.value; // อัปเดตค่าตาม index
-                                                    setEducationLevel(newEducationLevels); // ตั้งค่าใหม่
-                                                }}
-                                                className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-40  border border-gray-400 py-2 px-4 rounded-lg`}
-                                                style={{ appearance: 'none' }}
-                                                disabled={!editMode}
-                                                value={educationLevel[index + 1 + (defaultField.length - 1)] || "0"}
-                                            >
-                                                <option value="0">-</option>
-                                                <option value="ปริญญาตรี">ปริญญาตรี</option>
-                                                <option value="ปริญญาโท">ปริญญาโท</option>
-                                                <option value="ปริญญาเอก">ปริญญาเอก</option>
-                                            </select>
-                                            <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
-                                        </div>
-                                    </div>
-                                    <div className=" flex flex-col">
-                                        <label>ปีที่จบการศึกษา</label>
-                                        <div className="relative col w-fit mt-1">
-                                            <select
-                                                onChange={(e) => {
-                                                    let newData = [...yearGraduation]; // คัดลอก array
-                                                    newData[index + 1 + (defaultField.length - 1)] = e.target.value; // อัปเดตค่าตาม index
-                                                    setYearGraduation(newData); // ตั้งค่าใหม่
-                                                }}
-                                                className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
-                                                style={{ appearance: 'none' }}
-                                                disabled={!editMode}
-                                                value={yearGraduation[index + 1 + (defaultField.length - 1)] || "0"}
-                                            >
-                                                <option value="0">-</option>
-                                                {years.map((y, index) => (
-                                                    <option key={index} value={y}>{y}</option>
-                                                ))}
-                                            </select>
-                                            <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
-                                        </div>
-                                    </div>
-                                    <div className="flex col flex-col">
-                                        <label>สถาบันการศึกษา/มหาวิทยาลัย </label>
-                                        <input
-                                            type="text"
-                                            className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                            onBlur={(e) => handleUniversity(e.target.value, index + 1 + (defaultField.length - 1))}
-                                            defaultValue={university[index + 1 + (defaultField.length - 1)] || ""}
-                                            readOnly={!editMode}
-                                            placeholder="ระบุสถานศึกษา"
-                                        />
-                                    </div>
-
-                                    <div className="flex col flex-col">
-                                        <label>คณะ </label>
-                                        <input
-                                            type="text"
-                                            className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                            onBlur={(e) => handleFaculty(e.target.value, index + 1 + (defaultField.length - 1))}
-                                            defaultValue={faculty[index + 1 + (defaultField.length - 1)] || ""}
-                                            readOnly={!editMode}
-                                            placeholder="คณะที่สังกัด"
-                                        />
-                                    </div>
-                                    <div className="flex col flex-col">
-                                        <label>สาขา </label>
-                                        <input
-                                            type="text"
-                                            className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                            onBlur={(e) => handleBranch(e.target.value, index + 1 + (defaultField.length - 1))}
-                                            defaultValue={branch[index + 1 + (defaultField.length - 1)] || ""}
-                                            readOnly={!editMode}
-                                            placeholder="สาขาที่สังกัด"
-                                        />
-                                    </div>
-                                    <div className="flex col flex-col">
-                                        <label>เกรดเฉลี่ย </label>
-                                        <input
-                                            type="text"
-                                            inputMode="numeric"
-                                            className={` ${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-24 border border-gray-400 py-2 px-4 rounded-lg`}
-                                            onBlur={(e) => handleGrade(e.target.value, index + 1 + (defaultField.length - 1))}
-                                            defaultValue={grade[index + 1 + (defaultField.length - 1)] || ""}
-                                            readOnly={!editMode}
-                                            placeholder="Ex. 3.12"
-                                        />
-                                    </div>
-                                </div>
-                            ))}
                             {errorEducation && (
                                 <div className="w-full">
                                     <p className="text-red-500">* {errorEducation}</p>
                                 </div>
                             )}
-                            <div className={`${fields.length + defaultField >= 3 ? "hidden" : ""} flex col flex-col justify-end w-full`}>
+                            <div className={`${fields.length >= 4 ? "hidden" : ""} flex col flex-col justify-end w-full`}>
                                 <div onClick={() => addField(fields.length)} className={`${!editMode ? "hidden" : ""}  cursor-pointer  rounded-lg bg-[#4a94ff] w-fit`}>
                                     <Icon className={` text-white mx-3`} path={mdiPlus} size={1.5} />
                                 </div>
@@ -755,7 +729,7 @@ function editEducation() {
                                     </>
                                 )}
                             </div>
-                            {file.length > 0 ? (
+                            {Array.isArray(file) && file.length > 0 ? (
                                 <div className="w-full mt-5">
                                     <p>ชื่อ</p>
                                     <hr className="w-full my-3" />
@@ -809,14 +783,15 @@ function editEducation() {
                         </form>
 
                     </div>
-                </div>
-            </div>
+                </div >
+            </div >
             {loader && (
                 <div>
                     <Loader />
                 </div>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 }
 
