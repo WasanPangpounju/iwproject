@@ -10,7 +10,7 @@ import NavbarLogo from '../components/NavbarLogo';
 import NavbarMain from '../components/NavbarMain';
 import Image from 'next/image';
 import Icon from '@mdi/react';
-import { mdiAccountEdit, mdiContentSave, mdiArrowDownDropCircle, mdiCloseCircle, mdiPlus } from '@mdi/js';
+import { mdiDelete, mdiDownload, mdiPencil, mdiAlertCircle, mdiAccountEdit, mdiContentSave, mdiArrowDownDropCircle, mdiCloseCircle, mdiPlus } from '@mdi/js';
 
 //firebase
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // Import Firebase Storage
@@ -211,7 +211,7 @@ function editEducation() {
 
     }, [dataEducations]);
 
-    const [editMode, setEditMode] = useState(true);
+    const [editMode, setEditMode] = useState(false);
 
     const today = new Date();
     const yearToday = today.getFullYear();
@@ -463,6 +463,62 @@ function editEducation() {
         }
     }
 
+    //config file
+    function handleEditNameFile(email) {
+
+    }
+
+    async function handleDeleteFile(email, fileName) {
+        const result = await Swal.fire({
+            text: "คุณต้องการลบข้อมูลนี้?",
+            icon: "question",
+            confirmButtonText: "ใช่",
+            confirmButtonColor: "#f27474",
+            showCancelButton: true,
+            cancelButtonText: "ไม่"
+        });
+
+        if (result.isConfirmed) {
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${email}/files`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ fileName }) // ส่งชื่อไฟล์ใน body
+                });
+
+                if (res.ok) {
+                    window.location.reload();
+                } else {
+                    // แสดงข้อความข้อผิดพลาด
+                    Swal.fire({
+                        title: "เกิดข้อผิดพลาด",
+                        text: "ไม่สามารถลบข้อมูลได้ กรุณาลองใหม่ในภายหลัง",
+                        icon: "error",
+                        confirmButtonText: "ตกลง",
+                        confirmButtonColor: "#f27474"
+                    });
+                }
+            } catch (error) {
+                console.error("Error deleting file:", error);
+                Swal.fire({
+                    title: "เกิดข้อผิดพลาด",
+                    text: "ไม่สามารถติดต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่ในภายหลัง",
+                    icon: "error",
+                    confirmButtonText: "ตกลง",
+                    confirmButtonColor: "#f27474"
+                });
+            }
+        }
+    }
+
+
+
+    function handleDownloadFile() {
+
+    }
+
     return (
         <div>
             <NavbarLogo title="ประวัติการศึกษา" dataUser={dataUser} />
@@ -496,14 +552,18 @@ function editEducation() {
 
                                         )}
                                         {index > 0 && (
-                                            <div className="w-full flex gap-5 items-end">
-                                                <div
-                                                    onClick={() => deleteField(index)}
-                                                    className={`${!editMode ? "hidden" : ""} w-fit cursor-pointer`}
-                                                >
-                                                    <Icon className="text-red-400" path={mdiCloseCircle} size={1} />
+                                            editMode ? (
+                                                <div className="w-full flex gap-5 items-end">
+                                                    <div
+                                                        onClick={() => deleteField(index)}
+                                                        className={`${!editMode ? "hidden" : ""} w-fit cursor-pointer`}
+                                                    >
+                                                        <Icon className="text-red-400" path={mdiCloseCircle} size={1} />
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            ) : (
+                                                <hr className='w-full' />
+                                            )
                                         )}
 
                                         {/* ส่วนที่เหลือ */}
@@ -685,10 +745,10 @@ function editEducation() {
 
                             <hr className="w-full my-3" />
                             <div className="flex col flex-col">
-                                <label className="mb-3">เอกสารเพิ่มเติม</label>
+                                <label className="font-bold">เอกสารเพิ่มเติม</label>
                                 {editMode && (
                                     <>
-                                        <div className="flex gap-5 flex-wrap">
+                                        <div className="mt-3 flex gap-5 flex-wrap">
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -719,7 +779,7 @@ function editEducation() {
                                                 <span className="text-red-500 font-bold">ตัวอย่าง</span>
                                                 &nbsp;&nbsp;&nbsp;&nbsp;หนังสือรับรองผลการเรียน ปีที่ 1
                                             </p>
-                                            <Icon className={`cursor-pointer text-gray-400 mx-3`} path={mdiArrowDownDropCircle} size={0.8} />
+                                            <Icon className={`cursor-pointer text-gray-400 mx-3`} path={mdiAlertCircle} size={0.8} />
                                         </div>
                                         {uploadProgress > 0 && (
                                             <div className="mt-2">
@@ -739,9 +799,9 @@ function editEducation() {
                                                 <p>{nameFile[index]}</p>
                                                 <p>{sizeFile[index]} MB</p>
                                                 <div className="flex">
-                                                    <Icon className={`cursor-pointer text-gray-40 mx-1`} path={mdiArrowDownDropCircle} size={.8} />
-                                                    <Icon className={`cursor-pointer text-gray-40 mx-1`} path={mdiArrowDownDropCircle} size={.8} />
-                                                    <Icon className={`cursor-pointer text-gray-40 mx-1`} path={mdiArrowDownDropCircle} size={.8} />
+                                                    <Icon onClick={() => handleEditNameFile(session?.user?.email)} className={`cursor-pointer text-gray-40 mx-1`} path={mdiPencil} size={.8} />
+                                                    <Icon onClick={handleDownloadFile} className={`cursor-pointer text-gray-40 mx-1`} path={mdiDownload} size={.8} />
+                                                    <Icon onClick={() => handleDeleteFile(session?.user?.email, n)} className={`${editMode ? "":"hidden"} cursor-pointer text-gray-40 mx-1`} path={mdiDelete} size={.8} />
                                                 </div>
                                             </div>
                                             <hr className="w-full my-1" />
