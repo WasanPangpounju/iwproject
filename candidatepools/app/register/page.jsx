@@ -16,11 +16,11 @@ import Footer from '../components/Footer';
 function Register({ statusAgreement }) {
 
     //check agreement
-    const [agreement,setAgreement] = useState(false);
+    const [agreement, setAgreement] = useState(false);
 
     useEffect(() => {
         setAgreement(statusAgreement);
-    },[statusAgreement])
+    }, [statusAgreement])
 
     //value data
     const [user, setUser] = useState('');
@@ -41,7 +41,7 @@ function Register({ statusAgreement }) {
     const router = useRouter()
     useEffect(() => {
 
-        if(!agreement){
+        if (!agreement) {
             router.replace("/agreement");
         }
 
@@ -60,7 +60,7 @@ function Register({ statusAgreement }) {
 
     //check dataUser if have redirec to main pang
     useEffect(() => {
-        if(dataUser === null){
+        if (dataUser === null) {
             return;
         }
         if (dataUser.university) {
@@ -153,8 +153,29 @@ function Register({ statusAgreement }) {
                 },
                 body: JSON.stringify({ user, password, firstName, lastName, typeDisabled, university, email, typePerson })
             })
-                                
+
             if (!res.ok) {
+                setLoader(false);
+                Swal.fire({
+                    title: "เกิดข้อผิดพลาด",
+                    text: "ลงทะเบียนไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
+                    icon: "error",
+                    confirmButtonText: "ตกลง",
+                    confirmButtonColor: "#f27474",
+                })
+            }
+
+
+            const resEducation = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, typePerson, university })
+            })
+
+
+            if (!resEducation.ok) {
                 setLoader(false);
                 Swal.fire({
                     title: "เกิดข้อผิดพลาด",
@@ -327,8 +348,8 @@ function Register({ statusAgreement }) {
                         <div className="relative ">
                             <select onChange={(e) => setTypePerson(e.target.value)} className='cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg' style={{ appearance: 'none' }}>
                                 <option value="0">เลือกประเภทบุลคล</option>
-                                <option value="นักศึกษา">นักศึกษา</option>
-                                <option value="เจ้าหน้าที่">เจ้าหน้าที่</option>
+                                <option value="นักศึกษาพิการ">นักศึกษาพิการ</option>
+                                <option value="บัณฑิตพิการ">บัณฑิตพิการ</option>
                             </select>
                             <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
                         </div>
@@ -377,7 +398,7 @@ function Register({ statusAgreement }) {
                     </div>
                 </form>
             </div>
-            <Footer/>
+            <Footer />
             <div className={loader ? "" : "hidden"}>
                 <Loader />
             </div>
