@@ -57,6 +57,7 @@ function Register({ statusAgreement }) {
 
 
     }, [session], [router])
+    console.log(session?.user);
 
     //check dataUser if have redirec to main pang
     useEffect(() => {

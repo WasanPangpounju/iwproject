@@ -486,7 +486,7 @@ function editEducation() {
     }
 
     //config file
-    const handleEditNameFile = async (email, nameFile) => {
+    const handleEditNameFile = async (email, nameFile, index) => {
         const { value: newName } = await Swal.fire({
             title: 'เปลี่ยนชื่อไฟล์',
             input: 'text',
@@ -503,42 +503,50 @@ function editEducation() {
         });
 
         if (newName) {
-            try {
-                // ส่งคำขอ PUT เพื่ออัปเดตชื่อไฟล์
-                const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${email}/files`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        oldName: nameFile, // ส่งชื่อไฟล์เก่าไปด้วยเพื่อให้ API รู้ว่าต้องแก้ไขไฟล์ไหน
-                        newName: newName // ส่งชื่อไฟล์ใหม่
-                    })
-                });
+            if (!editMode) {
+                try {
+                    // ส่งคำขอ PUT เพื่ออัปเดตชื่อไฟล์
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${email}/files`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            oldName: nameFile, // ส่งชื่อไฟล์เก่าไปด้วยเพื่อให้ API รู้ว่าต้องแก้ไขไฟล์ไหน
+                            newName: newName // ส่งชื่อไฟล์ใหม่
+                        })
+                    });
 
-                if (res.ok) {
-                    Swal.fire({
-                        title: "เปลี่ยนชื่อไฟล์สำเร็จ",
-                        icon: "success",
-                        confirmButtonText: "ตกลง",
-                        confirmButtonColor: "#0d96f8",
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        title: "เกิดข้อผิดพลาด",
-                        text: "เปลี่ยนชื่อไฟล์ไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-                        icon: "error",
-                        confirmButtonText: "ตกลง",
-                        confirmButtonColor: "#f27474",
-                    }).then(() => {
-                        window.location.reload();
-                    });
+                    if (res.ok) {
+                        Swal.fire({
+                            title: "เปลี่ยนชื่อไฟล์สำเร็จ",
+                            icon: "success",
+                            confirmButtonText: "ตกลง",
+                            confirmButtonColor: "#0d96f8",
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "เกิดข้อผิดพลาด",
+                            text: "เปลี่ยนชื่อไฟล์ไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
+                            icon: "error",
+                            confirmButtonText: "ตกลง",
+                            confirmButtonColor: "#f27474",
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }
+
+                } catch (err) {
+                    console.log(`เกิดข้อผิดพลาดในการติดต่อ API:`, err);
                 }
-
-            } catch (err) {
-                console.log(`เกิดข้อผิดพลาดในการติดต่อ API:`, err);
+            } else {
+                setNameFiles((prevNameFiles) => {
+                    const newNameFiles = [...prevNameFiles]; // คัดลอกอาร์เรย์เดิม
+                    newNameFiles[index] = newName; // อัปเดตตำแหน่งที่ต้องการ
+                    return newNameFiles; // คืนค่าอาร์เรย์ที่แก้ไขแล้ว
+                });
             }
         }
 
@@ -888,11 +896,11 @@ function editEducation() {
                                                 <div className="cursor-pointer" onClick={() => openFile(n)}>
                                                     <p>{nameFile[index]}</p>
                                                 </div>
-                                                <div className=" text-center cursor-pointer" onClick={() => openFile(n)}>
+                                                <div className=" text-center">
                                                     <p>{sizeFile[index]} MB</p>
                                                 </div>
                                                 <div className="flex justify-end">
-                                                    <Icon onClick={() => handleEditNameFile(session?.user?.email, nameFile[index])} className={`cursor-pointer text-gray-40 mx-1`} path={mdiPencil} size={.8} />
+                                                    <Icon onClick={() => handleEditNameFile(session?.user?.email, nameFile[index], index)} className={`cursor-pointer text-gray-40 mx-1`} path={mdiPencil} size={.8} />
                                                     <Icon onClick={() => handleDownloadFile(n, nameFile[index])} className={`cursor-pointer text-gray-40 mx-1`} path={mdiDownload} size={.8} />
                                                     <Icon onClick={() => handleDeleteFile(nameFile[index], index)} className={`${editMode ? "" : "hidden"} cursor-pointer text-gray-40 mx-1`} path={mdiDelete} size={.8} />
                                                 </div>
