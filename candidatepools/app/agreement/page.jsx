@@ -86,7 +86,6 @@ function Agreement() {
         }
     }, [loader])
 
-
     return (
         <div>
             {statusAgreement ? (

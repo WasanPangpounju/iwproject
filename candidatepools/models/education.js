@@ -42,6 +42,9 @@ const EducationSchema = new Schema(
         fileDocument: {
             type: [String],
         },
+        typeDocument: {
+            type: [String]
+        }
 
     },
     {

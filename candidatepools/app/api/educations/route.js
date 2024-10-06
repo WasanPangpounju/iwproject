@@ -18,6 +18,7 @@ export async function POST(req) {
             file,
             nameFile,
             sizeFile,
+            typeFile,
         } = await req.json();
 
         // เชื่อมต่อกับฐานข้อมูล MongoDB
@@ -43,6 +44,7 @@ export async function POST(req) {
                     fileDocument: file,  
                     nameDocument: nameFile, 
                     sizeDocument: sizeFile,
+                    typeDocument: typeFile,
                 },
                 { new: true } // คำสั่งนี้จะคืนค่าข้อมูลใหม่หลังอัปเดต
             );
@@ -63,6 +65,7 @@ export async function POST(req) {
                 fileDocument: file,  
                 nameDocument: nameFile, 
                 sizeDocument: sizeFile,
+                typeDocument: typeFile,
             });
             return NextResponse.json({ message: "Created Education Data" }, { status: 201 });
         }

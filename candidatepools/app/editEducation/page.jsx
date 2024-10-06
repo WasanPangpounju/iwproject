@@ -10,10 +10,12 @@ import NavbarLogo from '../components/NavbarLogo';
 import NavbarMain from '../components/NavbarMain';
 import Image from 'next/image';
 import Icon from '@mdi/react';
+import { saveAs } from 'file-saver';
 import { mdiDelete, mdiDownload, mdiPencil, mdiAlertCircle, mdiAccountEdit, mdiContentSave, mdiArrowDownDropCircle, mdiCloseCircle, mdiPlus } from '@mdi/js';
+import PDFViewer from '../components/PDFViewer';
 
 //firebase
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // Import Firebase Storage
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // Import Firebase Storage
 import { storage } from '@/app/firebaseConfig';
 
 
@@ -147,8 +149,9 @@ function editEducation() {
         setErrorEducation("");
 
         Swal.fire({
+            title: "ลบข้อมูล",
             text: "คุณต้องการลบข้อมูลนี้?",
-            icon: "question",
+            icon: "warning",
             confirmButtonText: "ใช่",
             confirmButtonColor: "#f27474",
             showCancelButton: true,
@@ -200,6 +203,7 @@ function editEducation() {
             setFiles(dataEducations.fileDocument);
             setNameFiles(dataEducations.nameDocument);
             setSizeFiles(dataEducations.sizeDocument);
+            setTypeFiles(dataEducations.typeDocument);
 
             // ตรวจสอบว่า dataEducations.university เป็น array หรือไม่
             if (Array.isArray(dataEducations.university)) {
@@ -282,6 +286,7 @@ function editEducation() {
     const [file, setFiles] = useState([]); // อาร์เรย์ของไฟล์ที่อัปโหลด
     const [nameFile, setNameFiles] = useState([]); // อาร์เรย์ของชื่อไฟล์
     const [sizeFile, setSizeFiles] = useState([]); // อาร์เรย์ของขนาดไฟล์
+    const [typeFile, setTypeFiles] = useState([]);
     const [uploadProgress, setUploadProgress] = useState(0);
     const inputFileRef = useRef(null);
     const [inputNameFile, setInputNameFile] = useState('');
@@ -292,16 +297,23 @@ function editEducation() {
             return;
         }
 
-        setError(""); // รีเซ็ตข้อความข้อผิดพลาด
-
         if (inputFileRef.current) {
             inputFileRef.current.click();
         }
     };
 
     const handleDocument = (event) => {
+        setLoader(true);
         const selectedFile = event.target.files[0]; // ไฟล์ที่เลือกจาก input
         if (selectedFile) {
+
+            const fileExtension = selectedFile.name.split('.').pop(); // รับนามสกุลไฟล์
+            if (fileExtension !== 'pdf' && fileExtension !== 'docx') {
+                setError('กรุณาอัปโหลดไฟล์ PDF หรือ Word เท่านั้น');
+                setLoader(false);
+                return;
+            }
+
             // บันทึกขนาดไฟล์ในรูปแบบที่ต้องการ เช่น 3.0MB
             const fileSizeMB = (selectedFile.size / (1024 * 1024)).toFixed(2);
             setSizeFiles((prevSizes) => [...prevSizes, fileSizeMB]); // เพิ่มขนาดไฟล์ลงในอาร์เรย์
@@ -310,15 +322,20 @@ function editEducation() {
             const fileName = inputNameFile || selectedFile.name;
             setNameFiles((prevNames) => [...prevNames, fileName]); // เพิ่มชื่อไฟล์ลงในอาร์เรย์
 
+            // ดึงนามสกุลไฟล์
+            setTypeFiles((prevTypes) => [...prevTypes, fileExtension]); // เพิ่มประเภทไฟล์ลงในอาร์เรย์
+
             const storageRef = ref(storage, `users/documents/${session?.user?.email}/${fileName}`);
             const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
             uploadTask.on('state_changed',
                 (snapshot) => {
+                    setError(""); // รีเซ็ตข้อความข้อผิดพลาด
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     setUploadProgress(progress); // แสดงความก้าวหน้าการอัปโหลด
                 },
                 (error) => {
+                    setLoader(false);
                     console.error('Error uploading file:', error);
                 },
                 () => {
@@ -332,8 +349,10 @@ function editEducation() {
                             setUploadProgress(0);
                             setInputNameFile('');
                             inputFileRef.current.value = '';
+                            setLoader(false);
                         })
                         .catch((error) => {
+                            setLoader(false);
                             console.error('Error getting download URL:', error);
                         });
                 }
@@ -356,7 +375,9 @@ function editEducation() {
         console.log("EducationLevel: " + educationLevel);
         console.log("YearGraduation: " + yearGraduation);
         console.log("File: ");
+        console.log("FileName: " + nameFile);
         console.log("FileSize: " + sizeFile);
+        console.log("FileType: " + typeFile);
         console.log("----------- End -----------");
 
         // ตรวจสอบว่า uploadProgress มีค่าหรือไม่
@@ -421,6 +442,7 @@ function editEducation() {
             file,
             nameFile,
             sizeFile,
+            typeFile
         };
 
         try {
@@ -464,14 +486,70 @@ function editEducation() {
     }
 
     //config file
-    function handleEditNameFile(email) {
+    const handleEditNameFile = async (email, nameFile) => {
+        const { value: newName } = await Swal.fire({
+            title: 'เปลี่ยนชื่อไฟล์',
+            input: 'text',
+            inputLabel: 'กรุณากรอกชื่อไฟล์ใหม่',
+            inputValue: nameFile,
+            showCancelButton: true,
+            confirmButtonText: 'บันทึก',
+            cancelButtonText: 'ยกเลิก',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'คุณต้องกรอกชื่อไฟล์!';
+                }
+            }
+        });
 
-    }
+        if (newName) {
+            try {
+                // ส่งคำขอ PUT เพื่ออัปเดตชื่อไฟล์
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${email}/files`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        oldName: nameFile, // ส่งชื่อไฟล์เก่าไปด้วยเพื่อให้ API รู้ว่าต้องแก้ไขไฟล์ไหน
+                        newName: newName // ส่งชื่อไฟล์ใหม่
+                    })
+                });
 
-    async function handleDeleteFile(email, fileName) {
+                if (res.ok) {
+                    Swal.fire({
+                        title: "เปลี่ยนชื่อไฟล์สำเร็จ",
+                        icon: "success",
+                        confirmButtonText: "ตกลง",
+                        confirmButtonColor: "#0d96f8",
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: "เกิดข้อผิดพลาด",
+                        text: "เปลี่ยนชื่อไฟล์ไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
+                        icon: "error",
+                        confirmButtonText: "ตกลง",
+                        confirmButtonColor: "#f27474",
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                }
+
+            } catch (err) {
+                console.log(`เกิดข้อผิดพลาดในการติดต่อ API:`, err);
+            }
+        }
+
+    };
+
+
+    async function handleDeleteFile(email, fileName, nameFile) {
         const result = await Swal.fire({
-            text: "คุณต้องการลบข้อมูลนี้?",
-            icon: "question",
+            title: "ลบข้อมูล",
+            text: `คุณต้องการลบไฟล์ ${nameFile}?`,
+            icon: "warning",
             confirmButtonText: "ใช่",
             confirmButtonColor: "#f27474",
             showCancelButton: true,
@@ -514,10 +592,20 @@ function editEducation() {
     }
 
 
+    const handleDownloadFile = async (filePath, nameFile) => {
+        const storage = getStorage();
+        const fileRef = ref(storage, filePath);
 
-    function handleDownloadFile() {
+        try {
+            const downloadURL = await getDownloadURL(fileRef);
 
-    }
+            saveAs(downloadURL, nameFile);
+        } catch (error) {
+            console.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์:", error);
+        }
+    };
+
+    const [showPDFPath, setShowPDFPath] = useState('');
 
     return (
         <div>
@@ -795,13 +883,17 @@ function editEducation() {
                                     <hr className="w-full my-3" />
                                     {file.map((n, index) => (
                                         <div key={index} className="my-5">
-                                            <div className="flex justify-between ">
-                                                <p>{nameFile[index]}</p>
-                                                <p>{sizeFile[index]} MB</p>
-                                                <div className="flex">
-                                                    <Icon onClick={() => handleEditNameFile(session?.user?.email)} className={`cursor-pointer text-gray-40 mx-1`} path={mdiPencil} size={.8} />
-                                                    <Icon onClick={handleDownloadFile} className={`cursor-pointer text-gray-40 mx-1`} path={mdiDownload} size={.8} />
-                                                    <Icon onClick={() => handleDeleteFile(session?.user?.email, n)} className={`${editMode ? "":"hidden"} cursor-pointer text-gray-40 mx-1`} path={mdiDelete} size={.8} />
+                                            <div className="grid grid-cols-3 items-center ">
+                                                <div className="" onClick={() => setShowPDFPath(n)}>
+                                                    <p>{nameFile[index]}</p>
+                                                </div>
+                                                <div className=" text-center">
+                                                    <p>{sizeFile[index]} MB</p>
+                                                </div>
+                                                <div className="flex justify-end">
+                                                    <Icon onClick={() => handleEditNameFile(session?.user?.email, nameFile[index])} className={`cursor-pointer text-gray-40 mx-1`} path={mdiPencil} size={.8} />
+                                                    <Icon onClick={() => handleDownloadFile(n, nameFile[index])} className={`cursor-pointer text-gray-40 mx-1`} path={mdiDownload} size={.8} />
+                                                    <Icon onClick={() => handleDeleteFile(session?.user?.email, n, nameFile[index])} className={`${editMode ? "" : "hidden"} cursor-pointer text-gray-40 mx-1`} path={mdiDelete} size={.8} />
                                                 </div>
                                             </div>
                                             <hr className="w-full my-1" />
@@ -851,6 +943,12 @@ function editEducation() {
                 </div>
             )
             }
+
+            {showPDFPath && (
+                <div>
+                    <PDFViewer fileUrl={showPDFPath} />
+                </div>
+            )}
         </div >
     );
 }
