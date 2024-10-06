@@ -545,10 +545,10 @@ function editEducation() {
     };
 
 
-    async function handleDeleteFile(email, fileName, nameFile) {
+    async function handleDeleteFile(name, index) {
         const result = await Swal.fire({
             title: "ลบข้อมูล",
-            text: `คุณต้องการลบไฟล์ ${nameFile}?`,
+            text: `คุณต้องการลบไฟล์ ${name}?`,
             icon: "warning",
             confirmButtonText: "ใช่",
             confirmButtonColor: "#f27474",
@@ -557,40 +557,25 @@ function editEducation() {
         });
 
         if (result.isConfirmed) {
-            try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${email}/files`, {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ fileName }) // ส่งชื่อไฟล์ใน body
-                });
+            const newFile = [...file];
+            newFile.splice(index, 1);
 
-                if (res.ok) {
-                    window.location.reload();
-                } else {
-                    // แสดงข้อความข้อผิดพลาด
-                    Swal.fire({
-                        title: "เกิดข้อผิดพลาด",
-                        text: "ไม่สามารถลบข้อมูลได้ กรุณาลองใหม่ในภายหลัง",
-                        icon: "error",
-                        confirmButtonText: "ตกลง",
-                        confirmButtonColor: "#f27474"
-                    });
-                }
-            } catch (error) {
-                console.error("Error deleting file:", error);
-                Swal.fire({
-                    title: "เกิดข้อผิดพลาด",
-                    text: "ไม่สามารถติดต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่ในภายหลัง",
-                    icon: "error",
-                    confirmButtonText: "ตกลง",
-                    confirmButtonColor: "#f27474"
-                });
-            }
+            const newNameFile = [...nameFile];
+            newNameFile.splice(index, 1);
+
+            const newTypeFile = [...typeFile];
+            newTypeFile.splice(index, 1);
+
+            const newSizeFile = [...sizeFile];
+            newSizeFile.splice(index, 1);
+
+            // อัปเดต state ด้วยอาร์เรย์ที่ถูกแก้ไขแล้ว
+            setFiles(newFile);
+            setNameFiles(newNameFile);
+            setTypeFiles(newTypeFile);
+            setSizeFiles(newSizeFile);
         }
     }
-
 
     const handleDownloadFile = async (filePath, nameFile) => {
         const storage = getStorage();
@@ -619,7 +604,7 @@ function editEducation() {
         window.open(fileUrl, '_blank');
     }
 
-    function openFileExample(){
+    function openFileExample() {
         const fileUrl = "https://debtclinicbysam.com:8443/regis/images/%E0%B8%95%E0%B8%B1%E0%B8%A7%E0%B8%AD%E0%B8%A2%E0%B9%88%E0%B8%B2%E0%B8%87-%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3%E0%B8%AA%E0%B8%B3%E0%B9%80%E0%B8%99%E0%B8%B2%E0%B8%9A%E0%B8%B1%E0%B8%95%E0%B8%A3%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%8A%E0%B8%B2%E0%B8%8A%E0%B8%99.pdf"
         window.open(fileUrl, '_blank');
     }
@@ -909,7 +894,7 @@ function editEducation() {
                                                 <div className="flex justify-end">
                                                     <Icon onClick={() => handleEditNameFile(session?.user?.email, nameFile[index])} className={`cursor-pointer text-gray-40 mx-1`} path={mdiPencil} size={.8} />
                                                     <Icon onClick={() => handleDownloadFile(n, nameFile[index])} className={`cursor-pointer text-gray-40 mx-1`} path={mdiDownload} size={.8} />
-                                                    <Icon onClick={() => handleDeleteFile(session?.user?.email, n, nameFile[index])} className={`${editMode ? "" : "hidden"} cursor-pointer text-gray-40 mx-1`} path={mdiDelete} size={.8} />
+                                                    <Icon onClick={() => handleDeleteFile(nameFile[index], index)} className={`${editMode ? "" : "hidden"} cursor-pointer text-gray-40 mx-1`} path={mdiDelete} size={.8} />
                                                 </div>
                                             </div>
                                             <hr className="w-full my-1" />
