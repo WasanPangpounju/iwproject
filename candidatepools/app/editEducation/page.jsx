@@ -308,8 +308,8 @@ function editEducation() {
         if (selectedFile) {
 
             const fileExtension = selectedFile.name.split('.').pop(); // รับนามสกุลไฟล์
-            if (fileExtension !== 'pdf' && fileExtension !== 'docx') {
-                setError('กรุณาอัปโหลดไฟล์ PDF หรือ Word เท่านั้น');
+            if (fileExtension !== 'pdf') {
+                setError('กรุณาอัปโหลดไฟล์ PDF เท่านั้น');
                 setLoader(false);
                 return;
             }
@@ -597,16 +597,32 @@ function editEducation() {
         const fileRef = ref(storage, filePath);
 
         try {
+            // ดึง URL ของไฟล์
             const downloadURL = await getDownloadURL(fileRef);
 
-            saveAs(downloadURL, nameFile);
+            // ใช้ fetch เพื่อดาวน์โหลดไฟล์
+            const response = await fetch(downloadURL);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const blob = await response.blob(); // แปลงเป็น Blob
+            saveAs(blob, nameFile); // ใช้ file-saver เพื่อดาวน์โหลดไฟล์
         } catch (error) {
             console.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์:", error);
         }
     };
 
-    const [showPDFPath, setShowPDFPath] = useState('');
+    // const [showPDFPath, setShowPDFPath] = useState('');
 
+    function openFile(fileUrl) {
+        window.open(fileUrl, '_blank');
+    }
+
+    function openFileExample(){
+        const fileUrl = "https://debtclinicbysam.com:8443/regis/images/%E0%B8%95%E0%B8%B1%E0%B8%A7%E0%B8%AD%E0%B8%A2%E0%B9%88%E0%B8%B2%E0%B8%87-%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3%E0%B8%AA%E0%B8%B3%E0%B9%80%E0%B8%99%E0%B8%B2%E0%B8%9A%E0%B8%B1%E0%B8%95%E0%B8%A3%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%8A%E0%B8%B2%E0%B8%8A%E0%B8%99.pdf"
+        window.open(fileUrl, '_blank');
+    }
     return (
         <div>
             <NavbarLogo title="ประวัติการศึกษา" dataUser={dataUser} />
@@ -867,7 +883,7 @@ function editEducation() {
                                                 <span className="text-red-500 font-bold">ตัวอย่าง</span>
                                                 &nbsp;&nbsp;&nbsp;&nbsp;หนังสือรับรองผลการเรียน ปีที่ 1
                                             </p>
-                                            <Icon className={`cursor-pointer text-gray-400 mx-3`} path={mdiAlertCircle} size={0.8} />
+                                            <Icon onClick={openFileExample} className={`cursor-pointer text-gray-400 mx-3`} path={mdiAlertCircle} size={0.8} />
                                         </div>
                                         {uploadProgress > 0 && (
                                             <div className="mt-2">
@@ -884,10 +900,10 @@ function editEducation() {
                                     {file.map((n, index) => (
                                         <div key={index} className="my-5">
                                             <div className="grid grid-cols-3 items-center ">
-                                                <div className="" onClick={() => setShowPDFPath(n)}>
+                                                <div className="cursor-pointer" onClick={() => openFile(n)}>
                                                     <p>{nameFile[index]}</p>
                                                 </div>
-                                                <div className=" text-center">
+                                                <div className=" text-center cursor-pointer" onClick={() => openFile(n)}>
                                                     <p>{sizeFile[index]} MB</p>
                                                 </div>
                                                 <div className="flex justify-end">
@@ -926,9 +942,9 @@ function editEducation() {
                                 </div>
                             ) : (
                                 <div className=" flex w-full justify-center mt-10">
-                                    <div onClick={() => setEditMode(true)} className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
-                                        <Icon path={mdiAccountEdit} size={1} />
-                                        <p>แก้ไขข้อมูล</p>
+                                    <div onClick={() => setEditMode(true)} className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
+                                        <Icon path={mdiPencil} size={.8} />
+                                        <p>แก้ไข</p>
                                     </div>
                                 </div>
                             )}
@@ -944,11 +960,11 @@ function editEducation() {
             )
             }
 
-            {showPDFPath && (
+            {/* {showPDFPath && (
                 <div>
-                    <PDFViewer fileUrl={showPDFPath} />
+                    <PDFViewer FileUrl={showPDFPath} />
                 </div>
-            )}
+            )} */}
         </div >
     );
 }

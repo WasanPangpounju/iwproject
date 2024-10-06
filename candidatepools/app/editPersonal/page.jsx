@@ -1395,7 +1395,7 @@ function EditPersonal() {
                                 </div>
                             ) : (
                                 <div className=" flex w-full justify-center mt-5">
-                                    <div onClick={() => setEditMode(true)} className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
+                                    <div onClick={() => setEditMode(true)} className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
                                         <Icon path={mdiAccountEdit} size={1} />
                                         <p>แก้ไขข้อมูล</p>
                                     </div>

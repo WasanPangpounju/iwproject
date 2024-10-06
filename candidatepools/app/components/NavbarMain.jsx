@@ -4,7 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Icon from '@mdi/react';
-import { mdiLogout, mdiHelpCircle, mdiMessageAlert, mdiBullhorn, mdiFileAccount, mdiFileEditOutline, mdiHomeAccount } from '@mdi/js';
+import { mdiCertificate,mdiBriefcaseOutline,mdiSchool,mdiAccount,mdiLogout, mdiHelpCircle, mdiMessageAlert, mdiBullhorn, mdiFileAccount, mdiFileEditOutline, mdiHomeAccount } from '@mdi/js';
 import styles from '@/app/components/styles/NavbarMain.module.css'
 import { useState } from 'react';
 import { signOut } from 'next-auth/react';
@@ -41,21 +41,21 @@ function NavbarMain({ status }) {
             <div className={`${status === "edit" ? "bg-[#fee2d9] text-[#ff7201] ":"hover:bg-[#fee2d9] hover:text-[#ff7201]"} ${styles.dropdown} cursor-pointer relative flex items-center px-7 gap-5 py-3`}>
                 <Icon path={mdiFileEditOutline} size={1} />
                 <p className="font-extrabold whitespace-nowrap text-ellipsis">แก้ไขประวัติ</p>
-                <div className={`${styles.dropdown_menu} w-60 bg-white absolute right-[-100%] top-0`}>
+                <div className={`${styles.dropdown_menu}  bg-white absolute right-[-100%] top-0`}>
                     <Link href="/editPersonal" className="hover:bg-[#fee2d9] hover:text-[#ff7201] text-[black] cursor-pointer flex items-center px-7 gap-5 py-3">
-                        <Icon path={mdiHomeAccount} size={1} />
+                        <Icon path={mdiAccount} size={1} />
                         <p className="font-extrabold whitespace-nowrap text-ellipsis ">ข้อมูลส่วนบุลคล</p>
                     </Link>
                     <Link href="/editEducation" className="hover:bg-[#fee2d9] hover:text-[#ff7201] text-[black] cursor-pointer flex items-center px-7 gap-5 py-3">
-                        <Icon path={mdiHomeAccount} size={1} />
+                        <Icon path={mdiSchool} size={1} />
                         <p className="font-extrabold whitespace-nowrap text-ellipsis">ประวัติการศึกษา</p>
                     </Link>
                     <div className="hover:bg-[#fee2d9] hover:text-[#ff7201] text-[black] cursor-pointer flex items-center px-7 gap-5 py-3">
-                        <Icon path={mdiHomeAccount} size={1} />
+                        <Icon path={mdiBriefcaseOutline} size={1} />
                         <p className="font-extrabold whitespace-nowrap text-ellipsis">ประวัติการทำงาน/ฝึกงาน</p>
                     </div>
                     <div className="hover:bg-[#fee2d9] hover:text-[#ff7201] text-[black] cursor-pointer flex items-center px-7 gap-5 py-3">
-                        <Icon path={mdiHomeAccount} size={1} />
+                        <Icon path={mdiCertificate} size={1} />
                         <p className="font-extrabold whitespace-nowrap text-ellipsis">ความสามารถ/การอบรม</p>
                     </div>
                 </div>
