@@ -818,9 +818,9 @@ function EditPersonal() {
                   type="text"
                   className={`placeholder ${
                     !editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
+                      ? "bg-gray-200 cursor-default focus:outline-none"
                       : ""
-                  } ${bgColorMain} mt-1 w-56 border py-2 px-4 rounded-lg`}
+                  } border-gray-400 mt-1 w-56 border py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setNickname(e.target.value);
                   }}
@@ -834,7 +834,7 @@ function EditPersonal() {
                   <label>เพศ</label>
                   <p
                     type="text"
-                    className={`mt-1 w-32 border ${inputEditColor} cursor-default border-gray-400 py-2 px-4 rounded-lg`}
+                    className="mt-1 w-32 border bg-gray-200 cursor-default border-gray-400 py-2 px-4 rounded-lg"
                   >
                     {sex}
                   </p>
@@ -867,9 +867,9 @@ function EditPersonal() {
                       onChange={(e) => setYearBirthday(e.target.value)}
                       className={`${
                         !editMode
-                          ? `${inputEditColor} cursor-default`
+                          ? "bg-gray-200 cursor-default"
                           : "cursor-pointer"
-                      } ${bgColorMain} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
+                      } w-32 border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       disabled={!editMode}
                       value={yearBirthday || "0"}
@@ -884,7 +884,7 @@ function EditPersonal() {
                     <Icon
                       className={`${
                         !editMode ? "hidden" : ""
-                      }  ${bgColorMain} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
+                      } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
                       path={mdiArrowDownDropCircle}
                       size={0.8}
                     />
@@ -894,9 +894,9 @@ function EditPersonal() {
                       onChange={(e) => setMonthBirthday(e.target.value)}
                       className={`${
                         !editMode
-                          ? `${inputEditColor} cursor-default`
+                          ? "bg-gray-200 cursor-default"
                           : "cursor-pointer"
-                      } ${bgColorMain} w-36 border border-gray-400 py-2 px-4 rounded-lg`}
+                      } w-36 border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       disabled={!editMode}
                       value={monthBirthday || "0"}
@@ -917,7 +917,7 @@ function EditPersonal() {
                     <Icon
                       className={`${
                         !editMode ? "hidden" : ""
-                      }  ${bgColorMain} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
+                      } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
                       path={mdiArrowDownDropCircle}
                       size={0.8}
                     />
@@ -927,9 +927,9 @@ function EditPersonal() {
                       onChange={(e) => setDateBirthday(e.target.value)}
                       className={`${
                         !editMode
-                          ? `${inputEditColor} cursor-default`
+                          ? "bg-gray-200 cursor-default"
                           : "cursor-pointer"
-                      } ${bgColorMain} w-28 border border-gray-400 py-2 px-4 rounded-lg`}
+                      } w-28 border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       disabled={!editMode}
                       value={dateBirthday || "0"}
@@ -990,7 +990,7 @@ function EditPersonal() {
                     <label>อายุ</label>
                     <p
                       type="text"
-                      className={`mt-1 w-32 border ${inputEditColor} cursor-default border-gray-400 py-2 px-4 rounded-lg`}
+                      className="mt-1 w-32 border bg-gray-200 cursor-default border-gray-400 py-2 px-4 rounded-lg"
                     >
                       {yearToday - yearBirthday} ปี
                     </p>
@@ -1005,9 +1005,9 @@ function EditPersonal() {
                     onChange={(e) => setNationality(e.target.value)}
                     className={`${
                       !editMode
-                        ? `${inputEditColor} cursor-default`
-                        : `${bgColorMain} cursor-pointer`
-                    } ${bgColorMain} w-40 border border-gray-400 py-2 px-4 rounded-lg`}
+                        ? "bg-gray-200 cursor-default"
+                        : "cursor-pointer"
+                    } w-40 border border-gray-400 py-2 px-4 rounded-lg`}
                     style={{ appearance: "none" }}
                     disabled={!editMode}
                     value={nationality || "0"}
@@ -1035,9 +1035,9 @@ function EditPersonal() {
                     onChange={(e) => setReligion(e.target.value)}
                     className={`${
                       !editMode
-                        ? `${inputEditColor} cursor-default`
-                        : `${bgColorMain} cursor-pointer`
-                    } ${bgColorMain} w-40 border border-gray-400 py-2 px-4 rounded-lg`}
+                        ? "bg-gray-200 cursor-default"
+                        : "cursor-pointer"
+                    } w-40 border border-gray-400 py-2 px-4 rounded-lg`}
                     style={{ appearance: "none" }}
                     disabled={!editMode}
                     value={religion || "0"}
@@ -1067,9 +1067,9 @@ function EditPersonal() {
                   maxLength={13}
                   className={` ${
                     !editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
+                      ? "bg-gray-200 cursor-default focus:outline-none"
                       : ""
-                  } ${bgColorMain} mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
+                  } mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setIdCard(e.target.value);
                   }}
@@ -1094,9 +1094,9 @@ function EditPersonal() {
                   maxLength={13}
                   className={` ${
                     !editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
+                      ? "bg-gray-200 cursor-default focus:outline-none"
                       : ""
-                  } ${bgColorMain} mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
+                  } mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setIdCardDisabled(e.target.value);
                   }}
@@ -1120,9 +1120,9 @@ function EditPersonal() {
                     type="text"
                     className={` ${
                       !editMode
-                        ? `${inputEditColor} cursor-default focus:outline-none`
+                        ? "bg-gray-200 cursor-default focus:outline-none"
                         : ""
-                    } ${bgColorMain} w-72 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
+                    } w-72 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                     onChange={(e) => {
                       setAddressIdCard(e.target.value);
                     }}
@@ -1152,9 +1152,9 @@ function EditPersonal() {
                       }}
                       className={`${
                         !editMode
-                          ? `${inputEditColor} cursor-default`
-                          : `${bgColorMain} cursor-pointer`
-                      } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                          ? " bg-gray-200 cursor-default"
+                          : "cursor-pointer"
+                      } w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       disabled={!editMode}
                       value={
@@ -1204,9 +1204,9 @@ function EditPersonal() {
                         }}
                         className={`${
                           !editMode
-                            ? `${inputEditColor} cursor-default`
-                            : `${bgColorMain} cursor-pointer`
-                        } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                            ? " bg-gray-200 cursor-default"
+                            : "cursor-pointer"
+                        } w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
                         disabled={!editMode}
                         value={
@@ -1278,9 +1278,9 @@ function EditPersonal() {
                         }}
                         className={`${
                           !editMode
-                            ? `${inputEditColor} cursor-default`
-                            : `${bgColorMain} cursor-pointer`
-                        } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                            ? " bg-gray-200 cursor-default"
+                            : "cursor-pointer"
+                        } w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
                         disabled={!editMode}
                         value={
@@ -1328,9 +1328,7 @@ function EditPersonal() {
                       รหัสไปรษณีย์ <span className="text-red-500">*</span>
                     </label>
                     <div className=" col w-fit mt-1">
-                      <p
-                        className={`focus:outline-none cursor-default w-36 ${bgColorMain}  border border-gray-400 py-2 px-4 rounded-lg`}
-                      >
+                      <p className="focus:outline-none cursor-default w-36 bg-gray-200  border border-gray-400 py-2 px-4 rounded-lg">
                         {addressIdCardZipCode || "-"}
                       </p>
                     </div>
@@ -1361,9 +1359,9 @@ function EditPersonal() {
                     type="text"
                     className={` ${
                       !editMode
-                        ? `${inputEditColor} cursor-default focus:outline-none`
+                        ? "bg-gray-200 cursor-default focus:outline-none"
                         : ""
-                    } ${bgColorMain} w-72 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
+                    } w-72 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                     onChange={(e) => {
                       setAddress(e.target.value);
                     }}
@@ -1395,9 +1393,9 @@ function EditPersonal() {
                       }}
                       className={`${
                         !editMode
-                          ? `${inputEditColor} cursor-default`
-                          : `${bgColorMain} cursor-pointer`
-                      } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                          ? " bg-gray-200 cursor-default"
+                          : "cursor-pointer"
+                      } w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       disabled={!editMode}
                       value={
@@ -1448,9 +1446,9 @@ function EditPersonal() {
                         }}
                         className={`${
                           !editMode
-                            ? `${inputEditColor} cursor-default`
+                            ? " bg-gray-200 cursor-default"
                             : "cursor-pointer"
-                        } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                        } w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
                         disabled={!editMode}
                         value={
@@ -1524,9 +1522,9 @@ function EditPersonal() {
                         }}
                         className={`${
                           !editMode
-                            ? `${inputEditColor} cursor-default`
-                            : `${bgColorMain} cursor-pointer`
-                        } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
+                            ? " bg-gray-200 cursor-default"
+                            : "cursor-pointer"
+                        } w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
                         disabled={!editMode}
                         value={
@@ -1585,7 +1583,7 @@ function EditPersonal() {
                     </label>
                     <div className=" col w-fit mt-1">
                       <p
-                        className={`focus:outline-none cursor-default w-36 ${bgColorMain}   border border-gray-400 py-2 px-4 rounded-lg`}
+                        className={`focus:outline-none cursor-default w-36 bg-gray-200  border border-gray-400 py-2 px-4 rounded-lg`}
                       >
                         {statusSameAddress
                           ? addressIdCardZipCode
@@ -1606,9 +1604,9 @@ function EditPersonal() {
                   maxLength={10}
                   className={` ${
                     !editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
+                      ? "bg-gray-200 cursor-default focus:outline-none"
                       : ""
-                  } ${bgColorMain} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
+                  } w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setTel(e.target.value);
                   }}
@@ -1626,9 +1624,9 @@ function EditPersonal() {
                   maxLength={10}
                   className={` ${
                     !editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
+                      ? "bg-gray-200 cursor-default focus:outline-none"
                       : ""
-                  } ${bgColorMain} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
+                  } w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setTelEmergency(e.target.value);
                   }}
@@ -1643,9 +1641,9 @@ function EditPersonal() {
                   type="text"
                   className={` ${
                     !editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
+                      ? "bg-gray-200 cursor-default focus:outline-none"
                       : ""
-                  } ${bgColorMain} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
+                  } w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setRelationship(e.target.value);
                   }}
@@ -1660,7 +1658,7 @@ function EditPersonal() {
                 </label>
                 <input
                   type="email"
-                  className={`${bgColorMain} cursor-default focus:outline-none mt-1 w-60 border border-gray-400 py-2 px-4 rounded-lg`}
+                  className={`bg-gray-200 cursor-default focus:outline-none mt-1 w-60 border border-gray-400 py-2 px-4 rounded-lg`}
                   value={email}
                   readOnly
                 />
@@ -1677,9 +1675,9 @@ function EditPersonal() {
                       }}
                       className={`${
                         !editMode
-                          ? `${inputEditColor} cursor-default`
-                          : `${bgColorMain} cursor-pointer`
-                      } ${bgColorMain} w-64  border border-gray-400 py-2 px-4 rounded-lg`}
+                          ? "bg-gray-200 cursor-default"
+                          : "cursor-pointer"
+                      } w-64  border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       disabled={!editMode}
                       value={selectTypeDisabled || "0"}
@@ -1716,9 +1714,9 @@ function EditPersonal() {
                       onChange={(e) => setTypeDisabled([e.target.value])}
                       className={`${
                         typeDisabled && !editMode
-                          ? `${inputEditColor} cursor-default`
-                          : `${bgColorMain} cursor-pointer`
-                      } ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-64  border border-gray-400 py-2 px-4 rounded-lg`}
+                          ? "bg-gray-200 cursor-default"
+                          : "cursor-pointer"
+                      } whitespace-nowrap text-ellipsis overflow-hidden w-64  border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       disabled={!editMode}
                       value={typeDisabled[0] || "0"}
@@ -1760,7 +1758,7 @@ function EditPersonal() {
                       !typeDisabled.includes("พิการทางการมองเห็น") && !editMode
                         ? "hidden"
                         : ""
-                    } ${bgColorMain} flex gap-x-3 mt-2`}
+                    } flex gap-x-3 mt-2`}
                   >
                     <input
                       type="checkbox"
@@ -1836,7 +1834,7 @@ function EditPersonal() {
                       !editMode
                         ? "hidden"
                         : ""
-                    } ${bgColorMain} flex gap-x-3 mt-2`}
+                    } flex gap-x-3 mt-2`}
                   >
                     <input
                       type="checkbox"
@@ -1859,7 +1857,7 @@ function EditPersonal() {
                       !typeDisabled.includes("พิการทางสติปัญญา") && !editMode
                         ? "hidden"
                         : ""
-                    } ${bgColorMain} flex gap-x-3 mt-2`}
+                    } flex gap-x-3 mt-2`}
                   >
                     <input
                       type="checkbox"
@@ -1879,7 +1877,7 @@ function EditPersonal() {
                       !typeDisabled.includes("พิการทางการเรียนรู้") && !editMode
                         ? "hidden"
                         : ""
-                    } ${bgColorMain} flex gap-x-3 mt-2`}
+                    } flex gap-x-3 mt-2`}
                   >
                     <input
                       type="checkbox"
@@ -1900,7 +1898,7 @@ function EditPersonal() {
                       !typeDisabled.includes("พิการทางการออทิสติก") && !editMode
                         ? "hidden"
                         : ""
-                    } ${bgColorMain} flex gap-x-3 mt-2`}
+                    } flex gap-x-3 mt-2`}
                   >
                     <input
                       type="checkbox"
@@ -1923,9 +1921,9 @@ function EditPersonal() {
                     type="text"
                     className={`${
                       !editMode
-                        ? `${inputEditColor} cursor-default focus:outline-none`
+                        ? "bg-gray-200 cursor-default focus:outline-none"
                         : " "
-                    } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
+                    } border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
                     onChange={(e) => {
                       setDetailDisabled(e.target.value);
                     }}
@@ -1961,7 +1959,7 @@ function EditPersonal() {
                   <div
                     className={`${
                       !editMode ? "hidden" : ""
-                    } ${bgColorMain} mt-1 flex items-center`}
+                    } mt-1 flex items-center`}
                   >
                     <input
                       id="chooseProfile"
