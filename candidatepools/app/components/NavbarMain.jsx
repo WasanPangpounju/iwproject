@@ -96,20 +96,20 @@ function NavbarMain({ status }) {
                 <p className="font-extrabold whitespace-nowrap text-ellipsis">
                   แก้ไขประวัติ
                 </p>
-                <div className={`${styles.dropdown_menu} max-w-fit bg-white absolute left-full top-0`}>
-                    <Link href="/editPersonal" className="hover:bg-[#fee2d9] hover:text-[#ff7201] text-[black] cursor-pointer flex items-center px-5 gap-5 py-3">
+                <div className={`${styles.dropdown_menu} ${bgColorNavbar} ${bgColorWhite} max-w-fit absolute left-full top-0`}>
+                    <Link href="/editPersonal" className="hover:bg-[#fee2d9] hover:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3">
                         <Icon path={mdiAccount} size={1} />
                         <p className="font-extrabold whitespace-nowrap text-ellipsis ">ข้อมูลส่วนบุลคล</p>
                     </Link>
-                    <Link href="/editEducation" className="hover:bg-[#fee2d9] hover:text-[#ff7201] text-[black] cursor-pointer flex items-center px-5 gap-5 py-3">
+                    <Link href="/editEducation" className="hover:bg-[#fee2d9] hover:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3">
                         <Icon path={mdiSchool} size={1} />
                         <p className="font-extrabold whitespace-nowrap text-ellipsis">ประวัติการศึกษา</p>
                     </Link>
-                    <Link href="#" className="hover:bg-[#fee2d9] hover:text-[#ff7201] text-[black] cursor-pointer flex items-center px-5 gap-5 py-3">
+                    <Link href="#" className="hover:bg-[#fee2d9] hover:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3">
                         <Icon path={mdiBriefcaseOutline} size={1} />
                         <p className="font-extrabold whitespace-nowrap text-ellipsis">ประวัติการทำงาน/ฝึกงาน</p>
                     </Link>
-                    <Link href="#" className="hover:bg-[#fee2d9] hover:text-[#ff7201] text-[black] cursor-pointer flex items-center px-5 gap-5 py-3">
+                    <Link href="#" className="hover:bg-[#fee2d9] hover:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3">
                         <Icon path={mdiCertificate} size={1} />
                         <p className="font-extrabold whitespace-nowrap text-ellipsis">ความสามารถ/การอบรม</p>
                     </Link>
@@ -153,7 +153,7 @@ function NavbarMain({ status }) {
               </Link>
               <div
                 onClick={handleLogout}
-                className="hover:bg-[#fee2d9] hover:text-[#ff7201] cursor-pointer cursor-pointer flex items-center px-7 gap-5 py-3"
+                className="hover:bg-[#fee2d9] hover:text-[#ff7201] cursor-pointer  flex items-center px-7 gap-5 py-3"
               >
                 <Icon path={mdiLogout} size={1} />
                 <p className="font-extrabold whitespace-nowrap text-ellipsis">

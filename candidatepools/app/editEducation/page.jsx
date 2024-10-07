@@ -18,6 +18,31 @@ import PDFViewer from '../components/PDFViewer';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // Import Firebase Storage
 import { storage } from '@/app/firebaseConfig';
 
+import { useTheme } from "../ThemeContext";
+
+function EditPersonal() {
+  const {
+    setFontSize,
+    setBgColor,
+    setBgColorNavbar,
+    setBgColorWhite,
+    setBgColorMain,
+    setBgColorMain2,
+    fontSize,
+    bgColorNavbar,
+    bgColor,
+    bgColorWhite,
+    bgColorMain,
+    bgColorMain2,
+    setLineBlack,
+    lineBlack,
+    setTextBlue,
+    textBlue,
+    setRegisterColor,
+    registerColor,
+    inputEditColor,
+  } = useTheme();
+}
 
 function editEducation() {
     const router = useRouter();
@@ -617,7 +642,7 @@ function editEducation() {
         window.open(fileUrl, '_blank');
     }
     return (
-        <div>
+        <div className={``}>
             <NavbarLogo title="ประวัติการศึกษา" dataUser={dataUser} />
             <div className="flex">
                 <NavbarMain status="edit" />
