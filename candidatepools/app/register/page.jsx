@@ -195,7 +195,7 @@ function Register({ statusAgreement }) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ id: session?.user?.id || id ,email, typePerson, university })
+                body: JSON.stringify({ uuid: session?.user?.id || id ,email, typePerson, university })
             })
 
 
