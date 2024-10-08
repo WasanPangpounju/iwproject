@@ -3,14 +3,14 @@ import Users from "@/models/user";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
-    const email = req.nextUrl.pathname.split('/').pop();
+    const id = req.nextUrl.pathname.split('/').pop();
     await mongoDB();
-    const user = await Users.findOne({ email: email })
+    const user = await Users.findOne({ uuid: id })
     return NextResponse.json({ user });
 }
 
 export async function PUT(req) {
-    const sessionEmail = req.nextUrl.pathname.split('/').pop(); // ดึง email จาก URL
+    const id = req.nextUrl.pathname.split('/').pop(); 
 
     try {
         await mongoDB();
@@ -53,7 +53,7 @@ export async function PUT(req) {
 
         // อัปเดตข้อมูลผู้ใช้ในฐานข้อมูล
         const result = await Users.findOneAndUpdate(
-            { email: sessionEmail }, // ใช้ email เป็น filter
+            { uuid: id }, // ใช้ email เป็น filter
             { 
                 user,
                 password,

@@ -142,7 +142,6 @@ import React from 'react';
       setLoader(false);
       Swal.fire({
         title: "เข้าสู่ระบบสำเร็จ",
-        text: "ยินดีต้อนรับเข้าสู่ระบบ",
         icon: "success",
         confirmButtonText: "ตกลง",
       }).then((result) => {
@@ -168,7 +167,7 @@ import React from 'react';
           width={1000}
           priority
         />
-        <div className={`${bgColorMain2} `}>
+        <div className={`${bgColorMain2} rounded-b-lg`}>
           <div className="flex ">
             <div
               onClick={() => setLoginMod("user")}
@@ -190,9 +189,9 @@ import React from 'react';
           <form
             onSubmit={handleSubmit}
             // className={`relative bottom-[5px] rounded-lg bg-white p-14 flex flex-col justify-center items-center`}
-            className={`relative bottom-[5px] rounded-lg ${bgColorMain} p-14 flex flex-col justify-center items-center`}
+            className={`relative bottom-[5px] rounded-lg ${bgColorMain} p-14 flex flex-col justify-center items-center `}
           >
-            <p className={`${bgColorMain, bgColor}`}>
+            <p className={``}>
               {loginMod === "user"
                 ? "เข้าสู่ระบบสำหรับผู้สมัครงาน"
                 : "เข้าสู่ระบบสำหรับผู้ดูแลระบบ"}
@@ -249,7 +248,7 @@ import React from 'react';
               <Link
                 // className="mx-2 text-[#F97201] hover:cursor-pointer hover:underline"
                 className={`mx-2 ${registerColor} hover:cursor-pointer hover:underline`}
-                href="/register"
+                href="/agreement"
               >
                 สมัครสมาชิก
               </Link>

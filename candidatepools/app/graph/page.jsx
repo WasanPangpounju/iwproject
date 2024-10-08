@@ -51,8 +51,8 @@ function GraphPage(bgColorNavbar) {
       return;
     }
 
-    if (session?.user?.email) {
-      getUser(session.user.email);
+    if (session?.user?.id) {
+      getUser(session.user.id);
     } else {
       router.replace("/register");
     }
@@ -69,10 +69,10 @@ function GraphPage(bgColorNavbar) {
   }, [dataUser, router, session]);
 
   // Fetch user data from API
-  async function getUser(email) {
+  async function getUser(id) {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${email}`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
         {
           method: "GET",
           cache: "no-store",

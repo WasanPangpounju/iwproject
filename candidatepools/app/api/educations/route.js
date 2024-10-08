@@ -5,7 +5,7 @@ import Educations from "@/models/education";
 export async function POST(req) {
     try {
         const {
-            email,
+            uuid,
             typePerson,
             university,
             campus,
@@ -25,12 +25,12 @@ export async function POST(req) {
         await mongoDB();
 
         // ตรวจสอบว่า email นี้มีอยู่ในฐานข้อมูลแล้วหรือยัง
-        const existingEducation = await Educations.findOne({ email });
+        const existingEducation = await Educations.findOne({ uuid });
 
         if (existingEducation) {
             // ถ้ามีอยู่แล้ว ให้ทำการอัปเดตข้อมูลแทน
             await Educations.findOneAndUpdate(
-                { email }, // เงื่อนไขการค้นหา
+                { uuid }, // เงื่อนไขการค้นหา
                 {
                     typePerson,
                     university,
@@ -52,7 +52,7 @@ export async function POST(req) {
         } else {
             // ถ้าไม่มี ให้สร้างเอกสารข้อมูลการศึกษาใหม่
             await Educations.create({
-                email,
+                uuid: uuid,
                 typePerson,
                 university,
                 campus,

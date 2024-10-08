@@ -12,8 +12,33 @@ import Loader from '../components/Loader';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Footer from '../components/Footer';
+import { useTheme } from "../ThemeContext";
+import { v4 as uuidv4 } from 'uuid';
 
 function Register({ statusAgreement }) {
+
+    //Theme
+    const {
+        setFontSize,
+        setBgColor,
+        setBgColorNavbar,
+        setBgColorWhite,
+        setBgColorMain,
+        setBgColorMain2,
+        fontSize,
+        bgColorNavbar,
+        bgColor,
+        bgColorWhite,
+        bgColorMain,
+        bgColorMain2,
+        setLineBlack,
+        lineBlack,
+        setTextBlue,
+        textBlue,
+        setRegisterColor,
+        registerColor,
+        inputEditColor,
+      } = useTheme();
 
     //check agreement
     const [agreement, setAgreement] = useState(false);
@@ -52,12 +77,9 @@ function Register({ statusAgreement }) {
         if (session?.user) {
             setEmail(session?.user?.email || '');
             setUser(session?.user?.name || session?.user?.user || '');
-            getUser(session.user.email);
+            getUser(session?.user?.id);
         }
-
-
     }, [session], [router])
-    console.log(session?.user);
 
     //check dataUser if have redirec to main pang
     useEffect(() => {
@@ -147,12 +169,13 @@ function Register({ statusAgreement }) {
                 return;
             }
 
+            const id = uuidv4()
             const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ user, password, firstName, lastName, typeDisabled, university, email, typePerson })
+                body: JSON.stringify({ id: session?.user?.id || id, user, password, firstName, lastName, typeDisabled, university, email, typePerson })
             })
 
             if (!res.ok) {
@@ -172,7 +195,7 @@ function Register({ statusAgreement }) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ email, typePerson, university })
+                body: JSON.stringify({ id: session?.user?.id || id ,email, typePerson, university })
             })
 
 
@@ -265,7 +288,7 @@ function Register({ statusAgreement }) {
     }
 
     return (
-        <div>
+        <div className={`${bgColorMain} ${bgColor}`}>
             <NavbarLogo />
             <div className='text-sm flex justify-center mt-10'>
                 <form onSubmit={handleRegister} className='flex flex-col justify-center items-center'>

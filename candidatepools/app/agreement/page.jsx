@@ -9,8 +9,32 @@ import { useRouter } from 'next/navigation';
 import Register from '../register/page';
 import Loader from '../components/Loader';
 import { useSession } from 'next-auth/react';
+import { useTheme } from '../ThemeContext';
 
 function Agreement() {
+
+     //Theme
+     const {
+        setFontSize,
+        setBgColor,
+        setBgColorNavbar,
+        setBgColorWhite,
+        setBgColorMain,
+        setBgColorMain2,
+        fontSize,
+        bgColorNavbar,
+        bgColor,
+        bgColorWhite,
+        bgColorMain,
+        bgColorMain2,
+        setLineBlack,
+        lineBlack,
+        setTextBlue,
+        textBlue,
+        setRegisterColor,
+        registerColor,
+        inputEditColor,
+      } = useTheme();
 
     const [statusAgreement, setStatusAgreement] = useState(false);
     const [error, setError] = useState('');
@@ -38,8 +62,8 @@ function Agreement() {
         }
         setLoader(false);
 
-        if (session?.user?.email) {
-            getUser(session.user.email);
+        if (session?.user?.id) {
+            getUser(session.user.id);
         } 
 
     }, [status, session, router]);
@@ -53,9 +77,9 @@ function Agreement() {
     },[dataUser])
 
      // Fetch user data from API
-     async function getUser(email) {
+     async function getUser(id) {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${email}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`, {
                 method: "GET",
                 cache: "no-store"
             });
@@ -87,7 +111,7 @@ function Agreement() {
     }, [loader])
 
     return (
-        <div>
+        <div className={`${bgColorMain} ${bgColor}`}>
             {statusAgreement ? (
                 <Register statusAgreement={statusAgreement}/>
             ) : (
@@ -95,7 +119,7 @@ function Agreement() {
                     <NavbarLogo />
                     <div className="w-full flex justify-center">
                         <div className="p-10 max-w-screen-xl">
-                            <div className="bg-white p-10 rounded-lg">
+                            <div className={`${bgColorMain2} p-10 rounded-lg`}>
                                 <p className="text-lg font-extrabold text-center">เงื่อนไขข้อตกลงการใช้บริการสำหรับผู้หางาน และ/หรือ ผู้สมัคร</p>
                                 <div className="my-10">
                                     <p style={{ textIndent: "2.5rem" }}>
