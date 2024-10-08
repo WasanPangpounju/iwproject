@@ -5,7 +5,7 @@ import Users from "@/models/user";
 import GoogleProvider from "next-auth/providers/google";
 import LineProvider from 'next-auth/providers/line';
 import { v4 as uuidv4 } from 'uuid'; // นำเข้า UUID
-
+import bcrypt from 'bcrypt';
 
 const authOption = {
     providers: [
@@ -38,7 +38,8 @@ const authOption = {
                     }
 
                     // ตรวจสอบรหัสผ่าน
-                    if (userDocument.password !== password) {
+                    const isPasswordValid = await bcrypt.compare(password, userDocument.password);
+                    if (!isPasswordValid) {
                         // รหัสผ่านไม่ถูกต้อง
                         return null;
                     }
@@ -48,7 +49,7 @@ const authOption = {
 
                 } catch (err) {
                     console.error('เกิดข้อผิดพลาดระหว่างการตรวจสอบ:', err);
-                    return null; 
+                    return null;
                 }
             }
         })
@@ -63,7 +64,7 @@ const authOption = {
                 if (!token.id) {
                     // ตรวจสอบว่าผู้ใช้มี uuid อยู่ในฐานข้อมูลแล้วหรือไม่
                     const existingUser = await Users.findOne({ email: user.email });
-    
+
                     if (existingUser && existingUser.uuid) {
                         // หากผู้ใช้มี uuid ให้ใช้ uuid นั้น
                         token.id = existingUser.uuid;
@@ -80,7 +81,7 @@ const authOption = {
             session.user.id = token.id;
             return session;
         }
-    },    
+    },
     secret: process.env.NEXTAUTH_SECRET,
     pages: {
         signIn: "/"
