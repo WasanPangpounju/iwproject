@@ -2,9 +2,9 @@ import mongoose, { Schema } from "mongoose";
 
 const EducationSchema = new Schema(
     {
-        email: {
-            type: String,
-            required: true
+        uuid: {  
+            type: String,  // ใช้ type เป็น String เพื่อเก็บ uuid ของผู้ใช้
+            required: true,
         },
         typePerson: {
             type: String,

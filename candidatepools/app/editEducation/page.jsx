@@ -20,35 +20,34 @@ import { storage } from '@/app/firebaseConfig';
 
 import { useTheme } from "../ThemeContext";
 
-function EditPersonal() {
-  const {
-    setFontSize,
-    setBgColor,
-    setBgColorNavbar,
-    setBgColorWhite,
-    setBgColorMain,
-    setBgColorMain2,
-    fontSize,
-    bgColorNavbar,
-    bgColor,
-    bgColorWhite,
-    bgColorMain,
-    bgColorMain2,
-    setLineBlack,
-    lineBlack,
-    setTextBlue,
-    textBlue,
-    setRegisterColor,
-    registerColor,
-    inputEditColor,
-  } = useTheme();
-}
-
 function editEducation() {
     const router = useRouter();
     const { status, data: session } = useSession();
     const [dataUser, setDataUser] = useState(null);
     const [loader, setLoader] = useState(true);
+
+    //Theme
+    const {
+        setFontSize,
+        setBgColor,
+        setBgColorNavbar,
+        setBgColorWhite,
+        setBgColorMain,
+        setBgColorMain2,
+        fontSize,
+        bgColorNavbar,
+        bgColor,
+        bgColorWhite,
+        bgColorMain,
+        bgColorMain2,
+        setLineBlack,
+        lineBlack,
+        setTextBlue,
+        textBlue,
+        setRegisterColor,
+        registerColor,
+        inputEditColor,
+      } = useTheme();
 
     //value data user
     const [typePerson, setTypePerson] = useState("");
@@ -66,9 +65,9 @@ function editEducation() {
 
     //get data Education
     const [dataEducations, setDataEducations] = useState(null)
-    async function getEducation(email) {
+    async function getEducation(id) {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${email}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${id}`, {
                 method: "GET",
                 cache: "no-store"
             });
@@ -86,7 +85,7 @@ function editEducation() {
             setLoader(false);
         }
     }
-
+    
     //add array
     const handleUniversity = (e, index) => {
         const newUniversity = e; // ค่าที่ได้รับจาก input
@@ -258,9 +257,9 @@ function editEducation() {
             return;
         }
 
-        if (session?.user?.email) {
-            getUser(session.user.email);
-            getEducation(session.user.email)
+        if (session?.user?.id) {
+            getUser(session.user.id);
+            getEducation(session.user.id)
         } else {
             router.replace('/register');
         }
@@ -280,9 +279,9 @@ function editEducation() {
     }, [dataUser, router, session]);
 
     // Fetch user data from API
-    async function getUser(email) {
+    async function getUser(id) {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${email}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`, {
                 method: "GET",
                 cache: "no-store"
             });
@@ -454,7 +453,7 @@ function editEducation() {
         setError("");
 
         const bodyEducation = {
-            email: session?.user?.email,
+            uuid: session?.user?.id,
             typePerson,
             university,
             campus,
@@ -511,7 +510,7 @@ function editEducation() {
     }
 
     //config file
-    const handleEditNameFile = async (email, nameFile, index) => {
+    const handleEditNameFile = async (id, nameFile, index) => {
         const { value: newName } = await Swal.fire({
             title: 'เปลี่ยนชื่อไฟล์',
             input: 'text',
@@ -531,7 +530,7 @@ function editEducation() {
             if (!editMode) {
                 try {
                     // ส่งคำขอ PUT เพื่ออัปเดตชื่อไฟล์
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${email}/files`, {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${id}/files`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json"
@@ -641,13 +640,14 @@ function editEducation() {
         const fileUrl = "https://debtclinicbysam.com:8443/regis/images/%E0%B8%95%E0%B8%B1%E0%B8%A7%E0%B8%AD%E0%B8%A2%E0%B9%88%E0%B8%B2%E0%B8%87-%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3%E0%B8%AA%E0%B8%B3%E0%B9%80%E0%B8%99%E0%B8%B2%E0%B8%9A%E0%B8%B1%E0%B8%95%E0%B8%A3%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%8A%E0%B8%B2%E0%B8%8A%E0%B8%99.pdf"
         window.open(fileUrl, '_blank');
     }
+
     return (
-        <div className={``}>
+        <div className={`${bgColorMain} ${bgColor}`}>
             <NavbarLogo title="ประวัติการศึกษา" dataUser={dataUser} />
             <div className="flex">
                 <NavbarMain status="edit" />
                 <div className="w-10/12 px-7 py-5">
-                    <div className=" bg-white rounded-lg p-5">
+                    <div className={`${bgColorMain2} rounded-lg p-5`}>
                         <form onSubmit={(e) => handleSubmit(e, fields.length)} className=" flex gap-x-10 gap-y-5 gap- flex-wrap">
                             {dataUser && (
                                 fields.map((field, index) => (
@@ -925,7 +925,7 @@ function editEducation() {
                                                     <p>{sizeFile[index]} MB</p>
                                                 </div>
                                                 <div className="flex justify-end">
-                                                    <Icon onClick={() => handleEditNameFile(session?.user?.email, nameFile[index], index)} className={`cursor-pointer text-gray-40 mx-1`} path={mdiPencil} size={.8} />
+                                                    <Icon onClick={() => handleEditNameFile(session?.user?.id, nameFile[index], index)} className={`cursor-pointer text-gray-40 mx-1`} path={mdiPencil} size={.8} />
                                                     <Icon onClick={() => handleDownloadFile(n, nameFile[index])} className={`cursor-pointer text-gray-40 mx-1`} path={mdiDownload} size={.8} />
                                                     <Icon onClick={() => handleDeleteFile(nameFile[index], index)} className={`${editMode ? "" : "hidden"} cursor-pointer text-gray-40 mx-1`} path={mdiDelete} size={.8} />
                                                 </div>

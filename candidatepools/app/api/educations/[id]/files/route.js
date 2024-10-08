@@ -3,7 +3,7 @@ import Educations from "@/models/education";
 import { NextResponse } from "next/server";
 
 export async function DELETE(req, { params }) {
-    const { email } = params; // ดึง email จาก params
+    const { id } = params; // ดึง id จาก params
     const { fileName } = await req.json(); // ดึงชื่อไฟล์จาก body
 
     try {
@@ -11,7 +11,7 @@ export async function DELETE(req, { params }) {
         await mongoDB();
 
         // หาข้อมูลการศึกษาโดยใช้ email
-        const existingEducation = await Educations.findOne({ email });
+        const existingEducation = await Educations.findOne({ uuid: id });
 
         if (!existingEducation) {
             return NextResponse.json({ message: "ไม่พบข้อมูล" }, { status: 404 });
@@ -51,12 +51,12 @@ export async function DELETE(req, { params }) {
 }
 
 export async function PUT(req, { params }) {
-    const { email } = params;
+    const { id } = params;
     const { oldName, newName } = await req.json();
 
     try {
         // หาข้อมูลการศึกษาโดยใช้ email
-        const existingEducation = await Educations.findOne({ email });
+        const existingEducation = await Educations.findOne({ uuid: id });
 
         if (!existingEducation) {
             return NextResponse.json({ message: "ไม่พบข้อมูล" }, { status: 404 });

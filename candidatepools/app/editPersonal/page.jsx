@@ -63,8 +63,8 @@ function EditPersonal() {
       return;
     }
 
-    if (session?.user?.email) {
-      getUser(session.user.email);
+    if (session?.user?.id) {
+      getUser(session.user.id);
     } else {
       router.replace("/register");
     }
@@ -266,10 +266,10 @@ function EditPersonal() {
   }, [dataUser]);
 
   //get data from user
-  async function getUser(email) {
+  async function getUser(id) {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${email}`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
         {
           method: "GET",
           cache: "no-store",
@@ -605,7 +605,7 @@ function EditPersonal() {
       }
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${session?.user?.email}`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${session?.user?.id}`,
         {
           method: "PUT",
           headers: {
@@ -820,7 +820,7 @@ function EditPersonal() {
                     !editMode
                       ? `${inputEditColor} cursor-default focus:outline-none`
                       : ""
-                  } ${bgColorMain} mt-1 w-56 border py-2 px-4 rounded-lg`}
+                  } ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setNickname(e.target.value);
                   }}
@@ -1660,7 +1660,8 @@ function EditPersonal() {
                 </label>
                 <input
                   type="email"
-                  className={`${bgColorMain} cursor-default focus:outline-none mt-1 w-60 border border-gray-400 py-2 px-4 rounded-lg`}
+                  className={`
+                  ${inputEditColor}  cursor-default focus:outline-none mt-1 w-60 border border-gray-400 py-2 px-4 rounded-lg`}
                   value={email}
                   readOnly
                 />

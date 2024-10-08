@@ -2,9 +2,14 @@ import mongoose, { Schema } from "mongoose";
 
 const UserSchema = new Schema(
     {
+        uuid: {
+            type: String,
+            required: true,
+        },
         user:{
             type: String,
-            required: true
+            required: true,
+            unique: true, // ตรวจสอบให้แน่ใจว่าอีเมลไม่ซ้ำกัน
         },
         password:{
             type: String,
@@ -31,6 +36,8 @@ const UserSchema = new Schema(
         },
         email:{
             type: String,
+            required: true,
+            unique: true, // ตรวจสอบให้แน่ใจว่าอีเมลไม่ซ้ำกัน
         },
         prefix:{
             type: String,
