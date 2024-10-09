@@ -31,7 +31,7 @@ ChartJS.register(
   Legend
 );
 
-import EmployeeAbilityGraph from "./EmployeeAbilityGraph";
+import EmployeeAbilityGraph from "./employeeAbilityGraph";
 import UniversityChart from "./employeeUnivercity";
 
 function GraphPage(bgColorNavbar) {
