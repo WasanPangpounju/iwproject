@@ -6,6 +6,7 @@ import GoogleProvider from "next-auth/providers/google";
 import LineProvider from 'next-auth/providers/line';
 import { v4 as uuidv4 } from 'uuid'; // นำเข้า UUID
 import bcrypt from 'bcrypt';
+import { signOut } from "next-auth/react";
 
 const authOption = {
     providers: [
@@ -84,7 +85,7 @@ const authOption = {
     },
     secret: process.env.NEXTAUTH_SECRET,
     pages: {
-        signIn: "/"
+        signIn: "/",
     }
 }
 
