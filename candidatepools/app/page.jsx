@@ -15,25 +15,25 @@ import RootLayout from "./layout";
 import React from 'react';
 
 // export default function Home(bgColorNavbar,bgColorMain) {
-  // export default function Home({ bgColorMain='bg-white', bgColorNavbar,bgColor }) {
-    export default function Home() {
+// export default function Home({ bgColorMain='bg-white', bgColorNavbar,bgColor }) {
+export default function Home() {
 
-      const {
-        setFontSize,
-        setBgColor,
-        setBgColorNavbar,
-        setBgColorWhite,
-        setBgColorMain,
-        fontSize,
-        bgColorNavbar,
-        bgColor,
-        bgColorWhite,
-        bgColorMain,
-        bgColorMain2,
-        lineBlack,
-        textBlue,
-        registerColor
-      } = useTheme();
+  const {
+    setFontSize,
+    setBgColor,
+    setBgColorNavbar,
+    setBgColorWhite,
+    setBgColorMain,
+    fontSize,
+    bgColorNavbar,
+    bgColor,
+    bgColorWhite,
+    bgColorMain,
+    bgColorMain2,
+    lineBlack,
+    textBlue,
+    registerColor
+  } = useTheme();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,12 +67,9 @@ import React from 'react';
     setLoader(false);
   }, []);
 
+  // Manage loader state
   useEffect(() => {
-    if (loader) {
-      document.body.classList.add("no_scroll");
-    } else {
-      document.body.classList.remove("no_scroll");
-    }
+    document.body.classList.toggle('no_scroll', loader);
   }, [loader]);
 
   //submit login
@@ -92,6 +89,7 @@ import React from 'react';
         password,
         redirect: false,
       });
+
       if (res.error) {
         try {
           const resCheckUser = await fetch(
@@ -107,42 +105,47 @@ import React from 'react';
 
           if (!resCheckUser.ok) {
             setLoader(false);
-            throw new Error("Error fetch api checkuser.");
+            throw new Error("Error fetching API to check user.");
           }
 
           const { user } = await resCheckUser.json();
 
           if (user) {
             setError("รหัสผ่านของคุณไม่ถูกต้อง");
-            setLoader(false);
-            return;
           } else {
-            setError("อีเมลหรือชื่อผู้ใช้ ของคุณไม่ถูกต้อง");
-            setLoader(false);
-            return;
+            setError("อีเมลหรือชื่อผู้ใช้ของคุณไม่ถูกต้อง");
           }
         } catch (err) {
+          setError("เกิดข้อผิดพลาดในการตรวจสอบผู้ใช้");
+          console.error("Error fetching API in register: ", err);
+        } finally {
           setLoader(false);
-          console.log("Error Fetch Api in register: ", err);
         }
+      } else {
+        setLoader(false);
+        Swal.fire({
+          title: "เข้าสู่ระบบสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.replace("/main");
+          }
+        });
       }
-
-      setLoader(false);
-      Swal.fire({
-        title: "เข้าสู่ระบบสำเร็จ",
-        icon: "success",
-        confirmButtonText: "ตกลง",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          router.replace("/main");
-        }
-      });
     } catch (err) {
       setLoader(false);
-      console.log(err);
+      Swal.fire({
+        title: "ข้อผิดพลาด",
+        text: "เกิดข้อผิดพลาดกรุณาลองใหม่ในภายหลัง",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
+      console.error("Unexpected error:", err);
     }
   }
-  console.log('bgColorMain',bgColorMain);
+
+  console.log('bgColorMain', bgColorMain);
   return (
     <div className={`${bgColorMain} ${bgColor}`}>
       <NavbarLogo />
@@ -159,17 +162,15 @@ import React from 'react';
           <div className="flex ">
             <div
               onClick={() => setLoginMod("user")}
-              className={`${
-                loginMod === "user" ? "bg-[#F97201]" : "bg-[#75C7C2]"
-              } hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
+              className={`${loginMod === "user" ? "bg-[#F97201]" : "bg-[#75C7C2]"
+                } hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
             >
               นักศึกษาพิการ
             </div>
             <div
               onClick={() => setLoginMod("admin")}
-              className={`${
-                loginMod === "admin" ? "bg-[#F97201]" : "bg-[#75C7C2]"
-              } hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
+              className={`${loginMod === "admin" ? "bg-[#F97201]" : "bg-[#75C7C2]"
+                } hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
             >
               ผู้ดูแลระบบ
             </div>
