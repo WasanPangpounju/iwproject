@@ -16,18 +16,7 @@ import React from 'react';
 
 // export default function Home(bgColorNavbar,bgColorMain) {
   // export default function Home({ bgColorMain='bg-white', bgColorNavbar,bgColor }) {
-    export default function Home({
-      // fontSize,
-      // setFontSize,
-      // bgColor,
-      // setBgColor,
-      // bgColorNavbar,
-      // setBgColorNavbar,
-      // bgColorWhite,
-      // setBgColorWhite,
-      // bgColorMain,
-      // setBgColorMain
-    }) {
+    export default function Home() {
 
       const {
         setFontSize,
@@ -70,8 +59,7 @@ import React from 'react';
         router.replace("/main");
       }
     },
-    [session],
-    [router]
+    [session, router]
   );
 
   //loader
@@ -188,7 +176,6 @@ import React from 'react';
           </div>
           <form
             onSubmit={handleSubmit}
-            // className={`relative bottom-[5px] rounded-lg bg-white p-14 flex flex-col justify-center items-center`}
             className={`relative bottom-[5px] rounded-lg ${bgColorMain} p-14 flex flex-col justify-center items-center `}
           >
             <p className={``}>
@@ -229,7 +216,6 @@ import React from 'react';
               <Link
                 // className="text-blue-500 hover:cursor-pointer hover:underline"
                 className={`${textBlue} hover:cursor-pointer hover:underline`}
-                textBlue
                 href="#"
               >
                 ลืมรหัสผ่าน ?
