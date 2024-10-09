@@ -229,7 +229,7 @@ function Navbar({}) {
 
   return (
     // <div className='`${setBgColor}` px-5 py-2 flex items-center '>
-    <div className={`${bgColorNavbar} px-5 py-2 flex items-center`}>
+    <nav className={`${bgColorNavbar} px-5 py-2 flex items-center`}>
       {/* <div className={`bg-white text-black rounded-full w-6 h-6 flex items-center justify-center  font-bold ${fontSize}`}> */}
       <div
         className={`${bgColor} rounded-full w-6 h-6 flex items-center justify-center  font-bold ${fontSize}`}
@@ -317,7 +317,7 @@ function Navbar({}) {
           ปกติ
         </div>
       </div>
-    </div>
+    </nav>
   );
 }
 
