@@ -247,7 +247,9 @@ export default function Home() {
             </div>
             <div className="mt-8 text-gray-400 flex flex-col gap-3">
               <div
-                onClick={() => signIn("google")}
+                onClick={() => {
+                  signIn("google")
+                }}
                 className="hover:cursor-pointer gap-2 py-1 px-5 border rounded-lg flex"
               >
                 <Image
