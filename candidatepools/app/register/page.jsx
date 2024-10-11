@@ -305,7 +305,7 @@ function Register({ statusAgreement }) {
                         <input
                             onChange={(e) => setUser(e.target.value)}
                             type="text"
-                            className={`w-96 border  border-gray-400 py-2 px-4 rounded-lg `}
+                            className={`${bgColorMain} w-96 border  border-gray-400 py-2 px-4 rounded-lg `}
                             placeholder='กรอกชื่อผู้ใช้'
                             value={user}
                         />
@@ -317,43 +317,43 @@ function Register({ statusAgreement }) {
                         <input
                             onChange={(e) => setPassword(e.target.value)}
                             type="password"
-                            className='w-96 border border-gray-400 py-2 px-4 rounded-lg'
+                            className={`${bgColorMain} w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                             placeholder='ต้องเป็นตัวอักษรภาษาอังกฤษ ตัวเลข และสัญลักษณ์'
                         />
                     </div>
-                    <div className='mt-4 w-[35rem] font-bold  flex justify-between items-center'>
+                    <div className={`${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label> Password Confirm:</label>
                         <input
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             type="password"
-                            className='w-96 border border-gray-400 py-2 px-4 rounded-lg'
+                            className={`${bgColorMain} w-96 border border-gray-400 py-2 px-4 rounded-lg'`}
                             placeholder='ยืนยันรหัสผ่าน'
                         />
                     </div>
                     {/* </>
                     )} */}
-                    <div className='mt-4 w-[35rem] font-bold  flex justify-between items-center'>
+                    <div className={`${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label> ชื่อ:</label>
                         <input
                             onChange={(e) => setFirstName(e.target.value)}
                             type="text"
-                            className='w-96 border border-gray-400 py-2 px-4 rounded-lg'
+                            className={`${bgColorMain} w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                             placeholder='กรอกรายละเอียด'
                         />
                     </div>
-                    <div className='mt-4 w-[35rem] font-bold  flex justify-between items-center'>
+                    <div className={`${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label> สกุล:</label>
                         <input
                             onChange={(e) => setLastName(e.target.value)}
                             type="text"
-                            className='w-96 border border-gray-400 py-2 px-4 rounded-lg'
+                            className={`${bgColorMain} w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                             placeholder='กรอกรายละเอียด'
                         />
                     </div>
                     <div className='mt-4 w-[35rem] font-bold  flex justify-between items-center'>
                         <label> ประเภทความพิการ:</label>
                         <div className="relative ">
-                            <select onChange={(e) => setTypeDisabled(e.target.value)} className='cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg' placeholder='กรอกชื่อผู้ใช้' style={{ appearance: 'none' }}>
+                            <select onChange={(e) => setTypeDisabled(e.target.value)} className={`${bgColorMain} cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg`} placeholder='กรอกชื่อผู้ใช้' style={{ appearance: 'none' }}>
                                 <option value="0">เลือกประเภทความพิการ</option>
                                 <option value="พิการทางการมองเห็น">พิการทางการมองเห็น</option>
                                 <option value="พิการทางการได้ยินหรือสื่อความหมาย">พิการทางการได้ยินหรือสื่อความหมาย</option>
@@ -370,7 +370,7 @@ function Register({ statusAgreement }) {
                     <div className='mt-4 w-[35rem] font-bold  flex justify-between items-center'>
                         <label> ประเภทบุลคล:</label>
                         <div className="relative ">
-                            <select onChange={(e) => setTypePerson(e.target.value)} className='cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg' style={{ appearance: 'none' }}>
+                            <select onChange={(e) => setTypePerson(e.target.value)} className={`${bgColorMain} cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg`} style={{ appearance: 'none' }}>
                                 <option value="0">เลือกประเภทบุลคล</option>
                                 <option value="นักศึกษาพิการ">นักศึกษาพิการ</option>
                                 <option value="บัณฑิตพิการ">บัณฑิตพิการ</option>
@@ -378,12 +378,12 @@ function Register({ statusAgreement }) {
                             <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
                         </div>
                     </div>
-                    <div className='mt-4 w-[35rem] font-bold  flex justify-between items-center'>
+                    <div className={`${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label>สถาบันการศึกษา:</label>
                         <input
                             onChange={(e) => setUniversity(e.target.value)}
                             type="text"
-                            className='w-96 border border-gray-400 py-2 px-4 rounded-lg'
+                            className={`${bgColorMain} w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                             placeholder='กรอกรายละเอียด'
                         />
                     </div>
@@ -392,7 +392,7 @@ function Register({ statusAgreement }) {
                         <input
                             onChange={(e) => setEmail(e.target.value)}
                             type="email"
-                            className={`w-96 border border-gray-400 py-2 px-4 rounded-lg ${session?.user?.email ? "bg-gray-200 cursor-default focus:outline-none" : ""}`}
+                            className={`${bgColorMain} w-96 border border-gray-400 py-2 px-4 rounded-lg ${session?.user?.email ? "bg-gray-200 cursor-default focus:outline-none" : ""}`}
                             placeholder='กรอกชื่อผู้ใช้'
                             value={email}
                             readOnly={!!session?.user?.email}
