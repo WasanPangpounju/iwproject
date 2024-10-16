@@ -12,12 +12,11 @@ import Swal from "sweetalert2";
 import Loader from "./components/Loader";
 import Footer from "./components/Footer";
 import RootLayout from "./layout";
-import React from 'react';
+import React from "react";
 
 // export default function Home(bgColorNavbar,bgColorMain) {
 // export default function Home({ bgColorMain='bg-white', bgColorNavbar,bgColor }) {
 export default function Home() {
-
   const {
     setFontSize,
     setBgColor,
@@ -32,7 +31,7 @@ export default function Home() {
     bgColorMain2,
     lineBlack,
     textBlue,
-    registerColor
+    registerColor,
   } = useTheme();
 
   const [email, setEmail] = useState("");
@@ -49,18 +48,15 @@ export default function Home() {
   //validate session
   const { status, data: session } = useSession();
   const router = useRouter();
-  useEffect(
-    () => {
-      if (status === "loading") {
-        return;
-      }
+  useEffect(() => {
+    if (status === "loading") {
+      return;
+    }
 
-      if (session) {
-        router.replace("/main");
-      }
-    },
-    [session, router]
-  );
+    if (session) {
+      router.replace("/main");
+    }
+  }, [session, router]);
 
   //loader
   useEffect(() => {
@@ -69,7 +65,7 @@ export default function Home() {
 
   // Manage loader state
   useEffect(() => {
-    document.body.classList.toggle('no_scroll', loader);
+    document.body.classList.toggle("no_scroll", loader);
   }, [loader]);
 
   //submit login
@@ -145,7 +141,7 @@ export default function Home() {
     }
   }
 
-  console.log('bgColorMain', bgColorMain);
+  console.log("bgColorMain", bgColorMain);
   return (
     <div className={`${bgColorMain} ${bgColor}`}>
       <NavbarLogo />
@@ -162,15 +158,17 @@ export default function Home() {
           <div className="flex ">
             <div
               onClick={() => setLoginMod("user")}
-              className={`${loginMod === "user" ? "bg-[#F97201]" : "bg-[#75C7C2]"
-                } hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
+              className={`${
+                loginMod === "user" ? "bg-[#F97201]" : "bg-[#75C7C2]"
+              } ${fontSize} hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
             >
               นักศึกษาพิการ
             </div>
             <div
               onClick={() => setLoginMod("admin")}
-              className={`${loginMod === "admin" ? "bg-[#F97201]" : "bg-[#75C7C2]"
-                } hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
+              className={`${
+                loginMod === "admin" ? "bg-[#F97201]" : "bg-[#75C7C2]"
+              } ${fontSize} hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
             >
               ผู้ดูแลระบบ
             </div>
@@ -179,7 +177,7 @@ export default function Home() {
             onSubmit={handleSubmit}
             className={`relative bottom-[5px] rounded-lg ${bgColorMain} p-14 flex flex-col justify-center items-center `}
           >
-            <p className={``}>
+            <p className={`${fontSize}`}>
               {loginMod === "user"
                 ? "เข้าสู่ระบบสำหรับผู้สมัครงาน"
                 : "เข้าสู่ระบบสำหรับผู้ดูแลระบบ"}
@@ -187,14 +185,14 @@ export default function Home() {
             <div className="mt-7 flex flex-col gap-5">
               <input
                 onChange={(e) => setEmail(e.target.value)}
-                className={`${bgColorMain} w-72 border py-2 px-5 rounded-lg`}
+                className={`${bgColorMain} ${fontSize} w-72 border py-2 px-5 rounded-lg`}
                 type="text"
                 placeholder="อีเมล์ หรือ ชื่อผู้ใช้"
               />
               <div className="relative">
                 <input
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`${bgColorMain} w-72 border py-2 px-5 rounded-lg`}
+                  className={`${bgColorMain} ${fontSize} w-72 border py-2 px-5 rounded-lg`}
                   type={showPassword ? "text" : "password"}
                   placeholder="รหัสผ่าน"
                 />
@@ -216,7 +214,7 @@ export default function Home() {
             <div className="self-end mt-4">
               <Link
                 // className="text-blue-500 hover:cursor-pointer hover:underline"
-                className={`${textBlue} hover:cursor-pointer hover:underline`}
+                className={`${textBlue} ${fontSize} hover:cursor-pointer hover:underline`}
                 href="#"
               >
                 ลืมรหัสผ่าน ?
@@ -225,12 +223,12 @@ export default function Home() {
             <div className="mt-5">
               <button
                 type="submit"
-                className="bg-[#F97201] text-white py-2 px-5 rounded-lg"
+                className={`${fontSize} bg-[#F97201] text-white py-2 px-5 rounded-lg`}
               >
                 เข้าสู่ระบบ
               </button>
             </div>
-            <p className="mt-4">
+            <p className={`mt-4 ${fontSize}`}>
               ยังไม่ได้เป็นสมาชิก?
               <Link
                 // className="mx-2 text-[#F97201] hover:cursor-pointer hover:underline"
@@ -243,12 +241,14 @@ export default function Home() {
             <div className="mt-5 flex  justify-center flex-col items-center">
               <hr className={`${lineBlack} border  w-64`} />
               {/* <p className="bg-white p-1 absolute">หรือ</p> */}
-              <p className={`${bgColorMain2} p-1 absolute`}>หรือ</p>
+              <p className={`${bgColorMain2} ${fontSize} p-1 absolute`}>หรือ</p>
             </div>
-            <div className="mt-8 text-gray-400 flex flex-col gap-3">
+            <div
+              className={`${fontSize} mt-8 text-gray-400 flex flex-col gap-3`}
+            >
               <div
                 onClick={() => {
-                  signIn("google")
+                  signIn("google");
                 }}
                 className="hover:cursor-pointer gap-2 py-1 px-5 border rounded-lg flex"
               >
