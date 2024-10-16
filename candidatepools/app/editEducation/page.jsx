@@ -648,7 +648,7 @@ function editEducation() {
                 <NavbarMain status="edit" />
                 <div className="w-10/12 px-7 py-5">
                     <div className={`${bgColorMain2} rounded-lg p-5`}>
-                        <form onSubmit={(e) => handleSubmit(e, fields.length)} className=" flex gap-x-10 gap-y-5 gap- flex-wrap">
+                        <form onSubmit={(e) => handleSubmit(e, fields.length)} className={`${fontSize} flex gap-x-10 gap-y-5 gap- flex-wrap`} >
                             {dataUser && (
                                 fields.map((field, index) => (
                                     <div className="flex gap-x-10 gap-y-5 flex-wrap" key={index}>

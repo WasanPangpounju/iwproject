@@ -734,9 +734,9 @@ function EditPersonal() {
           <div className={`${bgColorMain2} rounded-lg p-5 pb-10`}>
             <form
               onSubmit={handleEditSubmit}
-              className=" flex gap-x-10 gap-y-5 gap- flex-wrap"
+              className={`${fontSize} flex gap-x-10 gap-y-5 gap- flex-wrap`} 
             >
-              <div className=" flex flex-col">
+              <div className={`flex flex-col`} >
                 <label>
                   คำนำหน้า <span className="text-red-500">*</span>
                 </label>
@@ -1661,7 +1661,7 @@ function EditPersonal() {
                 <input
                   type="email"
                   className={`
-                  ${inputEditColor}  cursor-default focus:outline-none mt-1 w-60 border border-gray-400 py-2 px-4 rounded-lg`}
+                  ${bgColorMain} cursor-default focus:outline-none mt-1 w-60 border border-gray-400 py-2 px-4 rounded-lg`}
                   value={email}
                   readOnly
                 />

@@ -300,7 +300,7 @@ function Register({ statusAgreement }) {
                             <Image alt="profile" className={`w-32 h-32`} src={"/image/main/user.png"} height={1000} width={1000} priority></Image>
                         </div>
                     )}
-                    <div className=' mt-7 w-[35rem] font-bold  flex justify-between items-center'>
+                    <div className={`${fontSize} mt-7 w-[35rem] font-bold  flex justify-between items-center`} >
                         <label> Username:</label>
                         <input
                             onChange={(e) => setUser(e.target.value)}
@@ -312,7 +312,7 @@ function Register({ statusAgreement }) {
                     </div>
                     {/* {!session && (
                         <> */}
-                    <div className='mt-4 w-[35rem] font-bold  flex justify-between items-center'>
+                    <div className={`${fontSize} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label> Password:</label>
                         <input
                             onChange={(e) => setPassword(e.target.value)}
@@ -321,7 +321,7 @@ function Register({ statusAgreement }) {
                             placeholder='ต้องเป็นตัวอักษรภาษาอังกฤษ ตัวเลข และสัญลักษณ์'
                         />
                     </div>
-                    <div className={`${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
+                    <div className={`${fontSize} ${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label> Password Confirm:</label>
                         <input
                             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -332,7 +332,7 @@ function Register({ statusAgreement }) {
                     </div>
                     {/* </>
                     )} */}
-                    <div className={`${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
+                    <div className={`${fontSize} ${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label> ชื่อ:</label>
                         <input
                             onChange={(e) => setFirstName(e.target.value)}
@@ -341,7 +341,7 @@ function Register({ statusAgreement }) {
                             placeholder='กรอกรายละเอียด'
                         />
                     </div>
-                    <div className={`${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
+                    <div className={`${fontSize} ${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label> สกุล:</label>
                         <input
                             onChange={(e) => setLastName(e.target.value)}
@@ -350,7 +350,7 @@ function Register({ statusAgreement }) {
                             placeholder='กรอกรายละเอียด'
                         />
                     </div>
-                    <div className='mt-4 w-[35rem] font-bold  flex justify-between items-center'>
+                    <div className={`${fontSize} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label> ประเภทความพิการ:</label>
                         <div className="relative ">
                             <select onChange={(e) => setTypeDisabled(e.target.value)} className={`${bgColorMain} cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg`} placeholder='กรอกชื่อผู้ใช้' style={{ appearance: 'none' }}>
@@ -367,7 +367,7 @@ function Register({ statusAgreement }) {
                         </div>
 
                     </div>
-                    <div className='mt-4 w-[35rem] font-bold  flex justify-between items-center'>
+                    <div className={`${fontSize} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label> ประเภทบุลคล:</label>
                         <div className="relative ">
                             <select onChange={(e) => setTypePerson(e.target.value)} className={`${bgColorMain} cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg`} style={{ appearance: 'none' }}>
@@ -378,7 +378,7 @@ function Register({ statusAgreement }) {
                             <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
                         </div>
                     </div>
-                    <div className={`${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
+                    <div className={`${fontSize} ${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label>สถาบันการศึกษา:</label>
                         <input
                             onChange={(e) => setUniversity(e.target.value)}
@@ -387,7 +387,7 @@ function Register({ statusAgreement }) {
                             placeholder='กรอกรายละเอียด'
                         />
                     </div>
-                    <div className='mt-4 w-[35rem] font-bold  flex justify-between items-center'>
+                    <div className={`${fontSize} mt-4 w-[35rem] font-bold  flex justify-between items-center'`}>
                         <label>Email:</label>
                         <input
                             onChange={(e) => setEmail(e.target.value)}
@@ -405,17 +405,17 @@ function Register({ statusAgreement }) {
                     ) : null}
                     <div className={` w-96 self-end mt-10 flex justify-between`}>
                         {session ? (
-                            <div onClick={handleLogout} className='hover:cursor-pointer bg-red-400 text-white py-1 px-10 rounded-lg flex justify-center items-center gap-1'>
+                            <div onClick={handleLogout} className={`${fontSize} hover:cursor-pointer bg-red-400 text-white py-1 px-10 rounded-lg flex justify-center items-center gap-1`}>
                                 <Icon path={mdiCloseCircle} size={1} />
                                 <p>ออกจากระบบ</p>
                             </div>
                         ) : (
-                            <Link href="/" className='hover:cursor-pointer bg-[#F97201] text-white py-1 px-10 rounded-lg flex justify-center items-center gap-1'>
+                            <Link href="/" className={`${fontSize} hover:cursor-pointer bg-[#F97201] text-white py-1 px-10 rounded-lg flex justify-center items-center gap-1`}>
                                 <Icon path={mdiCloseCircle} size={1} />
                                 <p>ยกเลิก</p>
                             </Link>
                         )}
-                        <button type='submit' className='hover:cursor-pointer bg-[#75C7C2] text-white py-1 px-10 rounded-lg flex justify-center items-center gap-1'>
+                        <button type='submit' className={`${fontSize} hover:cursor-pointer bg-[#75C7C2] text-white py-1 px-10 rounded-lg flex justify-center items-center gap-1`}>
                             <Icon path={mdiAccountEdit} size={1} />
                             <p>ลงทะเบียน</p>
                         </button>

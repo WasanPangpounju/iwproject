@@ -85,12 +85,12 @@ function NavbarMain({ status }) {
         className={`${status === "main"
           ? "bg-[#fee2d9] text-[#ff7201] cursor-default"
           : "cursor-pointer hover:bg-[#fee2d9] hover:text-[#ff7201]"
-          } flex items-center px-7 gap-5 py-3 focus:bg-[#fee2d9] focus:text-[#ff7201] `}
+          } ${fontSize} flex items-center px-7 gap-5 py-3 focus:bg-[#fee2d9] focus:text-[#ff7201] `}
         role="menuitem"
         aria-label="หน้าหลัก"
       >
         <Icon path={mdiHomeAccount} size={1} aria-hidden="true" />
-        <p className="font-extrabold whitespace-nowrap text-ellipsis">
+        <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           หน้าหลัก
         </p>
       </Link>
@@ -101,7 +101,7 @@ function NavbarMain({ status }) {
         className={`${status === "edit"
           ? "bg-[#fee2d9] text-[#ff7201]"
           : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
-          }  cursor-pointer relative flex items-center px-7 gap-5 py-3 focus:bg-[#fee2d9] focus:text-[#ff7201]`}
+          } ${fontSize} cursor-pointer relative flex items-center px-7 gap-5 py-3 focus:bg-[#fee2d9] focus:text-[#ff7201]`}
         aria-haspopup="true"
         aria-expanded={isEditMenuOpen} // แสดงสถานะว่าเปิดหรือปิดเมนู
         onMouseEnter={handleMenuOpen} // เปิดเมนูเมื่อ mouse hover
@@ -116,26 +116,26 @@ function NavbarMain({ status }) {
         }}
       >
         <Icon path={mdiFileEditOutline} size={1} aria-hidden="true" />
-        <p className="font-extrabold whitespace-nowrap text-ellipsis ">
+        <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           แก้ไขประวัติ
         </p>
         {isEditMenuOpen && ( // แสดงเมนูถ้า isEditMenuOpen เป็น true
           <div className={`${bgColorNavbar} ${bgColorWhite} max-w-fit absolute left-full top-0 z-10`} role="menu">
             <Link href="/editPersonal" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ข้อมูลส่วนบุคคล">
               <Icon path={mdiAccount} size={1} aria-hidden="true" aria-label="ข้อมูลส่วนบุคคล" />
-              <p className="font-extrabold whitespace-nowrap text-ellipsis ">ข้อมูลส่วนบุคคล</p>
+              <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>ข้อมูลส่วนบุคคล</p>
             </Link>
             <Link href="/editEducation" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ประวัติการศึกษา">
               <Icon path={mdiSchool} size={1} aria-hidden="true" aria-label="ประวัติการศึกษา" />
-              <p className="font-extrabold whitespace-nowrap text-ellipsis">ประวัติการศึกษา</p>
+              <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>ประวัติการศึกษา</p>
             </Link>
             <Link href="#" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ประวัติการทำงาน/ฝึกงาน">
               <Icon path={mdiBriefcaseOutline} size={1} aria-hidden="true" aria-label="ประวัติการทำงาน/ฝึกงาน" />
-              <p className="font-extrabold whitespace-nowrap text-ellipsis">ประวัติการทำงาน/ฝึกงาน</p>
+              <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>ประวัติการทำงาน/ฝึกงาน</p>
             </Link>
             <Link href="#" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ความสามารถ/การอบรม">
               <Icon path={mdiCertificate} size={1} aria-hidden="true" aria-label="ความสามารถ/การอบรม" />
-              <p className="font-extrabold whitespace-nowrap text-ellipsis">ความสามารถ/การอบรม</p>
+              <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>ความสามารถ/การอบรม</p>
             </Link>
           </div>
         )}
@@ -148,7 +148,7 @@ function NavbarMain({ status }) {
         aria-label="เรซูเม่/งานที่สนใจ"
       >
         <Icon path={mdiFileAccount} size={1} aria-hidden="true" aria-label="เรซูเม่/งานที่สนใจ" />
-        <p className="font-extrabold whitespace-nowrap text-ellipsis">
+        <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           เรซูเม่/งานที่สนใจ
         </p>
       </Link>
@@ -156,21 +156,21 @@ function NavbarMain({ status }) {
 
       <Link href="#" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3" role="menuitem" aria-label="ประชาสัมพันธ์จากบริษัท">
         <Icon path={mdiBullhorn} size={1} aria-hidden="true" aria-label="ประชาสัมพันธ์จากบริษัท" />
-        <p className="font-extrabold whitespace-nowrap text-ellipsis overflow-hidden">
+        <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis overflow-hidden`}>
           ประชาสัมพันธ์จากบริษัท
         </p>
       </Link>
 
       <Link href="" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3" role="menuitem" aria-label="เกี่ยวกับเรา">
         <Icon path={mdiMessageAlert} size={1} aria-hidden="true" aria-label="เกี่ยวกับเรา" />
-        <p className="font-extrabold whitespace-nowrap text-ellipsis">
+        <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           เกี่ยวกับเรา
         </p>
       </Link>
 
       <Link href="" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3" role="menuitem" aria-label="ช่วยเหลือ">
         <Icon path={mdiHelpCircle} size={1} aria-hidden="true" aria-label="ช่วยเหลือ" />
-        <p className="font-extrabold whitespace-nowrap text-ellipsis">
+        <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           ช่วยเหลือ
         </p>
       </Link>
@@ -184,7 +184,7 @@ function NavbarMain({ status }) {
         aria-label="flowchage"
       >
         <Icon path={mdiHomeAccount} size={1} aria-hidden="true" aria-label="flowchage" />
-        <p className="font-extrabold whitespace-nowrap text-ellipsis">
+        <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           flowchage
         </p>
       </Link>
@@ -197,7 +197,7 @@ function NavbarMain({ status }) {
         tabIndex="0" // ทำให้สามารถเข้าถึงได้ด้วยการกด Tab
       >
         <Icon path={mdiLogout} size={1} aria-hidden="true" aria-label="ออกจากระบบ" />
-        <p className="font-extrabold whitespace-nowrap text-ellipsis">
+        <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           ออกจากระบบ
         </p>
       </div>

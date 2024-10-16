@@ -265,8 +265,8 @@ function Navbar({}) {
         <Icon path={mdiMonitor} size={0.7} />
       </div>
       {/* <p className={`text-white font-thin text-sm ms-2 ${fontSize}`}>แสดงผล</p> */}
-      <p className={`${bgColorWhite} text-sm ms-2 ${fontSize}`}>แสดงผล</p>
-      <div className="flex gap-2 ms-4">
+      <p className={`${bgColorWhite}  ms-2 ${fontSize}`}>แสดงผล</p>
+      <div className={`${fontSize} flex gap-2 ms-4`}>
         <div
           onClick={() => {
             setBgColor("bg-black text-white"); // Change background to black and text to white
@@ -279,7 +279,7 @@ function Navbar({}) {
             setRegisterColor("text-white");
             setInputEditColor("bg-black-200");
           }}
-          className="hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-black text-white py-1 px-2 text-xs font-thin"
+          className="hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-black text-white py-1 px-2  font-thin"
         >
           อักษรขาวพื้นดำ
         </div>
@@ -295,7 +295,7 @@ function Navbar({}) {
             setRegisterColor("text-[#e7e703]");
             setInputEditColor("bg-black-200");
           }}
-          className="hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-black text-[#e7e703] py-1 px-2 text-xs font-thin"
+          className="hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-black text-[#e7e703] py-1 px-2  font-thin"
         >
           อักษรเหลืองพื้นดำ
         </div>
@@ -312,7 +312,7 @@ function Navbar({}) {
             setRegisterColor("text-[#F97201]");
             setInputEditColor("bg-gray-200");
           }}
-          className="hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-white text-black py-1 px-2 text-xs font-thin"
+          className="hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-white text-black py-1 px-2  font-thin"
         >
           ปกติ
         </div>
