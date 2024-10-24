@@ -129,7 +129,7 @@ function NavbarMain({ status }) {
               <Icon path={mdiSchool} size={1} aria-hidden="true" aria-label="ประวัติการศึกษา" />
               <p className="font-extrabold whitespace-nowrap text-ellipsis">ประวัติการศึกษา</p>
             </Link>
-            <Link href="#" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ประวัติการทำงาน/ฝึกงาน">
+            <Link href="/workHistory" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ประวัติการทำงาน/ฝึกงาน">
               <Icon path={mdiBriefcaseOutline} size={1} aria-hidden="true" aria-label="ประวัติการทำงาน/ฝึกงาน" />
               <p className="font-extrabold whitespace-nowrap text-ellipsis">ประวัติการทำงาน/ฝึกงาน</p>
             </Link>
