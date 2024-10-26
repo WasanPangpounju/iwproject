@@ -9,7 +9,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useTheme } from "../ThemeContext";
 import Icon from '@mdi/react'
-import { mdiPlus, mdiCloseCircle, mdiDownload, mdiArrowDownDropCircle, mdiPencil, mdiContentSave } from '@mdi/js'
+import { mdiPlus, mdiCloseCircle, mdiDownload, mdiArrowDownDropCircle, mdiPencil, mdiContentSave, mdiDelete } from '@mdi/js'
 import Swal from "sweetalert2";
 
 //firebase
@@ -104,17 +104,32 @@ function WorkHistory() {
     const handleProjectName = (e, index) => {
         const newTemp = e; // ค่าที่ได้รับจาก input
         setProjectName((prevTemp) => {
-            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
-            updatedTemp[index] = newTemp; // อัปเดตค่าใหม่
-            return updatedTemp.filter(temp => temp !== "").concat(Array(updatedTemp.length - updatedTemp.filter(temp => temp !== "").length).fill(""));
+            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevTemp เป็น array หรือไม่
+
+            // เพิ่มค่า "" ในตำแหน่งที่ขาดหายไปให้ครบจนถึง index ที่ระบุ
+            while (updatedTemp.length <= index) {
+                updatedTemp.push(""); // เพิ่มค่าว่างเพื่อคงขนาดอาร์เรย์
+            }
+
+            // อัปเดตค่าใหม่ในตำแหน่งที่กำหนด
+            updatedTemp[index] = newTemp;
+            return updatedTemp;
         });
     };
+
     const handleProjectDetail = (e, index) => {
         const newTemp = e; // ค่าที่ได้รับจาก input
         setProjectDetail((prevTemp) => {
-            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
-            updatedTemp[index] = newTemp; // อัปเดตค่าใหม่
-            return updatedTemp.filter(temp => temp !== "").concat(Array(updatedTemp.length - updatedTemp.filter(temp => temp !== "").length).fill(""));
+            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevTemp เป็น array หรือไม่
+
+            // เพิ่มค่า "" ในตำแหน่งที่ขาดหายไปให้ครบจนถึง index ที่ระบุ
+            while (updatedTemp.length <= index) {
+                updatedTemp.push(""); // เพิ่มค่าว่างเพื่อคงขนาดอาร์เรย์
+            }
+
+            // อัปเดตค่าใหม่ในตำแหน่งที่กำหนด
+            updatedTemp[index] = newTemp;
+            return updatedTemp;
         });
     };
 
@@ -168,10 +183,38 @@ function WorkHistory() {
 
                 const newTempProjectFile = projectFile.filter((_, i) => i !== index);
                 setProjectFile(newTempProjectFile);
+
+
+                // ลบข้อมูลจาก getProjectName, getProjectDetail, และ getProjectFile
+                const newGetProjectName = getProjectName.filter((_, i) => i !== temp);
+                setGetProjectName(newGetProjectName);
+
+                const newGetProjectDetail = getProjectDetail.filter((_, i) => i !== temp);
+                setGetProjectDetail(newGetProjectDetail);
+
+                const newGetProjectFile = getProjectFile.filter((_, i) => i !== temp);
+                setGetProjectFile(newGetProjectFile);
             }
         });
     };
 
+    // function DeleteFileProject(index) {
+    //     Swal.fire({
+    //         title: "ลบข้อมูล",
+    //         text: "คุณต้องการลบข้อมูลนี้?",
+    //         icon: "warning",
+    //         confirmButtonText: "ใช่",
+    //         confirmButtonColor: "#f27474",
+    //         showCancelButton: true,
+    //         cancelButtonText: "ไม่"
+    //     }).then((result) => {
+    //         setGetProjectFile((prevFiles) => {
+    //             const updatedFiles = [...prevFiles]; // สร้างสำเนาของอาร์เรย์ปัจจุบัน
+    //             updatedFiles[index] = {}; // ตั้งค่าตำแหน่งที่ต้องการลบเป็นออบเจกต์ว่าง
+    //             return updatedFiles; // คืนค่าอาร์เรย์ใหม่ที่มีการเปลี่ยนแปลง
+    //         });
+    //     })
+    // }
     //upload file
     //projects
     const projectFileInputRef = useRef(null);
@@ -264,58 +307,91 @@ function WorkHistory() {
     }]);
 
     const handleDateStartInternship = (e, index) => {
-        const newTemp = e; // ค่าที่ได้รับจาก input
+        const newTemp = e;
         setDateStartInternship((prevTemp) => {
-            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
-            updatedTemp[index] = newTemp; // อัปเดตค่าใหม่
-            return updatedTemp.filter(temp => temp !== "").concat(Array(updatedTemp.length - updatedTemp.filter(temp => temp !== "").length).fill(""));
+            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : [];
+
+            // เพิ่มค่า "" ในตำแหน่งที่ขาดหายไปให้ครบจนถึง index ที่ระบุ
+            while (updatedTemp.length <= index) {
+                updatedTemp.push("");
+            }
+
+            updatedTemp[index] = newTemp;
+            return updatedTemp;
         });
     };
+
     const handleDateEndInternship = (e, index) => {
-        const newTemp = e; // ค่าที่ได้รับจาก input
+        const newTemp = e;
         setDateEndInternship((prevTemp) => {
-            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
-            updatedTemp[index] = newTemp; // อัปเดตค่าใหม่
-            return updatedTemp.filter(temp => temp !== "").concat(Array(updatedTemp.length - updatedTemp.filter(temp => temp !== "").length).fill(""));
+            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : [];
+
+            while (updatedTemp.length <= index) {
+                updatedTemp.push("");
+            }
+
+            updatedTemp[index] = newTemp;
+            return updatedTemp;
         });
     };
+
     const handlePlaceInternship = (e, index) => {
-        const newTemp = e; // ค่าที่ได้รับจาก input
+        const newTemp = e;
         setPlaceInternship((prevTemp) => {
-            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
-            updatedTemp[index] = newTemp; // อัปเดตค่าใหม่
-            return updatedTemp.filter(temp => temp !== "").concat(Array(updatedTemp.length - updatedTemp.filter(temp => temp !== "").length).fill(""));
+            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : [];
+
+            while (updatedTemp.length <= index) {
+                updatedTemp.push("");
+            }
+
+            updatedTemp[index] = newTemp;
+            return updatedTemp;
         });
     };
+
     const handlePositionInternship = (e, index) => {
-        const newTemp = e; // ค่าที่ได้รับจาก input
+        const newTemp = e;
         setPositionInternship((prevTemp) => {
-            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
-            updatedTemp[index] = newTemp; // อัปเดตค่าใหม่
-            return updatedTemp.filter(temp => temp !== "").concat(Array(updatedTemp.length - updatedTemp.filter(temp => temp !== "").length).fill(""));
+            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : [];
+
+            while (updatedTemp.length <= index) {
+                updatedTemp.push("");
+            }
+
+            updatedTemp[index] = newTemp;
+            return updatedTemp;
         });
     };
+
 
     //config field
     const [internships, setInternships] = useState([{}]);
     const [errorFieldInterships, setErrorFieldInterships] = useState('')
-
     const handleAddInterships = () => {
-        if (!dateStartInternship[internships.length - 1]
+        // ตรวจสอบให้แน่ใจว่ามีการกรอกข้อมูล internship ครบถ้วนก่อนที่จะเพิ่มข้อมูลใหม่
+        if ((!dateStartInternship[internships.length - 1]
             || !dateEndInternship[internships.length - 1]
             || !placeInternship[internships.length - 1]
             || !positionInternship[internships.length - 1]
-            || !internshipFile[internships.length - 1]?.fileUrl) {
-            setErrorFieldInterships("กรุณากรอกข้อความให้ครบก่อนเพิ่มข้อมูลใหม่")
+            || !internshipFile[internships.length - 1]?.fileUrl)
+            &&
+            (!getDateStartInternship[internships.length - 1]
+                || !getDateEndInternship[internships.length - 1]
+                || !getPlaceInternship[internships.length - 1]
+                || !getPositionInternship[internships.length - 1]
+                || !getInternshipFile[internships.length - 1]?.fileUrl)) {
+            setErrorFieldInterships("กรุณากรอกข้อความให้ครบก่อนเพิ่มข้อมูลใหม่");
             return;
         }
-        if (internships.length >= 5) {
-            setErrorFieldInterships("")
-            return;
-        }
-        setErrorFieldInterships("")
-        setInternships([...internships, {}]);
 
+        // จำกัดจำนวน internship ไม่เกิน 5 รายการ
+        if (internships.length >= 5) {
+            setErrorFieldInterships("");
+            return;
+        }
+
+        setErrorFieldInterships("");
+        setInternships([...internships, {}]); // เพิ่มออบเจกต์ว่างใน internships
     };
 
     const handleRemoveInternship = (index) => {
@@ -341,6 +417,13 @@ function WorkHistory() {
                 setPlaceInternship((prev) => prev.filter((_, i) => i !== temp));
                 setPositionInternship((prev) => prev.filter((_, i) => i !== temp));
                 setInternshipFile((prev) => prev.filter((_, i) => i !== temp));
+
+                // ลบข้อมูลจาก getDateStartInternship, getDateEndInternship, getPlaceInternship, getPositionInternship, และ getInternshipFile
+                setGetDateStartInternship((prev) => prev.filter((_, i) => i !== temp));
+                setGetDateEndInternship((prev) => prev.filter((_, i) => i !== temp));
+                setGetPlaceInternship((prev) => prev.filter((_, i) => i !== temp));
+                setGetPositionInternship((prev) => prev.filter((_, i) => i !== temp));
+                setGetInternshipFile((prev) => prev.filter((_, i) => i !== temp));
             }
         });
     };
@@ -435,6 +518,12 @@ function WorkHistory() {
         const newTemp = e;
         setDateStartWork((prevTemp) => {
             const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : [];
+
+            // เพิ่มค่า "" ในตำแหน่งที่ขาดหายไปให้ครบจนถึง index ที่ระบุ
+            while (updatedTemp.length <= index) {
+                updatedTemp.push("");
+            }
+
             updatedTemp[index] = newTemp;
             return updatedTemp;
         });
@@ -444,6 +533,11 @@ function WorkHistory() {
         const newTemp = e;
         setDateEndWork((prevTemp) => {
             const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : [];
+
+            while (updatedTemp.length <= index) {
+                updatedTemp.push("");
+            }
+
             updatedTemp[index] = newTemp;
             return updatedTemp;
         });
@@ -453,6 +547,11 @@ function WorkHistory() {
         const newTemp = e;
         setPlaceWork((prevTemp) => {
             const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : [];
+
+            while (updatedTemp.length <= index) {
+                updatedTemp.push("");
+            }
+
             updatedTemp[index] = newTemp;
             return updatedTemp;
         });
@@ -462,6 +561,11 @@ function WorkHistory() {
         const newTemp = e;
         setPositionWork((prevTemp) => {
             const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : [];
+
+            while (updatedTemp.length <= index) {
+                updatedTemp.push("");
+            }
+
             updatedTemp[index] = newTemp;
             return updatedTemp;
         });
@@ -472,20 +576,30 @@ function WorkHistory() {
     const [errorFieldWorks, setErrorFieldWorks] = useState('');
 
     const handleAddWork = () => {
-        if (!dateStartWork[works.length - 1]
+        // ตรวจสอบให้แน่ใจว่ามีการกรอกข้อมูล work ครบถ้วนก่อนที่จะเพิ่มข้อมูลใหม่
+        if ((!dateStartWork[works.length - 1]
             || !dateEndWork[works.length - 1]
             || !placeWork[works.length - 1]
             || !positionWork[works.length - 1]
-            || !workFile[works.length - 1]?.fileUrl) {
+            || !workFile[works.length - 1]?.fileUrl)
+            &&
+            (!getDateStartWork[works.length - 1]
+                || !getDateEndWork[works.length - 1]
+                || !getPlaceWork[works.length - 1]
+                || !getPositionWork[works.length - 1]
+                || !getWorkFile[works.length - 1]?.fileUrl)) {
             setErrorFieldWorks("กรุณากรอกข้อความให้ครบก่อนเพิ่มข้อมูลใหม่");
             return;
         }
+
+        // จำกัดจำนวน work ไม่เกิน 5 รายการ
         if (works.length >= 5) {
             setErrorFieldWorks("");
             return;
         }
+
         setErrorFieldWorks("");
-        setWorks([...works, {}]);
+        setWorks([...works, {}]); // เพิ่มออบเจกต์ว่างใน works
     };
 
     const handleRemoveWork = (index) => {
@@ -503,12 +617,23 @@ function WorkHistory() {
                 newWorks.splice(index, 1);
                 setWorks(newWorks);
 
+                const temp = index;
+
                 setErrorFieldWorks("");
-                setDateStartWork((prev) => prev.filter((_, i) => i !== index));
-                setDateEndWork((prev) => prev.filter((_, i) => i !== index));
-                setPlaceWork((prev) => prev.filter((_, i) => i !== index));
-                setPositionWork((prev) => prev.filter((_, i) => i !== index));
-                setWorkFile((prev) => prev.filter((_, i) => i !== index));
+
+                // ลบข้อมูลจาก dateStartWork, dateEndWork, placeWork, positionWork, และ workFile
+                setDateStartWork((prev) => prev.filter((_, i) => i !== temp));
+                setDateEndWork((prev) => prev.filter((_, i) => i !== temp));
+                setPlaceWork((prev) => prev.filter((_, i) => i !== temp));
+                setPositionWork((prev) => prev.filter((_, i) => i !== temp));
+                setWorkFile((prev) => prev.filter((_, i) => i !== temp));
+
+                // ลบข้อมูลจาก getDateStartWork, getDateEndWork, getPlaceWork, getPositionWork, และ getWorkFile
+                setGetDateStartWork((prev) => prev.filter((_, i) => i !== temp));
+                setGetDateEndWork((prev) => prev.filter((_, i) => i !== temp));
+                setGetPlaceWork((prev) => prev.filter((_, i) => i !== temp));
+                setGetPositionWork((prev) => prev.filter((_, i) => i !== temp));
+                setGetWorkFile((prev) => prev.filter((_, i) => i !== temp));
             }
         });
     };
@@ -581,22 +706,95 @@ function WorkHistory() {
 
     const [editMode, setEditMode] = useState(false)
 
+    function mergeArrayValues(nonGetArray, getArray) {
+        // ถ้า nonGetArray เป็นอาร์เรย์ว่าง ให้คืนค่า getArray โดยตรง
+        if (nonGetArray.length === 0) {
+            return getArray;
+        }
+
+        if (nonGetArray.length > getArray.length) {
+            return nonGetArray.map((value, index) => {
+                return value || getArray[index] || '';
+            });
+        } else {
+            return getArray.map((value, index) => {
+                return nonGetArray[index] || value || '';
+            });
+        }
+    }
+    function mergeArrayObjects(nonGetArray, getArray) {
+        const maxLength = Math.max(nonGetArray.length, getArray.length);
+
+        return Array.from({ length: maxLength }, (_, index) => {
+            const nonGetItem = nonGetArray[index] || {}; // ใช้ค่าจาก nonGetArray ในตำแหน่งที่ระบุ หรือออบเจกต์ว่าง
+            const getItem = getArray[index] || {};       // ใช้ค่าจาก getArray ในตำแหน่งที่ระบุ หรือออบเจกต์ว่าง
+
+            // รวมค่าในตำแหน่งเดียวกันจากทั้งสองอาร์เรย์ โดยให้ข้อมูลที่มีค่าจริงจาก nonGetItem มีความสำคัญกว่า getItem
+            return {
+                fileName: nonGetItem.fileName || getItem.fileName || "",
+                fileSize: nonGetItem.fileSize || getItem.fileSize || "",
+                fileType: nonGetItem.fileType || getItem.fileType || "",
+                fileUrl: nonGetItem.fileUrl || getItem.fileUrl || "",
+                _id: nonGetItem._id || getItem._id || "",
+            };
+        });
+    }
+
+
+
+
     //submit
     async function handleSubmit(e) {
         e.preventDefault();
 
         setLoader(true);
 
+        const mergedProjectName = mergeArrayValues(projectName, getProjectName);
+        const mergedProjectDetail = mergeArrayValues(projectDetail, getProjectDetail);
+        const mergedProjectFile = mergeArrayObjects(projectFile, getProjectFile);
+
+        const mergedDateStartInternship = mergeArrayValues(dateStartInternship, getDateStartInternship);
+        const mergedDateEndInternship = mergeArrayValues(dateEndInternship, getDateEndInternship);
+        const mergedPlaceInternship = mergeArrayValues(placeInternship, getPlaceInternship);
+        const mergedPositionInternship = mergeArrayValues(positionInternship, getPositionInternship);
+        const mergedInternshipFile = mergeArrayObjects(internshipFile, getInternshipFile);
+
+        const mergedDateStartWork = mergeArrayValues(dateStartWork, getDateStartWork);
+        const mergedDateEndWork = mergeArrayValues(dateEndWork, getDateEndWork);
+        const mergedPlaceWork = mergeArrayValues(placeWork, getPlaceWork);
+        const mergedPositionWork = mergeArrayValues(positionWork, getPositionWork);
+        const mergedWorkFile = mergeArrayObjects(workFile, getWorkFile);
 
         // หลังจากตั้งค่าแล้ว ดำเนินการตรวจสอบข้อมูล
-        const isProjectFilled = projectName.length || projectDetail.length || projectFile[projectName.length - 1]?.fileUrl;
-        const isProjectComplete = projectName.length && projectDetail.length && projectFile[projectName.length - 1]?.fileUrl;
+        const isProjectFilled = mergedProjectName.length || mergedProjectDetail.length || mergedProjectFile[projects.length - 1];
+        const isProjectComplete = mergedProjectName.length && mergedProjectDetail.length && mergedProjectFile[projects.length - 1];
 
-        const isInternshipFilled = dateStartInternship.length || dateEndInternship.length || placeInternship.length || positionInternship.length || internshipFile[dateStartInternship.length - 1]?.fileUrl;
-        const isInternshipComplete = dateStartInternship.length && dateEndInternship.length && placeInternship.length && positionInternship.length && internshipFile[dateStartInternship.length - 1]?.fileUrl;
+        const isInternshipFilled = mergedDateStartInternship.length || mergedDateEndInternship.length || mergedPlaceInternship.length || mergedPositionInternship.length || mergedInternshipFile[internships.length - 1];
+        const isInternshipComplete = mergedDateStartInternship.length && mergedDateEndInternship.length && mergedPlaceInternship.length && mergedPositionInternship.length && mergedInternshipFile[internships.length - 1];
 
-        const isWorkFilled = dateStartWork.length || dateEndWork.length || placeWork.length || positionWork.length || workFile[dateStartWork.length - 1]?.fileUrl;
-        const isWorkComplete = dateStartWork.length && dateEndWork.length && placeWork.length && positionWork.length && workFile[dateStartWork.length - 1]?.fileUrl;
+        const isWorkFilled = mergedDateStartWork.length || mergedDateEndWork.length || mergedPlaceWork.length || mergedPositionWork.length || mergedWorkFile[works.length - 1];
+        const isWorkComplete = mergedDateStartWork.length && mergedDateEndWork.length && mergedPlaceWork.length && mergedPositionWork.length && mergedWorkFile[works.length - 1];
+
+
+        //check date
+        const isInvalidDateRange = mergedDateStartInternship.find((dateStart, i) => {
+            const dateEnd = mergedDateEndInternship[i];
+            return new Date(dateEnd) < new Date(dateStart);
+        });
+
+        if (isInvalidDateRange) {
+            setError("ระบุปีการฝึกงานไม่ถูกต้อง");
+            return; // หยุดการทำงานถ้ามีช่วงวันที่ไม่ถูกต้อง
+        }
+        const isInvalidDateRangeWork = mergedDateStartWork.find((dateStart, i) => {
+            const dateEnd = mergedDateEndWork[i];
+            return new Date(dateEnd) < new Date(dateStart);
+        });
+
+        if (isInvalidDateRangeWork) {
+            setError("ระบุปีการทำงานไม่ถูกต้อง");
+            return; // หยุดการทำงานถ้ามีช่วงวันที่ไม่ถูกต้อง
+        }
 
         // ตรวจสอบว่าแต่ละกลุ่มครบหรือไม่ครบ
         if (isProjectFilled && !isProjectComplete) {
@@ -640,27 +838,49 @@ function WorkHistory() {
         // จัดเตรียมข้อมูลที่จะส่งไปยัง API
         const data = {
             uuid: session?.user?.id,
-            projects: projectName.map((name, index) => ({
+            projects: mergedProjectName.map((name, index) => ({
                 name,
-                detail: projectDetail[index],
-                files: [projectFile[index]],
+                detail: mergedProjectDetail[index],
+                files: [ // ตรวจสอบให้ files เป็น array ของ object ตาม schema
+                    {
+                        fileName: mergedProjectFile[index].fileName || "", // ใช้ค่า fileName ที่ถูกต้อง
+                        fileType: mergedProjectFile[index].fileType || "",
+                        fileUrl: mergedProjectFile[index].fileUrl || "",
+                        fileSize: mergedProjectFile[index].fileSize || "",
+                    }
+                ]
             })),
-            internships: dateStartInternship.map((dateStart, index) => ({
+            internships: mergedDateStartInternship.map((dateStart, index) => ({
                 dateStart,
-                dateEnd: dateEndInternship[index],
-                place: placeInternship[index],
-                position: positionInternship[index],
-                files: [internshipFile[index]],
+                dateEnd: mergedDateEndInternship[index],
+                place: mergedPlaceInternship[index],
+                position: mergedPositionInternship[index],
+                files: [
+                    {
+                        fileName: mergedInternshipFile[index].fileName || "",
+                        fileType: mergedInternshipFile[index].fileType || "",
+                        fileUrl: mergedInternshipFile[index].fileUrl || "",
+                        fileSize: mergedInternshipFile[index].fileSize || "",
+                    }
+                ]
             })),
-            workExperience: dateStartWork.map((dateStart, index) => ({
+            workExperience: mergedDateStartWork.map((dateStart, index) => ({
                 dateStart,
-                dateEnd: dateEndWork[index],
-                place: placeWork[index],
-                position: positionWork[index],
-                files: [workFile[index]],
+                dateEnd: mergedDateEndWork[index],
+                place: mergedPlaceWork[index],
+                position: mergedPositionWork[index],
+                files: [
+                    {
+                        fileName: mergedWorkFile[index].fileName || "",
+                        fileType: mergedWorkFile[index].fileType || "",
+                        fileUrl: mergedWorkFile[index].fileUrl || "",
+                        fileSize: mergedWorkFile[index].fileSize || "",
+                    }
+                ]
             })),
         };
 
+        console.log(data);
         try {
             // ส่งข้อมูลไปยัง API ด้วย fetch
             const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/historyWork`,
@@ -800,8 +1020,6 @@ function WorkHistory() {
     }
 
 
-console.log(projects);
-console.log(internships);
     return (
         <div className={`${bgColorMain} ${bgColor}`}>
             <NavbarLogo title="ประวัติการทำงาน / ฝึกงาน" dataUser={dataUser} />
@@ -809,13 +1027,13 @@ console.log(internships);
                 <NavbarMain status="edit" />
                 <div className="w-10/12 px-7 py-5">
                     {/* <div className={`bg-white rounded-lg p-5`}> */}
-                    <form onSubmit={handleSubmit} className={`${bgColorMain2} ${bgColor} rounded-lg p-5 flex flex-col gap-10`}>
+                    <form onSubmit={handleSubmit} className={`${bgColorMain2} ${bgColor} rounded-lg p-5 flex flex-col gap-16`}>
                         <div>
                             <p className='mb-2'>โครงงาน / ผลงาน</p>
                             <hr />
                             {projects.map((project, index) => (
                                 <div key={index}>
-                                    {index > 0 && (
+                                    {index > 0 && editMode && (
                                         <div className={` flex col flex-col justify-end w-full mt-5`}>
                                             <div
                                                 className={` cursor-pointer  rounded-lg w-fit`}
@@ -825,12 +1043,16 @@ console.log(internships);
                                             </div>
                                         </div>
                                     )}
+                                    {index > 0 && !editMode && (
+                                        <hr className='mt-5' />
+                                    )}
                                     <div className='mt-5 flex gap-5 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
                                             <label >ชื่อโครงงาน / ผลงาน</label>
                                             <input
                                                 type="text"
-                                                className={`mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                readOnly={!editMode}
                                                 placeholder="ระบุชื่อโครงงานหรือผลงาน"
                                                 defaultValue={getProjectName[index] || ""}
                                                 onBlur={(e) => handleProjectName(e.target.value, index)}
@@ -840,7 +1062,8 @@ console.log(internships);
                                             <label >รายละเอียด</label>
                                             <input
                                                 type="text"
-                                                className={`mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                readOnly={!editMode}
                                                 placeholder="รายละเอียดเพิ่มเติม"
                                                 defaultValue={getProjectDetail[index] || ""}
                                                 onBlur={(e) => handleProjectDetail(e.target.value, index)}
@@ -867,14 +1090,16 @@ console.log(internships);
                                                     </div>
                                                     <p className='text-gray-500'>{projectFile[index]?.fileSize || getProjectFile[index]?.fileSize} MB</p>
                                                     <div className='cursor-pointer flex gap-2'>
-                                                        {/* <Icon className={` text-black`} path={mdiDelete} size={1} /> */}
                                                         <Icon className={` text-black`} path={mdiDownload} size={1} />
+                                                        {/* <Icon onClick={() => DeleteFileProject(index)} className={` text-black`} path={mdiDelete} size={1} /> */}
                                                     </div>
                                                 </div>
                                             ) : (
                                                 <div
-                                                    onClick={openFileDialog} // เรียกใช้ฟังก์ชันเมื่อคลิก
-                                                    className="border mt-1 rounded-lg py-2 px-8 text-center bg-gray-300 cursor-pointer"
+                                                    onClick={editMode ? openFileDialog : undefined} // เรียกใช้ฟังก์ชันเมื่อ editMode เป็น true
+                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
+                                                        }`}
+                                                    style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
                                                 >
                                                     Choose File
                                                 </div>
@@ -890,7 +1115,7 @@ console.log(internships);
                                     *{errorField}
                                 </div>
                             )}
-                            {projects.length < 5 && (
+                            {projects.length < 5 && editMode && (
                                 <div className={` flex col flex-col justify-end w-full mt-5`}>
                                     <div
                                         className={` cursor-pointer  rounded-lg bg-[#4a94ff] w-fit`}
@@ -906,7 +1131,7 @@ console.log(internships);
                             <hr />
                             {internships.map((project, index) => (
                                 <div key={index}>
-                                    {index > 0 && (
+                                    {index > 0 && editMode && (
                                         <div className={` flex col flex-col justify-end w-full mt-5`}>
                                             <div
                                                 className={` cursor-pointer  rounded-lg w-fit`}
@@ -916,14 +1141,19 @@ console.log(internships);
                                             </div>
                                         </div>
                                     )}
+                                    {index > 0 && !editMode && (
+                                        <hr className='mt-5' />
+                                    )}
                                     <div className='mt-5 flex gap-5 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
                                             <label >ตั้งแต่</label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
-                                                    className={`cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    className={`${!editMode ? "editModeTrue" : ""} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
                                                     style={{ appearance: 'none' }}
-                                                    onBlur={(e) => handleDateStartInternship(e.target.value, index)}
+                                                    onChange={(e) => handleDateStartInternship(e.target.value, index)}
+                                                    value={dateStartInternship[index] || getDateStartInternship[index] || ""}
+                                                    disabled={!editMode}
                                                 >
                                                     <option value="0">-</option>
                                                     {years.map((year, index) => (
@@ -937,9 +1167,11 @@ console.log(internships);
                                             <label >ถึง</label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
-                                                    className={`cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    className={`${!editMode ? "editModeTrue" : ""} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
                                                     style={{ appearance: 'none' }}
-                                                    onBlur={(e) => handleDateEndInternship(e.target.value, index)}
+                                                    onChange={(e) => handleDateEndInternship(e.target.value, index)}
+                                                    value={dateEndInternship[index] || getDateEndInternship[index] || ""}
+                                                    disabled={!editMode}
                                                 >
                                                     <option value="0">-</option>
                                                     {years.map((year, index) => (
@@ -953,18 +1185,22 @@ console.log(internships);
                                             <label >สถานที่ฝึกงาน</label>
                                             <input
                                                 type="text"
-                                                className={`mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 placeholder="ระบุสถานฝึกงาน"
                                                 onBlur={(e) => handlePlaceInternship(e.target.value, index)}
+                                                defaultValue={getPlaceInternship[index] || ""}
+                                                readOnly={!editMode}
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
                                             <label >ตำแหน่ง</label>
                                             <input
                                                 type="text"
-                                                className={`mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 placeholder="ระบุตำแหน่งที่ฝึกงาน"
                                                 onBlur={(e) => handlePositionInternship(e.target.value, index)}
+                                                defaultValue={getPositionInternship[index] || ""}
+                                                readOnly={!editMode}
                                             />
                                         </div>
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
@@ -978,15 +1214,15 @@ console.log(internships);
                                                 hidden
                                             />
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
-                                            {internshipFile[index] && internshipFile[index].fileUrl !== '' ? (
+                                            {(internshipFile[index] && internshipFile[index]?.fileUrl !== '') || (getInternshipFile[index] && getInternshipFile[index]?.fileUrl !== '') ? (
                                                 <div className={`mt-1 w-fit py-2 flex gap-8`}
                                                 >
                                                     <div>
                                                         <p>
-                                                            {internshipFile[index].fileName}.{internshipFile[index].fileType}
+                                                            {internshipFile[index]?.fileName || getInternshipFile[index]?.fileName}.{internshipFile[index]?.fileType || getInternshipFile[index].fileType}
                                                         </p>
                                                     </div>
-                                                    <p className='text-gray-500'>{internshipFile[index].fileSize} MB</p>
+                                                    <p className='text-gray-500'>{internshipFile[index]?.fileSize || getInternshipFile[index]?.fileSize} MB</p>
                                                     <div className='cursor-pointer flex gap-2'>
                                                         {/* <Icon className={` text-black`} path={mdiDelete} size={1} /> */}
                                                         <Icon className={` text-black`} path={mdiDownload} size={1} />
@@ -994,12 +1230,15 @@ console.log(internships);
                                                 </div>
                                             ) : (
                                                 <div
-                                                    onClick={openFileDialogInternship} // เรียกใช้ฟังก์ชันเมื่อคลิก
-                                                    className="border mt-1 rounded-lg py-2 px-8 text-center bg-gray-300 cursor-pointer"
+                                                    onClick={editMode ? openFileDialogInternship : undefined} // ตรวจสอบ editMode ก่อนเรียกฟังก์ชัน
+                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
+                                                        }`}
+                                                    style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
                                                 >
                                                     Choose File
                                                 </div>
                                             )}
+
                                         </div>
                                     </div>
 
@@ -1011,7 +1250,7 @@ console.log(internships);
                                     *{errorFieldInterships}
                                 </div>
                             )}
-                            {projects.length < 5 && (
+                            {projects.length < 5 && editMode && (
                                 <div className={` flex col flex-col justify-end w-full mt-5`}>
                                     <div
                                         className={` cursor-pointer  rounded-lg bg-[#4a94ff] w-fit`}
@@ -1027,7 +1266,7 @@ console.log(internships);
                             <hr />
                             {works.map((project, index) => (
                                 <div key={index}>
-                                    {index > 0 && (
+                                    {index > 0 && editMode && (
                                         <div className={` flex col flex-col justify-end w-full mt-5`}>
                                             <div
                                                 className={` cursor-pointer  rounded-lg w-fit`}
@@ -1037,14 +1276,19 @@ console.log(internships);
                                             </div>
                                         </div>
                                     )}
+                                    {index > 0 && !editMode && (
+                                        <hr className='mt-5' />
+                                    )}
                                     <div className='mt-5 flex gap-5 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
                                             <label >ตั้งแต่</label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
-                                                    className={`cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    className={`${!editMode ? "editModeTrue" : ""} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
                                                     style={{ appearance: 'none' }}
-                                                    onBlur={(e) => handleDateStartWork(e.target.value, index)}
+                                                    onChange={(e) => handleDateStartWork(e.target.value, index)}
+                                                    value={dateStartWork[index] || getDateStartWork[index] || ""}
+                                                    disabled={!editMode}
                                                 >
                                                     <option value="0">-</option>
                                                     {years.map((year, index) => (
@@ -1058,9 +1302,11 @@ console.log(internships);
                                             <label >ถึง</label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
-                                                    className={`cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    className={`${!editMode ? "editModeTrue" : ""} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
                                                     style={{ appearance: 'none' }}
-                                                    onBlur={(e) => handleDateEndWork(e.target.value, index)}
+                                                    onChange={(e) => handleDateEndWork(e.target.value, index)}
+                                                    value={dateEndWork[index] || getDateEndWork[index] || ""}
+                                                    disabled={!editMode}
                                                 >
                                                     <option value="0">-</option>
                                                     {years.map((year, index) => (
@@ -1074,18 +1320,22 @@ console.log(internships);
                                             <label >สถานที่ทำงาน</label>
                                             <input
                                                 type="text"
-                                                className={`mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 placeholder="ระบุสถานที่ทำงาน"
                                                 onBlur={(e) => handlePlaceWork(e.target.value, index)}
+                                                defaultValue={getPlaceWork[index] || ""}
+                                                readOnly={!editMode}
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
                                             <label >ตำแหน่ง</label>
                                             <input
                                                 type="text"
-                                                className={`mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 placeholder="ระบุตำแหน่งงาน"
                                                 onBlur={(e) => handlePositionWork(e.target.value, index)}
+                                                defaultValue={getPositionWork[index] || ""}
+                                                readOnly={!editMode}
                                             />
                                         </div>
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
@@ -1099,15 +1349,14 @@ console.log(internships);
                                                 hidden
                                             />
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
-                                            {workFile[index] && workFile[index].fileUrl !== '' ? (
-                                                <div className={`mt-1 w-fit py-2 flex gap-8`}
-                                                >
+                                            {(workFile[index] && workFile[index]?.fileUrl !== '') || (getWorkFile[index] && getWorkFile[index]?.fileUrl !== '') ? (
+                                                <div className={`mt-1 w-fit py-2 flex gap-8`}>
                                                     <div>
                                                         <p>
-                                                            {workFile[index].fileName}.{workFile[index].fileType}
+                                                            {workFile[index]?.fileName || getWorkFile[index]?.fileName}.{workFile[index]?.fileType || getWorkFile[index]?.fileType}
                                                         </p>
                                                     </div>
-                                                    <p className='text-gray-500'>{workFile[index].fileSize} MB</p>
+                                                    <p className='text-gray-500'>{workFile[index]?.fileSize || getWorkFile[index]?.fileSize} MB</p>
                                                     <div className='cursor-pointer flex gap-2'>
                                                         {/* <Icon className={` text-black`} path={mdiDelete} size={1} /> */}
                                                         <Icon className={` text-black`} path={mdiDownload} size={1} />
@@ -1115,12 +1364,15 @@ console.log(internships);
                                                 </div>
                                             ) : (
                                                 <div
-                                                    onClick={openFileDialogWork} // เรียกใช้ฟังก์ชันเมื่อคลิก
-                                                    className="border mt-1 rounded-lg py-2 px-8 text-center bg-gray-300 cursor-pointer"
+                                                    onClick={editMode ? openFileDialogWork : undefined} // ตรวจสอบ editMode ก่อนเรียกฟังก์ชัน
+                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
+                                                        }`}
+                                                    style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
                                                 >
                                                     Choose File
                                                 </div>
                                             )}
+
                                         </div>
                                     </div>
 
@@ -1132,7 +1384,7 @@ console.log(internships);
                                     *{errorFieldWorks}
                                 </div>
                             )}
-                            {works.length < 5 && (
+                            {works.length < 5 && editMode && (
                                 <div className={` flex col flex-col justify-end w-full mt-5`}>
                                     <div
                                         className={` cursor-pointer  rounded-lg bg-[#4a94ff] w-fit`}
