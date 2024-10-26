@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 //firebase
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // Import Firebase Storage
 import { storage } from '@/app/firebaseConfig';
+import { saveAs } from 'file-saver';
 
 function WorkHistory() {
     const [loader, setLoader] = useState(true)
@@ -198,23 +199,30 @@ function WorkHistory() {
         });
     };
 
-    // function DeleteFileProject(index) {
-    //     Swal.fire({
-    //         title: "ลบข้อมูล",
-    //         text: "คุณต้องการลบข้อมูลนี้?",
-    //         icon: "warning",
-    //         confirmButtonText: "ใช่",
-    //         confirmButtonColor: "#f27474",
-    //         showCancelButton: true,
-    //         cancelButtonText: "ไม่"
-    //     }).then((result) => {
-    //         setGetProjectFile((prevFiles) => {
-    //             const updatedFiles = [...prevFiles]; // สร้างสำเนาของอาร์เรย์ปัจจุบัน
-    //             updatedFiles[index] = {}; // ตั้งค่าตำแหน่งที่ต้องการลบเป็นออบเจกต์ว่าง
-    //             return updatedFiles; // คืนค่าอาร์เรย์ใหม่ที่มีการเปลี่ยนแปลง
-    //         });
-    //     })
-    // }
+    //deleteFile
+    async function handleDeleteFileProject(name, index) {
+        const result = await Swal.fire({
+            title: "ลบข้อมูล",
+            text: `คุณต้องการลบไฟล์ ${name}?`,
+            icon: "warning",
+            confirmButtonText: "ใช่",
+            confirmButtonColor: "#f27474",
+            showCancelButton: true,
+            cancelButtonText: "ไม่"
+        });
+
+        const mergedProjectFile = mergeArrayObjects(projectFile, getProjectFile);
+
+        if (result.isConfirmed) {
+            const updatedTrainFiles = [...mergedProjectFile];
+            updatedTrainFiles[index] = undefined; // ตั้งค่าตำแหน่งที่ต้องการเป็น undefined แทนการลบ
+
+            setProjectFile(updatedTrainFiles);
+            setGetProjectFile(updatedTrainFiles);
+            Swal.fire("ลบไฟล์สำเร็จ", `${name} ถูกลบเรียบร้อยแล้ว`, "success");
+        }
+    }
+
     //upload file
     //projects
     const projectFileInputRef = useRef(null);
@@ -428,6 +436,30 @@ function WorkHistory() {
         });
     };
 
+    //deleteFile
+    async function handleDeleteFileInternship(name, index) {
+        const result = await Swal.fire({
+            title: "ลบข้อมูล",
+            text: `คุณต้องการลบไฟล์ ${name}?`,
+            icon: "warning",
+            confirmButtonText: "ใช่",
+            confirmButtonColor: "#f27474",
+            showCancelButton: true,
+            cancelButtonText: "ไม่"
+        });
+
+        const mergedFile = mergeArrayObjects(internshipFile, getInternshipFile);
+
+        if (result.isConfirmed) {
+            const updatedTrainFiles = [...mergedFile];
+            updatedTrainFiles[index] = undefined; // ตั้งค่าตำแหน่งที่ต้องการเป็น undefined แทนการลบ
+
+            setInternshipFile(updatedTrainFiles);
+            setGetInternshipFile(updatedTrainFiles);
+            Swal.fire("ลบไฟล์สำเร็จ", `${name} ถูกลบเรียบร้อยแล้ว`, "success");
+        }
+    }
+
     //upload file
     //projects
     const internFileInputRef = useRef(null);
@@ -638,6 +670,30 @@ function WorkHistory() {
         });
     };
 
+    //deleteFile
+    async function handleDeleteFileWork(name, index) {
+        const result = await Swal.fire({
+            title: "ลบข้อมูล",
+            text: `คุณต้องการลบไฟล์ ${name}?`,
+            icon: "warning",
+            confirmButtonText: "ใช่",
+            confirmButtonColor: "#f27474",
+            showCancelButton: true,
+            cancelButtonText: "ไม่"
+        });
+
+        const mergedFile = mergeArrayObjects(workFile, getWorkFile);
+
+        if (result.isConfirmed) {
+            const updatedTrainFiles = [...mergedFile];
+            updatedTrainFiles[index] = undefined; // ตั้งค่าตำแหน่งที่ต้องการเป็น undefined แทนการลบ
+
+            setWorkFile(updatedTrainFiles);
+            setGetWorkFile(updatedTrainFiles);
+            Swal.fire("ลบไฟล์สำเร็จ", `${name} ถูกลบเรียบร้อยแล้ว`, "success");
+        }
+    }
+
     //upload file
     const workFileInputRef = useRef(null);
     const [workFileUploadProgress, setWorkFileUploadProgress] = useState(0);
@@ -744,7 +800,7 @@ function WorkHistory() {
 
 
     //submit
-    async function handleSubmit(e) {
+    async function handleSubmit(e, fieldProjects, fieldInternship, fieldWorks) {
         e.preventDefault();
 
         setLoader(true);
@@ -765,16 +821,6 @@ function WorkHistory() {
         const mergedPositionWork = mergeArrayValues(positionWork, getPositionWork);
         const mergedWorkFile = mergeArrayObjects(workFile, getWorkFile);
 
-        // หลังจากตั้งค่าแล้ว ดำเนินการตรวจสอบข้อมูล
-        const isProjectFilled = mergedProjectName.length || mergedProjectDetail.length || mergedProjectFile[projects.length - 1];
-        const isProjectComplete = mergedProjectName.length && mergedProjectDetail.length && mergedProjectFile[projects.length - 1];
-
-        const isInternshipFilled = mergedDateStartInternship.length || mergedDateEndInternship.length || mergedPlaceInternship.length || mergedPositionInternship.length || mergedInternshipFile[internships.length - 1];
-        const isInternshipComplete = mergedDateStartInternship.length && mergedDateEndInternship.length && mergedPlaceInternship.length && mergedPositionInternship.length && mergedInternshipFile[internships.length - 1];
-
-        const isWorkFilled = mergedDateStartWork.length || mergedDateEndWork.length || mergedPlaceWork.length || mergedPositionWork.length || mergedWorkFile[works.length - 1];
-        const isWorkComplete = mergedDateStartWork.length && mergedDateEndWork.length && mergedPlaceWork.length && mergedPositionWork.length && mergedWorkFile[works.length - 1];
-
 
         //check date
         const isInvalidDateRange = mergedDateStartInternship.find((dateStart, i) => {
@@ -782,8 +828,10 @@ function WorkHistory() {
             return new Date(dateEnd) < new Date(dateStart);
         });
 
+
         if (isInvalidDateRange) {
             setError("ระบุปีการฝึกงานไม่ถูกต้อง");
+            setLoader(false);
             return; // หยุดการทำงานถ้ามีช่วงวันที่ไม่ถูกต้อง
         }
         const isInvalidDateRangeWork = mergedDateStartWork.find((dateStart, i) => {
@@ -793,28 +841,85 @@ function WorkHistory() {
 
         if (isInvalidDateRangeWork) {
             setError("ระบุปีการทำงานไม่ถูกต้อง");
+            setLoader(false);
             return; // หยุดการทำงานถ้ามีช่วงวันที่ไม่ถูกต้อง
         }
 
-        // ตรวจสอบว่าแต่ละกลุ่มครบหรือไม่ครบ
-        if (isProjectFilled && !isProjectComplete) {
-            setError("กรุณากรอกข้อมูล โครงงาน/ผลงาน ให้ครบทุกฟิลด์");
+        // ลดค่าตัวนับของแต่ละฟิลด์ลง 1
+        fieldProjects -= 1;
+        fieldInternship -= 1;
+        fieldWorks -= 1;
+
+        // ตรวจสอบข้อมูลโครงงาน / ผลงาน
+        const hasAnyProjectField =
+            mergedProjectName[fieldProjects] ||
+            mergedProjectDetail[fieldProjects] ||
+            (mergedProjectFile[fieldProjects] && mergedProjectFile[fieldProjects].fileUrl);
+
+        const isProjectFieldComplete =
+            mergedProjectName[fieldProjects] &&
+            mergedProjectDetail[fieldProjects] &&
+            mergedProjectFile[fieldProjects] &&
+            mergedProjectFile[fieldProjects].fileUrl;
+
+        if (hasAnyProjectField && !isProjectFieldComplete) {
+            setError("กรุณาระบุข้อมูล โครงงาน / ผลงาน ให้ครบทุกช่อง");
             setLoader(false);
             return;
         }
 
-        if (isInternshipFilled && !isInternshipComplete) {
-            setError("กรุณากรอกข้อมูล การฝึกงาน ให้ครบทุกฟิลด์");
+        const hasAnyInternshipField =
+            mergedDateStartInternship[fieldInternship] ||
+            mergedDateEndInternship[fieldInternship] ||
+            mergedPlaceInternship[fieldInternship] ||
+            mergedPositionInternship[fieldInternship] ||
+            (mergedInternshipFile[fieldInternship] && mergedInternshipFile[fieldInternship].fileUrl);
+
+        const isInternshipFieldComplete =
+            mergedDateStartInternship[fieldInternship] &&
+            mergedDateEndInternship[fieldInternship] &&
+            mergedPlaceInternship[fieldInternship] &&
+            mergedPositionInternship[fieldInternship] &&
+            mergedInternshipFile[fieldInternship] &&
+            mergedInternshipFile[fieldInternship].fileUrl;
+
+        // ตรวจสอบข้อมูลการฝึกงาน
+        if (hasAnyInternshipField && !isInternshipFieldComplete) {
+            setError("กรุณาระบุข้อมูล การฝึกงาน ให้ครบทุกช่อง");
             setLoader(false);
             return;
         }
 
-        if (isWorkFilled && !isWorkComplete) {
-            setError("กรุณากรอกข้อมูล การทำงาน ให้ครบทุกฟิลด์");
+
+        const hasAnyWorkField =
+            mergedDateStartWork[fieldWorks] ||
+            mergedDateEndWork[fieldWorks] ||
+            mergedPlaceWork[fieldWorks] ||
+            mergedPositionWork[fieldWorks] ||
+            (mergedWorkFile[fieldWorks] && mergedWorkFile[fieldWorks].fileUrl);
+
+        const isWorkFieldComplete =
+            mergedDateStartWork[fieldWorks] &&
+            mergedDateEndWork[fieldWorks] &&
+            mergedPlaceWork[fieldWorks] &&
+            mergedPositionWork[fieldWorks] &&
+            mergedWorkFile[fieldWorks] &&
+            mergedWorkFile[fieldWorks].fileUrl;
+        // ตรวจสอบข้อมูลการทำงาน
+
+        if (hasAnyWorkField && !isWorkFieldComplete) {
+            setError("กรุณาระบุข้อมูล การทำงาน ให้ครบทุกช่อง");
             setLoader(false);
             return;
         }
 
+        const hasAnyField = hasAnyProjectField || hasAnyInternshipField || hasAnyWorkField;
+        // หากไม่มีข้อมูลเลยในทุกส่วน
+        if (!hasAnyField) {
+            setError("ไม่มีข้อมูลที่บันทึก");
+            setLoader(false);
+            return;
+        }
         // ถ้าผ่านทุกเงื่อนไขให้เคลียร์ error
         setError('');
 
@@ -880,7 +985,6 @@ function WorkHistory() {
             })),
         };
 
-        console.log(data);
         try {
             // ส่งข้อมูลไปยัง API ด้วย fetch
             const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/historyWork`,
@@ -1019,6 +1123,32 @@ function WorkHistory() {
         }
     }
 
+    //Download file
+    const handleDownloadFile = async (filePath, fileName) => {
+        const storage = getStorage();
+        const fileRef = ref(storage, filePath);
+
+        try {
+            // ดึง URL ของไฟล์
+            const downloadURL = await getDownloadURL(fileRef);
+
+            // ใช้ fetch เพื่อดาวน์โหลดไฟล์
+            const response = await fetch(downloadURL);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const blob = await response.blob(); // แปลงเป็น Blob
+            saveAs(blob, fileName); // ใช้ file-saver เพื่อดาวน์โหลดไฟล์
+        } catch (error) {
+            console.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์:", error);
+        }
+    };
+
+    //openfile
+    function openFile(fileUrl) {
+        window.open(fileUrl, '_blank');
+    }
 
     return (
         <div className={`${bgColorMain} ${bgColor}`}>
@@ -1027,7 +1157,7 @@ function WorkHistory() {
                 <NavbarMain status="edit" />
                 <div className="w-10/12 px-7 py-5">
                     {/* <div className={`bg-white rounded-lg p-5`}> */}
-                    <form onSubmit={handleSubmit} className={`${bgColorMain2} ${bgColor} rounded-lg p-5 flex flex-col gap-16`}>
+                    <form onSubmit={(e) => handleSubmit(e, projects.length, internships.length, works.length)} className={`${bgColorMain2} ${bgColor} rounded-lg p-5 flex flex-col gap-16`}>
                         <div>
                             <p className='mb-2'>โครงงาน / ผลงาน</p>
                             <hr />
@@ -1071,27 +1201,35 @@ function WorkHistory() {
                                         </div>
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
                                             <label>เอกสารประกอบ</label>
-                                            {/* input สำหรับเลือกไฟล์ */}
-                                            <input
-                                                id="chooseProfile"
-                                                type="file"
-                                                ref={projectFileInputRef} // เชื่อมต่อกับ ref
-                                                onChange={(e) => handleProfileDocument(e, index)}
-                                                hidden
-                                            />
+
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
                                             {(projectFile[index] && projectFile[index]?.fileUrl !== '') || (getProjectFile[index] && getProjectFile[index]?.fileUrl !== '') ? (
                                                 <div className={`mt-1 w-fit py-2 flex gap-8`}
                                                 >
-                                                    <div>
+                                                    <div onClick={() => openFile(projectFile[index]?.fileUrl || getProjectFile[index].fileUrl)} className='cursor-pointer'>
                                                         <p>
                                                             {projectFile[index]?.fileName || getProjectFile[index]?.fileName}.{projectFile[index]?.fileType || getProjectFile[index].fileType}
                                                         </p>
                                                     </div>
                                                     <p className='text-gray-500'>{projectFile[index]?.fileSize || getProjectFile[index]?.fileSize} MB</p>
                                                     <div className='cursor-pointer flex gap-2'>
-                                                        <Icon className={` text-black`} path={mdiDownload} size={1} />
-                                                        {/* <Icon onClick={() => DeleteFileProject(index)} className={` text-black`} path={mdiDelete} size={1} /> */}
+                                                        <Icon
+                                                            onClick={() => handleDownloadFile(
+                                                                projectFile[index]?.fileUrl || getProjectFile[index].fileUrl,
+                                                                projectFile[index]?.fileName || getProjectFile[index].fileName
+                                                            )}
+                                                            className={` text-black`}
+                                                            path={mdiDownload}
+                                                            size={1}
+                                                        />
+                                                        {editMode && (
+                                                            <Icon
+                                                                onClick={() => handleDeleteFileProject(projectFile[index]?.fileName || getProjectFile[index]?.fileName, index)}
+                                                                className={` text-black`}
+                                                                path={mdiDelete}
+                                                                size={1}
+                                                            />
+                                                        )}
                                                     </div>
                                                 </div>
                                             ) : (
@@ -1101,6 +1239,13 @@ function WorkHistory() {
                                                         }`}
                                                     style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
                                                 >
+                                                    <input
+                                                        id="chooseProfile"
+                                                        type="file"
+                                                        ref={projectFileInputRef} // เชื่อมต่อกับ ref
+                                                        onChange={(e) => handleProfileDocument(e, index)}
+                                                        hidden
+                                                    />
                                                     Choose File
                                                 </div>
                                             )}
@@ -1205,19 +1350,12 @@ function WorkHistory() {
                                         </div>
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
                                             <label>เอกสารประกอบ</label>
-                                            {/* input สำหรับเลือกไฟล์ */}
-                                            <input
-                                                id="chooseProfile"
-                                                type="file"
-                                                ref={internFileInputRef} // เชื่อมต่อกับ ref
-                                                onChange={(e) => handleInternshipDocument(e, index)}
-                                                hidden
-                                            />
+
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
                                             {(internshipFile[index] && internshipFile[index]?.fileUrl !== '') || (getInternshipFile[index] && getInternshipFile[index]?.fileUrl !== '') ? (
                                                 <div className={`mt-1 w-fit py-2 flex gap-8`}
                                                 >
-                                                    <div>
+                                                    <div onClick={() => openFile(internshipFile[index]?.fileUrl || getInternshipFile[index].fileUrl)} className='cursor-pointer'>
                                                         <p>
                                                             {internshipFile[index]?.fileName || getInternshipFile[index]?.fileName}.{internshipFile[index]?.fileType || getInternshipFile[index].fileType}
                                                         </p>
@@ -1225,7 +1363,23 @@ function WorkHistory() {
                                                     <p className='text-gray-500'>{internshipFile[index]?.fileSize || getInternshipFile[index]?.fileSize} MB</p>
                                                     <div className='cursor-pointer flex gap-2'>
                                                         {/* <Icon className={` text-black`} path={mdiDelete} size={1} /> */}
-                                                        <Icon className={` text-black`} path={mdiDownload} size={1} />
+                                                        <Icon
+                                                            onClick={() => handleDownloadFile(
+                                                                internshipFile[index]?.fileUrl || getInternshipFile[index].fileUrl,
+                                                                internshipFile[index]?.fileName || getInternshipFile[index].fileName
+                                                            )}
+                                                            className={` text-black`}
+                                                            path={mdiDownload}
+                                                            size={1}
+                                                        />
+                                                        {editMode && (
+                                                            <Icon
+                                                                onClick={() => handleDeleteFileInternship(internshipFile[index]?.fileName || getInternshipFile[index]?.fileName, index)}
+                                                                className={` text-black`}
+                                                                path={mdiDelete}
+                                                                size={1}
+                                                            />
+                                                        )}
                                                     </div>
                                                 </div>
                                             ) : (
@@ -1235,6 +1389,13 @@ function WorkHistory() {
                                                         }`}
                                                     style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
                                                 >
+                                                    <input
+                                                        id="chooseProfile"
+                                                        type="file"
+                                                        ref={internFileInputRef} // เชื่อมต่อกับ ref
+                                                        onChange={(e) => handleInternshipDocument(e, index)}
+                                                        hidden
+                                                    />
                                                     Choose File
                                                 </div>
                                             )}
@@ -1340,18 +1501,10 @@ function WorkHistory() {
                                         </div>
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
                                             <label>เอกสารประกอบ</label>
-                                            {/* input สำหรับเลือกไฟล์ */}
-                                            <input
-                                                id="chooseProfile"
-                                                type="file"
-                                                ref={workFileInputRef} // เชื่อมต่อกับ ref
-                                                onChange={(e) => handleWorkDocument(e, index)}
-                                                hidden
-                                            />
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
                                             {(workFile[index] && workFile[index]?.fileUrl !== '') || (getWorkFile[index] && getWorkFile[index]?.fileUrl !== '') ? (
                                                 <div className={`mt-1 w-fit py-2 flex gap-8`}>
-                                                    <div>
+                                                    <div onClick={() => openFile(workFile[index]?.fileUrl || getWorkFile[index].fileUrl)} className='cursor-pointer'>
                                                         <p>
                                                             {workFile[index]?.fileName || getWorkFile[index]?.fileName}.{workFile[index]?.fileType || getWorkFile[index]?.fileType}
                                                         </p>
@@ -1359,7 +1512,23 @@ function WorkHistory() {
                                                     <p className='text-gray-500'>{workFile[index]?.fileSize || getWorkFile[index]?.fileSize} MB</p>
                                                     <div className='cursor-pointer flex gap-2'>
                                                         {/* <Icon className={` text-black`} path={mdiDelete} size={1} /> */}
-                                                        <Icon className={` text-black`} path={mdiDownload} size={1} />
+                                                        <Icon
+                                                            onClick={() => handleDownloadFile(
+                                                                workFile[index]?.fileUrl || getWorkFile[index].fileUrl,
+                                                                workFile[index]?.fileName || getWorkFile[index].fileName
+                                                            )}
+                                                            className={` text-black`}
+                                                            path={mdiDownload}
+                                                            size={1}
+                                                        />
+                                                        {editMode && (
+                                                            <Icon
+                                                                onClick={() => handleDeleteFileWork(workFile[index]?.fileName || getWorkFile[index]?.fileName, index)}
+                                                                className={` text-black`}
+                                                                path={mdiDelete}
+                                                                size={1}
+                                                            />
+                                                        )}
                                                     </div>
                                                 </div>
                                             ) : (
@@ -1369,6 +1538,13 @@ function WorkHistory() {
                                                         }`}
                                                     style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
                                                 >
+                                                    <input
+                                                        id="chooseProfile"
+                                                        type="file"
+                                                        ref={workFileInputRef} // เชื่อมต่อกับ ref
+                                                        onChange={(e) => handleWorkDocument(e, index)}
+                                                        hidden
+                                                    />
                                                     Choose File
                                                 </div>
                                             )}

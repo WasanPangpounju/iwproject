@@ -389,20 +389,20 @@ function editEducation() {
 
         n -= 1; // ลดค่า n เพื่อใช้ index ที่ถูกต้อง
 
-        console.log("typePerson: " + typePerson);
-        console.log("university: " + university);
-        console.log("faculty: " + faculty);
-        console.log("branch: " + branch);
-        console.log("campus: " + campus);
-        console.log("grade: " + grade);
-        console.log("level: " + level);
-        console.log("EducationLevel: " + educationLevel);
-        console.log("YearGraduation: " + yearGraduation);
-        console.log("File: ");
-        console.log("FileName: " + nameFile);
-        console.log("FileSize: " + sizeFile);
-        console.log("FileType: " + typeFile);
-        console.log("----------- End -----------");
+        // console.log("typePerson: " + typePerson);
+        // console.log("university: " + university);
+        // console.log("faculty: " + faculty);
+        // console.log("branch: " + branch);
+        // console.log("campus: " + campus);
+        // console.log("grade: " + grade);
+        // console.log("level: " + level);
+        // console.log("EducationLevel: " + educationLevel);
+        // console.log("YearGraduation: " + yearGraduation);
+        // console.log("File: ");
+        // console.log("FileName: " + nameFile);
+        // console.log("FileSize: " + sizeFile);
+        // console.log("FileType: " + typeFile);
+        // console.log("----------- End -----------");
 
         // ตรวจสอบว่า uploadProgress มีค่าหรือไม่
         if (uploadProgress !== 0) {
