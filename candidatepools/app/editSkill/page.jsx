@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 //firebase
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // Import Firebase Storage
 import { storage } from '@/app/firebaseConfig';
+import { saveAs } from 'file-saver';
 
 function WorkHistory() {
     const [loader, setLoader] = useState(true)
@@ -424,10 +425,10 @@ function WorkHistory() {
     }
 
     //function submit
-    async function handleSubmit(e) {
+    async function handleSubmit(e, fieldSkills, fieldTrains) {
         e.preventDefault();
 
-        setLoader(true);
+        setLoader(false);
 
         const mergedSkillType = mergeArrayValues(skillType, getSkillType);
         const mergedSkillName = mergeArrayValues(skillName, getSkillName);
@@ -437,22 +438,48 @@ function WorkHistory() {
         const mergedTrainDetail = mergeArrayValues(trainDetail, getTrainDetail);
         const mergedTrainFile = mergeArrayObjects(trainFile, getTrainFile);
 
-        // หลังจากตั้งค่าแล้ว ดำเนินการตรวจสอบข้อมูล
-        const isSkillFilled = mergedSkillType.length || mergedSkillName.length || mergedSkillDetail.length;
-        const isSkillComplete = mergedSkillType.length && mergedSkillName.length && mergedSkillDetail.length;
+        // ลดค่าตัวนับของแต่ละฟิลด์ลง 1
+        fieldSkills -= 1;
+        fieldTrains -= 1;
 
-        const isTrainFilled = mergedTrainName.length || mergedTrainDetail.length || mergedTrainFile[trains.length - 1];
-        const isTrainComplete = mergedTrainName.length && mergedTrainDetail.length && mergedTrainFile[trains.length - 1];
+        // ตรวจสอบข้อมูลโครงงาน / ผลงาน
+        const hasAnySkillField =
+            mergedSkillType[fieldSkills] ||
+            mergedSkillName[fieldSkills] ||
+            mergedSkillDetail[fieldSkills];
 
-        // ตรวจสอบว่าแต่ละกลุ่มครบหรือไม่ครบ
-        if (isSkillFilled && !isSkillComplete) {
-            setError("กรุณากรอกข้อมูล ทักษะ ให้ครบทุกฟิลด์");
+        const isSkillFieldComplete =
+            mergedSkillType[fieldSkills] &&
+            mergedSkillName[fieldSkills] &&
+            mergedSkillDetail[fieldSkills];
+
+        if (hasAnySkillField && !isSkillFieldComplete) {
+            setError("กรุณาระบุข้อมูล ความสามารถ ให้ครบทุกช่อง");
             setLoader(false);
             return;
         }
 
-        if (isTrainFilled && !isTrainComplete) {
-            setError("กรุณากรอกข้อมูล การฝึกอบรม ให้ครบทุกฟิลด์");
+        const hasAnyTrainField =
+            mergedTrainName[fieldTrains] ||
+            mergedTrainDetail[fieldTrains] ||
+            (mergedTrainFile[fieldTrains] && mergedTrainFile[fieldTrains].fileUrl);
+
+        const isTrainFieldComplete =
+        mergedTrainName[fieldTrains]&&
+        mergedTrainDetail[fieldTrains]  &&
+        mergedTrainFile[fieldTrains].fileUrl;
+
+        // ตรวจสอบข้อมูลการฝึกงาน
+        if (hasAnyTrainField && !isTrainFieldComplete) {
+            setError("กรุณาระบุข้อมูล การอบรม ให้ครบทุกช่อง");
+            setLoader(false);
+            return;
+        }
+
+        const hasAnyField = hasAnySkillField || hasAnyTrainField;
+        // หากไม่มีข้อมูลเลยในทุกส่วน
+        if (!hasAnyField) {
+            setError("ไม่มีข้อมูลที่บันทึก");
             setLoader(false);
             return;
         }
@@ -579,6 +606,56 @@ function WorkHistory() {
         }
     }
 
+    //Download file
+    const handleDownloadFile = async (filePath, fileName) => {
+        const storage = getStorage();
+        const fileRef = ref(storage, filePath);
+        try {
+            // ดึง URL ของไฟล์
+            const downloadURL = await getDownloadURL(fileRef);
+
+            // ใช้ fetch เพื่อดาวน์โหลดไฟล์
+            const response = await fetch(downloadURL);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const blob = await response.blob(); // แปลงเป็น Blob
+            saveAs(blob, fileName); // ใช้ file-saver เพื่อดาวน์โหลดไฟล์
+        } catch (error) {
+            console.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์:", error);
+        }
+    };
+
+    //openfile
+    function openFile(fileUrl) {
+        window.open(fileUrl, '_blank');
+    }
+
+    //deleteFile
+    async function handleDeleteFile(name, index) {
+        const result = await Swal.fire({
+            title: "ลบข้อมูล",
+            text: `คุณต้องการลบไฟล์ ${name}?`,
+            icon: "warning",
+            confirmButtonText: "ใช่",
+            confirmButtonColor: "#f27474",
+            showCancelButton: true,
+            cancelButtonText: "ไม่"
+        });
+
+        const mergedTrainFile = mergeArrayObjects(trainFile, getTrainFile);
+
+        if (result.isConfirmed) {
+            const updatedTrainFiles = [...mergedTrainFile];
+            updatedTrainFiles[index] = undefined; // ตั้งค่าตำแหน่งที่ต้องการเป็น undefined แทนการลบ
+
+            setTrainFile(updatedTrainFiles);
+            setGetTrainFile(updatedTrainFiles);
+            Swal.fire("ลบไฟล์สำเร็จ", `${name} ถูกลบเรียบร้อยแล้ว`, "success");
+        }
+    }
+
     return (
         <div className={`${bgColorMain} ${bgColor}`}>
             <NavbarLogo title="ประวัติการทำงาน / ฝึกงาน" dataUser={dataUser} />
@@ -586,7 +663,7 @@ function WorkHistory() {
                 <NavbarMain status="edit" />
                 <div className="w-10/12 px-7 py-5">
                     {/* <div className={`bg-white rounded-lg p-5`}> */}
-                    <form onSubmit={handleSubmit} className={`${bgColorMain2} ${bgColor} rounded-lg p-5 flex flex-col gap-16`}>
+                    <form onSubmit={(e) => handleSubmit(e, skills.length, trains.length)} className={`${bgColorMain2} ${bgColor} rounded-lg p-5 flex flex-col gap-16`}>
                         <div>
                             <p className='mb-2'>ความสามารถ</p>
                             <hr />
@@ -715,26 +792,37 @@ function WorkHistory() {
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
                                             <label>เอกสารประกอบ</label>
                                             {/* input สำหรับเลือกไฟล์ */}
-                                            <input
-                                                id="chooseTrainFile"
-                                                type="file"
-                                                ref={trainFileInputRef} // เชื่อมต่อกับ ref
-                                                onChange={(e) => handleTrainDocument(e, index)}
-                                                hidden
-                                            />
+
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
                                             {(trainFile[index] && trainFile[index]?.fileUrl !== '') || (getTrainFile[index] && getTrainFile[index]?.fileUrl !== '') ? (
                                                 <div className={`mt-1 w-fit py-2 flex gap-8`}
                                                 >
-                                                    <div>
+                                                    <div className='cursor-pointer' onClick={() => openFile(trainFile[index]?.fileUrl || getTrainFile[index]?.fileUrl)}>
                                                         <p>
                                                             {trainFile[index]?.fileName || getTrainFile[index]?.fileName}.{trainFile[index]?.fileType || getTrainFile[index].fileType}
                                                         </p>
                                                     </div>
                                                     <p className='text-gray-500'>{trainFile[index]?.fileSize || getTrainFile[index]?.fileSize} MB</p>
                                                     <div className='cursor-pointer flex gap-2'>
-                                                        {/* <Icon className={` text-black`} path={mdiDelete} size={1} /> */}
-                                                        <Icon className={` text-black`} path={mdiDownload} size={1} />
+                                                        <Icon
+                                                            onClick={() =>
+                                                                handleDownloadFile(
+                                                                    trainFile[index]?.fileUrl || getTrainFile[index]?.fileUrl,
+                                                                    trainFile[index]?.fileName || getTrainFile[index]?.fileName
+                                                                )
+                                                            }
+                                                            className="text-black"
+                                                            path={mdiDownload}
+                                                            size={1}
+                                                        />
+                                                        {editMode && (
+                                                            <Icon
+                                                                onClick={() => handleDeleteFile(trainFile[index]?.fileName || getTrainFile[index]?.fileName, index)}
+                                                                className={` text-black`}
+                                                                path={mdiDelete}
+                                                                size={1}
+                                                            />
+                                                        )}
                                                     </div>
                                                 </div>
                                             ) : (
@@ -744,6 +832,13 @@ function WorkHistory() {
                                                         }`}
                                                     style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
                                                 >
+                                                    <input
+                                                        id="chooseTrainFile"
+                                                        type="file"
+                                                        ref={trainFileInputRef} // เชื่อมต่อกับ ref
+                                                        onChange={(e) => handleTrainDocument(e, index)}
+                                                        hidden
+                                                    />
                                                     Choose File
                                                 </div>
                                             )}
