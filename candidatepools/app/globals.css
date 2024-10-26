@@ -33,6 +33,9 @@ body{
   .big-font{
     @apply text-xl
   }
+  .editModeTrue{
+    @apply bg-gray-200 cursor-default focus:outline-none
+  }
 
   /* .small-font {
     font-size: 12px; 
