@@ -610,6 +610,7 @@ function WorkHistory() {
     const handleDownloadFile = async (filePath, fileName) => {
         const storage = getStorage();
         const fileRef = ref(storage, filePath);
+
         try {
             // ดึง URL ของไฟล์
             const downloadURL = await getDownloadURL(fileRef);
@@ -658,7 +659,7 @@ function WorkHistory() {
 
     return (
         <div className={`${bgColorMain} ${bgColor}`}>
-            <NavbarLogo title="ประวัติการทำงาน / ฝึกงาน" dataUser={dataUser} />
+            <NavbarLogo title="ความสามารถ / การอบรม" dataUser={dataUser} />
             <div className="flex">
                 <NavbarMain status="edit" />
                 <div className="w-10/12 px-7 py-5">
