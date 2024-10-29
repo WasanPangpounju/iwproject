@@ -52,16 +52,16 @@ function NavbarLogo({title,dataUser}) {
 
 
     return (
-        <nav className={`${bgColorMain} relative gap-1 flex justify-between border-b-8  border-[#75C7C2] `}>
+        <nav className={`${bgColorMain} text-lg relative gap-1 flex justify-between border-b-8  border-[#75C7C2] `}>
             {dataUser ? (
-                <div className=" flex items-end">
+                <div className=" flex items-center ">
                     {/* <div className='h-full flex items-center bg-[#eeeeee] py-4 px-5 w-60 gap-5'> */}
                     <div className={`h-full flex items-center ${bgColorMain} py-4 px-5 w-60 gap-5`}>
                         <Image priority alt="icon" className='w-11 h-11 ' src={dataUser.profile || "/image/main/user.png"} height={1000} width={1000} />
-                        <p className=' font-bold text-ellipsis overflow-hidden whitespace-nowrap'>{dataUser.firstName} {dataUser.lastName}</p>
+                        <p className=' font-bold text-ellipsis  overflow-hidden whitespace-nowrap'>{dataUser.firstName} {dataUser.lastName}</p>
                     </div>
                     {title && (
-                        <div className="mx-7 my-1 text-lg font-bold">
+                        <div className="mx-7 my-1 font-bold ">
                             <p>{title}</p>
                         </div>
                     )}

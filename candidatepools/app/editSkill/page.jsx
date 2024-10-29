@@ -264,12 +264,10 @@ function WorkHistory() {
     const handleAddTrain = () => {
         // ตรวจสอบให้แน่ใจว่ามีการกรอกข้อมูล train ครบถ้วนก่อนที่จะเพิ่มข้อมูลใหม่
         if ((!trainName[trains.length - 1]
-            || !trainDetail[trains.length - 1]
-            || !trainFile[trains.length - 1]?.fileUrl)
+            || !trainDetail[trains.length - 1])
             &&
             (!getTrainName[trains.length - 1]
-                || !getTrainDetail[trains.length - 1]
-                || !getTrainFile[trains.length - 1]?.fileUrl)) {
+                || !getTrainDetail[trains.length - 1])) {
             setErrorFieldTrain("กรุณากรอกข้อมูลการอบรมให้ครบก่อนเพิ่มข้อมูลใหม่");
             return;
         }
@@ -461,13 +459,11 @@ function WorkHistory() {
 
         const hasAnyTrainField =
             mergedTrainName[fieldTrains] ||
-            mergedTrainDetail[fieldTrains] ||
-            (mergedTrainFile[fieldTrains] && mergedTrainFile[fieldTrains].fileUrl);
+            mergedTrainDetail[fieldTrains];
 
         const isTrainFieldComplete =
-        mergedTrainName[fieldTrains]&&
-        mergedTrainDetail[fieldTrains]  &&
-        mergedTrainFile[fieldTrains].fileUrl;
+            mergedTrainName[fieldTrains] &&
+            mergedTrainDetail[fieldTrains];
 
         // ตรวจสอบข้อมูลการฝึกงาน
         if (hasAnyTrainField && !isTrainFieldComplete) {
@@ -658,7 +654,7 @@ function WorkHistory() {
     }
 
     return (
-        <div className={`${bgColorMain} ${bgColor}`}>
+        <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
             <NavbarLogo title="ความสามารถ / การอบรม" dataUser={dataUser} />
             <div className="flex">
                 <NavbarMain status="edit" />
@@ -676,7 +672,7 @@ function WorkHistory() {
                                                 className={` cursor-pointer  rounded-lg w-fit`}
                                                 onClick={() => handleRemoveSkill(index)}
                                             >
-                                                <Icon className={` text-red-400`} path={mdiCloseCircle} size={1} />
+                                                <Icon className={` text-red-500`} path={mdiCloseCircle} size={1} />
                                             </div>
                                         </div>
                                     )}
@@ -685,7 +681,7 @@ function WorkHistory() {
                                     )}
                                     <div className='mt-5 flex gap-5 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ทักษะที่มี</label>
+                                            <label >ทักษะที่มี <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
                                                     className={`${!editMode ? "editModeTrue" : ""} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -704,7 +700,7 @@ function WorkHistory() {
                                         </div>
 
                                         <div className='flex flex-col gap-1'>
-                                            <label >ทักษะ</label>
+                                            <label >ทักษะ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -715,7 +711,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >อธิบายรายละเอียด</label>
+                                            <label >อธิบายรายละเอียด <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -758,7 +754,7 @@ function WorkHistory() {
                                                 className={` cursor-pointer  rounded-lg w-fit`}
                                                 onClick={() => handleRemoveTrain(index)}
                                             >
-                                                <Icon className={` text-red-400`} path={mdiCloseCircle} size={1} />
+                                                <Icon className={` text-red-500`} path={mdiCloseCircle} size={1} />
                                             </div>
                                         </div>
                                     )}
@@ -769,7 +765,7 @@ function WorkHistory() {
 
 
                                         <div className='flex flex-col gap-1'>
-                                            <label >เรื่อง</label>
+                                            <label >เรื่อง <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -780,7 +776,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >รายละเอียด</label>
+                                            <label >รายละเอียด <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -791,7 +787,9 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
-                                            <label>เอกสารประกอบ</label>
+                                            {trainFile[index]?.fileUrl || getTrainFile[index]?.fileUrl || editMode ? (
+                                                <label>เอกสารประกอบ / ใบประกาศ</label>
+                                            ) : null}
                                             {/* input สำหรับเลือกไฟล์ */}
 
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
@@ -827,21 +825,23 @@ function WorkHistory() {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div
-                                                    onClick={editMode ? openFileDialogTrain : undefined} // เรียกใช้ฟังก์ชันเมื่อ editMode เป็น true
-                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
-                                                        }`}
-                                                    style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
-                                                >
-                                                    <input
-                                                        id="chooseTrainFile"
-                                                        type="file"
-                                                        ref={trainFileInputRef} // เชื่อมต่อกับ ref
-                                                        onChange={(e) => handleTrainDocument(e, index)}
-                                                        hidden
-                                                    />
-                                                    Choose File
-                                                </div>
+                                                editMode && (
+                                                    <div
+                                                        onClick={editMode ? openFileDialogTrain : undefined} // เรียกใช้ฟังก์ชันเมื่อ editMode เป็น true
+                                                        className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
+                                                            }`}
+                                                        style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
+                                                    >
+                                                        <input
+                                                            id="chooseTrainFile"
+                                                            type="file"
+                                                            ref={trainFileInputRef} // เชื่อมต่อกับ ref
+                                                            onChange={(e) => handleTrainDocument(e, index)}
+                                                            hidden
+                                                        />
+                                                        Choose File
+                                                    </div>
+                                                )
                                             )}
 
                                         </div>

@@ -720,7 +720,7 @@ function EditPersonal() {
   const [editMode, setEditMode] = useState(false);
 
   return (
-    <div className={`${bgColorMain} ${bgColor}`}>
+    <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
       {loader && (
         <div>
           <Loader />
@@ -738,7 +738,7 @@ function EditPersonal() {
             >
               <div className=" flex flex-col">
                 <label>
-                  คำนำหน้า <span className="text-red-500">*</span>
+                  คำนำหน้า <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                 </label>
                 <div className="relative col w-fit mt-1">
                   <select
@@ -778,7 +778,7 @@ function EditPersonal() {
               </div>
               <div className="flex col flex-col">
                 <label>
-                  ชื่อ <span className="text-red-500">*</span>
+                  ชื่อ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                 </label>
                 <input
                   type="text"
@@ -796,7 +796,7 @@ function EditPersonal() {
               </div>
               <div className="flex col flex-col">
                 <label>
-                  นามสกุล <span className="text-red-500">*</span>
+                  นามสกุล <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                 </label>
                 <input
                   type="text"
@@ -841,7 +841,7 @@ function EditPersonal() {
                 </div>
               )}
               {/* <div className=" flex flex-col">
-                                <label>เพศ <span className="text-red-500">*</span></label>
+                                <label>เพศ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                 <div className="mt-1 relative col w-fit">
                                     <select
                                         onChange={(e) => setSex(e.target.value)}
@@ -859,7 +859,7 @@ function EditPersonal() {
                             </div> */}
               <div className=" flex flex-col ">
                 <label>
-                  วันเกิด <span className="text-red-500">*</span>
+                  วันเกิด <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                 </label>
                 <div className="flex gap-3 flex-wrap">
                   <div className="mt-1 relative col w-fit">
@@ -998,7 +998,7 @@ function EditPersonal() {
                 )}
               <div className=" flex flex-col">
                 <label>
-                  สัญชาติ <span className="text-red-500">*</span>
+                  สัญชาติ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                 </label>
                 <div className="relative col w-fit mt-1">
                   <select
@@ -1014,7 +1014,7 @@ function EditPersonal() {
                   >
                     <option value="0">-</option>
                     <option value="ไทย">ไทย</option>
-                    <option value="ฝรั่งเศษ">ฝรั่งเศษ</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
                   </select>
                   <Icon
                     className={`${
@@ -1028,7 +1028,7 @@ function EditPersonal() {
               <div className=" flex flex-col">
                 <label>
                   {" "}
-                  ศาสนา <span className="text-red-500">*</span>
+                  ศาสนา <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                 </label>
                 <div className="relative col w-fit mt-1">
                   <select
@@ -1044,8 +1044,9 @@ function EditPersonal() {
                   >
                     <option value="0">-</option>
                     <option value="พุทธ">พุทธ</option>
-                    <option value="อิสลาม">อิสลาม</option>
                     <option value="คริสต์">คริสต์</option>
+                    <option value="อิสลาม">อิสลาม</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
                   </select>
                   <Icon
                     className={`${
@@ -1058,7 +1059,7 @@ function EditPersonal() {
               </div>
               <div className="flex col flex-col w-64">
                 <label>
-                  เลขบัตรประจำตัวประชาชน <span className="text-red-500">*</span>
+                  เลขบัตรประจำตัวประชาชน <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                 </label>
                 <input
                   type="text"
@@ -1085,7 +1086,7 @@ function EditPersonal() {
               </div>
               <div className="flex col flex-col w-64">
                 <label>
-                  เลขบัตรประจำตัวคนพิการ <span className="text-red-500">*</span>
+                  เลขบัตรประจำตัวคนพิการ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                 </label>
                 <input
                   type="text"
@@ -1114,7 +1115,7 @@ function EditPersonal() {
                 <div className="flex col flex-col">
                   <label>
                     ที่อยู่ตามบัตรประชาชน{" "}
-                    <span className="text-red-500">*</span>
+                    <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                   </label>
                   <input
                     type="text"
@@ -1133,7 +1134,7 @@ function EditPersonal() {
                 </div>
                 <div className=" flex flex-col ">
                   <label>
-                    จังหวัด <span className="text-red-500">*</span>
+                    จังหวัด <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                   </label>
                   <div className="relative col w-fit mt-1">
                     <select
@@ -1182,7 +1183,7 @@ function EditPersonal() {
                 {IDaddressIdCardProvince ? (
                   <div className=" flex flex-col">
                     <label>
-                      อำเภอ <span className="text-red-500">*</span>
+                      อำเภอ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                     </label>
                     <div className="relative col w-fit mt-1">
                       <select
@@ -1243,7 +1244,7 @@ function EditPersonal() {
                 {IDaddressIdCardProvince && IDaddressIdCardAmphor ? (
                   <div className=" flex flex-col">
                     <label>
-                      ตำบล <span className="text-red-500">*</span>
+                      ตำบล <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                     </label>
                     <div className="relative col w-fit mt-1">
                       <select
@@ -1325,7 +1326,7 @@ function EditPersonal() {
                 IDaddressIdCardTambon ? (
                   <div className=" flex flex-col ">
                     <label>
-                      รหัสไปรษณีย์ <span className="text-red-500">*</span>
+                      รหัสไปรษณีย์ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                     </label>
                     <div className=" col w-fit mt-1">
                       <p
@@ -1341,7 +1342,7 @@ function EditPersonal() {
                 <div className="flex col flex-col">
                   <div className="flex gap-x-2">
                     <label>
-                      ที่อยู่ปัจจุบัน <span className="text-red-500">*</span>
+                      ที่อยู่ปัจจุบัน <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                     </label>
                     <div
                       className={`${!editMode ? "hidden" : ""} flex gap-x-1`}
@@ -1376,7 +1377,7 @@ function EditPersonal() {
                 </div>
                 <div className=" flex flex-col">
                   <label>
-                    จังหวัด <span className="text-red-500">*</span>
+                    จังหวัด <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                   </label>
                   <div className="relative col w-fit mt-1">
                     <select
@@ -1429,7 +1430,7 @@ function EditPersonal() {
                 {IDaddressProvince ? (
                   <div className=" flex flex-col">
                     <label>
-                      อำเภอ <span className="text-red-500">*</span>
+                      อำเภอ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                     </label>
                     <div className="relative col w-fit mt-1">
                       <select
@@ -1495,7 +1496,7 @@ function EditPersonal() {
                 {IDaddressProvince && IDaddressAmphor ? (
                   <div className=" flex flex-col">
                     <label>
-                      ตำบล <span className="text-red-500">*</span>
+                      ตำบล <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                     </label>
                     <div className="relative col w-fit mt-1">
                       <select
@@ -1581,7 +1582,7 @@ function EditPersonal() {
                 {IDaddressProvince && IDaddressAmphor && IDaddressTambon ? (
                   <div className=" flex flex-col ">
                     <label>
-                      รหัสไปรษณีย์ <span className="text-red-500">*</span>
+                      รหัสไปรษณีย์ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                     </label>
                     <div className=" col w-fit mt-1">
                       <p
@@ -1597,7 +1598,7 @@ function EditPersonal() {
               </div>
               <div className="flex col flex-col">
                 <label>
-                  เบอร์ติดต่อ <span className="text-red-500">*</span>
+                  เบอร์ติดต่อ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                 </label>
                 <input
                   type="tel"
@@ -1656,7 +1657,7 @@ function EditPersonal() {
               </div>
               <div className="flex col flex-col">
                 <label>
-                  อีเมล์ <span className="text-red-500">*</span>
+                  อีเมล์ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                 </label>
                 <input
                   type="email"
@@ -1669,7 +1670,7 @@ function EditPersonal() {
               <div className="flex gap-x-10 gap-y-5 flex-wrap">
                 <div className=" flex flex-col">
                   <label>
-                    ประเภทความพิการ <span className="text-red-500">*</span>
+                    ประเภทความพิการ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                   </label>
                   <div className="relative col w-fit mt-1">
                     <select
@@ -1710,7 +1711,7 @@ function EditPersonal() {
                   className=" flex flex-col"
                 >
                   <label>
-                    เลือกความพิการ<span className="text-red-500">*</span>
+                    เลือกความพิการ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                   </label>
                   <div className="relative col w-fit mt-1">
                     <select
@@ -1939,7 +1940,7 @@ function EditPersonal() {
               <div className="w-full flex">
                 <div className="flex col flex-col ">
                   <label className={`${!editMode ? "hidden" : ""}`}>
-                    อัปโหลดรูปโปรไฟล์ <span className="text-red-500">*</span>
+                    อัปโหลดรูปโปรไฟล์ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                   </label>
 
                   <div className="w-32 h-32 relative my-1">

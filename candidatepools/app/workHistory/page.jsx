@@ -140,12 +140,10 @@ function WorkHistory() {
 
     const handleAddProject = () => {
         if ((!projectName[projects.length - 1]
-            || !projectDetail[projects.length - 1]
-            || !projectFile[projects.length - 1]?.fileUrl)
+            || !projectDetail[projects.length - 1])
             &&
             (!getProjectName[projects.length - 1]
-                || !getProjectDetail[projects.length - 1]
-                || !getProjectFile[projects.length - 1]?.fileUrl)) {
+                || !getProjectDetail[projects.length - 1])) {
             setErrorField("กรุณากรอกข้อความให้ครบก่อนเพิ่มข้อมูลใหม่")
             return;
         }
@@ -380,14 +378,12 @@ function WorkHistory() {
         if ((!dateStartInternship[internships.length - 1]
             || !dateEndInternship[internships.length - 1]
             || !placeInternship[internships.length - 1]
-            || !positionInternship[internships.length - 1]
-            || !internshipFile[internships.length - 1]?.fileUrl)
+            || !positionInternship[internships.length - 1])
             &&
             (!getDateStartInternship[internships.length - 1]
                 || !getDateEndInternship[internships.length - 1]
                 || !getPlaceInternship[internships.length - 1]
-                || !getPositionInternship[internships.length - 1]
-                || !getInternshipFile[internships.length - 1]?.fileUrl)) {
+                || !getPositionInternship[internships.length - 1])) {
             setErrorFieldInterships("กรุณากรอกข้อความให้ครบก่อนเพิ่มข้อมูลใหม่");
             return;
         }
@@ -612,14 +608,12 @@ function WorkHistory() {
         if ((!dateStartWork[works.length - 1]
             || !dateEndWork[works.length - 1]
             || !placeWork[works.length - 1]
-            || !positionWork[works.length - 1]
-            || !workFile[works.length - 1]?.fileUrl)
+            || !positionWork[works.length - 1])
             &&
             (!getDateStartWork[works.length - 1]
                 || !getDateEndWork[works.length - 1]
                 || !getPlaceWork[works.length - 1]
-                || !getPositionWork[works.length - 1]
-                || !getWorkFile[works.length - 1]?.fileUrl)) {
+                || !getPositionWork[works.length - 1])) {
             setErrorFieldWorks("กรุณากรอกข้อความให้ครบก่อนเพิ่มข้อมูลใหม่");
             return;
         }
@@ -853,15 +847,11 @@ function WorkHistory() {
         // ตรวจสอบข้อมูลโครงงาน / ผลงาน
         const hasAnyProjectField =
             mergedProjectName[fieldProjects] ||
-            mergedProjectDetail[fieldProjects] ||
-            (mergedProjectFile[fieldProjects] && mergedProjectFile[fieldProjects].fileUrl);
+            mergedProjectDetail[fieldProjects];
 
         const isProjectFieldComplete =
             mergedProjectName[fieldProjects] &&
-            mergedProjectDetail[fieldProjects] &&
-            mergedProjectFile[fieldProjects] &&
-            mergedProjectFile[fieldProjects].fileUrl;
-
+            mergedProjectDetail[fieldProjects]
         if (hasAnyProjectField && !isProjectFieldComplete) {
             setError("กรุณาระบุข้อมูล โครงงาน / ผลงาน ให้ครบทุกช่อง");
             setLoader(false);
@@ -872,16 +862,13 @@ function WorkHistory() {
             mergedDateStartInternship[fieldInternship] ||
             mergedDateEndInternship[fieldInternship] ||
             mergedPlaceInternship[fieldInternship] ||
-            mergedPositionInternship[fieldInternship] ||
-            (mergedInternshipFile[fieldInternship] && mergedInternshipFile[fieldInternship].fileUrl);
+            mergedPositionInternship[fieldInternship];
 
         const isInternshipFieldComplete =
             mergedDateStartInternship[fieldInternship] &&
             mergedDateEndInternship[fieldInternship] &&
             mergedPlaceInternship[fieldInternship] &&
-            mergedPositionInternship[fieldInternship] &&
-            mergedInternshipFile[fieldInternship] &&
-            mergedInternshipFile[fieldInternship].fileUrl;
+            mergedPositionInternship[fieldInternship];
 
         // ตรวจสอบข้อมูลการฝึกงาน
         if (hasAnyInternshipField && !isInternshipFieldComplete) {
@@ -895,16 +882,12 @@ function WorkHistory() {
             mergedDateStartWork[fieldWorks] ||
             mergedDateEndWork[fieldWorks] ||
             mergedPlaceWork[fieldWorks] ||
-            mergedPositionWork[fieldWorks] ||
-            (mergedWorkFile[fieldWorks] && mergedWorkFile[fieldWorks].fileUrl);
-
+            mergedPositionWork[fieldWorks]
         const isWorkFieldComplete =
             mergedDateStartWork[fieldWorks] &&
             mergedDateEndWork[fieldWorks] &&
             mergedPlaceWork[fieldWorks] &&
-            mergedPositionWork[fieldWorks] &&
-            mergedWorkFile[fieldWorks] &&
-            mergedWorkFile[fieldWorks].fileUrl;
+            mergedPositionWork[fieldWorks];
         // ตรวจสอบข้อมูลการทำงาน
 
         if (hasAnyWorkField && !isWorkFieldComplete) {
@@ -946,12 +929,12 @@ function WorkHistory() {
             projects: mergedProjectName.map((name, index) => ({
                 name,
                 detail: mergedProjectDetail[index],
-                files: [ // ตรวจสอบให้ files เป็น array ของ object ตาม schema
+                files: [
                     {
-                        fileName: mergedProjectFile[index].fileName || "", // ใช้ค่า fileName ที่ถูกต้อง
-                        fileType: mergedProjectFile[index].fileType || "",
-                        fileUrl: mergedProjectFile[index].fileUrl || "",
-                        fileSize: mergedProjectFile[index].fileSize || "",
+                        fileName: mergedProjectFile[index]?.fileName || "",
+                        fileType: mergedProjectFile[index]?.fileType || "",
+                        fileUrl: mergedProjectFile[index]?.fileUrl || "",
+                        fileSize: mergedProjectFile[index]?.fileSize || "",
                     }
                 ]
             })),
@@ -962,10 +945,10 @@ function WorkHistory() {
                 position: mergedPositionInternship[index],
                 files: [
                     {
-                        fileName: mergedInternshipFile[index].fileName || "",
-                        fileType: mergedInternshipFile[index].fileType || "",
-                        fileUrl: mergedInternshipFile[index].fileUrl || "",
-                        fileSize: mergedInternshipFile[index].fileSize || "",
+                        fileName: mergedInternshipFile[index]?.fileName || "",
+                        fileType: mergedInternshipFile[index]?.fileType || "",
+                        fileUrl: mergedInternshipFile[index]?.fileUrl || "",
+                        fileSize: mergedInternshipFile[index]?.fileSize || "",
                     }
                 ]
             })),
@@ -976,10 +959,10 @@ function WorkHistory() {
                 position: mergedPositionWork[index],
                 files: [
                     {
-                        fileName: mergedWorkFile[index].fileName || "",
-                        fileType: mergedWorkFile[index].fileType || "",
-                        fileUrl: mergedWorkFile[index].fileUrl || "",
-                        fileSize: mergedWorkFile[index].fileSize || "",
+                        fileName: mergedWorkFile[index]?.fileName || "",
+                        fileType: mergedWorkFile[index]?.fileType || "",
+                        fileUrl: mergedWorkFile[index]?.fileUrl || "",
+                        fileSize: mergedWorkFile[index]?.fileSize || "",
                     }
                 ]
             })),
@@ -1151,7 +1134,7 @@ function WorkHistory() {
     }
 
     return (
-        <div className={`${bgColorMain} ${bgColor}`}>
+        <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
             <NavbarLogo title="ประวัติการทำงาน / ฝึกงาน" dataUser={dataUser} />
             <div className="flex">
                 <NavbarMain status="edit" />
@@ -1169,7 +1152,7 @@ function WorkHistory() {
                                                 className={` cursor-pointer  rounded-lg w-fit`}
                                                 onClick={() => handleRemoveProject(index)}
                                             >
-                                                <Icon className={` text-red-400`} path={mdiCloseCircle} size={1} />
+                                                <Icon className={` text-red-500`} path={mdiCloseCircle} size={1} />
                                             </div>
                                         </div>
                                     )}
@@ -1178,7 +1161,7 @@ function WorkHistory() {
                                     )}
                                     <div className='mt-5 flex gap-5 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ชื่อโครงงาน / ผลงาน</label>
+                                            <label >ชื่อโครงงาน / ผลงาน <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1189,7 +1172,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >รายละเอียด</label>
+                                            <label >รายละเอียด <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1200,7 +1183,9 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
-                                            <label>เอกสารประกอบ</label>
+                                            {projectFile[index]?.fileUrl || getProjectFile[index]?.fileUrl || editMode ? (
+                                                <label>เอกสารประกอบ</label>
+                                            ) : null}
 
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
                                             {(projectFile[index] && projectFile[index]?.fileUrl !== '') || (getProjectFile[index] && getProjectFile[index]?.fileUrl !== '') ? (
@@ -1233,21 +1218,23 @@ function WorkHistory() {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div
-                                                    onClick={editMode ? openFileDialog : undefined} // เรียกใช้ฟังก์ชันเมื่อ editMode เป็น true
-                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
-                                                        }`}
-                                                    style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
-                                                >
-                                                    <input
-                                                        id="chooseProfile"
-                                                        type="file"
-                                                        ref={projectFileInputRef} // เชื่อมต่อกับ ref
-                                                        onChange={(e) => handleProfileDocument(e, index)}
-                                                        hidden
-                                                    />
-                                                    Choose File
-                                                </div>
+                                                editMode && (
+                                                    <div
+                                                        onClick={editMode ? openFileDialog : undefined} // เรียกใช้ฟังก์ชันเมื่อ editMode เป็น true
+                                                        className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
+                                                            }`}
+                                                        style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
+                                                    >
+                                                        <input
+                                                            id="chooseProfile"
+                                                            type="file"
+                                                            ref={projectFileInputRef} // เชื่อมต่อกับ ref
+                                                            onChange={(e) => handleProfileDocument(e, index)}
+                                                            hidden
+                                                        />
+                                                        Choose File
+                                                    </div>
+                                                )
                                             )}
                                         </div>
                                     </div>
@@ -1282,7 +1269,7 @@ function WorkHistory() {
                                                 className={` cursor-pointer  rounded-lg w-fit`}
                                                 onClick={() => handleRemoveInternship(index)}
                                             >
-                                                <Icon className={` text-red-400`} path={mdiCloseCircle} size={1} />
+                                                <Icon className={` text-red-500`} path={mdiCloseCircle} size={1} />
                                             </div>
                                         </div>
                                     )}
@@ -1291,7 +1278,7 @@ function WorkHistory() {
                                     )}
                                     <div className='mt-5 flex gap-5 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ตั้งแต่</label>
+                                            <label >ตั้งแต่ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
                                                     className={`${!editMode ? "editModeTrue" : ""} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1309,7 +1296,7 @@ function WorkHistory() {
                                             </div>
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ถึง</label>
+                                            <label >ถึง <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
                                                     className={`${!editMode ? "editModeTrue" : ""} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1327,7 +1314,7 @@ function WorkHistory() {
                                             </div>
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >สถานที่ฝึกงาน</label>
+                                            <label >สถานที่ฝึกงาน <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1338,7 +1325,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ตำแหน่ง</label>
+                                            <label >ตำแหน่ง <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1349,7 +1336,9 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
-                                            <label>เอกสารประกอบ</label>
+                                            {internshipFile[index]?.fileUrl || getInternshipFile[index]?.fileUrl || editMode ? (
+                                                <label>เอกสารประกอบ</label>
+                                            ) : null}
 
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
                                             {(internshipFile[index] && internshipFile[index]?.fileUrl !== '') || (getInternshipFile[index] && getInternshipFile[index]?.fileUrl !== '') ? (
@@ -1383,21 +1372,23 @@ function WorkHistory() {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div
-                                                    onClick={editMode ? openFileDialogInternship : undefined} // ตรวจสอบ editMode ก่อนเรียกฟังก์ชัน
-                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
-                                                        }`}
-                                                    style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
-                                                >
-                                                    <input
-                                                        id="chooseProfile"
-                                                        type="file"
-                                                        ref={internFileInputRef} // เชื่อมต่อกับ ref
-                                                        onChange={(e) => handleInternshipDocument(e, index)}
-                                                        hidden
-                                                    />
-                                                    Choose File
-                                                </div>
+                                                editMode && (
+                                                    <div
+                                                        onClick={editMode ? openFileDialogInternship : undefined} // ตรวจสอบ editMode ก่อนเรียกฟังก์ชัน
+                                                        className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
+                                                            }`}
+                                                        style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
+                                                    >
+                                                        <input
+                                                            id="chooseProfile"
+                                                            type="file"
+                                                            ref={internFileInputRef} // เชื่อมต่อกับ ref
+                                                            onChange={(e) => handleInternshipDocument(e, index)}
+                                                            hidden
+                                                        />
+                                                        Choose File
+                                                    </div>
+                                                )
                                             )}
 
                                         </div>
@@ -1433,7 +1424,7 @@ function WorkHistory() {
                                                 className={` cursor-pointer  rounded-lg w-fit`}
                                                 onClick={() => handleRemoveWork(index)}
                                             >
-                                                <Icon className={` text-red-400`} path={mdiCloseCircle} size={1} />
+                                                <Icon className={` text-red-500`} path={mdiCloseCircle} size={1} />
                                             </div>
                                         </div>
                                     )}
@@ -1442,7 +1433,7 @@ function WorkHistory() {
                                     )}
                                     <div className='mt-5 flex gap-5 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ตั้งแต่</label>
+                                            <label >ตั้งแต่ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
                                                     className={`${!editMode ? "editModeTrue" : ""} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1460,7 +1451,7 @@ function WorkHistory() {
                                             </div>
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ถึง</label>
+                                            <label >ถึง <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
                                                     className={`${!editMode ? "editModeTrue" : ""} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1478,7 +1469,7 @@ function WorkHistory() {
                                             </div>
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >สถานที่ทำงาน</label>
+                                            <label >สถานที่ทำงาน <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1489,7 +1480,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ตำแหน่ง</label>
+                                            <label >ตำแหน่ง <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1500,7 +1491,9 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
-                                            <label>เอกสารประกอบ</label>
+                                            {workFile[index]?.fileUrl || getWorkFile[index]?.fileUrl || editMode ? (
+                                                <label>เอกสารประกอบ</label>
+                                            ) : null}
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
                                             {(workFile[index] && workFile[index]?.fileUrl !== '') || (getWorkFile[index] && getWorkFile[index]?.fileUrl !== '') ? (
                                                 <div className={`mt-1 w-fit py-2 flex gap-8`}>
@@ -1532,21 +1525,23 @@ function WorkHistory() {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div
-                                                    onClick={editMode ? openFileDialogWork : undefined} // ตรวจสอบ editMode ก่อนเรียกฟังก์ชัน
-                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
-                                                        }`}
-                                                    style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
-                                                >
-                                                    <input
-                                                        id="chooseProfile"
-                                                        type="file"
-                                                        ref={workFileInputRef} // เชื่อมต่อกับ ref
-                                                        onChange={(e) => handleWorkDocument(e, index)}
-                                                        hidden
-                                                    />
-                                                    Choose File
-                                                </div>
+                                                editMode && (
+                                                    <div
+                                                        onClick={editMode ? openFileDialogWork : undefined} // ตรวจสอบ editMode ก่อนเรียกฟังก์ชัน
+                                                        className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
+                                                            }`}
+                                                        style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
+                                                    >
+                                                        <input
+                                                            id="chooseProfile"
+                                                            type="file"
+                                                            ref={workFileInputRef} // เชื่อมต่อกับ ref
+                                                            onChange={(e) => handleWorkDocument(e, index)}
+                                                            hidden
+                                                        />
+                                                        Choose File
+                                                    </div>
+                                                )
                                             )}
 
                                         </div>
