@@ -47,7 +47,7 @@ function editEducation() {
         setRegisterColor,
         registerColor,
         inputEditColor,
-      } = useTheme();
+    } = useTheme();
 
     //value data user
     const [typePerson, setTypePerson] = useState("");
@@ -85,7 +85,7 @@ function editEducation() {
             setLoader(false);
         }
     }
-    
+
     //add array
     const handleUniversity = (e, index) => {
         const newUniversity = e; // ค่าที่ได้รับจาก input
@@ -150,7 +150,7 @@ function editEducation() {
             setErrorEducation("ระบุข้อมูลให้ครบก่อนเพิ่มข้อมูล");
             return;
         } else if (typePerson === "นักศึกษาพิการ") {
-            if (!level[0] || !campus[0]) {
+            if (!level[0]) {
                 setErrorEducation("ระบุข้อมูลให้ครบก่อนเพิ่มข้อมูล");
                 return;
             }
@@ -437,7 +437,7 @@ function editEducation() {
 
         // ตรวจสอบข้อมูลเฉพาะสำหรับนักศึกษาพิการ
         if (typePerson === "นักศึกษาพิการ") {
-            if (!level[0] || !campus[0]) {
+            if (!level[0]) {
                 setError("ระบุข้อมูลให้ครบทุกช่อง");
                 return;
             }
@@ -642,7 +642,7 @@ function editEducation() {
     }
 
     return (
-        <div className={`${bgColorMain} ${bgColor}`}>
+        <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
             <NavbarLogo title="ประวัติการศึกษา" dataUser={dataUser} />
             <div className="flex">
                 <NavbarMain status="edit" />
@@ -655,7 +655,7 @@ function editEducation() {
                                         {/* ประเภทบุคล */}
                                         {index === 0 && (
                                             <div className="flex flex-col w-full">
-                                                <label>ประเภทบุลคล</label>
+                                                <label>ประเภทบุลคล <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                                 <div className="relative col w-fit mt-1">
                                                     <select
                                                         onChange={(e) => setTypePerson(e.target.value)}
@@ -690,7 +690,7 @@ function editEducation() {
 
                                         {/* ส่วนที่เหลือ */}
                                         <div className="flex flex-col">
-                                            <label>ระดับชั้น</label>
+                                            <label>ระดับชั้น <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
                                                     onChange={(e) => {
@@ -715,7 +715,7 @@ function editEducation() {
                                         {index === 0 ? (
                                             (typePerson === "บัณฑิตพิการ" || dataUser.typePerson === "บัณฑิตพิการ") && (
                                                 <div className="flex flex-col">
-                                                    <label>ปีที่จบการศึกษา</label>
+                                                    <label>ปีที่จบการศึกษา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                                     <div className="relative col w-fit mt-1">
                                                         <select
                                                             onChange={(e) => {
@@ -739,7 +739,7 @@ function editEducation() {
                                             )
                                         ) : (
                                             <div className="flex flex-col">
-                                                <label>ปีที่จบการศึกษา</label>
+                                                <label>ปีที่จบการศึกษา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                                 <div className="relative col w-fit mt-1">
                                                     <select
                                                         onChange={(e) => {
@@ -763,7 +763,7 @@ function editEducation() {
                                         )}
                                         {/* สถาบันการศึกษา */}
                                         <div className="flex col flex-col">
-                                            <label>สถาบันการศึกษา/มหาวิทยาลัย</label>
+                                            <label>สถาบันการศึกษา/มหาวิทยาลัย <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -775,21 +775,23 @@ function editEducation() {
                                         </div>
                                         {/* วิทยาเขต */}
                                         {index === 0 && typePerson === 'นักศึกษาพิการ' && (
-                                            <div className="flex col flex-col">
-                                                <label>วิทยาเขต</label>
-                                                <input
-                                                    type="text"
-                                                    className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                                    onBlur={(e) => handleCampus(e.target.value, index)}
-                                                    defaultValue={Array.isArray(campus) && campus[index] !== undefined ? campus[index] : ""}
-                                                    readOnly={!editMode}
-                                                    placeholder="ระบุวิทยาเขตการศึกษา"
-                                                />
-                                            </div>
+                                            campus[index] || editMode ? (
+                                                <div className="flex col flex-col">
+                                                    <label>วิทยาเขต</label>
+                                                    <input
+                                                        type="text"
+                                                        className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                        onBlur={(e) => handleCampus(e.target.value, index)}
+                                                        defaultValue={Array.isArray(campus) && campus[index] !== undefined ? campus[index] : ""}
+                                                        readOnly={!editMode}
+                                                        placeholder="ระบุวิทยาเขตการศึกษา"
+                                                    />
+                                                </div>
+                                            ) : null
                                         )}
                                         {/* คณะ */}
                                         <div className="flex col flex-col">
-                                            <label>คณะ</label>
+                                            <label>คณะ <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -801,7 +803,7 @@ function editEducation() {
                                         </div>
                                         {/* สาขา */}
                                         <div className="flex col flex-col">
-                                            <label>สาขา</label>
+                                            <label>สาขา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -814,7 +816,7 @@ function editEducation() {
                                         {/* ชั้นปี */}
                                         {index === 0 && typePerson === "นักศึกษาพิการ" && (
                                             <div className="flex flex-col">
-                                                <label>ชั้นปี</label>
+                                                <label>ชั้นปี <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                                 <div className="relative col w-fit mt-1">
                                                     <select
                                                         onChange={(e) => {
@@ -839,7 +841,7 @@ function editEducation() {
                                         )}
                                         {/* เกรดเฉลี่ย */}
                                         <div className="flex col flex-col">
-                                            <label>เกรดเฉลี่ย</label>
+                                            <label>เกรดเฉลี่ย <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 inputMode="numeric"
