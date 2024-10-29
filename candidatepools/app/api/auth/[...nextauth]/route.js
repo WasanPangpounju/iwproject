@@ -6,7 +6,6 @@ import GoogleProvider from "next-auth/providers/google";
 import LineProvider from 'next-auth/providers/line';
 import { v4 as uuidv4 } from 'uuid'; // นำเข้า UUID
 import bcrypt from 'bcrypt';
-import { signOut } from "next-auth/react";
 
 const authOption = {
     providers: [
@@ -59,20 +58,23 @@ const authOption = {
         strategy: "jwt",
     },
     callbacks: {
-        async jwt({ token, user }) {
-            // หาก user มีข้อมูลให้ตรวจสอบว่ามี uuid อยู่ใน token หรือไม่
-            if (user) {
-                if (!token.id) {
-                    // ตรวจสอบว่าผู้ใช้มี uuid อยู่ในฐานข้อมูลแล้วหรือไม่
-                    const existingUser = await Users.findOne({ email: user.email });
-
-                    if (existingUser && existingUser.uuid) {
-                        // หากผู้ใช้มี uuid ให้ใช้ uuid นั้น
-                        token.id = existingUser.uuid;
-                    } else {
-                        // หากไม่มี uuid ให้สร้าง uuid ใหม่
-                        token.id = uuidv4();
-                    }
+        async jwt({ token, user, account, profile }) {
+            // ตรวจสอบว่ามาจาก LINE หรือไม่
+            if (account && account.provider === 'line') {
+                if (profile && profile.sub) {
+                    // ใช้ LINE User ID เป็นตัวระบุใน token
+                    token.id = profile.sub;
+                } else {
+                    // ใช้ uuid หากไม่มี LINE User ID
+                    token.id = uuidv4();
+                }
+            } else if (user) {
+                // ตรวจสอบข้อมูลผู้ใช้จาก Google หรือระบบ credentials
+                const existingUser = await Users.findOne({ email: user.email });
+                if (existingUser && existingUser.uuid) {
+                    token.id = existingUser.uuid;
+                } else {
+                    token.id = uuidv4();
                 }
             }
             return token;
