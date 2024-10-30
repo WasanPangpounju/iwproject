@@ -79,7 +79,7 @@ function NavbarMain({ status }) {
   };
 
   return (
-    <nav className={`${bgColorNavbar} ${bgColorWhite} w-60 min-h-screen`} role="navigation" aria-label="หลักการนำทาง">
+    <nav className={`${bgColorNavbar} ${bgColorWhite} ${fontSize} w-60 min-h-screen`} role="navigation" aria-label="หลักการนำทาง">
       <Link
         href="/main"
         className={`${status === "main"
@@ -175,7 +175,7 @@ function NavbarMain({ status }) {
         </p>
       </Link>
 
-      <Link
+      {/* <Link
         href="/graph"
         className={`${status === "graph"
           ? "bg-[#fee2d9] text-[#ff7201] cursor-default"
@@ -187,7 +187,7 @@ function NavbarMain({ status }) {
         <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           flowchage
         </p>
-      </Link>
+      </Link> */}
 
       <div
         onClick={handleLogout}

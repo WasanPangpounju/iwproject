@@ -90,8 +90,6 @@ function WorkHistory() {
         setRegisterColor,
         registerColor,
         inputEditColor,
-        inputGrayColor, 
-        setInputGrayColor
     } = useTheme();
 
     //Mode
@@ -690,7 +688,7 @@ function WorkHistory() {
                                             <label >ทักษะที่มี</label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
-                                                    className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    className={`${!editMode ? "editModeTrue" : ""} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                     style={{ appearance: 'none' }}
                                                     onChange={(e) => handleSkillType(e.target.value, index)}
                                                     value={skillType[index] || getSkillType[index] || ""}
@@ -709,7 +707,7 @@ function WorkHistory() {
                                             <label >ทักษะ</label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 readOnly={!editMode}
                                                 placeholder="รายละเอียดเพิ่มเติม"
                                                 defaultValue={getSkillName[index] || ""}
@@ -720,7 +718,7 @@ function WorkHistory() {
                                             <label >อธิบายรายละเอียด</label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain}  mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 readOnly={!editMode}
                                                 placeholder="รายละเอียดเพิ่มเติม"
                                                 defaultValue={getSkillDetail[index] || ""}
@@ -774,7 +772,7 @@ function WorkHistory() {
                                             <label >เรื่อง</label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 placeholder="ระบุชื่อเรื่องการอบรม"
                                                 onBlur={(e) => handleTrainName(e.target.value, index)}
                                                 defaultValue={getTrainName[index] || ""}
@@ -785,7 +783,7 @@ function WorkHistory() {
                                             <label >รายละเอียด</label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 placeholder="รายละเอียดเพิ่มเติม"
                                                 onBlur={(e) => handleTrainDetail(e.target.value, index)}
                                                 defaultValue={getTrainDetail[index] || ""}
@@ -831,10 +829,8 @@ function WorkHistory() {
                                             ) : (
                                                 <div
                                                     onClick={editMode ? openFileDialogTrain : undefined} // เรียกใช้ฟังก์ชันเมื่อ editMode เป็น true
-                                                    // className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
-                                                    //     }`}
-                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${inputEditColor} ${editMode ? ' cursor-pointer' : ' cursor-not-allowed'
-                                                    }`}
+                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
+                                                        }`}
                                                     style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
                                                 >
                                                     <input
@@ -883,39 +879,18 @@ function WorkHistory() {
                                         setEditMode(false)
                                         window.location.reload()
                                     }
-                                    } 
-                                    // className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
-                                    className={`
-                                        ${bgColorNavbar} 
-                                        ${bgColorWhite} 
-                                        hover:cursor-pointer 
-                                        bg-[#F97201]  
-                                        py-2 px-6 
-                                        rounded-2xl 
-                                        flex justify-center items-center gap-1 
-                                        border border-white
-                                      `}
-                                   >
+                                    } className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
                                         <Icon path={mdiCloseCircle} size={1} />
                                         <p>ยกเลิก</p>
                                     </div>
-                                    <button type='submit' 
-                                    // className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'
-                                    className=
-                                    {
-                                        `${inputEditColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
-                                    }
-                                    >
+                                    <button type='submit' className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'>
                                         <Icon path={mdiContentSave} size={1} />
                                         <p>บันทึก</p>
                                     </button>
                                 </div>
                             ) : (
                                 <div className=" flex w-full justify-center mt-10">
-                                    <div onClick={() => setEditMode(true)} 
-                                    // className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
-                                    className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-                                    >
+                                    <div onClick={() => setEditMode(true)} className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
                                         <Icon path={mdiPencil} size={.8} />
                                         <p>แก้ไข</p>
                                     </div>

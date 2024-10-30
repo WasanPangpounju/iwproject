@@ -47,6 +47,8 @@ function editEducation() {
         setRegisterColor,
         registerColor,
         inputEditColor,
+        setInputGrayColor,
+        inputGrayColor
       } = useTheme();
 
     //value data user
@@ -766,7 +768,7 @@ function editEducation() {
                                             <label>สถาบันการศึกษา/มหาวิทยาลัย</label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onBlur={(e) => handleUniversity(e.target.value, index)}
                                                 defaultValue={Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
                                                 readOnly={!editMode}
@@ -779,7 +781,7 @@ function editEducation() {
                                                 <label>วิทยาเขต</label>
                                                 <input
                                                     type="text"
-                                                    className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                     onBlur={(e) => handleCampus(e.target.value, index)}
                                                     defaultValue={Array.isArray(campus) && campus[index] !== undefined ? campus[index] : ""}
                                                     readOnly={!editMode}
@@ -873,7 +875,7 @@ function editEducation() {
                                         <div className="mt-3 flex gap-5 flex-wrap">
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onChange={(e) => setInputNameFile(e.target.value)} // ตั้งชื่อไฟล์
                                                 placeholder="ชื่อเอกสาร"
                                                 readOnly={!editMode}
@@ -890,7 +892,7 @@ function editEducation() {
                                                 />
                                                 <div
                                                     onClick={openFileDialog}
-                                                    className="border rounded-lg py-2 px-4 text-center bg-gray-300 cursor-pointer"
+                                                    className={`${inputEditColor} border rounded-lg py-2 px-4 text-center cursor-pointer`}
                                                 >
                                                     Choose File
                                                 </div>
@@ -949,18 +951,31 @@ function editEducation() {
                                         setEditMode(false)
                                         window.location.reload()
                                     }
-                                    } className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
+                                    } 
+                                    // className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
+                                    className={`${bgColorNavbar} ${bgColorWhite} hover:cursor-pointer bg-[#F97201] py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
+
+                                   >
                                         <Icon path={mdiCloseCircle} size={1} />
                                         <p>ยกเลิก</p>
                                     </div>
-                                    <button type='submit' className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'>
+                                    <button type='submit' 
+                                    // className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'
+                                    className=
+                    {
+                        `${inputEditColor} ${inputGrayColor}  hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
+                    }
+                                    >
                                         <Icon path={mdiContentSave} size={1} />
                                         <p>บันทึก</p>
                                     </button>
                                 </div>
                             ) : (
                                 <div className=" flex w-full justify-center mt-10">
-                                    <div onClick={() => setEditMode(true)} className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
+                                    <div onClick={() => setEditMode(true)} 
+                                    // className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
+                                    className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
+                                    >
                                         <Icon path={mdiPencil} size={.8} />
                                         <p>แก้ไข</p>
                                     </div>
