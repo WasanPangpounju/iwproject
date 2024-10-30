@@ -15,7 +15,8 @@ export function ThemeProvider({ children }) {
   const [textBlue, setTextBlue] = useState("text-blue-500");
   const [registerColor, setRegisterColor] = useState("text-[#F97201]");
   const [inputEditColor, setInputEditColor] = useState("bg-gray-200");
-  const [inputGrayColor, setInputGrayColor] = useState("bg-[#75C7C2]");
+  const [inputTextColor, setInputTextColor] = useState("text-white");
+  const [inputGrayColor, setInputGrayColor] = useState("bg-[#74c7c2]");
 
   return (
     <ThemeContext.Provider value={{
@@ -42,7 +43,9 @@ export function ThemeProvider({ children }) {
       setInputEditColor,
       inputEditColor,
       setInputGrayColor,
-      inputGrayColor
+      inputGrayColor,
+      setInputTextColor,
+      inputTextColor
     }}>
       {children}
     </ThemeContext.Provider>

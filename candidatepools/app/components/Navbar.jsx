@@ -229,6 +229,8 @@ function Navbar({}) {
     inputEditColor,
     setInputGrayColor,
     inputGrayColor,
+    inputTextColor,
+    setInputTextColor
   } = useTheme();
 
   return (
@@ -292,7 +294,7 @@ function Navbar({}) {
             setRegisterColor("text-white");
             setInputEditColor("bg-black-200");
             setInputGrayColor("bg-black");
-
+            setInputTextColor("text-white")
           }}
           className="hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-black text-white py-1 px-2  font-thin"
         >
@@ -310,6 +312,7 @@ function Navbar({}) {
             setRegisterColor("text-[#e7e703]");
             setInputEditColor("bg-black-200");
             setInputGrayColor("bg-black");
+            setInputTextColor("text-[#e7e703]")
 
           }}
           className="hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-black text-[#e7e703] py-1 px-2  font-thin"
@@ -329,6 +332,8 @@ function Navbar({}) {
             setRegisterColor("text-[#F97201]");
             setInputEditColor("bg-gray-200");
             setInputGrayColor("bg-[#75C7C2]");
+            setInputTextColor("text-white")
+
           }}
           className="hover:cursor-pointer h-6 flex justify-center items-center rounded-lg bg-white text-black py-1 px-2  font-thin"
         >
