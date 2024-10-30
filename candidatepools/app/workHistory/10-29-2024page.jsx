@@ -92,8 +92,6 @@ function WorkHistory() {
         setRegisterColor,
         registerColor,
         inputEditColor,
-        inputGrayColor, 
-        setInputGrayColor
     } = useTheme();
 
     //add data
@@ -144,10 +142,12 @@ function WorkHistory() {
 
     const handleAddProject = () => {
         if ((!projectName[projects.length - 1]
-            || !projectDetail[projects.length - 1])
+            || !projectDetail[projects.length - 1]
+            || !projectFile[projects.length - 1]?.fileUrl)
             &&
             (!getProjectName[projects.length - 1]
-                || !getProjectDetail[projects.length - 1])) {
+                || !getProjectDetail[projects.length - 1]
+                || !getProjectFile[projects.length - 1]?.fileUrl)) {
             setErrorField("กรุณากรอกข้อความให้ครบก่อนเพิ่มข้อมูลใหม่")
             return;
         }
@@ -382,12 +382,14 @@ function WorkHistory() {
         if ((!dateStartInternship[internships.length - 1]
             || !dateEndInternship[internships.length - 1]
             || !placeInternship[internships.length - 1]
-            || !positionInternship[internships.length - 1])
+            || !positionInternship[internships.length - 1]
+            || !internshipFile[internships.length - 1]?.fileUrl)
             &&
             (!getDateStartInternship[internships.length - 1]
                 || !getDateEndInternship[internships.length - 1]
                 || !getPlaceInternship[internships.length - 1]
-                || !getPositionInternship[internships.length - 1])) {
+                || !getPositionInternship[internships.length - 1]
+                || !getInternshipFile[internships.length - 1]?.fileUrl)) {
             setErrorFieldInterships("กรุณากรอกข้อความให้ครบก่อนเพิ่มข้อมูลใหม่");
             return;
         }
@@ -612,12 +614,14 @@ function WorkHistory() {
         if ((!dateStartWork[works.length - 1]
             || !dateEndWork[works.length - 1]
             || !placeWork[works.length - 1]
-            || !positionWork[works.length - 1])
+            || !positionWork[works.length - 1]
+            || !workFile[works.length - 1]?.fileUrl)
             &&
             (!getDateStartWork[works.length - 1]
                 || !getDateEndWork[works.length - 1]
                 || !getPlaceWork[works.length - 1]
-                || !getPositionWork[works.length - 1])) {
+                || !getPositionWork[works.length - 1]
+                || !getWorkFile[works.length - 1]?.fileUrl)) {
             setErrorFieldWorks("กรุณากรอกข้อความให้ครบก่อนเพิ่มข้อมูลใหม่");
             return;
         }
@@ -851,11 +855,15 @@ function WorkHistory() {
         // ตรวจสอบข้อมูลโครงงาน / ผลงาน
         const hasAnyProjectField =
             mergedProjectName[fieldProjects] ||
-            mergedProjectDetail[fieldProjects];
+            mergedProjectDetail[fieldProjects] ||
+            (mergedProjectFile[fieldProjects] && mergedProjectFile[fieldProjects].fileUrl);
 
         const isProjectFieldComplete =
             mergedProjectName[fieldProjects] &&
-            mergedProjectDetail[fieldProjects]
+            mergedProjectDetail[fieldProjects] &&
+            mergedProjectFile[fieldProjects] &&
+            mergedProjectFile[fieldProjects].fileUrl;
+
         if (hasAnyProjectField && !isProjectFieldComplete) {
             setError("กรุณาระบุข้อมูล โครงงาน / ผลงาน ให้ครบทุกช่อง");
             setLoader(false);
@@ -866,13 +874,16 @@ function WorkHistory() {
             mergedDateStartInternship[fieldInternship] ||
             mergedDateEndInternship[fieldInternship] ||
             mergedPlaceInternship[fieldInternship] ||
-            mergedPositionInternship[fieldInternship];
+            mergedPositionInternship[fieldInternship] ||
+            (mergedInternshipFile[fieldInternship] && mergedInternshipFile[fieldInternship].fileUrl);
 
         const isInternshipFieldComplete =
             mergedDateStartInternship[fieldInternship] &&
             mergedDateEndInternship[fieldInternship] &&
             mergedPlaceInternship[fieldInternship] &&
-            mergedPositionInternship[fieldInternship];
+            mergedPositionInternship[fieldInternship] &&
+            mergedInternshipFile[fieldInternship] &&
+            mergedInternshipFile[fieldInternship].fileUrl;
 
         // ตรวจสอบข้อมูลการฝึกงาน
         if (hasAnyInternshipField && !isInternshipFieldComplete) {
@@ -886,12 +897,16 @@ function WorkHistory() {
             mergedDateStartWork[fieldWorks] ||
             mergedDateEndWork[fieldWorks] ||
             mergedPlaceWork[fieldWorks] ||
-            mergedPositionWork[fieldWorks]
+            mergedPositionWork[fieldWorks] ||
+            (mergedWorkFile[fieldWorks] && mergedWorkFile[fieldWorks].fileUrl);
+
         const isWorkFieldComplete =
             mergedDateStartWork[fieldWorks] &&
             mergedDateEndWork[fieldWorks] &&
             mergedPlaceWork[fieldWorks] &&
-            mergedPositionWork[fieldWorks];
+            mergedPositionWork[fieldWorks] &&
+            mergedWorkFile[fieldWorks] &&
+            mergedWorkFile[fieldWorks].fileUrl;
         // ตรวจสอบข้อมูลการทำงาน
 
         if (hasAnyWorkField && !isWorkFieldComplete) {
@@ -933,12 +948,12 @@ function WorkHistory() {
             projects: mergedProjectName.map((name, index) => ({
                 name,
                 detail: mergedProjectDetail[index],
-                files: [
+                files: [ // ตรวจสอบให้ files เป็น array ของ object ตาม schema
                     {
-                        fileName: mergedProjectFile[index]?.fileName || "",
-                        fileType: mergedProjectFile[index]?.fileType || "",
-                        fileUrl: mergedProjectFile[index]?.fileUrl || "",
-                        fileSize: mergedProjectFile[index]?.fileSize || "",
+                        fileName: mergedProjectFile[index].fileName || "", // ใช้ค่า fileName ที่ถูกต้อง
+                        fileType: mergedProjectFile[index].fileType || "",
+                        fileUrl: mergedProjectFile[index].fileUrl || "",
+                        fileSize: mergedProjectFile[index].fileSize || "",
                     }
                 ]
             })),
@@ -949,10 +964,10 @@ function WorkHistory() {
                 position: mergedPositionInternship[index],
                 files: [
                     {
-                        fileName: mergedInternshipFile[index]?.fileName || "",
-                        fileType: mergedInternshipFile[index]?.fileType || "",
-                        fileUrl: mergedInternshipFile[index]?.fileUrl || "",
-                        fileSize: mergedInternshipFile[index]?.fileSize || "",
+                        fileName: mergedInternshipFile[index].fileName || "",
+                        fileType: mergedInternshipFile[index].fileType || "",
+                        fileUrl: mergedInternshipFile[index].fileUrl || "",
+                        fileSize: mergedInternshipFile[index].fileSize || "",
                     }
                 ]
             })),
@@ -963,10 +978,10 @@ function WorkHistory() {
                 position: mergedPositionWork[index],
                 files: [
                     {
-                        fileName: mergedWorkFile[index]?.fileName || "",
-                        fileType: mergedWorkFile[index]?.fileType || "",
-                        fileUrl: mergedWorkFile[index]?.fileUrl || "",
-                        fileSize: mergedWorkFile[index]?.fileSize || "",
+                        fileName: mergedWorkFile[index].fileName || "",
+                        fileType: mergedWorkFile[index].fileType || "",
+                        fileUrl: mergedWorkFile[index].fileUrl || "",
+                        fileSize: mergedWorkFile[index].fileSize || "",
                     }
                 ]
             })),
@@ -1138,7 +1153,7 @@ function WorkHistory() {
     }
 
     return (
-        <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
+        <div className={`${bgColorMain} ${bgColor}`}>
             <NavbarLogo title="ประวัติการทำงาน / ฝึกงาน" dataUser={dataUser} />
             <div className="flex">
                 <NavbarMain status="edit" />
@@ -1156,7 +1171,7 @@ function WorkHistory() {
                                                 className={` cursor-pointer  rounded-lg w-fit`}
                                                 onClick={() => handleRemoveProject(index)}
                                             >
-                                                <Icon className={` text-red-500`} path={mdiCloseCircle} size={1} />
+                                                <Icon className={` text-red-400`} path={mdiCloseCircle} size={1} />
                                             </div>
                                         </div>
                                     )}
@@ -1165,7 +1180,7 @@ function WorkHistory() {
                                     )}
                                     <div className='mt-5 flex gap-5 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ชื่อโครงงาน / ผลงาน <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >ชื่อโครงงาน / ผลงาน</label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ``}  ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1176,7 +1191,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >รายละเอียด <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >รายละเอียด</label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1187,9 +1202,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
-                                            {projectFile[index]?.fileUrl || getProjectFile[index]?.fileUrl || editMode ? (
-                                                <label>เอกสารประกอบ</label>
-                                            ) : null}
+                                            <label>เอกสารประกอบ</label>
 
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
                                             {(projectFile[index] && projectFile[index]?.fileUrl !== '') || (getProjectFile[index] && getProjectFile[index]?.fileUrl !== '') ? (
@@ -1222,10 +1235,9 @@ function WorkHistory() {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                editMode && (
-                                                    <div
+                                                <div
                                                     onClick={editMode ? openFileDialog : undefined} // เรียกใช้ฟังก์ชันเมื่อ editMode เป็น true
-                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${inputEditColor} ${editMode ? ' cursor-pointer' : ' cursor-not-allowed'
+                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${bgColorMain} ${editMode ? ' cursor-pointer' : ' cursor-not-allowed'
                                                         }`}
                                                     style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
                                                 >
@@ -1238,8 +1250,6 @@ function WorkHistory() {
                                                     />
                                                     Choose File
                                                 </div>
-                                                )
-                                              
                                             )}
                                         </div>
                                     </div>
@@ -1274,7 +1284,7 @@ function WorkHistory() {
                                                 className={` cursor-pointer  rounded-lg w-fit`}
                                                 onClick={() => handleRemoveInternship(index)}
                                             >
-                                                <Icon className={` text-red-500`} path={mdiCloseCircle} size={1} />
+                                                <Icon className={` text-red-400`} path={mdiCloseCircle} size={1} />
                                             </div>
                                         </div>
                                     )}
@@ -1283,7 +1293,7 @@ function WorkHistory() {
                                     )}
                                     <div className='mt-5 flex gap-5 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ตั้งแต่ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >ตั้งแต่</label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
                                                     className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1301,7 +1311,7 @@ function WorkHistory() {
                                             </div>
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ถึง <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >ถึง</label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
                                                     className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1319,7 +1329,7 @@ function WorkHistory() {
                                             </div>
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >สถานที่ฝึกงาน <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >สถานที่ฝึกงาน</label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1330,7 +1340,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ตำแหน่ง <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >ตำแหน่ง</label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain}  mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1341,9 +1351,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
-                                            {internshipFile[index]?.fileUrl || getInternshipFile[index]?.fileUrl || editMode ? (
-                                                <label>เอกสารประกอบ</label>
-                                            ) : null}
+                                            <label>เอกสารประกอบ</label>
 
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
                                             {(internshipFile[index] && internshipFile[index]?.fileUrl !== '') || (getInternshipFile[index] && getInternshipFile[index]?.fileUrl !== '') ? (
@@ -1377,10 +1385,9 @@ function WorkHistory() {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                editMode && (
-                                                    <div
+                                                <div
                                                     onClick={editMode ? openFileDialogInternship : undefined} // ตรวจสอบ editMode ก่อนเรียกฟังก์ชัน
-                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${inputEditColor} ${editMode ? ' cursor-pointer' : 'cursor-not-allowed'
+                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${bgColorMain} ${editMode ? ' cursor-pointer' : 'cursor-not-allowed'
                                                         }`}
                                                     style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
                                                 >
@@ -1393,8 +1400,6 @@ function WorkHistory() {
                                                     />
                                                     Choose File
                                                 </div>
-                                                )
-                                               
                                             )}
 
                                         </div>
@@ -1430,7 +1435,7 @@ function WorkHistory() {
                                                 className={` cursor-pointer  rounded-lg w-fit`}
                                                 onClick={() => handleRemoveWork(index)}
                                             >
-                                                <Icon className={` text-red-500`} path={mdiCloseCircle} size={1} />
+                                                <Icon className={` text-red-400`} path={mdiCloseCircle} size={1} />
                                             </div>
                                         </div>
                                     )}
@@ -1439,7 +1444,7 @@ function WorkHistory() {
                                     )}
                                     <div className='mt-5 flex gap-5 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ตั้งแต่ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >ตั้งแต่</label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
                                                     className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1457,7 +1462,7 @@ function WorkHistory() {
                                             </div>
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ถึง <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >ถึง</label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
                                                     className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1475,7 +1480,7 @@ function WorkHistory() {
                                             </div>
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >สถานที่ทำงาน <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >สถานที่ทำงาน</label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1486,7 +1491,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ตำแหน่ง <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >ตำแหน่ง</label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1497,9 +1502,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
-                                            {workFile[index]?.fileUrl || getWorkFile[index]?.fileUrl || editMode ? (
-                                                <label>เอกสารประกอบ</label>
-                                            ) : null}
+                                            <label>เอกสารประกอบ</label>
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
                                             {(workFile[index] && workFile[index]?.fileUrl !== '') || (getWorkFile[index] && getWorkFile[index]?.fileUrl !== '') ? (
                                                 <div className={`mt-1 w-fit py-2 flex gap-8`}>
@@ -1531,10 +1534,9 @@ function WorkHistory() {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                editMode && (
-                                                    <div
+                                                <div
                                                     onClick={editMode ? openFileDialogWork : undefined} // ตรวจสอบ editMode ก่อนเรียกฟังก์ชัน
-                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${inputEditColor} ${editMode ? ' cursor-pointer' : ' cursor-not-allowed'
+                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${bgColorMain} ${editMode ? ' cursor-pointer' : ' cursor-not-allowed'
                                                         }`}
                                                     style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
                                                 >
@@ -1548,8 +1550,6 @@ function WorkHistory() {
                                                     />
                                                     Choose File
                                                 </div>
-                                                )
-                                               
                                             )}
 
                                         </div>
@@ -1586,37 +1586,18 @@ function WorkHistory() {
                                         setEditMode(false)
                                         window.location.reload()
                                     }
-                                    }
-                                    //  className={`${bgColorNavbar} ${bgColorWhite} hover:cursor-pointer bg-[#F97201]  py-2 px-6  rounded-2xl flex justify-center items-center gap-1`}
-                                    className={`
-                                        ${bgColorNavbar} 
-                                        ${bgColorWhite} 
-                                        hover:cursor-pointer 
-                                        bg-[#F97201]  
-                                        py-2 px-6 
-                                        rounded-2xl 
-                                        flex justify-center items-center gap-1 
-                                        border border-white
-                                      `}
-                                    >
+                                    } className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
                                         <Icon path={mdiCloseCircle} size={1} />
                                         <p>ยกเลิก</p>
                                     </div>
-                                    <button type='submit' className=
-                                    {
-                                        `${inputEditColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
-                                    }
-                                    >
+                                    <button type='submit' className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'>
                                         <Icon path={mdiContentSave} size={1} />
                                         <p>บันทึก</p>
                                     </button>
                                 </div>
                             ) : (
                                 <div className=" flex w-full justify-center mt-10">
-                                    <div onClick={() => setEditMode(true)} 
-                                    // className='hover:cursor-pointer bg-[#ffb74c]  py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
-                                    className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-                                    >
+                                    <div onClick={() => setEditMode(true)} className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
                                         <Icon path={mdiPencil} size={.8} />
                                         <p>แก้ไข</p>
                                     </div>

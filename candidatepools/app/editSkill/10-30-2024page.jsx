@@ -90,8 +90,6 @@ function WorkHistory() {
         setRegisterColor,
         registerColor,
         inputEditColor,
-        inputGrayColor, 
-        setInputGrayColor
     } = useTheme();
 
     //Mode
@@ -266,10 +264,12 @@ function WorkHistory() {
     const handleAddTrain = () => {
         // ตรวจสอบให้แน่ใจว่ามีการกรอกข้อมูล train ครบถ้วนก่อนที่จะเพิ่มข้อมูลใหม่
         if ((!trainName[trains.length - 1]
-            || !trainDetail[trains.length - 1])
+            || !trainDetail[trains.length - 1]
+            || !trainFile[trains.length - 1]?.fileUrl)
             &&
             (!getTrainName[trains.length - 1]
-                || !getTrainDetail[trains.length - 1])) {
+                || !getTrainDetail[trains.length - 1]
+                || !getTrainFile[trains.length - 1]?.fileUrl)) {
             setErrorFieldTrain("กรุณากรอกข้อมูลการอบรมให้ครบก่อนเพิ่มข้อมูลใหม่");
             return;
         }
@@ -461,11 +461,13 @@ function WorkHistory() {
 
         const hasAnyTrainField =
             mergedTrainName[fieldTrains] ||
-            mergedTrainDetail[fieldTrains];
+            mergedTrainDetail[fieldTrains] ||
+            (mergedTrainFile[fieldTrains] && mergedTrainFile[fieldTrains].fileUrl);
 
         const isTrainFieldComplete =
-            mergedTrainName[fieldTrains] &&
-            mergedTrainDetail[fieldTrains];
+        mergedTrainName[fieldTrains]&&
+        mergedTrainDetail[fieldTrains]  &&
+        mergedTrainFile[fieldTrains].fileUrl;
 
         // ตรวจสอบข้อมูลการฝึกงาน
         if (hasAnyTrainField && !isTrainFieldComplete) {
@@ -656,7 +658,7 @@ function WorkHistory() {
     }
 
     return (
-        <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
+        <div className={`${bgColorMain} ${bgColor}`}>
             <NavbarLogo title="ความสามารถ / การอบรม" dataUser={dataUser} />
             <div className="flex">
                 <NavbarMain status="edit" />
@@ -674,7 +676,7 @@ function WorkHistory() {
                                                 className={` cursor-pointer  rounded-lg w-fit`}
                                                 onClick={() => handleRemoveSkill(index)}
                                             >
-                                                <Icon className={` text-red-500`} path={mdiCloseCircle} size={1} />
+                                                <Icon className={` text-red-400`} path={mdiCloseCircle} size={1} />
                                             </div>
                                         </div>
                                     )}
@@ -683,10 +685,10 @@ function WorkHistory() {
                                     )}
                                     <div className='mt-5 flex gap-5 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ทักษะที่มี <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >ทักษะที่มี</label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
-                                                    className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    className={`${!editMode ? "editModeTrue" : ""} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                     style={{ appearance: 'none' }}
                                                     onChange={(e) => handleSkillType(e.target.value, index)}
                                                     value={skillType[index] || getSkillType[index] || ""}
@@ -702,10 +704,10 @@ function WorkHistory() {
                                         </div>
 
                                         <div className='flex flex-col gap-1'>
-                                            <label >ทักษะ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >ทักษะ</label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 readOnly={!editMode}
                                                 placeholder="รายละเอียดเพิ่มเติม"
                                                 defaultValue={getSkillName[index] || ""}
@@ -713,10 +715,10 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >อธิบายรายละเอียด <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >อธิบายรายละเอียด</label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain}  mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 readOnly={!editMode}
                                                 placeholder="รายละเอียดเพิ่มเติม"
                                                 defaultValue={getSkillDetail[index] || ""}
@@ -756,7 +758,7 @@ function WorkHistory() {
                                                 className={` cursor-pointer  rounded-lg w-fit`}
                                                 onClick={() => handleRemoveTrain(index)}
                                             >
-                                                <Icon className={` text-red-500`} path={mdiCloseCircle} size={1} />
+                                                <Icon className={` text-red-400`} path={mdiCloseCircle} size={1} />
                                             </div>
                                         </div>
                                     )}
@@ -767,10 +769,10 @@ function WorkHistory() {
 
 
                                         <div className='flex flex-col gap-1'>
-                                            <label >เรื่อง <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >เรื่อง</label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 placeholder="ระบุชื่อเรื่องการอบรม"
                                                 onBlur={(e) => handleTrainName(e.target.value, index)}
                                                 defaultValue={getTrainName[index] || ""}
@@ -778,10 +780,10 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >รายละเอียด <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >รายละเอียด</label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "editModeTrue" : ""} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 placeholder="รายละเอียดเพิ่มเติม"
                                                 onBlur={(e) => handleTrainDetail(e.target.value, index)}
                                                 defaultValue={getTrainDetail[index] || ""}
@@ -789,9 +791,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className={` ${bgColorMain} flex flex-col gap-1`}>
-                                            {trainFile[index]?.fileUrl || getTrainFile[index]?.fileUrl || editMode ? (
-                                                <label>เอกสารประกอบ / ใบประกาศ</label>
-                                            ) : null}
+                                            <label>เอกสารประกอบ</label>
                                             {/* input สำหรับเลือกไฟล์ */}
 
                                             {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
@@ -827,13 +827,10 @@ function WorkHistory() {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                editMode && (
-                                                    <div
+                                                <div
                                                     onClick={editMode ? openFileDialogTrain : undefined} // เรียกใช้ฟังก์ชันเมื่อ editMode เป็น true
-                                                    // className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
-                                                    //     }`}
-                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${inputEditColor} ${editMode ? ' cursor-pointer' : ' cursor-not-allowed'
-                                                    }`}
+                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
+                                                        }`}
                                                     style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
                                                 >
                                                     <input
@@ -845,8 +842,6 @@ function WorkHistory() {
                                                     />
                                                     Choose File
                                                 </div>
-                                                )
-                                              
                                             )}
 
                                         </div>
@@ -884,39 +879,18 @@ function WorkHistory() {
                                         setEditMode(false)
                                         window.location.reload()
                                     }
-                                    } 
-                                    // className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
-                                    className={`
-                                        ${bgColorNavbar} 
-                                        ${bgColorWhite} 
-                                        hover:cursor-pointer 
-                                        bg-[#F97201]  
-                                        py-2 px-6 
-                                        rounded-2xl 
-                                        flex justify-center items-center gap-1 
-                                        border border-white
-                                      `}
-                                   >
+                                    } className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
                                         <Icon path={mdiCloseCircle} size={1} />
                                         <p>ยกเลิก</p>
                                     </div>
-                                    <button type='submit' 
-                                    // className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'
-                                    className=
-                                    {
-                                        `${inputEditColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
-                                    }
-                                    >
+                                    <button type='submit' className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'>
                                         <Icon path={mdiContentSave} size={1} />
                                         <p>บันทึก</p>
                                     </button>
                                 </div>
                             ) : (
                                 <div className=" flex w-full justify-center mt-10">
-                                    <div onClick={() => setEditMode(true)} 
-                                    // className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
-                                    className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-                                    >
+                                    <div onClick={() => setEditMode(true)} className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
                                         <Icon path={mdiPencil} size={.8} />
                                         <p>แก้ไข</p>
                                     </div>

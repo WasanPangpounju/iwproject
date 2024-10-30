@@ -16,6 +16,8 @@ function MainPage() {
 
     const {
         setFontSize,
+        fontHeadSize,
+    setFontHeadSize,
         setBgColor,
         setBgColorNavbar,
         setBgColorWhite,
@@ -99,24 +101,24 @@ function MainPage() {
     }, [loader]);
 
     return (
-        <div className={`${bgColorMain} ${bgColor}`}>
+        <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
             <NavbarLogo dataUser={dataUser}/>
             <div className="flex">
                 <NavbarMain status="main"/>
                 <div className="w-10/12 px-7 py-5">
                     {/* <div className={`bg-white rounded-lg p-5`}> */}
                     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
-                        <p className="text-2xl font-bold">ข่าวประชาสัมพันธ์</p>
+                        <p className={`${fontHeadSize} font-bold`}>ข่าวประชาสัมพันธ์</p>
                         <div className="mt-5 flex justify-between border flex-wrap">
                             <div >
-                                <p className="font-bold text-lg">ยินดีรับสมัครนักศึกษาจบใหม่เข้าร่วมงาน</p>
+                                <p className={`font-bold ${fontSize}`}>ยินดีรับสมัครนักศึกษาจบใหม่เข้าร่วมงาน</p>
                                 <p className="mt-3">บริษัท ยินดีรับศึกษาจบใหม่เข้าร่วมงาน....................อ่านต่อ</p>
                             </div>
                             <Image className="rounded-lg w-96 h-64 border bg-red-400" src="/image/main/postermain.png" height={1000} width={1000} priority alt="photo-post"></Image>
                         </div>
                         <div className="mt-5 flex justify-between border flex-wrap">
                             <div >
-                                <p className="font-bold text-lg">ยินดีรับสมัครนักศึกษาจบใหม่เข้าร่วมงาน</p>
+                                <p className={`font-bold ${fontSize}`}>ยินดีรับสมัครนักศึกษาจบใหม่เข้าร่วมงาน</p>
                                 <p className="mt-3">บริษัท ยินดีรับศึกษาจบใหม่เข้าร่วมงาน....................อ่านต่อ</p>
                             </div>
                             <Image className="rounded-lg w-96 h-64 border bg-red-400" src="/image/main/postermain.png" height={1000} width={1000} priority alt="photo-post"></Image>
