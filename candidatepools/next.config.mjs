@@ -3,5 +3,6 @@ const nextConfig = {
     images: { domains: ['lh3.googleusercontent.com', 'profile.line-scdn.net', 'firebasestorage.googleapis.com'] },
     assetPrefix: process.env.NODE_ENV === 'production' ? 'https://career.iwsif.org' : '',
     trailingSlash: true,
+    cssModules: true,
 };
 export default nextConfig;
