@@ -22,6 +22,8 @@ const authOption = {
             name: 'credentials',
             credentials: {},
             async authorize(credentials) {
+                console.log("Authorizing user:", credentials); // เพิ่ม log ที่นี่
+
                 const { email, password } = credentials;
 
                 try {
