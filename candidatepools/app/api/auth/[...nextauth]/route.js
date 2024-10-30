@@ -4,7 +4,7 @@ import { mongoDB } from "@/lib/mongodb";
 import Users from "@/models/user";
 import GoogleProvider from "next-auth/providers/google";
 import LineProvider from 'next-auth/providers/line';
-import { v4 as uuidv4 } from 'uuid'; // นำเข้า UUID
+import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 
 const authOption = {
@@ -21,7 +21,7 @@ const authOption = {
         CredentialsProvider({
             name: 'credentials',
             credentials: {},
-            async authorize(credentials, req) {
+            async authorize(credentials) {
                 const { email, password } = credentials;
 
                 try {
@@ -29,18 +29,18 @@ const authOption = {
 
                     // ค้นหาผู้ใช้ตามอีเมลหรือชื่อผู้ใช้
                     const userDocument = await Users.findOne({
-                        $or: [{ email: email }, { user: email }]
+                        $or: [{ email }, { user: email }]
                     });
 
                     if (!userDocument) {
-                        // ไม่พบผู้ใช้
+                        console.log("User not found");
                         return null;
                     }
 
                     // ตรวจสอบรหัสผ่าน
                     const isPasswordValid = await bcrypt.compare(password, userDocument.password);
                     if (!isPasswordValid) {
-                        // รหัสผ่านไม่ถูกต้อง
+                        console.log("Invalid password");
                         return null;
                     }
 
@@ -48,7 +48,7 @@ const authOption = {
                     return userDocument;
 
                 } catch (err) {
-                    console.error('เกิดข้อผิดพลาดระหว่างการตรวจสอบ:', err);
+                    console.error('Error during authentication:', err);
                     return null;
                 }
             }
@@ -59,28 +59,20 @@ const authOption = {
     },
     callbacks: {
         async jwt({ token, user, account, profile }) {
-            // ตรวจสอบว่ามาจาก LINE หรือไม่
-            if (account && account.provider === 'line') {
-                if (profile && profile.sub) {
-                    // ใช้ LINE User ID เป็นตัวระบุใน token
-                    token.id = profile.sub;
-                } else {
-                    // ใช้ uuid หากไม่มี LINE User ID
-                    token.id = uuidv4();
+            try {
+                // ตรวจสอบว่ามาจาก LINE หรือไม่
+                if (account && account.provider === 'line') {
+                    token.id = profile?.sub || uuidv4();
+                } else if (user) {
+                    const existingUser = await Users.findOne({ email: user.email });
+                    token.id = existingUser?.uuid || uuidv4();
                 }
-            } else if (user) {
-                // ตรวจสอบข้อมูลผู้ใช้จาก Google หรือระบบ credentials
-                const existingUser = await Users.findOne({ email: user.email });
-                if (existingUser && existingUser.uuid) {
-                    token.id = existingUser.uuid;
-                } else {
-                    token.id = uuidv4();
-                }
+            } catch (error) {
+                console.error("JWT callback error:", error);
             }
             return token;
         },
         async session({ session, token }) {
-            // กำหนดข้อมูลใน session ให้มี uuid คงที่
             session.user.id = token.id;
             return session;
         }
@@ -89,7 +81,7 @@ const authOption = {
     pages: {
         signIn: "/",
     }
-}
+};
 
 const handler = NextAuth(authOption);
 export { handler as GET, handler as POST };
