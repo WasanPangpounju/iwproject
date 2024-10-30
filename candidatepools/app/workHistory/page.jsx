@@ -93,7 +93,8 @@ function WorkHistory() {
         registerColor,
         inputEditColor,
         inputGrayColor, 
-        setInputGrayColor
+        setInputGrayColor,
+        inputTextColor
     } = useTheme();
 
     //add data
@@ -1604,7 +1605,7 @@ function WorkHistory() {
                                     </div>
                                     <button type='submit' className=
                                     {
-                                        `${inputEditColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
+                                        `${inputTextColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
                                     }
                                     >
                                         <Icon path={mdiContentSave} size={1} />
