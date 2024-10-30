@@ -47,7 +47,9 @@ function editEducation() {
         setRegisterColor,
         registerColor,
         inputEditColor,
-    } = useTheme();
+        setInputGrayColor,
+        inputGrayColor
+      } = useTheme();
 
     //value data user
     const [typePerson, setTypePerson] = useState("");
@@ -648,7 +650,7 @@ function editEducation() {
                 <NavbarMain status="edit" />
                 <div className="w-10/12 px-7 py-5">
                     <div className={`${bgColorMain2} rounded-lg p-5`}>
-                        <form onSubmit={(e) => handleSubmit(e, fields.length)} className=" flex gap-x-10 gap-y-5 gap- flex-wrap">
+                        <form onSubmit={(e) => handleSubmit(e, fields.length)} className={`${fontSize} flex gap-x-10 gap-y-5 gap- flex-wrap`} >
                             {dataUser && (
                                 fields.map((field, index) => (
                                     <div className="flex gap-x-10 gap-y-5 flex-wrap" key={index}>
@@ -766,7 +768,7 @@ function editEducation() {
                                             <label>สถาบันการศึกษา/มหาวิทยาลัย <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onBlur={(e) => handleUniversity(e.target.value, index)}
                                                 defaultValue={Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
                                                 readOnly={!editMode}
@@ -775,19 +777,17 @@ function editEducation() {
                                         </div>
                                         {/* วิทยาเขต */}
                                         {index === 0 && typePerson === 'นักศึกษาพิการ' && (
-                                            campus[index] || editMode ? (
-                                                <div className="flex col flex-col">
-                                                    <label>วิทยาเขต</label>
-                                                    <input
-                                                        type="text"
-                                                        className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                                        onBlur={(e) => handleCampus(e.target.value, index)}
-                                                        defaultValue={Array.isArray(campus) && campus[index] !== undefined ? campus[index] : ""}
-                                                        readOnly={!editMode}
-                                                        placeholder="ระบุวิทยาเขตการศึกษา"
-                                                    />
-                                                </div>
-                                            ) : null
+                                            <div className="flex col flex-col">
+                                                <label>วิทยาเขต</label>
+                                                <input
+                                                    type="text"
+                                                    className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    onBlur={(e) => handleCampus(e.target.value, index)}
+                                                    defaultValue={Array.isArray(campus) && campus[index] !== undefined ? campus[index] : ""}
+                                                    readOnly={!editMode}
+                                                    placeholder="ระบุวิทยาเขตการศึกษา"
+                                                />
+                                            </div>
                                         )}
                                         {/* คณะ */}
                                         <div className="flex col flex-col">
@@ -875,7 +875,7 @@ function editEducation() {
                                         <div className="mt-3 flex gap-5 flex-wrap">
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onChange={(e) => setInputNameFile(e.target.value)} // ตั้งชื่อไฟล์
                                                 placeholder="ชื่อเอกสาร"
                                                 readOnly={!editMode}
@@ -892,7 +892,7 @@ function editEducation() {
                                                 />
                                                 <div
                                                     onClick={openFileDialog}
-                                                    className="border rounded-lg py-2 px-4 text-center bg-gray-300 cursor-pointer"
+                                                    className={`${inputEditColor} border rounded-lg py-2 px-4 text-center cursor-pointer`}
                                                 >
                                                     Choose File
                                                 </div>
@@ -951,18 +951,31 @@ function editEducation() {
                                         setEditMode(false)
                                         window.location.reload()
                                     }
-                                    } className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
+                                    } 
+                                    // className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
+                                    className={`${bgColorNavbar} ${bgColorWhite} hover:cursor-pointer bg-[#F97201] py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
+
+                                   >
                                         <Icon path={mdiCloseCircle} size={1} />
                                         <p>ยกเลิก</p>
                                     </div>
-                                    <button type='submit' className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'>
+                                    <button type='submit' 
+                                    // className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'
+                                    className=
+                    {
+                        `${inputEditColor} ${inputGrayColor}  hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
+                    }
+                                    >
                                         <Icon path={mdiContentSave} size={1} />
                                         <p>บันทึก</p>
                                     </button>
                                 </div>
                             ) : (
                                 <div className=" flex w-full justify-center mt-10">
-                                    <div onClick={() => setEditMode(true)} className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
+                                    <div onClick={() => setEditMode(true)} 
+                                    // className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
+                                    className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
+                                    >
                                         <Icon path={mdiPencil} size={.8} />
                                         <p>แก้ไข</p>
                                     </div>

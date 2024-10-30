@@ -43,6 +43,8 @@ function EditPersonal() {
     setRegisterColor,
     registerColor,
     inputEditColor,
+    setInputGrayColor,
+        inputGrayColor,
   } = useTheme();
 
   const [dataUser, setDataUser] = useState(null);
@@ -539,6 +541,7 @@ function EditPersonal() {
       tel,
       telEmergency,
       relationship,
+      inputGrayColor
     };
 
     try {
@@ -734,9 +737,9 @@ function EditPersonal() {
           <div className={`${bgColorMain2} rounded-lg p-5 pb-10`}>
             <form
               onSubmit={handleEditSubmit}
-              className=" flex gap-x-10 gap-y-5 gap- flex-wrap"
+              className={`${fontSize} flex gap-x-10 gap-y-5 gap- flex-wrap`}
             >
-              <div className=" flex flex-col">
+              <div className={`flex flex-col`}>
                 <label>
                   คำนำหน้า <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span>
                 </label>
@@ -1662,7 +1665,7 @@ function EditPersonal() {
                 <input
                   type="email"
                   className={`
-                  ${inputEditColor}  cursor-default focus:outline-none mt-1 w-60 border border-gray-400 py-2 px-4 rounded-lg`}
+                  ${bgColorMain} cursor-default focus:outline-none mt-1 w-60 border border-gray-400 py-2 px-4 rounded-lg`}
                   value={email}
                   readOnly
                 />
@@ -1995,14 +1998,18 @@ function EditPersonal() {
                       setEditMode(false);
                       window.location.reload();
                     }}
-                    className="hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1"
+                    className={`${bgColorNavbar} ${bgColorWhite} hover:cursor-pointer bg-[#F97201] py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
                   >
                     <Icon path={mdiCloseCircle} size={1} />
                     <p>ยกเลิก</p>
                   </div>
                   <button
                     type="submit"
-                    className="hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1"
+                    // className="hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1"
+                    className=
+                    {
+                        `${inputEditColor} ${inputGrayColor}  hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
+                    }
                   >
                     <Icon path={mdiContentSave} size={1} />
                     <p>บันทึก</p>
@@ -2012,7 +2019,7 @@ function EditPersonal() {
                 <div className=" flex w-full justify-center mt-5">
                   <div
                     onClick={() => setEditMode(true)}
-                    className="hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1"
+                    className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
                   >
                     <Icon path={mdiAccountEdit} size={1} />
                     <p>แก้ไขข้อมูล</p>
