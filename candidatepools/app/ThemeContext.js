@@ -4,6 +4,8 @@ const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
   const [fontSize, setFontSize] = useState("normal-font");
+  const [fontHeadSize, setFontHeadSize] = useState("text-2xl");
+
   const [bgColor, setBgColor] = useState("bg-[#F4F6FA] text-black");
   const [bgColorNavbar, setBgColorNavbar] = useState("bg-[#F97201]");
   const [bgColorWhite, setBgColorWhite] = useState("text-white");
@@ -13,11 +15,14 @@ export function ThemeProvider({ children }) {
   const [textBlue, setTextBlue] = useState("text-blue-500");
   const [registerColor, setRegisterColor] = useState("text-[#F97201]");
   const [inputEditColor, setInputEditColor] = useState("bg-gray-200");
+  const [inputGrayColor, setInputGrayColor] = useState("bg-[#75C7C2]");
 
   return (
     <ThemeContext.Provider value={{
       fontSize,
       setFontSize,
+      fontHeadSize,
+      setFontHeadSize,
       bgColor,
       setBgColor,
       bgColorNavbar,
@@ -35,7 +40,9 @@ export function ThemeProvider({ children }) {
       setRegisterColor,
       registerColor,
       setInputEditColor,
-      inputEditColor
+      inputEditColor,
+      setInputGrayColor,
+      inputGrayColor
     }}>
       {children}
     </ThemeContext.Provider>
