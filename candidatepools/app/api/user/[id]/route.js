@@ -3,14 +3,14 @@ import Users from "@/models/user";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
-    const id = req.nextUrl.pathname.split('/').pop();
+    const id = req.nextUrl.pathname.split('/').filter(Boolean).pop();
     await mongoDB();
     const user = await Users.findOne({ uuid: id })
     return NextResponse.json({ user });
 }
 
 export async function PUT(req) {
-    const id = req.nextUrl.pathname.split('/').pop(); 
+    const id = req.nextUrl.pathname.split('/').filter(Boolean).pop();
 
     try {
         await mongoDB();
