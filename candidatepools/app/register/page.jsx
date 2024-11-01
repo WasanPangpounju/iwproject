@@ -287,6 +287,8 @@ function Register({ statusAgreement }) {
         });
     }
 
+    console.log(dataUser)
+
     return (
         <div className={`${bgColorMain} ${bgColor}`}>
             <NavbarLogo />
