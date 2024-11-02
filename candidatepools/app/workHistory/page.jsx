@@ -769,11 +769,11 @@ function WorkHistory() {
 
         if (nonGetArray.length > getArray.length) {
             return nonGetArray.map((value, index) => {
-                return (value ?? getArray[index]) || '';
+                return value || getArray[index] || '';
             });
         } else {
             return getArray.map((value, index) => {
-                return (nonGetArray[index] ?? value) || '';
+                return nonGetArray[index] || value || '';
             });
         }
     }
@@ -794,9 +794,6 @@ function WorkHistory() {
             };
         });
     }
-
-
-
 
     //submit
     async function handleSubmit(e, fieldProjects, fieldInternship, fieldWorks) {

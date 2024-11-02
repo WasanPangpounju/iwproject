@@ -399,11 +399,11 @@ function WorkHistory() {
 
         if (nonGetArray.length > getArray.length) {
             return nonGetArray.map((value, index) => {
-                return (value ?? getArray[index]) || '';
+                return value || getArray[index] || '';
             });
         } else {
             return getArray.map((value, index) => {
-                return (nonGetArray[index] ?? value) || '';
+                return nonGetArray[index] || value || '';
             });
         }
     }
@@ -499,10 +499,10 @@ function WorkHistory() {
                 detail: mergedTrainDetail[index],
                 files: [
                     {
-                        fileName: mergedTrainFile[index].fileName || "",
-                        fileType: mergedTrainFile[index].fileType || "",
-                        fileUrl: mergedTrainFile[index].fileUrl || "",
-                        fileSize: mergedTrainFile[index].fileSize || "",
+                        fileName: mergedTrainFile[index]?.fileName || "",
+                        fileType: mergedTrainFile[index]?.fileType || "",
+                        fileUrl: mergedTrainFile[index]?.fileUrl || "",
+                        fileSize: mergedTrainFile[index]?.fileSize || "",
                     }
                 ]
             })),
