@@ -90,7 +90,7 @@ function WorkHistory() {
         setRegisterColor,
         registerColor,
         inputEditColor,
-        inputGrayColor, 
+        inputGrayColor,
         setInputGrayColor,
         inputTextColor
     } = useTheme();
@@ -399,11 +399,11 @@ function WorkHistory() {
 
         if (nonGetArray.length > getArray.length) {
             return nonGetArray.map((value, index) => {
-                return value || getArray[index] || '';
+                return (value ?? getArray[index]) || '';
             });
         } else {
             return getArray.map((value, index) => {
-                return nonGetArray[index] || value || '';
+                return (nonGetArray[index] ?? value) || '';
             });
         }
     }
@@ -684,7 +684,7 @@ function WorkHistory() {
                                     )}
                                     <div className='mt-5 flex gap-5 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ทักษะที่มี <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >ทักษะที่มี <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
                                                     className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -703,7 +703,7 @@ function WorkHistory() {
                                         </div>
 
                                         <div className='flex flex-col gap-1'>
-                                            <label >ทักษะ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >ทักษะ <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -714,7 +714,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >อธิบายรายละเอียด <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >อธิบายรายละเอียด <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain}  mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -768,7 +768,7 @@ function WorkHistory() {
 
 
                                         <div className='flex flex-col gap-1'>
-                                            <label >เรื่อง <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >เรื่อง <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -779,7 +779,7 @@ function WorkHistory() {
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >รายละเอียด <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
+                                            <label >รายละเอียด <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -830,24 +830,24 @@ function WorkHistory() {
                                             ) : (
                                                 editMode && (
                                                     <div
-                                                    onClick={editMode ? openFileDialogTrain : undefined} // เรียกใช้ฟังก์ชันเมื่อ editMode เป็น true
-                                                    // className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
-                                                    //     }`}
-                                                    className={`border mt-1 rounded-lg py-2 px-8 text-center ${inputEditColor} ${editMode ? ' cursor-pointer' : ' cursor-not-allowed'
-                                                    }`}
-                                                    style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
-                                                >
-                                                    <input
-                                                        id="chooseTrainFile"
-                                                        type="file"
-                                                        ref={trainFileInputRef} // เชื่อมต่อกับ ref
-                                                        onChange={(e) => handleTrainDocument(e, index)}
-                                                        hidden
-                                                    />
-                                                    Choose File
-                                                </div>
+                                                        onClick={editMode ? openFileDialogTrain : undefined} // เรียกใช้ฟังก์ชันเมื่อ editMode เป็น true
+                                                        // className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
+                                                        //     }`}
+                                                        className={`border mt-1 rounded-lg py-2 px-8 text-center ${inputEditColor} ${editMode ? ' cursor-pointer' : ' cursor-not-allowed'
+                                                            }`}
+                                                        style={{ pointerEvents: editMode ? 'auto' : 'none' }} // ปิดการคลิกเมื่อ editMode เป็น false
+                                                    >
+                                                        <input
+                                                            id="chooseTrainFile"
+                                                            type="file"
+                                                            ref={trainFileInputRef} // เชื่อมต่อกับ ref
+                                                            onChange={(e) => handleTrainDocument(e, index)}
+                                                            hidden
+                                                        />
+                                                        Choose File
+                                                    </div>
                                                 )
-                                              
+
                                             )}
 
                                         </div>
@@ -885,9 +885,9 @@ function WorkHistory() {
                                         setEditMode(false)
                                         window.location.reload()
                                     }
-                                    } 
-                                    // className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
-                                    className={`
+                                    }
+                                        // className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
+                                        className={`
                                         ${bgColorNavbar} 
                                         ${bgColorWhite} 
                                         hover:cursor-pointer 
@@ -897,16 +897,16 @@ function WorkHistory() {
                                         flex justify-center items-center gap-1 
                                         border border-white
                                       `}
-                                   >
+                                    >
                                         <Icon path={mdiCloseCircle} size={1} />
                                         <p>ยกเลิก</p>
                                     </div>
-                                    <button type='submit' 
-                                    // className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'
-                                    className=
-                                    {
-                                        `${inputTextColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
-                                    }
+                                    <button type='submit'
+                                        // className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'
+                                        className=
+                                        {
+                                            `${inputTextColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
+                                        }
                                     >
                                         <Icon path={mdiContentSave} size={1} />
                                         <p>บันทึก</p>
@@ -914,9 +914,9 @@ function WorkHistory() {
                                 </div>
                             ) : (
                                 <div className=" flex w-full justify-center mt-10">
-                                    <div onClick={() => setEditMode(true)} 
-                                    // className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
-                                    className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
+                                    <div onClick={() => setEditMode(true)}
+                                        // className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
+                                        className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
                                     >
                                         <Icon path={mdiPencil} size={.8} />
                                         <p>แก้ไข</p>
