@@ -332,8 +332,8 @@ function editEducation() {
         if (selectedFile) {
 
             const fileExtension = selectedFile.name.split('.').pop(); // รับนามสกุลไฟล์
-            if (fileExtension !== 'pdf') {
-                setError('กรุณาอัปโหลดไฟล์ PDF เท่านั้น');
+            if (fileExtension !== 'pdf' && fileExtension !== "docx" && fileExtension !== "doc") {
+                setError('กรุณาอัปโหลดไฟล์ PDF หรือ Word เท่านั้น');
                 setLoader(false);
                 return;
             }
