@@ -67,7 +67,7 @@ function EditPersonal() {
     }
 
     if (session?.user?.id) {
-      getUser(session.user.id);
+      getDataUser(session.user.id);
     } else {
       router.replace("/register");
     }
@@ -190,64 +190,93 @@ function EditPersonal() {
   }, []);
 
   //set default data in sesstion
+  const [getUser, setGetUser] = useState("");
+  const [getPassword, setGetPassword] = useState("");
+  const [getFirstName, setGetFirstName] = useState("");
+  const [getLastName, setGetLastName] = useState("");
+  const [getProfile, setGetProfile] = useState("");
+  const [getTypeDisabled, setGetTypeDisabled] = useState([]);
+  const [getDetailDisabled, setGetDetailDisabled] = useState("");
+  const [getUniversity, setGetUniversity] = useState("");
+  const [getEmail, setGetEmail] = useState("");
+  const [getPrefix, setGetPrefix] = useState("");
+  const [getNickname, setGetNickname] = useState("");
+  const [getSex, setGetSex] = useState("");
+  const [getDateBirthday, setGetDateBirthday] = useState("");
+  const [getMonthBirthday, setGetMonthBirthday] = useState("");
+  const [getYearBirthday, setGetYearBirthday] = useState("");
+  const [getNationality, setGetNationality] = useState("");
+  const [getReligion, setGetReligion] = useState("");
+  const [getIdCard, setGetIdCard] = useState("");
+  const [getIdCardDisabled, setGetIdCardDisabled] = useState("");
+  const [getAddressIdCard, setGetAddressIdCard] = useState("");
+  const [getAddressIdCardProvince, setGetAddressIdCardProvince] = useState("");
+  const [getAddressIdCardAmphor, setGetAddressIdCardAmphor] = useState("");
+  const [getAddressIdCardTambon, setGetAddressIdCardTambon] = useState("");
+  const [getAddressIdCardZipCode, setGetAddressIdCardZipCode] = useState("");
+  const [getAddress, setGetAddress] = useState("");
+  const [getAddressProvince, setGetAddressProvince] = useState("");
+  const [getAddressAmphor, setGetAddressAmphor] = useState("");
+  const [getAddressTambon, setGetAddressTambon] = useState("");
+  const [getAddressZipCode, setGetAddressZipCode] = useState("");
+  const [getTel, setGetTel] = useState("");
+  const [getTelEmergency, setGetTelEmergency] = useState("");
+  const [getRelationship, setGetRelationship] = useState("");
+
 
   useEffect(() => {
     if (!dataUser) return;
 
-    setUser(dataUser.user || "");
-    setPassword(dataUser.password || "");
-    setFirstName(dataUser.firstName || "");
-    setLastName(dataUser.lastName || "");
-    setProfile(dataUser.profile || "");
+    setGetUser(dataUser.user || "");
+    setGetPassword(dataUser.password || "");
+    setGetFirstName(dataUser.firstName || "");
+    setGetLastName(dataUser.lastName || "");
+    setGetProfile(dataUser.profile || "");
     setTypeDisabled(dataUser.typeDisabled || []);
-    setDetailDisabled(dataUser.detailDisabled || "");
-    setUniversity(dataUser.university || "");
-    setEmail(dataUser.email || "");
-    setPrefix(dataUser.prefix || "");
-    setNickname(dataUser.nickname || "");
-    setSex(dataUser.sex || "");
-    setDateBirthday(dataUser.dateBirthday || "");
-    setMonthBirthday(dataUser.monthBirthday || "");
-    setYearBirthday(dataUser.yearBirthday || "");
-    setNationality(dataUser.nationality || "");
-    setReligion(dataUser.religion || "");
-    setIdCard(dataUser.idCard || "");
-    setIdCardDisabled(dataUser.idCardDisabled || "");
-    setAddressIdCard(dataUser.addressIdCard || "");
+    setGetDetailDisabled(dataUser.detailDisabled || "");
+    setGetUniversity(dataUser.university || "");
+    setGetEmail(dataUser.email || "");
+    setGetPrefix(dataUser.prefix || "");
+    setGetNickname(dataUser.nickname || "");
+    setGetSex(dataUser.sex || "")
+    setGetDateBirthday(dataUser.dateBirthday || "");
+    setGetMonthBirthday(dataUser.monthBirthday || "");
+    setGetYearBirthday(dataUser.yearBirthday || "");
+    setGetNationality(dataUser.nationality || "");
+    setGetReligion(dataUser.religion || "");
+    setGetIdCard(dataUser.idCard || "");
+    setGetIdCardDisabled(dataUser.idCardDisabled || "");
+    setGetAddressIdCard(dataUser.addressIdCard || "");
     setAddressIdCardProvince(dataUser.addressIdCardProvince || "");
     setAddressIdCardAmphor(dataUser.addressIdCardAmphor || "");
     setAddressIdCardTambon(dataUser.addressIdCardTambon || "");
     setAddressIdCardZipCode(dataUser.addressIdCardZipCode || "");
-    setAddress(dataUser.address || "");
+    setGetAddress(dataUser.address || "");
     setAddressProvince(dataUser.addressProvince || "");
     setAddressAmphor(dataUser.addressAmphor || "");
     setAddressTambon(dataUser.addressTambon || "");
     setAddressZipCode(dataUser.addressZipCode || "");
-    setTel(dataUser.tel || "");
-    setTelEmergency(dataUser.telEmergency || "");
-    setRelationship(dataUser.relationship || "");
+    setGetTel(dataUser.tel || "");
+    setGetTelEmergency(dataUser.telEmergency || "");
+    setGetRelationship(dataUser.relationship || "");
 
     setIDAddressIdCardProvince(
-      dataProvince.find((p) => p.name_th === dataUser.addressIdCardProvince)
-        ?.id || null
+      dataProvince.find((p) => p.name_th === dataUser.addressIdCardProvince)?.id || null
     );
     setIDAddressIdCardAmphor(
       dataProvince
         .find((p) => p.name_th === dataUser.addressIdCardProvince)
-        ?.amphure.find((a) => a.name_th === dataUser.addressIdCardAmphor)?.id ||
-      null
+        ?.amphure.find((a) => a.name_th === dataUser.addressIdCardAmphor)?.id || null
     );
     setIDAddressIdCardTambon(
       dataProvince
         .find((p) => p.name_th === dataUser.addressIdCardProvince)
         ?.amphure.find((a) => a.name_th === dataUser.addressIdCardAmphor)
-        ?.tambon.find((t) => t.name_th === dataUser.addressIdCardTambon)?.id ||
-      null
+        ?.tambon.find((t) => t.name_th === dataUser.addressIdCardTambon)?.id || null
     );
 
     setIDAddressProvince(
-      dataProvince.find((p) => p.name_th === dataUser.addressProvince)?.id ||
-      null
+      dataProvince.find((p) => p.name_th === dataUser.addressProvince)?.id || null
     );
     setIDAddressAmphor(
       dataProvince
@@ -268,8 +297,9 @@ function EditPersonal() {
     }
   }, [dataUser]);
 
+
   //get data from user
-  async function getUser(id) {
+  async function getDataUser(id) {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
@@ -307,25 +337,8 @@ function EditPersonal() {
 
   //value for validate filed
   const [error, setError] = useState("");
-  const [errorFirstName, setErrorFirstName] = useState("");
-  const [errorLastName, setErrorLastName] = useState("");
-  const [errorProfile, setErrorProfile] = useState("");
-  const [errorTypeDisabled, setErrorTypeDisabled] = useState("");
-  const [errorDetailDisabled, setErrorDetailDisabled] = useState("");
-  const [errorUniversity, setErrorUniversity] = useState("");
-  const [errorEmail, setErrorEmail] = useState("");
-  const [errorPrefix, setErrorPrefix] = useState("");
-  const [errorSex, setErrorSex] = useState("");
-  const [errorDateBirthday, setErrorDateBirthday] = useState("");
-  const [errorNationality, setErrorNationality] = useState("");
-  const [errorReligion, setErrorReligion] = useState("");
   const [errorIdCard, setErrorIdCard] = useState("");
   const [errorIdCardDisabled, setErrorIdCardDisabled] = useState("");
-  const [errorAddressIdCard, setErrorAddressIdCard] = useState("");
-  const [errorAddress, setErrorAddress] = useState("");
-  const [errorTel, setErrorTel] = useState("");
-  const [errorTelEmergency, setErrorTelEmergency] = useState("");
-  const [errorRelationship, setErrorRelationship] = useState("");
 
   //submit edit
   async function handleEditSubmit(e) {
@@ -369,122 +382,157 @@ function EditPersonal() {
     // console.log("relationship:", relationship);
     // console.log("profile:", profile);
 
+    const tempUser = user || getUser;
+    const tempPassword = password || getPassword; // เพิ่ม tempPassword
+    const tempFirstName = firstName || getFirstName;
+    const tempLastName = lastName || getLastName;
+    const tempUniversity = university || getUniversity;
+    const tempEmail = email || getEmail;
+    const tempPrefix = prefix || getPrefix;
+    const tempSex = sex || getSex;
+    const tempDateBirthday = dateBirthday || getDateBirthday;
+    const tempMonthBirthday = monthBirthday || getMonthBirthday;
+    const tempYearBirthday = yearBirthday || getYearBirthday;
+    const tempNationality = nationality || getNationality;
+    const tempReligion = religion || getReligion;
+    const tempIdCard = idCard || getIdCard;
+    const tempIdCardDisabled = idCardDisabled || getIdCardDisabled;
+    const tempAddressIdCard = addressIdCard || getAddressIdCard;
+    const tempAddressIdCardProvince = addressIdCardProvince || getAddressIdCardProvince;
+    const tempAddressIdCardAmphor = addressIdCardAmphor || getAddressIdCardAmphor;
+    const tempAddressIdCardTambon = addressIdCardTambon || getAddressIdCardTambon;
+    const tempAddressIdCardZipCode = addressIdCardZipCode || getAddressIdCardZipCode;
+    const tempAddress = address || getAddress;
+    const tempAddressProvince = addressProvince || getAddressProvince;
+    const tempAddressAmphor = addressAmphor || getAddressAmphor;
+    const tempAddressTambon = addressTambon || getAddressTambon;
+    const tempAddressZipCode = addressZipCode || getAddressZipCode;
+    const tempTel = tel || getTel;
+    const tempTelEmergency = telEmergency || getTelEmergency;
+    const tempRelationship = relationship || getRelationship;
+    const tempSelectTypeDisabled = selectTypeDisabled;
+    const tempProfile = profile || getProfile;
+    const tempTypeDisabled = typeDisabled || getTypeDisabled;
+    const tempDetailDisabled = detailDisabled || getDetailDisabled;
+    const tempNickname = nickname || getNickname;
+
+
     if (
-      !user ||
-      !password ||
-      !firstName ||
-      !lastName ||
+      !tempUser ||
+      !tempPassword ||
+      !tempFirstName ||
+      !tempLastName ||
       !typeDisabled.length ||
-      !university ||
-      !email ||
-      !prefix ||
-      !sex ||
-      !dateBirthday ||
-      !monthBirthday ||
-      !yearBirthday ||
-      !nationality ||
-      !religion ||
-      !idCard ||
-      !idCardDisabled ||
-      !addressIdCard ||
-      !addressIdCardProvince ||
-      !addressIdCardAmphor ||
-      !addressIdCardTambon ||
-      !addressIdCardZipCode ||
-      !address ||
-      !addressProvince ||
-      !addressAmphor ||
-      !addressTambon ||
-      !addressZipCode ||
-      !tel ||
-      !selectTypeDisabled ||
-      !profile
+      !tempUniversity ||
+      !tempEmail ||
+      !tempPrefix ||
+      !tempSex ||
+      !tempDateBirthday ||
+      !tempMonthBirthday ||
+      !tempYearBirthday ||
+      !tempNationality ||
+      !tempReligion ||
+      !tempIdCard ||
+      !tempIdCardDisabled ||
+      !tempAddressIdCard ||
+      !tempAddressIdCardProvince ||
+      !tempAddressIdCardAmphor ||
+      !tempAddressIdCardTambon ||
+      !tempAddressIdCardZipCode ||
+      !tempAddress ||
+      !tempAddressProvince ||
+      !tempAddressAmphor ||
+      !tempAddressTambon ||
+      !tempAddressZipCode ||
+      !tempTel ||
+      !tempSelectTypeDisabled ||
+      !tempProfile
     ) {
       setError("กรุณากรอกข้อมูลให้ครบทุกช่องที่มี *");
       setLoader(false);
       return;
     }
 
-    //validate name
-    if (firstName.length < 2 || lastName.length < 2) {
+
+    // Validate name
+    if (tempFirstName.length < 2 || tempLastName.length < 2) {
       setError("ใส่ชื่อนามสกุลที่ถูกต้อง");
       setLoader(false);
       return;
     }
-    if (firstName.trim() !== firstName || lastName.trim() != lastName) {
+    if (tempFirstName.trim() !== tempFirstName || tempLastName.trim() !== tempLastName) {
       setError("ใส่ชื่อนามสกุลที่ถูกต้อง");
       setLoader(false);
       return;
     }
     const invalidWhitespacePattern = /(?:^|\s)\s+|\s+(?=\s|$)/;
     if (
-      invalidWhitespacePattern.test(firstName) ||
-      invalidWhitespacePattern.test(lastName)
+      invalidWhitespacePattern.test(tempFirstName) ||
+      invalidWhitespacePattern.test(tempLastName)
     ) {
       setError("ใส่ชื่อนามสกุลที่ถูกต้อง");
       setLoader(false);
       return;
     }
 
-    //validate nickname
-    if (nickname.length > 0) {
-      if (nickname.length < 2) {
+    // Validate nickname
+    if (tempNickname.length > 0) {
+      if (tempNickname.length < 2) {
         setError("ใส่ชื่อเล่นที่ถูกต้อง");
         setLoader(false);
         return;
       }
-      if (nickname.trim() !== nickname) {
+      if (tempNickname.trim() !== tempNickname) {
         setError("ใส่ชื่อเล่นที่ถูกต้อง");
         setLoader(false);
         return;
       }
-      if (invalidWhitespacePattern.test(nickname)) {
+      if (invalidWhitespacePattern.test(tempNickname)) {
         setError("ใส่ชื่อเล่นที่ถูกต้อง");
         setLoader(false);
         return;
       }
     }
 
-    //validate date birthday
+    // Validate date of birth
     if (
-      (monthBirthday === "เมษายน" ||
-        monthBirthday === "กันยายน" ||
-        monthBirthday === "พฤศจิกายน") &&
-      Number(dateBirthday) > 30
+      (tempMonthBirthday === "เมษายน" ||
+        tempMonthBirthday === "กันยายน" ||
+        tempMonthBirthday === "พฤศจิกายน") &&
+      Number(tempDateBirthday) > 30
     ) {
-      setError("วันเกิดไม่ถูกต้อง ");
+      setError("วันเกิดไม่ถูกต้อง");
       setLoader(false);
       return;
     }
     if (
-      monthBirthday === "กุมภาพันธ์" &&
-      Number(yearBirthday) % 4 === 0 &&
-      Number(dateBirthday) > 29
+      tempMonthBirthday === "กุมภาพันธ์" &&
+      Number(tempYearBirthday) % 4 === 0 &&
+      Number(tempDateBirthday) > 29
     ) {
       setError("วันเกิดไม่ถูกต้อง");
       setLoader(false);
       return;
     } else if (
-      monthBirthday === "กุมภาพันธ์" &&
-      Number(yearBirthday) % 4 !== 0 &&
-      Number(dateBirthday) > 28
+      tempMonthBirthday === "กุมภาพันธ์" &&
+      Number(tempYearBirthday) % 4 !== 0 &&
+      Number(tempDateBirthday) > 28
     ) {
       setError("วันเกิดไม่ถูกต้อง");
       setLoader(false);
       return;
     }
 
-    //validate idCard and idCardDisabled
-    if (idCard.length < 13 || idCard.length > 13 || !/^\d+$/.test(idCard)) {
+    // Validate idCard and idCardDisabled
+    if (tempIdCard.length !== 13 || !/^\d+$/.test(tempIdCard)) {
       setErrorIdCard("เลขบัตรประจำตัวประชาชนให้ถูกต้อง");
       setError("เลขบัตรประจำตัวประชาชนให้ถูกต้อง");
       setLoader(false);
       return;
     }
     if (
-      idCardDisabled.length < 13 ||
-      idCardDisabled.length > 13 ||
-      !/^\d+$/.test(idCardDisabled)
+      tempIdCardDisabled.length !== 13 ||
+      !/^\d+$/.test(tempIdCardDisabled)
     ) {
       setErrorIdCardDisabled("เลขบัตรประจำตัวเลขบัตรประจำตัวคนพิการให้ถูกต้อง");
       setError("เลขบัตรประจำตัวเลขบัตรประจำตัวคนพิการให้ถูกต้อง");
@@ -492,13 +540,13 @@ function EditPersonal() {
       return;
     }
 
-    //validate address
-    if (addressIdCard.length < 2) {
+    // Validate address
+    if (tempAddressIdCard.length < 2) {
       setError("ระบุที่อยู่ที่ตามบัตรประชาชนที่ถูกต้อง");
       setLoader(false);
       return;
     }
-    if (address.length < 2) {
+    if (tempAddress.length < 2) {
       setError("ระบุที่อยู่ที่ปัจจุบันที่ถูกต้อง");
       setLoader(false);
       return;
@@ -509,46 +557,47 @@ function EditPersonal() {
     //     setErrorPrefix(false);
     // }
 
+
     const bodyData = {
-      user,
-      password,
-      firstName,
-      lastName,
-      profile,
-      typeDisabled,
-      detailDisabled,
-      university,
-      email,
-      prefix,
-      nickname,
-      sex,
-      dateBirthday,
-      monthBirthday,
-      yearBirthday,
-      nationality,
-      religion,
-      idCard,
-      idCardDisabled,
-      addressIdCard,
-      addressIdCardProvince,
-      addressIdCardAmphor,
-      addressIdCardTambon,
-      addressIdCardZipCode,
-      address,
-      addressProvince,
-      addressAmphor,
-      addressTambon,
-      addressZipCode,
-      tel,
-      telEmergency,
-      relationship,
-      inputGrayColor
+      user: tempUser,
+      password: tempPassword,
+      firstName: tempFirstName,
+      lastName: tempLastName,
+      profile: tempProfile,
+      typeDisabled: tempTypeDisabled,
+      detailDisabled: tempDetailDisabled,
+      university: tempUniversity,
+      email: tempEmail,
+      prefix: tempPrefix,
+      nickname: tempNickname,
+      sex: tempSex,
+      dateBirthday: tempDateBirthday,
+      monthBirthday: tempMonthBirthday,
+      yearBirthday: tempYearBirthday,
+      nationality: tempNationality,
+      religion: tempReligion,
+      idCard: tempIdCard,
+      idCardDisabled: tempIdCardDisabled,
+      addressIdCard: tempAddressIdCard,
+      addressIdCardProvince: tempAddressIdCardProvince,
+      addressIdCardAmphor: tempAddressIdCardAmphor,
+      addressIdCardTambon: tempAddressIdCardTambon,
+      addressIdCardZipCode: tempAddressIdCardZipCode,
+      address: tempAddress,
+      addressProvince: tempAddressProvince,
+      addressAmphor: tempAddressAmphor,
+      addressTambon: tempAddressTambon,
+      addressZipCode: tempAddressZipCode,
+      tel: tempTel,
+      telEmergency: tempTelEmergency,
+      relationship: tempRelationship,
+      inputGrayColor,
     };
 
     try {
       if (
-        idCard !== dataUser.idCard ||
-        idCardDisabled !== dataUser.idCardDisabled
+        tempIdCard !== dataUser.idCard ||
+        tempIdCardDisabled !== dataUser.idCardDisabled
       ) {
         const resCheckID = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/checkId`,
@@ -569,8 +618,8 @@ function EditPersonal() {
         const { idCard: idCardExists, idCardDisabled: idCardDisabledExists } =
           await resCheckID.json();
         if (
-          idCard !== dataUser.idCard &&
-          idCardDisabled !== dataUser.idCardDisabled
+          tempIdCard !== dataUser.idCard &&
+          tempIdCardDisabled !== dataUser.idCardDisabled
         ) {
           if (idCardExists && idCardDisabledExists) {
             setErrorIdCard("เลขบัตรประชาชนนี้มีการใช้งานแล้ว");
@@ -595,7 +644,7 @@ function EditPersonal() {
             setLoader(false);
             return;
           }
-        } else if (idCardDisabled !== dataUser.idCardDisabled) {
+        } else if (tempIdCardDisabled !== dataUser.idCardDisabled) {
           if (idCardDisabledExists) {
             setErrorIdCardDisabled("เลขบัตรประจำตัวคนพิการนี้มีการใช้งานแล้ว");
             setErrorIdCard("");
@@ -607,7 +656,6 @@ function EditPersonal() {
         setErrorIdCard("");
         setErrorIdCardDisabled("");
       }
-
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${session?.user?.id}`,
         {
@@ -653,7 +701,7 @@ function EditPersonal() {
   function CheckAddressSameIDCard(e) {
     setSameAddress(e);
     if (!statusSameAddress) {
-      setAddress(addressIdCard);
+      setAddress(addressIdCard || getAddressIdCard);
       setIDAddressProvince(IDaddressIdCardProvince);
       setIDAddressAmphor(IDaddressIdCardAmphor);
       setIDAddressTambon(IDaddressIdCardTambon);
@@ -663,8 +711,6 @@ function EditPersonal() {
       setAddressTambon(addressIdCardTambon);
       setAddressZipCode(addressIdCardZipCode);
     }
-
-    console.log("as");
   }
 
   //upload profile
@@ -757,13 +803,13 @@ function EditPersonal() {
                       );
                     }}
                     className={` ${!editMode
-                        ? ` ${inputEditColor}  cursor-default `
-                        : `cursor-pointer`
+                      ? ` ${inputEditColor}  cursor-default `
+                      : `cursor-pointer`
                       } ${bgColorMain} w-32  border border-gray-400 py-2 px-4 rounded-lg`}
                     placeholder="กรอกชื่อผู้ใช้"
                     style={{ appearance: "none" }}
                     disabled={!editMode}
-                    value={prefix || "0"}
+                    value={prefix || getPrefix || "0"}
                   >
                     <option value="0">-</option>
                     <option value="นาย">นาย</option>
@@ -785,13 +831,13 @@ function EditPersonal() {
                 <input
                   type="text"
                   className={` ${!editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
-                      : ""
+                    ? `${inputEditColor} cursor-default focus:outline-none`
+                    : ""
                     } ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setFirstName(e.target.value);
                   }}
-                  defaultValue={firstName || ""}
+                  defaultValue={getFirstName || ""}
                   readOnly={!editMode}
                 />
               </div>
@@ -802,13 +848,13 @@ function EditPersonal() {
                 <input
                   type="text"
                   className={`${!editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
-                      : ""
+                    ? `${inputEditColor} cursor-default focus:outline-none`
+                    : ""
                     } ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setLastName(e.target.value);
                   }}
-                  defaultValue={lastName || ""}
+                  defaultValue={getLastName || ""}
                   readOnly={!editMode}
                 />
               </div>
@@ -817,45 +863,28 @@ function EditPersonal() {
                 <input
                   type="text"
                   className={`placeholder ${!editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
-                      : ""
+                    ? `${inputEditColor} cursor-default focus:outline-none`
+                    : ""
                     } ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setNickname(e.target.value);
                   }}
-                  defaultValue={nickname || ""}
+                  defaultValue={getNickname || ""}
                   placeholder="ระบุชื่อเล่น"
                   readOnly={!editMode}
                 />
               </div>
-              {prefix !== "0" && prefix && (
+              {(prefix !== "0" && prefix) || (getPrefix !== "0" && getPrefix) ? (
                 <div className="flex col flex-col">
                   <label>เพศ</label>
                   <p
                     type="text"
                     className={`mt-1 w-32 border ${inputEditColor} cursor-default border-gray-400 py-2 px-4 rounded-lg`}
                   >
-                    {sex}
+                    {sex || getSex}
                   </p>
                 </div>
-              )}
-              {/* <div className=" flex flex-col">
-                                <label>เพศ <span className={`${!editMode ? "hidden":""} text-red-500`}>*</span></label>
-                                <div className="mt-1 relative col w-fit">
-                                    <select
-                                        onChange={(e) => setSex(e.target.value)}
-                                        className={`${!editMode ? "bg-gray-200 cursor-default " : "cursor-pointer"} w-32 border border-gray-500 py-2 px-4 rounded-lg`}
-                                        placeholder='กรอกชื่อผู้ใช้'
-                                        style={{ appearance: 'none' }}
-                                        disabled={!editMode}
-                                    >
-                                        <option value="0">{sex || "-"}</option>
-                                        <option value="ชาย">ชาย</option>
-                                        <option value="หญิง">หญิง</option>
-                                    </select>
-                                    <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
-                                </div>
-                            </div> */}
+              ) : null}
               <div className=" flex flex-col ">
                 <label>
                   วันเกิด <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
@@ -865,12 +894,12 @@ function EditPersonal() {
                     <select
                       onChange={(e) => setYearBirthday(e.target.value)}
                       className={`${!editMode
-                          ? `${inputEditColor} cursor-default`
-                          : "cursor-pointer"
+                        ? `${inputEditColor} cursor-default`
+                        : "cursor-pointer"
                         } ${bgColorMain} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       disabled={!editMode}
-                      value={yearBirthday || "0"}
+                      value={yearBirthday || getYearBirthday || "0"}
                     >
                       <option value="0">-</option>
                       {years.map((y, index) => (
@@ -890,12 +919,12 @@ function EditPersonal() {
                     <select
                       onChange={(e) => setMonthBirthday(e.target.value)}
                       className={`${!editMode
-                          ? `${inputEditColor} cursor-default`
-                          : "cursor-pointer"
+                        ? `${inputEditColor} cursor-default`
+                        : "cursor-pointer"
                         } ${bgColorMain} w-36 border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       disabled={!editMode}
-                      value={monthBirthday || "0"}
+                      value={monthBirthday || getMonthBirthday || "0"}
                     >
                       <option value="0">-</option>
                       {yearToday === Number(yearBirthday)
@@ -921,12 +950,12 @@ function EditPersonal() {
                     <select
                       onChange={(e) => setDateBirthday(e.target.value)}
                       className={`${!editMode
-                          ? `${inputEditColor} cursor-default`
-                          : "cursor-pointer"
+                        ? `${inputEditColor} cursor-default`
+                        : "cursor-pointer"
                         } ${bgColorMain} w-28 border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       disabled={!editMode}
-                      value={dateBirthday || "0"}
+                      value={dateBirthday || getDateBirthday || "0"}
                     >
                       <option value="0">-</option>
                       {yearToday === Number(yearBirthday) &&
@@ -973,22 +1002,28 @@ function EditPersonal() {
                   </div>
                 </div>
               </div>
-              {yearBirthday !== "0" &&
+              {(yearBirthday !== "0" &&
                 monthBirthday !== "0" &&
                 dateBirthday !== "0" &&
                 yearBirthday &&
                 monthBirthday &&
-                dateBirthday && (
+                dateBirthday) ||
+                (getYearBirthday !== "0" &&
+                  getMonthBirthday !== "0" &&
+                  getDateBirthday !== "0" &&
+                  getYearBirthday &&
+                  getMonthBirthday &&
+                  getDateBirthday) ? (
                   <div className="flex col flex-col">
                     <label>อายุ</label>
                     <p
                       type="text"
                       className={`mt-1 w-32 border ${inputEditColor} cursor-default border-gray-400 py-2 px-4 rounded-lg`}
                     >
-                      {yearToday - yearBirthday} ปี
+                      {yearBirthday ? yearToday - yearBirthday : yearToday - getYearBirthday} ปี
                     </p>
                   </div>
-                )}
+                ):null}
               <div className=" flex flex-col">
                 <label>
                   สัญชาติ <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
@@ -997,12 +1032,12 @@ function EditPersonal() {
                   <select
                     onChange={(e) => setNationality(e.target.value)}
                     className={`${!editMode
-                        ? `${inputEditColor} cursor-default`
-                        : `${bgColorMain} cursor-pointer`
+                      ? `${inputEditColor} cursor-default`
+                      : `${bgColorMain} cursor-pointer`
                       } ${bgColorMain} w-40 border border-gray-400 py-2 px-4 rounded-lg`}
                     style={{ appearance: "none" }}
                     disabled={!editMode}
-                    value={nationality || "0"}
+                    value={nationality || getNationality || "0"}
                   >
                     <option value="0">-</option>
                     <option value="ไทย">ไทย</option>
@@ -1025,12 +1060,12 @@ function EditPersonal() {
                   <select
                     onChange={(e) => setReligion(e.target.value)}
                     className={`${!editMode
-                        ? `${inputEditColor} cursor-default`
-                        : `${bgColorMain} cursor-pointer`
+                      ? `${inputEditColor} cursor-default`
+                      : `${bgColorMain} cursor-pointer`
                       } ${bgColorMain} w-40 border border-gray-400 py-2 px-4 rounded-lg`}
                     style={{ appearance: "none" }}
                     disabled={!editMode}
-                    value={religion || "0"}
+                    value={religion || getReligion || "0"}
                   >
                     <option value="0">-</option>
                     <option value="พุทธ">พุทธ</option>
@@ -1056,13 +1091,13 @@ function EditPersonal() {
                   pattern="\d{13}"
                   maxLength={13}
                   className={` ${!editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
-                      : ""
+                    ? `${inputEditColor} cursor-default focus:outline-none`
+                    : ""
                     } ${bgColorMain} mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setIdCard(e.target.value);
                   }}
-                  defaultValue={idCard || ""}
+                  defaultValue={getIdCard || ""}
                   placeholder="เลขบัตร 13 หลัก"
                   readOnly={!editMode}
                 />
@@ -1082,13 +1117,13 @@ function EditPersonal() {
                   pattern="\d{13}"
                   maxLength={13}
                   className={` ${!editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
-                      : ""
+                    ? `${inputEditColor} cursor-default focus:outline-none`
+                    : ""
                     } ${bgColorMain} mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setIdCardDisabled(e.target.value);
                   }}
-                  defaultValue={idCardDisabled || ""}
+                  defaultValue={getIdCardDisabled || ""}
                   placeholder="เลขบัตร 13 หลัก"
                   readOnly={!editMode}
                 />
@@ -1107,13 +1142,13 @@ function EditPersonal() {
                   <input
                     type="text"
                     className={` ${!editMode
-                        ? `${inputEditColor} cursor-default focus:outline-none`
-                        : ""
+                      ? `${inputEditColor} cursor-default focus:outline-none`
+                      : ""
                       } ${bgColorMain} w-72 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                     onChange={(e) => {
                       setAddressIdCard(e.target.value);
                     }}
-                    defaultValue={addressIdCard || ""}
+                    defaultValue={getAddressIdCard || ""}
                     placeholder="บ้านเลขที่, หมู่บ้าน, หอพัก"
                     readOnly={!editMode}
                   />
@@ -1138,8 +1173,8 @@ function EditPersonal() {
                         );
                       }}
                       className={`${!editMode
-                          ? `${inputEditColor} cursor-default`
-                          : `${bgColorMain} cursor-pointer`
+                        ? `${inputEditColor} cursor-default`
+                        : `${bgColorMain} cursor-pointer`
                         } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       disabled={!editMode}
@@ -1188,8 +1223,8 @@ function EditPersonal() {
                           );
                         }}
                         className={`${!editMode
-                            ? `${inputEditColor} cursor-default`
-                            : `${bgColorMain} cursor-pointer`
+                          ? `${inputEditColor} cursor-default`
+                          : `${bgColorMain} cursor-pointer`
                           } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
                         disabled={!editMode}
@@ -1260,8 +1295,8 @@ function EditPersonal() {
                           );
                         }}
                         className={`${!editMode
-                            ? `${inputEditColor} cursor-default`
-                            : `${bgColorMain} cursor-pointer`
+                          ? `${inputEditColor} cursor-default`
+                          : `${bgColorMain} cursor-pointer`
                           } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
                         disabled={!editMode}
@@ -1310,7 +1345,7 @@ function EditPersonal() {
                     </label>
                     <div className=" col w-fit mt-1">
                       <p
-                        className={`focus:outline-none cursor-default w-36 ${bgColorMain}  border border-gray-400 py-2 px-4 rounded-lg`}
+                        className={`${inputEditColor}  focus:outline-none cursor-default w-36 ${bgColorMain}  border border-gray-400 py-2 px-4 rounded-lg`}
                       >
                         {addressIdCardZipCode || "-"}
                       </p>
@@ -1338,21 +1373,32 @@ function EditPersonal() {
                       <p>(ตามบัตรประชาชน)</p>
                     </div>
                   </div>
-                  <input
-                    type="text"
-                    className={` ${!editMode
+                  {statusSameAddress ? (
+                    <div
+                      type="text"
+                      className={`  ${inputEditColor} cursor-default focus:outline-none ${bgColorMain} w-72 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
+                      placeholder="บ้านเลขที่, หมู่บ้าน, หอพัก"
+                      readOnly={!editMode || statusSameAddress}
+                    >
+                      {addressIdCard || getAddressIdCard}
+                    </div>
+                  ) : (
+                    <input
+                      type="text"
+                      className={` ${!editMode
                         ? `${inputEditColor} cursor-default focus:outline-none`
                         : ""
-                      } ${bgColorMain} w-72 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
-                    onChange={(e) => {
-                      setAddress(e.target.value);
-                    }}
-                    defaultValue={
-                      statusSameAddress ? addressIdCard : address || ""
-                    }
-                    placeholder="บ้านเลขที่, หมู่บ้าน, หอพัก"
-                    readOnly={!editMode}
-                  />
+                        } ${bgColorMain} w-72 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
+                      onChange={(e) => {
+                        setAddress(e.target.value);
+                      }}
+                      defaultValue={
+                        statusSameAddress ? addressIdCard || getAddressIdCard : address || getAddress
+                      }
+                      placeholder="บ้านเลขที่, หมู่บ้าน, หอพัก"
+                      readOnly={!editMode}
+                    />
+                  )}
                 </div>
                 <div className=" flex flex-col">
                   <label>
@@ -1374,11 +1420,11 @@ function EditPersonal() {
                         );
                       }}
                       className={`${!editMode
-                          ? `${inputEditColor} cursor-default`
-                          : `${bgColorMain} cursor-pointer`
+                        ? `${inputEditColor} cursor-default`
+                        : `${bgColorMain} cursor-pointer`
                         } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
-                      disabled={!editMode}
+                      disabled={!editMode || statusSameAddress}
                       value={
                         statusSameAddress
                           ? dataProvince.find(
@@ -1425,11 +1471,11 @@ function EditPersonal() {
                           );
                         }}
                         className={`${!editMode
-                            ? `${inputEditColor} cursor-default`
-                            : "cursor-pointer"
+                          ? `${inputEditColor} cursor-default`
+                          : "cursor-pointer"
                           } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
-                        disabled={!editMode}
+                        disabled={!editMode || statusSameAddress}
                         value={
                           statusSameAddress
                             ? dataProvince
@@ -1499,11 +1545,11 @@ function EditPersonal() {
                           );
                         }}
                         className={`${!editMode
-                            ? `${inputEditColor} cursor-default`
-                            : `${bgColorMain} cursor-pointer`
+                          ? `${inputEditColor} cursor-default`
+                          : `${bgColorMain} cursor-pointer`
                           } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
-                        disabled={!editMode}
+                        disabled={!editMode || statusSameAddress}
                         value={
                           statusSameAddress
                             ? dataProvince
@@ -1559,7 +1605,7 @@ function EditPersonal() {
                     </label>
                     <div className=" col w-fit mt-1">
                       <p
-                        className={`focus:outline-none cursor-default w-36 ${bgColorMain}   border border-gray-400 py-2 px-4 rounded-lg`}
+                        className={`${inputEditColor} focus:outline-none cursor-default w-36 ${bgColorMain}   border border-gray-400 py-2 px-4 rounded-lg`}
                       >
                         {statusSameAddress
                           ? addressIdCardZipCode
@@ -1579,13 +1625,13 @@ function EditPersonal() {
                   pattern="\d{10}"
                   maxLength={10}
                   className={` ${!editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
-                      : ""
+                    ? `${inputEditColor} cursor-default focus:outline-none`
+                    : ""
                     } ${bgColorMain} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setTel(e.target.value);
                   }}
-                  defaultValue={tel || ""}
+                  defaultValue={getTel || ""}
                   placeholder="หมายเลขโทรศัพท์ 10 หลัก"
                   readOnly={!editMode}
                 />
@@ -1598,13 +1644,13 @@ function EditPersonal() {
                   pattern="\d{10}"
                   maxLength={10}
                   className={` ${!editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
-                      : ""
+                    ? `${inputEditColor} cursor-default focus:outline-none`
+                    : ""
                     } ${bgColorMain} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setTelEmergency(e.target.value);
                   }}
-                  defaultValue={telEmergency || ""}
+                  defaultValue={getTelEmergency || ""}
                   placeholder="หมายเลขโทรศัพท์ 10 หลัก"
                   readOnly={!editMode}
                 />
@@ -1614,13 +1660,13 @@ function EditPersonal() {
                 <input
                   type="text"
                   className={` ${!editMode
-                      ? `${inputEditColor} cursor-default focus:outline-none`
-                      : ""
+                    ? `${inputEditColor} cursor-default focus:outline-none`
+                    : ""
                     } ${bgColorMain} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
                   onChange={(e) => {
                     setRelationship(e.target.value);
                   }}
-                  defaultValue={relationship || ""}
+                  defaultValue={getRelationship || ""}
                   placeholder="บุลคลใกล้ชิด"
                   readOnly={!editMode}
                 />
@@ -1632,8 +1678,8 @@ function EditPersonal() {
                 <input
                   type="email"
                   className={`
-                  ${bgColorMain} cursor-default focus:outline-none mt-1 w-60 border border-gray-400 py-2 px-4 rounded-lg`}
-                  value={email}
+                  ${inputEditColor} ${bgColorMain} cursor-default focus:outline-none mt-1 w-60 border border-gray-400 py-2 px-4 rounded-lg`}
+                  value={getEmail}
                   readOnly
                 />
               </div>
@@ -1648,8 +1694,8 @@ function EditPersonal() {
                         setSelectTypeDisabled(e.target.value);
                       }}
                       className={`${!editMode
-                          ? `${inputEditColor} cursor-default`
-                          : `${bgColorMain} cursor-pointer`
+                        ? `${inputEditColor} cursor-default`
+                        : `${bgColorMain} cursor-pointer`
                         } ${bgColorMain} w-64  border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       disabled={!editMode}
@@ -1685,8 +1731,8 @@ function EditPersonal() {
                     <select
                       onChange={(e) => setTypeDisabled([e.target.value])}
                       className={`${typeDisabled && !editMode
-                          ? `${inputEditColor} cursor-default`
-                          : `${bgColorMain} cursor-pointer`
+                        ? `${inputEditColor} cursor-default`
+                        : `${bgColorMain} cursor-pointer`
                         } ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-64  border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       disabled={!editMode}
@@ -1726,8 +1772,8 @@ function EditPersonal() {
                 >
                   <div
                     className={`${!typeDisabled.includes("พิการทางการมองเห็น") && !editMode
-                        ? "hidden"
-                        : ""
+                      ? "hidden"
+                      : ""
                       } ${bgColorMain} flex gap-x-3 mt-2`}
                   >
                     <input
@@ -1748,8 +1794,8 @@ function EditPersonal() {
                     className={`${!typeDisabled.includes(
                       "พิการทางการได้ยินหรือสื่อความหมาย"
                     ) && !editMode
-                        ? "hidden"
-                        : ""
+                      ? "hidden"
+                      : ""
                       } flex gap-x-3 mt-2`}
                   >
                     <input
@@ -1774,8 +1820,8 @@ function EditPersonal() {
                     className={`${!typeDisabled.includes(
                       "พิการทางการเคลื่อนไหวหรือทางร่างกาย"
                     ) && !editMode
-                        ? "hidden"
-                        : ""
+                      ? "hidden"
+                      : ""
                       } flex gap-x-3 mt-2`}
                   >
                     <input
@@ -1798,9 +1844,9 @@ function EditPersonal() {
                   </div>
                   <div
                     className={`${!typeDisabled.includes("พิการทางจิตใจหรือพฤติกรรม") &&
-                        !editMode
-                        ? "hidden"
-                        : ""
+                      !editMode
+                      ? "hidden"
+                      : ""
                       } ${bgColorMain} flex gap-x-3 mt-2`}
                   >
                     <input
@@ -1821,8 +1867,8 @@ function EditPersonal() {
                   </div>
                   <div
                     className={`${!typeDisabled.includes("พิการทางสติปัญญา") && !editMode
-                        ? "hidden"
-                        : ""
+                      ? "hidden"
+                      : ""
                       } ${bgColorMain} flex gap-x-3 mt-2`}
                   >
                     <input
@@ -1840,8 +1886,8 @@ function EditPersonal() {
 
                   <div
                     className={`${!typeDisabled.includes("พิการทางการเรียนรู้") && !editMode
-                        ? "hidden"
-                        : ""
+                      ? "hidden"
+                      : ""
                       } ${bgColorMain} flex gap-x-3 mt-2`}
                   >
                     <input
@@ -1860,8 +1906,8 @@ function EditPersonal() {
                   </div>
                   <div
                     className={`${!typeDisabled.includes("พิการทางการออทิสติก") && !editMode
-                        ? "hidden"
-                        : ""
+                      ? "hidden"
+                      : ""
                       } ${bgColorMain} flex gap-x-3 mt-2`}
                   >
                     <input
@@ -1884,13 +1930,13 @@ function EditPersonal() {
                   <input
                     type="text"
                     className={`${!editMode
-                        ? `${inputEditColor} cursor-default focus:outline-none`
-                        : " "
+                      ? `${inputEditColor} cursor-default focus:outline-none`
+                      : " "
                       } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
                     onChange={(e) => {
                       setDetailDisabled(e.target.value);
                     }}
-                    defaultValue={detailDisabled || ""}
+                    defaultValue={getDetailDisabled || ""}
                     placeholder="เพิ่มเติม (ถ้ามี)"
                     readOnly={!editMode}
                   />
@@ -1906,7 +1952,7 @@ function EditPersonal() {
                     <Image
                       onClick={openFileDialog}
                       className="w-full h-full cursor-pointer"
-                      src={profile || imageUrl || "/image/main/user.png"}
+                      src={profile || imageUrl || getProfile || "/image/main/user.png"}
                       height={1000}
                       width={1000}
                       alt="profile"
