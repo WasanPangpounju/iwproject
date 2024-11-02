@@ -74,38 +74,39 @@ function EditPersonal() {
   }, [status, session, router]);
 
   //data value
-  const [user, setUser] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [profile, setProfile] = useState("");
+  const [user, setUser] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [typeDisabled, setTypeDisabled] = useState([]);
-  const [detailDisabled, setDetailDisabled] = useState("");
-  const [university, setUniversity] = useState("");
-  const [email, setEmail] = useState("");
-  const [prefix, setPrefix] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [sex, setSex] = useState("");
-  const [dateBirthday, setDateBirthday] = useState("");
-  const [monthBirthday, setMonthBirthday] = useState("");
-  const [yearBirthday, setYearBirthday] = useState("");
-  const [nationality, setNationality] = useState("");
-  const [religion, setReligion] = useState("");
-  const [idCard, setIdCard] = useState("");
-  const [idCardDisabled, setIdCardDisabled] = useState("");
-  const [addressIdCard, setAddressIdCard] = useState("");
-  const [addressIdCardProvince, setAddressIdCardProvince] = useState("");
-  const [addressIdCardAmphor, setAddressIdCardAmphor] = useState("");
-  const [addressIdCardTambon, setAddressIdCardTambon] = useState("");
-  const [addressIdCardZipCode, setAddressIdCardZipCode] = useState("");
-  const [address, setAddress] = useState("");
-  const [addressProvince, setAddressProvince] = useState("");
-  const [addressAmphor, setAddressAmphor] = useState("");
-  const [addressTambon, setAddressTambon] = useState("");
-  const [addressZipCode, setAddressZipCode] = useState("");
-  const [tel, setTel] = useState("");
-  const [telEmergency, setTelEmergency] = useState("");
-  const [relationship, setRelationship] = useState("");
+  const [detailDisabled, setDetailDisabled] = useState(null);
+  const [university, setUniversity] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [prefix, setPrefix] = useState(null);
+  const [nickname, setNickname] = useState(null);
+  const [sex, setSex] = useState(null);
+  const [dateBirthday, setDateBirthday] = useState(null);
+  const [monthBirthday, setMonthBirthday] = useState(null);
+  const [yearBirthday, setYearBirthday] = useState(null);
+  const [nationality, setNationality] = useState(null);
+  const [religion, setReligion] = useState(null);
+  const [idCard, setIdCard] = useState(null);
+  const [idCardDisabled, setIdCardDisabled] = useState(null);
+  const [addressIdCard, setAddressIdCard] = useState(null);
+  const [addressIdCardProvince, setAddressIdCardProvince] = useState(null);
+  const [addressIdCardAmphor, setAddressIdCardAmphor] = useState(null);
+  const [addressIdCardTambon, setAddressIdCardTambon] = useState(null);
+  const [addressIdCardZipCode, setAddressIdCardZipCode] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [addressProvince, setAddressProvince] = useState(null);
+  const [addressAmphor, setAddressAmphor] = useState(null);
+  const [addressTambon, setAddressTambon] = useState(null);
+  const [addressZipCode, setAddressZipCode] = useState(null);
+  const [tel, setTel] = useState(null);
+  const [telEmergency, setTelEmergency] = useState(null);
+  const [relationship, setRelationship] = useState(null);
+
 
   useEffect(() => {
     setLoader(false);
@@ -382,39 +383,39 @@ function EditPersonal() {
     // console.log("relationship:", relationship);
     // console.log("profile:", profile);
 
-    const tempUser = user || getUser;
-    const tempPassword = password || getPassword; // เพิ่ม tempPassword
-    const tempFirstName = firstName || getFirstName;
-    const tempLastName = lastName || getLastName;
-    const tempUniversity = university || getUniversity;
-    const tempEmail = email || getEmail;
-    const tempPrefix = prefix || getPrefix;
-    const tempSex = sex || getSex;
-    const tempDateBirthday = dateBirthday || getDateBirthday;
-    const tempMonthBirthday = monthBirthday || getMonthBirthday;
-    const tempYearBirthday = yearBirthday || getYearBirthday;
-    const tempNationality = nationality || getNationality;
-    const tempReligion = religion || getReligion;
-    const tempIdCard = idCard || getIdCard;
-    const tempIdCardDisabled = idCardDisabled || getIdCardDisabled;
-    const tempAddressIdCard = addressIdCard || getAddressIdCard;
-    const tempAddressIdCardProvince = addressIdCardProvince || getAddressIdCardProvince;
-    const tempAddressIdCardAmphor = addressIdCardAmphor || getAddressIdCardAmphor;
-    const tempAddressIdCardTambon = addressIdCardTambon || getAddressIdCardTambon;
-    const tempAddressIdCardZipCode = addressIdCardZipCode || getAddressIdCardZipCode;
-    const tempAddress = address || getAddress;
-    const tempAddressProvince = addressProvince || getAddressProvince;
-    const tempAddressAmphor = addressAmphor || getAddressAmphor;
-    const tempAddressTambon = addressTambon || getAddressTambon;
-    const tempAddressZipCode = addressZipCode || getAddressZipCode;
-    const tempTel = tel || getTel;
-    const tempTelEmergency = telEmergency || getTelEmergency;
-    const tempRelationship = relationship || getRelationship;
+    const tempUser = user ?? getUser;
+    const tempPassword = password ?? getPassword;
+    const tempFirstName = firstName ?? getFirstName;
+    const tempLastName = lastName ?? getLastName;
+    const tempUniversity = university ?? getUniversity;
+    const tempEmail = email ?? getEmail;
+    const tempPrefix = prefix ?? getPrefix;
+    const tempSex = sex ?? getSex;
+    const tempDateBirthday = dateBirthday ?? getDateBirthday;
+    const tempMonthBirthday = monthBirthday ?? getMonthBirthday;
+    const tempYearBirthday = yearBirthday ?? getYearBirthday;
+    const tempNationality = nationality ?? getNationality;
+    const tempReligion = religion ?? getReligion;
+    const tempIdCard = idCard ?? getIdCard;
+    const tempIdCardDisabled = idCardDisabled ?? getIdCardDisabled;
+    const tempAddressIdCard = addressIdCard ?? getAddressIdCard;
+    const tempAddressIdCardProvince = addressIdCardProvince ?? getAddressIdCardProvince;
+    const tempAddressIdCardAmphor = addressIdCardAmphor ?? getAddressIdCardAmphor;
+    const tempAddressIdCardTambon = addressIdCardTambon ?? getAddressIdCardTambon;
+    const tempAddressIdCardZipCode = addressIdCardZipCode ?? getAddressIdCardZipCode;
+    const tempAddress = address ?? getAddress;
+    const tempAddressProvince = addressProvince ?? getAddressProvince;
+    const tempAddressAmphor = addressAmphor ?? getAddressAmphor;
+    const tempAddressTambon = addressTambon ?? getAddressTambon;
+    const tempAddressZipCode = addressZipCode ?? getAddressZipCode;
+    const tempTel = tel ?? getTel;
+    const tempTelEmergency = telEmergency ?? getTelEmergency;
+    const tempRelationship = relationship ?? getRelationship;
     const tempSelectTypeDisabled = selectTypeDisabled;
-    const tempProfile = profile || getProfile;
-    const tempTypeDisabled = typeDisabled || getTypeDisabled;
-    const tempDetailDisabled = detailDisabled || getDetailDisabled;
-    const tempNickname = nickname || getNickname;
+    const tempProfile = profile ?? getProfile;
+    const tempTypeDisabled = typeDisabled ?? getTypeDisabled;
+    const tempDetailDisabled = detailDisabled ?? getDetailDisabled;
+    const tempNickname = nickname ?? getNickname;
 
 
     if (
@@ -1014,16 +1015,16 @@ function EditPersonal() {
                   getYearBirthday &&
                   getMonthBirthday &&
                   getDateBirthday) ? (
-                  <div className="flex col flex-col">
-                    <label>อายุ</label>
-                    <p
-                      type="text"
-                      className={`mt-1 w-32 border ${inputEditColor} cursor-default border-gray-400 py-2 px-4 rounded-lg`}
-                    >
-                      {yearBirthday ? yearToday - yearBirthday : yearToday - getYearBirthday} ปี
-                    </p>
-                  </div>
-                ):null}
+                <div className="flex col flex-col">
+                  <label>อายุ</label>
+                  <p
+                    type="text"
+                    className={`mt-1 w-32 border ${inputEditColor} cursor-default border-gray-400 py-2 px-4 rounded-lg`}
+                  >
+                    {yearBirthday ? yearToday - yearBirthday : yearToday - getYearBirthday} ปี
+                  </p>
+                </div>
+              ) : null}
               <div className=" flex flex-col">
                 <label>
                   สัญชาติ <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
@@ -1419,7 +1420,7 @@ function EditPersonal() {
                           ).name_th
                         );
                       }}
-                      className={`${!editMode
+                      className={`${!editMode || statusSameAddress
                         ? `${inputEditColor} cursor-default`
                         : `${bgColorMain} cursor-pointer`
                         } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1470,7 +1471,7 @@ function EditPersonal() {
                               ).name_th
                           );
                         }}
-                        className={`${!editMode
+                        className={`${!editMode || statusSameAddress
                           ? `${inputEditColor} cursor-default`
                           : "cursor-pointer"
                           } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -1544,7 +1545,7 @@ function EditPersonal() {
                               ).zip_code
                           );
                         }}
-                        className={`${!editMode
+                        className={`${!editMode || statusSameAddress
                           ? `${inputEditColor} cursor-default`
                           : `${bgColorMain} cursor-pointer`
                           } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
