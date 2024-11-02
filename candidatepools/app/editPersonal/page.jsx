@@ -417,7 +417,6 @@ function EditPersonal() {
     const tempDetailDisabled = detailDisabled ?? getDetailDisabled;
     const tempNickname = nickname ?? getNickname;
 
-
     if (
       !tempUser ||
       !tempPassword ||

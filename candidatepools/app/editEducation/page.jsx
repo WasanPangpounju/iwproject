@@ -44,6 +44,9 @@ function editEducation() {
         setRegisterColor,
         registerColor,
         inputEditColor,
+        setInputGrayColor,
+        inputGrayColor,
+        inputTextColor
     } = useTheme();
 
     //value data user
@@ -650,13 +653,14 @@ function editEducation() {
                                 fields.map((field, index) => (
                                     <div className="flex gap-x-10 gap-y-5 flex-wrap" key={index}>
                                         {/* ประเภทบุคล */}
+
                                         {index === 0 && (
                                             <div className="flex flex-col w-full">
                                                 <label>ประเภทบุลคล <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                                 <div className="relative col w-fit mt-1">
                                                     <select
                                                         onChange={(e) => setTypePerson(e.target.value)}
-                                                        className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                        className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-2 px-4 rounded-lg`}
                                                         style={{ appearance: 'none' }}
                                                         disabled={!editMode}
                                                         value={typePerson || "-"}
@@ -695,7 +699,7 @@ function editEducation() {
                                                         newEducationLevels[index] = e.target.value; // อัปเดตค่าตาม index
                                                         setEducationLevel(newEducationLevels); // ตั้งค่าใหม่
                                                     }}
-                                                    className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-2 px-4 rounded-lg`}
                                                     style={{ appearance: 'none' }}
                                                     disabled={!editMode}
                                                     value={Array.isArray(educationLevel) && educationLevel[index] !== undefined ? educationLevel[index] : "-"}
@@ -720,7 +724,7 @@ function editEducation() {
                                                                 newData[index] = e.target.value; // อัปเดตค่าตาม index
                                                                 setYearGraduation(newData); // ตั้งค่าใหม่
                                                             }}
-                                                            className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                            className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-32 border border-gray-400 py-2 px-4 rounded-lg`}
                                                             style={{ appearance: 'none' }}
                                                             disabled={!editMode}
                                                             value={Array.isArray(yearGraduation) && yearGraduation[index] !== undefined ? yearGraduation[index] : "-"}
@@ -744,7 +748,7 @@ function editEducation() {
                                                             newData[index] = e.target.value; // อัปเดตค่าตาม index
                                                             setYearGraduation(newData); // ตั้งค่าใหม่
                                                         }}
-                                                        className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                        className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-32 border border-gray-400 py-2 px-4 rounded-lg`}
                                                         style={{ appearance: 'none' }}
                                                         disabled={!editMode}
                                                         value={Array.isArray(yearGraduation) && yearGraduation[index] !== undefined ? yearGraduation[index] : "-"}
@@ -763,7 +767,7 @@ function editEducation() {
                                             <label>สถาบันการศึกษา/มหาวิทยาลัย <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onBlur={(e) => handleUniversity(e.target.value, index)}
                                                 defaultValue={Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
                                                 readOnly={!editMode}
@@ -777,7 +781,7 @@ function editEducation() {
                                                     <label>วิทยาเขต</label>
                                                     <input
                                                         type="text"
-                                                        className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                        className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                         onBlur={(e) => handleCampus(e.target.value, index)}
                                                         defaultValue={Array.isArray(campus) && campus[index] !== undefined ? campus[index] : ""}
                                                         readOnly={!editMode}
@@ -791,7 +795,7 @@ function editEducation() {
                                             <label>คณะ <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onBlur={(e) => handleFaculty(e.target.value, index)}
                                                 defaultValue={Array.isArray(faculty) && faculty[index] !== undefined ? faculty[index] : ""}
                                                 readOnly={!editMode}
@@ -803,7 +807,7 @@ function editEducation() {
                                             <label>สาขา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onBlur={(e) => handleBranch(e.target.value, index)}
                                                 defaultValue={Array.isArray(branch) && branch[index] !== undefined ? branch[index] : ""}
                                                 readOnly={!editMode}
@@ -821,7 +825,7 @@ function editEducation() {
                                                             newData[index] = e.target.value; // อัปเดตค่าตาม index
                                                             setLevel(newData); // ตั้งค่าใหม่
                                                         }}
-                                                        className={`${!editMode ? "bg-gray-200 cursor-default" : "cursor-pointer"} whitespace-nowrap text-ellipsis overflow-hidden w-32 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                        className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-32 border border-gray-400 py-2 px-4 rounded-lg`}
                                                         style={{ appearance: 'none' }}
                                                         disabled={!editMode}
                                                         value={Array.isArray(level) && level[index] !== undefined ? level[index] : "-"}
@@ -842,7 +846,7 @@ function editEducation() {
                                             <input
                                                 type="text"
                                                 inputMode="numeric"
-                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-24 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-24 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onBlur={(e) => handleGrade(e.target.value, index)}
                                                 defaultValue={Array.isArray(grade) && grade[index] !== undefined ? grade[index] : ""}
                                                 readOnly={!editMode}
@@ -872,7 +876,7 @@ function editEducation() {
                                         <div className="mt-3 flex gap-5 flex-wrap">
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? "bg-gray-200 cursor-default focus:outline-none" : ""} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onChange={(e) => setInputNameFile(e.target.value)} // ตั้งชื่อไฟล์
                                                 placeholder="ชื่อเอกสาร"
                                                 readOnly={!editMode}
@@ -889,8 +893,9 @@ function editEducation() {
                                                 />
                                                 <div
                                                     onClick={openFileDialog}
-                                                    className="border rounded-lg py-2 px-4 text-center bg-gray-300 cursor-pointer"
-                                                >
+                                                    className={`border rounded-lg py-2 px-8 text-center ${inputEditColor} ${editMode ? ' cursor-pointer' : ' cursor-not-allowed'
+                                                        }`
+                                                    }                                                    >
                                                     Choose File
                                                 </div>
                                             </div>
@@ -948,18 +953,34 @@ function editEducation() {
                                         setEditMode(false)
                                         window.location.reload()
                                     }
-                                    } className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
+                                    }
+                                        className={`
+                                    ${bgColorNavbar} 
+                                    ${bgColorWhite} 
+                                    hover:cursor-pointer 
+                                    bg-[#F97201]  
+                                    py-2 px-6 
+                                    rounded-2xl 
+                                    flex justify-center items-center gap-1 
+                                    border border-white
+                                  `}                                    >
                                         <Icon path={mdiCloseCircle} size={1} />
                                         <p>ยกเลิก</p>
                                     </div>
-                                    <button type='submit' className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'>
+                                    <button type='submit'
+                                        className=
+                                        {
+                                            `${inputTextColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
+                                        }                                    >
                                         <Icon path={mdiContentSave} size={1} />
                                         <p>บันทึก</p>
                                     </button>
                                 </div>
                             ) : (
                                 <div className=" flex w-full justify-center mt-10">
-                                    <div onClick={() => setEditMode(true)} className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'>
+                                    <div onClick={() => setEditMode(true)}
+                                        className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
+                                    >
                                         <Icon path={mdiPencil} size={.8} />
                                         <p>แก้ไข</p>
                                     </div>
