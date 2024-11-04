@@ -38,7 +38,10 @@ function Register({ statusAgreement }) {
         setRegisterColor,
         registerColor,
         inputEditColor,
-      } = useTheme();
+        inputGrayColor,
+        setInputGrayColor,
+        inputTextColor
+    } = useTheme();
 
     //check agreement
     const [agreement, setAgreement] = useState(false);
@@ -195,7 +198,7 @@ function Register({ statusAgreement }) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ uuid: session?.user?.id || id ,email, typePerson, university })
+                body: JSON.stringify({ uuid: session?.user?.id || id, email, typePerson, university })
             })
 
 
@@ -407,17 +410,43 @@ function Register({ statusAgreement }) {
                     ) : null}
                     <div className={` w-96 self-end mt-10 flex justify-between`}>
                         {session ? (
-                            <div onClick={handleLogout} className={`${fontSize} hover:cursor-pointer bg-red-400 text-white py-1 px-10 rounded-lg flex justify-center items-center gap-1`}>
+                            <div onClick={handleLogout}
+                                className={`
+                            ${bgColorNavbar} 
+                            ${bgColorWhite} 
+                            hover:cursor-pointer 
+                            bg-[#F97201]  
+                            py-2 px-6 
+                            rounded-2xl 
+                            flex justify-center items-center gap-1 
+                            border border-white
+                          `}
+                            >
                                 <Icon path={mdiCloseCircle} size={1} />
                                 <p>ออกจากระบบ</p>
                             </div>
                         ) : (
-                            <Link href="/" className={`${fontSize} hover:cursor-pointer bg-[#F97201] text-white py-1 px-10 rounded-lg flex justify-center items-center gap-1`}>
+                            <Link href="/"
+                                className={`
+                            ${bgColorNavbar} 
+                            ${bgColorWhite} 
+                            hover:cursor-pointer 
+                            bg-[#F97201]  
+                            py-2 px-6 
+                            rounded-2xl 
+                            flex justify-center items-center gap-1 
+                            border border-white
+                          `}
+                            >
                                 <Icon path={mdiCloseCircle} size={1} />
                                 <p>ยกเลิก</p>
                             </Link>
                         )}
-                        <button type='submit' className={`${fontSize} hover:cursor-pointer bg-[#75C7C2] text-white py-1 px-10 rounded-lg flex justify-center items-center gap-1`}>
+                        <button type='submit'
+                            className=
+                            {
+                                `${inputTextColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
+                            }>
                             <Icon path={mdiAccountEdit} size={1} />
                             <p>ลงทะเบียน</p>
                         </button>
