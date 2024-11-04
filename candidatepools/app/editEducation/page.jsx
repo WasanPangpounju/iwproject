@@ -767,7 +767,7 @@ function editEducation() {
                                             <label>สถาบันการศึกษา/มหาวิทยาลัย <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onBlur={(e) => handleUniversity(e.target.value, index)}
                                                 defaultValue={Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
                                                 readOnly={!editMode}
@@ -781,7 +781,7 @@ function editEducation() {
                                                     <label>วิทยาเขต</label>
                                                     <input
                                                         type="text"
-                                                        className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                        className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                         onBlur={(e) => handleCampus(e.target.value, index)}
                                                         defaultValue={Array.isArray(campus) && campus[index] !== undefined ? campus[index] : ""}
                                                         readOnly={!editMode}
@@ -795,7 +795,7 @@ function editEducation() {
                                             <label>คณะ <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onBlur={(e) => handleFaculty(e.target.value, index)}
                                                 defaultValue={Array.isArray(faculty) && faculty[index] !== undefined ? faculty[index] : ""}
                                                 readOnly={!editMode}
@@ -807,7 +807,7 @@ function editEducation() {
                                             <label>สาขา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onBlur={(e) => handleBranch(e.target.value, index)}
                                                 defaultValue={Array.isArray(branch) && branch[index] !== undefined ? branch[index] : ""}
                                                 readOnly={!editMode}
@@ -846,7 +846,7 @@ function editEducation() {
                                             <input
                                                 type="text"
                                                 inputMode="numeric"
-                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-24 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-24 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onBlur={(e) => handleGrade(e.target.value, index)}
                                                 defaultValue={Array.isArray(grade) && grade[index] !== undefined ? grade[index] : ""}
                                                 readOnly={!editMode}
@@ -876,7 +876,7 @@ function editEducation() {
                                         <div className="mt-3 flex gap-5 flex-wrap">
                                             <input
                                                 type="text"
-                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onChange={(e) => setInputNameFile(e.target.value)} // ตั้งชื่อไฟล์
                                                 placeholder="ชื่อเอกสาร"
                                                 readOnly={!editMode}
