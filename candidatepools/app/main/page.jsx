@@ -40,7 +40,7 @@ function MainPage() {
     const router = useRouter();
     const { status, data: session } = useSession();
     const [dataUser, setDataUser] = useState(null);
-    const [loader, setLoader] = useState(true);
+    const [loader, setLoader] = useState(false);
 
     // Validate session and fetch user data
     useEffect(() => {

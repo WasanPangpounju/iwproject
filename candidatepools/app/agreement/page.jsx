@@ -3,13 +3,16 @@
 import React, { useState, useEffect } from 'react'
 import NavbarLogo from '../components/NavbarLogo'
 import Icon from '@mdi/react';
-import { mdiAccountEdit } from '@mdi/js';
+import { mdiAccountEdit, mdiCloseCircle } from '@mdi/js';
 import Footer from '../components/Footer';
 import { useRouter } from 'next/navigation';
 import Register from '../register/page';
 import Loader from '../components/Loader';
 import { useSession } from 'next-auth/react';
 import { useTheme } from '../ThemeContext';
+import Link from 'next/link';
+import { signOut } from 'next-auth/react';
+import Swal from 'sweetalert2';
 
 function Agreement() {
 
@@ -51,7 +54,7 @@ function Agreement() {
             router.replace('/register')
             setStatusAgreement(temp);
         } else {
-            setError('คุณไม่ได้ยอมรับเงื่อนไขการใช่้งานบริการ');
+            setError('คุณไม่ได้ยอมรับเงื่อนไขการใช้งานบริการ');
         }
     }
 
@@ -112,6 +115,24 @@ function Agreement() {
             document.body.classList.remove('no_scroll')
         }
     }, [loader])
+
+    //logout
+    function handleLogout() {
+        Swal.fire({
+            title: "ออกจากระบบสำเร็จ",
+            icon: "success",
+            confirmButtonText: "ตกลง",
+            confirmButtonColor: "#0d96f8",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                signOut().then(() => {
+                    router.replace("/");
+                }).catch((err) => {
+                    console.log("Sign out error :", err);
+                });
+            }
+        });
+    }
 
     return (
         <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
@@ -187,7 +208,41 @@ function Agreement() {
                                     <p className="text-center text-red-500 mt-3">* {error}</p>
                                 )}
 
-                                <div className="flex justify-center mt-5">
+                                <div className="flex justify-center mt-8 gap-10">
+                                    {session ? (
+                                        <div onClick={handleLogout}
+                                            className=
+                                            {
+                                                `${bgColorNavbar} 
+                            ${bgColorWhite} 
+                            hover:cursor-pointer 
+                            bg-[#F97201]  
+                            py-2 px-6 
+                            rounded-2xl 
+                            flex justify-center items-center gap-1 
+                            border border-white`
+                                            }
+                                        >
+                                            <Icon path={mdiCloseCircle} size={1} />
+                                            <p>ออกจากระบบ</p>
+                                        </div>
+                                    ) : (
+                                        <Link href="/"
+                                            className={`
+                            ${bgColorNavbar} 
+                            ${bgColorWhite} 
+                            hover:cursor-pointer 
+                            bg-[#F97201]  
+                            py-2 px-6 
+                            rounded-2xl 
+                            flex justify-center items-center gap-1 
+                            border border-white
+                          `}
+                                        >
+                                            <Icon path={mdiCloseCircle} size={1} />
+                                            <p>ยกเลิก</p>
+                                        </Link>
+                                    )}
                                     <button onClick={handleAgreement} type='submit'
                                         className=
                                         {
