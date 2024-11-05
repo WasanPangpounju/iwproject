@@ -60,6 +60,7 @@ function Register({ statusAgreement }) {
     const [university, setUniversity] = useState('');
     const [email, setEmail] = useState('');
     const [typePerson, setTypePerson] = useState('');
+    const [idCard, setIdCard] = useState('');
     const [error, setError] = useState('');
 
     const [dataUser, setDataUser] = useState(null);
@@ -172,13 +173,37 @@ function Register({ statusAgreement }) {
                 return;
             }
 
+            const resCheckID = await fetch(
+                `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/checkIdRegister`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ idCard }),
+                }
+            );
+
+            if (!resCheckID.ok) {
+                setLoader(false);
+                throw new Error("Error fetch api checkuser.");
+            }
+
+            const { idCard: idCardExists } = await resCheckID.json();
+            if (idCardExists) {
+                setError("เลขบัตรประชาชนนี้มีการใช้งานแล้ว");
+                setLoader(false);
+                return;
+            }
+            setError("");
+
             const id = uuidv4()
             const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ id: session?.user?.id || id, user, password, firstName, lastName, typeDisabled, university, email, typePerson })
+                body: JSON.stringify({ id: session?.user?.id || id, user, password, firstName, lastName, typeDisabled, university, email, typePerson, idCard })
             })
 
             if (!res.ok) {
@@ -191,7 +216,6 @@ function Register({ statusAgreement }) {
                     confirmButtonColor: "#f27474",
                 })
             }
-
 
             const resEducation = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`, {
                 method: "POST",
@@ -335,8 +359,17 @@ function Register({ statusAgreement }) {
                             placeholder='ยืนยันรหัสผ่าน'
                         />
                     </div>
-                    {/* </>
-                    )} */}
+                    <div className={`${fontSize} ${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
+                        <label> เลขบัตรประจำตัวประชาชน:</label>
+                        <input
+                            onChange={(e) => setIdCard(e.target.value)}
+                            type="text"
+                            pattern="\d{13}"
+                            maxLength={13}
+                            className={`${bgColorMain} w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                            placeholder='กรอกเลขบัตรประจำตัวประชาชน 13 หลัก'
+                        />
+                    </div>
                     <div className={`${fontSize} ${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label> ชื่อ:</label>
                         <input

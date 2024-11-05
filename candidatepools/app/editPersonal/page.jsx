@@ -49,7 +49,7 @@ function EditPersonal() {
   } = useTheme();
 
   const [dataUser, setDataUser] = useState(null);
-  const [loader, setLoader] = useState(true);
+  const [loader, setLoader] = useState(false);
   const [selectTypeDisabled, setSelectTypeDisabled] = useState("");
   const router = useRouter();
   const { status, data: session } = useSession();

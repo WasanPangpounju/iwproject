@@ -5,12 +5,12 @@ import bcrypt from 'bcrypt'; // นำเข้า bcrypt
 
 export async function POST(req) {
     try {
-        const { id ,user, password, firstName, lastName, typeDisabled, university, email, typePerson } = await req.json();
+        const { id ,user, password, firstName, lastName, typeDisabled, university, email, typePerson, idCard } = await req.json();
 
         const hashedPassword = await bcrypt.hash(password, 10); // 10 คือค่า salt rounds
 
         await mongoDB();
-        await Users.create({ uuid: id, user: user, password: hashedPassword, firstName: firstName, lastName: lastName, typeDisabled: typeDisabled, university: university, email: email, typePerson: typePerson });
+        await Users.create({ uuid: id, user: user, password: hashedPassword, firstName: firstName, lastName: lastName, typeDisabled: typeDisabled, university: university, email: email, typePerson: typePerson, idCard: idCard });
         return NextResponse.json({ message: "Created User" }, { status: 201 })
     } catch {
         return NextResponse.json({ message: "Error Create User" }, { status: 500 })

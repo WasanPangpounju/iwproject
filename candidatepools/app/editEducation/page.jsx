@@ -21,7 +21,7 @@ function editEducation() {
     const router = useRouter();
     const { status, data: session } = useSession();
     const [dataUser, setDataUser] = useState(null);
-    const [loader, setLoader] = useState(true);
+    const [loader, setLoader] = useState(false);
 
     //Theme
     const {

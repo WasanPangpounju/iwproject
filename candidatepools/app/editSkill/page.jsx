@@ -424,12 +424,12 @@ function WorkHistory() {
             };
         });
     }
-
+    
     //function submit
     async function handleSubmit(e, fieldSkills, fieldTrains) {
         e.preventDefault();
 
-        setLoader(false);
+        setLoader(true);
 
         const mergedSkillType = mergeArrayValues(skillType, getSkillType);
         const mergedSkillName = mergeArrayValues(skillName, getSkillName);

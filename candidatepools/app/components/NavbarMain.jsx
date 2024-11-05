@@ -16,6 +16,7 @@ import {
   mdiFileAccount,
   mdiFileEditOutline,
   mdiHomeAccount,
+  mdiBriefcaseAccount,
 } from '@mdi/js';
 
 import styles from "@/app/components/styles/NavbarMain.module.css";
@@ -44,6 +45,7 @@ function NavbarMain({ status }) {
     textBlue,
     setRegisterColor,
     registerColor,
+    bgColorMain2
   } = useTheme();
 
   const router = useRouter();
@@ -68,6 +70,7 @@ function NavbarMain({ status }) {
     });
   }
 
+  //edit menu open
   const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
 
   const handleMenuOpen = () => {
@@ -78,8 +81,19 @@ function NavbarMain({ status }) {
     setIsEditMenuOpen(false); // ปิดเมนู
   };
 
+  //resume menu open
+  const [isResumeMenuOpen, setIsResumeMenuOpen] = useState(false);
+
+  const handleResumeMenuOpen = () => {
+    setIsResumeMenuOpen(true); // เปิดเมนู
+  };
+
+  const handleResumeMenuClose = () => {
+    setIsResumeMenuOpen(false); // ปิดเมนู
+  };
+
   return (
-    <nav className={`${bgColorNavbar} ${bgColorWhite} ${fontSize} w-60 min-h-screen`} role="navigation" aria-label="หลักการนำทาง">
+    <nav className={`${bgColorMain2} ${bgColor} ${fontSize} w-60 min-h-screen`} role="navigation" aria-label="หลักการนำทาง">
       <Link
         href="/main"
         className={`${status === "main"
@@ -120,7 +134,7 @@ function NavbarMain({ status }) {
           แก้ไขประวัติ
         </p>
         {isEditMenuOpen && ( // แสดงเมนูถ้า isEditMenuOpen เป็น true
-          <div className={`${bgColorNavbar} ${bgColorWhite} max-w-fit absolute left-full top-0 z-10`} role="menu">
+          <div className={`${bgColorMain2} ${bgColor}  max-w-fit absolute left-full top-0 z-10`} role="menu">
             <Link href="/editPersonal" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ข้อมูลส่วนบุคคล">
               <Icon path={mdiAccount} size={1} aria-hidden="true" aria-label="ข้อมูลส่วนบุคคล" />
               <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>ข้อมูลส่วนบุคคล</p>
@@ -141,17 +155,43 @@ function NavbarMain({ status }) {
         )}
       </div>
 
-      <Link
-        href=""
-        className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3"
+      <div
+        tabIndex="0" // ทำให้สามารถเข้าถึงได้ด้วยการกด Tab
         role="menuitem"
-        aria-label="เรซูเม่/งานที่สนใจ"
+        className={`${status === "resume"
+          ? "bg-[#fee2d9] text-[#ff7201]"
+          : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
+          } ${fontSize} cursor-pointer relative flex items-center px-7 gap-5 py-3 focus:bg-[#fee2d9] focus:text-[#ff7201]`}
+        aria-haspopup="true"
+        aria-expanded={isResumeMenuOpen} // แสดงสถานะว่าเปิดหรือปิดเมนู
+        onMouseEnter={handleResumeMenuOpen} // เปิดเมนูเมื่อ mouse hover
+        onMouseLeave={handleResumeMenuClose} // ปิดเมนูเมื่อ mouse ออกจากพื้นที่เมนู
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleResumeMenuOpen(); // เปิดเมนูเมื่อกด Enter
+          }
+          if (e.key === 'Escape') {
+            handleResumeMenuClose(); // ปิดเมนูเมื่อกด Escape
+          }
+        }}
       >
-        <Icon path={mdiFileAccount} size={1} aria-hidden="true" aria-label="เรซูเม่/งานที่สนใจ" />
+        <Icon path={mdiFileAccount} size={1} aria-hidden="true" />
         <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           เรซูเม่/งานที่สนใจ
         </p>
-      </Link>
+        {isResumeMenuOpen && ( // แสดงเมนูถ้า isEditMenuOpen เป็น true
+          <div className={`${bgColorMain2} ${bgColor}  max-w-fit absolute left-full top-0 z-10`} role="menu">
+            <Link href="/resume" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ข้อมูลส่วนบุคคล">
+              <Icon path={mdiAccount} size={1} aria-hidden="true" aria-label="เรซูเม่" />
+              <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>เรซูเม่</p>
+            </Link>
+            <Link href="/interestedwork" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ประวัติการศึกษา">
+              <Icon path={mdiBriefcaseAccount} size={1} aria-hidden="true" aria-label="ลักษณะงานที่สนใจ" />
+              <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>ลักษณะงานที่สนใจ</p>
+            </Link>
+          </div>
+        )}
+      </div>
 
 
       <Link href="#" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3" role="menuitem" aria-label="ประชาสัมพันธ์จากบริษัท">
