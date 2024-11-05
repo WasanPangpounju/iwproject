@@ -314,8 +314,6 @@ function Register({ statusAgreement }) {
         });
     }
 
-    console.log(dataUser)
-
     return (
         <div className={`${bgColorMain} ${bgColor}`}>
             <NavbarLogo />
@@ -355,7 +353,7 @@ function Register({ statusAgreement }) {
                         <input
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             type="password"
-                            className={`${bgColorMain} w-96 border border-gray-400 py-2 px-4 rounded-lg'`}
+                            className={`${bgColorMain} w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                             placeholder='ยืนยันรหัสผ่าน'
                         />
                     </div>
