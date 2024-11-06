@@ -134,6 +134,10 @@ function Agreement() {
         });
     }
 
+    //checkbox
+    function handleCheckBox(){
+        document.getElementById('checkStatus').checked = !document.getElementById('checkStatus').checked
+    }
     return (
         <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
             {statusAgreement ? (
@@ -200,8 +204,8 @@ function Agreement() {
                                         5.1.2. สมัครโดยการ สร้างเรซูเม่ ผลงาน หรือเอกสารประกอบการสมัครงาน...
                                     </p>
                                 </div>
-                                <div className={`${fontSize} flex gap-3 justify-center mt-10`}>
-                                    <input id="checkStatus" type="checkbox" />
+                                <div onClick={handleCheckBox} className={`${fontSize} cursor-pointer flex gap-3 justify-center mt-10`}>
+                                    <input onClick={handleCheckBox} className='cursor-pointer w-4' id="checkStatus" type="checkbox" />
                                     <p>ยอมรับเงื่อนไขการใช้บริการและอนุญาตการใช้ข้อมูล</p>
                                 </div>
                                 {error && (
