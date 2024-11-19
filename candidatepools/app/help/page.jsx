@@ -8,10 +8,10 @@ import Loader from '../components/Loader'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useTheme } from "../ThemeContext";
+import Link from 'next/link'
 
-
-function ResumePage() {
-    const [loader, setLoader] = useState(false)
+function HelpPage() {
+    const [loader, setLoader] = useState(true)
 
     const router = useRouter();
     const { status, data: session } = useSession();
@@ -81,25 +81,49 @@ function ResumePage() {
         setRegisterColor,
         registerColor,
         inputEditColor,
-      } = useTheme();
+    } = useTheme();
 
     return (
         <div className={`${fontSize} ${bgColorMain} ${bgColor}`}>
-            <NavbarLogo title="เรซูเม่" dataUser={dataUser} />
+            <NavbarLogo title="ติดต่อเรา" dataUser={dataUser} />
             <div className="flex">
-                <NavbarMain status="resume" />
+                <NavbarMain status="help" />
                 <div className="w-10/12 px-7 py-5">
+                    {/* <div className={`bg-white rounded-lg p-5`}> */}
                     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
-                        <p>สร้างเรซูเม่</p>
-                        <div className='mt-5 grid grid-cols-3 gap-5 text-center'>
-                            <div className={`py-5 rounded-lg ${bgColorNavbar} ${bgColorWhite}`}>
-                                <p>รูปแบบที่ 1</p>
+                        <div className={`flex flex-col gap-5 `}>
+                            <div>
+                                <p>ที่ทำการ</p>
+                                <p>มูลนิธินวัตกรรมทางสังคม เลขที่ 286 อาคารราฟเฟิล คอร์ท ถนนรัชดาภิเษก 20 (ซอยรุ่งเรือง) แขวงสามเสนนอก เขตห้วยขวาง กรุงเทพฯ 10310</p>
                             </div>
-                            <div className={`py-5 rounded-lg ${bgColorNavbar === "bg-[#F97201]" ? "bg-[#f48e07]":""} ${bgColorWhite}`}>
-                                <p>รูปแบบที่ 2</p>
+                            <div>
+                                <p>เบอร์ติดต่อ</p>
+                                <p>โทรศัพท์ 02-279-9385</p>
+                                <p>โทรสาร 02-279-9345</p>
                             </div>
-                            <div className={`py-5  rounded-lg ${bgColorNavbar === "bg-[#F97201]" ? "bg-[#feb61c]":""} ${bgColorWhite}`}>
-                                <p>รูปแบบที่ 3</p>
+                            <div className='flex flex-col'>
+                                <p>ติดตามเรา</p>
+                                <Link
+                                    className='underline'
+                                    target='_blank'
+                                    rel="noopener noreferrer"
+                                    href="https://www.facebook.com/konpikanthai/">
+                                    คนพิการต้องมีงานทำ
+                                </Link>
+                                <Link
+                                    className='underline'
+                                    target='_blank'
+                                    rel="noopener noreferrer"
+                                    href="https://www.facebook.com/socialinnovationfoundation/">
+                                    มูลนิธินวัตกรรมทางสังคม
+                                </Link>
+                                <Link
+                                    className='underline'
+                                    target='_blank'
+                                    rel="noopener noreferrer"
+                                    href="https://www.youtube.com/embed/kndCcFWHy-c?list=PLwffPXXUDsmFZb6R8WFAjFTp0Dvkro4bv">
+                                    คนพิการต้องมีงานทำ
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -114,4 +138,4 @@ function ResumePage() {
     )
 }
 
-export default ResumePage
+export default HelpPage

@@ -10,8 +10,8 @@ import { useRouter } from 'next/navigation'
 import { useTheme } from "../ThemeContext";
 
 
-function ResumePage() {
-    const [loader, setLoader] = useState(false)
+function AboutPage() {
+    const [loader, setLoader] = useState(true)
 
     const router = useRouter();
     const { status, data: session } = useSession();
@@ -81,27 +81,27 @@ function ResumePage() {
         setRegisterColor,
         registerColor,
         inputEditColor,
-      } = useTheme();
+    } = useTheme();
 
     return (
         <div className={`${fontSize} ${bgColorMain} ${bgColor}`}>
-            <NavbarLogo title="เรซูเม่" dataUser={dataUser} />
+            <NavbarLogo title="เกี่ยวกับเรา" dataUser={dataUser} />
             <div className="flex">
-                <NavbarMain status="resume" />
+                <NavbarMain status="about" />
                 <div className="w-10/12 px-7 py-5">
+                    {/* <div className={`bg-white rounded-lg p-5`}> */}
                     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
-                        <p>สร้างเรซูเม่</p>
-                        <div className='mt-5 grid grid-cols-3 gap-5 text-center'>
-                            <div className={`py-5 rounded-lg ${bgColorNavbar} ${bgColorWhite}`}>
-                                <p>รูปแบบที่ 1</p>
-                            </div>
-                            <div className={`py-5 rounded-lg ${bgColorNavbar === "bg-[#F97201]" ? "bg-[#f48e07]":""} ${bgColorWhite}`}>
-                                <p>รูปแบบที่ 2</p>
-                            </div>
-                            <div className={`py-5  rounded-lg ${bgColorNavbar === "bg-[#F97201]" ? "bg-[#feb61c]":""} ${bgColorWhite}`}>
-                                <p>รูปแบบที่ 3</p>
-                            </div>
+                        <p>ข้อมูลเกี่ยวกับเรา</p>
+                        <div className='mt-5'>
+                            -
                         </div>
+                        <div className='mt-10 flex'>
+                            <video width="640" height="360"  controls>
+                                <source src="https://firebasestorage.googleapis.com/v0/b/iwproject-3fb0f.appspot.com/o/system%2Fvideo%2FIW%20%E0%B8%A3%E0%B8%A7%E0%B8%A1%205%20%E0%B8%9B%E0%B8%B5-Sub.mp4?alt=media&token=5c7ffc37-df11-4f0a-ab52-369fef95a89f" type="video/mp4" />
+                                    เบราว์เซอร์ของคุณไม่รองรับการเล่นวิดีโอ
+                            </video>
+                        </div>
+                     
                     </div>
                 </div>
             </div>
@@ -114,4 +114,4 @@ function ResumePage() {
     )
 }
 
-export default ResumePage
+export default AboutPage
