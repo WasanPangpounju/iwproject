@@ -201,14 +201,22 @@ function NavbarMain({ status }) {
         </p>
       </Link>
 
-      <Link href="" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3" role="menuitem" aria-label="เกี่ยวกับเรา">
+      <Link href="/aboutMe" 
+        className={`${status === "about"
+          ? "bg-[#fee2d9] text-[#ff7201]"
+          : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
+          } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`} role="menuitem" aria-label="เกี่ยวกับเรา">
         <Icon path={mdiMessageAlert} size={1} aria-hidden="true" aria-label="เกี่ยวกับเรา" />
         <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           เกี่ยวกับเรา
         </p>
       </Link>
 
-      <Link href="" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3" role="menuitem" aria-label="ช่วยเหลือ">
+      <Link href="/help" 
+        className={`${status === "help"
+          ? "bg-[#fee2d9] text-[#ff7201]"
+          : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
+          } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`} role="menuitem" aria-label="ช่วยเหลือ">
         <Icon path={mdiHelpCircle} size={1} aria-hidden="true" aria-label="ช่วยเหลือ" />
         <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           ช่วยเหลือ
