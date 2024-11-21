@@ -36,6 +36,9 @@ body{
   .editModeTrue{
     @apply bg-gray-200 cursor-default focus:outline-none
   }
+  .inputResume{
+    @apply px-2 rounded-sm bg-inherit border
+  }
 
   /* .small-font {
     font-size: 12px; 
