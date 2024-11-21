@@ -8,7 +8,7 @@ import Loader from '../components/Loader'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useTheme } from "../ThemeContext";
-
+import Resume from './component/resume'
 
 function ResumePage() {
     const [loader, setLoader] = useState(false)
@@ -81,7 +81,10 @@ function ResumePage() {
         setRegisterColor,
         registerColor,
         inputEditColor,
-      } = useTheme();
+    } = useTheme();
+
+    //open resume check
+    const [statusResume, setStatusResume] = useState(0);
 
     return (
         <div className={`${fontSize} ${bgColorMain} ${bgColor}`}>
@@ -90,27 +93,44 @@ function ResumePage() {
                 <NavbarMain status="resume" />
                 <div className="w-10/12 px-7 py-5">
                     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
-                        <p>สร้างเรซูเม่</p>
-                        <div className='mt-5 grid grid-cols-3 gap-5 text-center'>
-                            <div className={`py-5 rounded-lg ${bgColorNavbar} ${bgColorWhite}`}>
-                                <p>รูปแบบที่ 1</p>
-                            </div>
-                            <div className={`py-5 rounded-lg ${bgColorNavbar === "bg-[#F97201]" ? "bg-[#f48e07]":""} ${bgColorWhite}`}>
-                                <p>รูปแบบที่ 2</p>
-                            </div>
-                            <div className={`py-5  rounded-lg ${bgColorNavbar === "bg-[#F97201]" ? "bg-[#feb61c]":""} ${bgColorWhite}`}>
-                                <p>รูปแบบที่ 3</p>
-                            </div>
-                        </div>
+                        {statusResume > 0 ? (
+                            <Resume type={statusResume} dataUser={dataUser} id={session?.user?.id}/>
+                        ) : (
+                            <>
+                                <p>สร้างเรซูเม่</p>
+                                <div className='mt-5 grid grid-cols-3 gap-5 text-center'>
+                                    <button
+                                        className={`py-5 rounded-lg max-w-96 ${bgColorNavbar} ${bgColorWhite}`}
+                                        onClick={() => setStatusResume(1)}
+                                    >
+                                        <p>รูปแบบที่ 1</p>
+                                    </button>
+                                    <button
+                                        className={`py-5 rounded-lg max-w-96 ${bgColorNavbar === "bg-[#F97201]" ? "bg-[#f48e07]" : ""} ${bgColorWhite}`}
+                                        onClick={() => setStatusResume(2)}
+                                    >
+                                        <p>รูปแบบที่ 2</p>
+                                    </button>
+                                    <button
+                                        className={`py-5  rounded-lg max-w-96 ${bgColorNavbar === "bg-[#F97201]" ? "bg-[#feb61c]" : ""} ${bgColorWhite}`}
+                                        onClick={() => setStatusResume(3)}
+                                    >
+                                        <p>รูปแบบที่ 3</p>
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
-            {loader && (
-                <div>
-                    <Loader />
-                </div>
-            )}
-        </div>
+            {
+                loader && (
+                    <div>
+                        <Loader />
+                    </div>
+                )
+            }
+        </div >
     )
 }
 
