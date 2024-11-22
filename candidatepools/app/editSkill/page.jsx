@@ -390,7 +390,7 @@ function WorkHistory() {
         }
     };
 
-    //hadle array
+    //handle array
     function mergeArrayValues(nonGetArray, getArray) {
         // ถ้า nonGetArray เป็นอาร์เรย์ว่าง ให้คืนค่า getArray โดยตรง
         if (nonGetArray.length === 0) {
