@@ -334,7 +334,7 @@ function Navbar({ }) {
             setTextBlue("text-blue-500");
             setRegisterColor("text-[#F97201]");
             setInputEditColor("bg-gray-200");
-            setInputGrayColor("bg-[#75C7C2]");
+            setInputGrayColor("bg-[#74c7c2]");
             setInputTextColor("text-white")
 
           }}

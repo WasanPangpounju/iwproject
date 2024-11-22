@@ -94,7 +94,7 @@ function ResumePage() {
                 <div className="w-10/12 px-7 py-5">
                     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
                         {statusResume > 0 ? (
-                            <Resume type={statusResume} dataUser={dataUser} id={session?.user?.id}/>
+                            <Resume type={statusResume} dataUser={dataUser} id={session?.user?.id} setLoader={setLoader}/>
                         ) : (
                             <>
                                 <p>สร้างเรซูเม่</p>
