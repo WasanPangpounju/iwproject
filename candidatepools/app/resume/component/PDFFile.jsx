@@ -1,111 +1,158 @@
 import React from 'react';
 import { Page, Text, Document, StyleSheet, View, Image, Font } from '@react-pdf/renderer';
+import { createTw } from "react-pdf-tailwind";
 
 // Define the styles for the PDF document
 Font.register({
   family: 'THSarabunNew',
-  src: '/assert/fonts/Sarabun.ttf'
+  src: '/assert/fonts/Sarabun-medium.ttf'
 });
+
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    flexDirection: 'row',
-    padding: 0,
     fontFamily: 'THSarabunNew'
   },
-  leftSection: {
-    width: '30%',
-    paddingRight: 10,
+  fontNameThai: {
+    fontSize: '2rem'
   },
-  rightSection: {
-    width: '70%',
-    paddingLeft: 10,
-    padding: 20,
+  fontNameEng: {
+    fontSize: '1.7rem'
   },
-  header: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
+});
+
+const tw = createTw({
+  theme: {
+    fontFamily: {
+      sans: ["Comic Sans"],
+    },
+    extend: {
+      colors: {
+        custom: "#bada55",
+      },
+    },
   },
-  text: {
-    fontSize: 12,
-    lineHeight: 1.5,
-  },
-  image: {
-    width: 100,
-    height: 100,
-  },
-  profile: {
-    padding: 20,
-    backgroundColor: 'yellow',
-    
-  },
-  contentLeft: {
-    padding: 20,
-    backgroundColor: 'red',
-    height: "100%",
-  }
 });
 
 const PDFFile = ({ dataUser, dataSkills, dataEducations, dataHistoryWork, yearToday }) => {
   return (
-    <Document>
-      <Page style={styles.container}>
-        <View style={styles.leftSection}>
-          <View style={styles.profile}>
-            <Image
-              style={styles.image}
-              source={dataUser.profile || "/image/main/user.png"}
-              alt="Profile Picture"
-            />
-          </View>
-          <View style={styles.contentLeft}>
-            <Text style={styles.header}>เกี่ยวกับฉัน</Text>
-            <Text style={styles.text}>อายุ: {yearToday - dataUser.yearBirthday || "-"}</Text>
-            <Text style={styles.text}>ที่อยู่: ตำบล{dataUser.addressTambon} อำเภอ{dataUser.addressAmphor} จังหวัด{dataUser.addressProvince} {dataUser.addressZipCode}</Text>
-            <Text style={styles.text}>เบอร์โทร: {dataUser.tel || "-"}</Text>
-            <Text style={styles.text}>อีเมล์: {dataUser.email || "-"}</Text>
+    <Document style={styles.container}>
+      <Page style={tw('flex flex-row p-0 text-sm')}>
+        <View style={tw('flex flex-row overflow-hidden border w-full')}>
+          {/* Left Section */}
+          <View style={tw('w-1/3 text-white ')}>
+            <View style={tw('bg-[#fea661] pb-10 pt-5 flex flex-row justify-center')}>
+              <Image
+                src={dataUser.profile || "/image/main/user.png"}
+                style={tw('max-w-40 max-h-52')}
+              />
+            </View>
+            <View style={tw('bg-[#f48e07] h-full')}>
+              <View style={tw('p-5')}>
+                <Text style={tw('text-xl font-bold')}>เกี่ยวกับฉัน</Text>
+                <View style={tw('flex flex-col mt-2 gap-y-2')}>
+                  <Text>อายุ: {yearToday - dataUser.yearBirthday || "-"}</Text>
+                  <View style={tw('flex flex-row flex-wrap gap-1')}>
+                    <Text>ที่อยู่: </Text>
+                    <Text>ตำบล{dataUser.addressTambon}</Text>
+                    <Text>อำเภอ{dataUser.addressAmphor}</Text>
+                    <Text>จังหวัด{dataUser.addressProvince}</Text>
+                    <Text>รหัสไปรษณีย์ {dataUser.addressZipCode}</Text>
+                  </View>
+                  <View style={tw('flex flex-row gap-1 whitespace-nowrap')}>
+                    <Text>เบอร์โทร: {dataUser.tel || "-"}</Text>
+                  </View>
+                  <Text style={tw('whitespace-nowrap')}>อีเมล์: {dataUser.email || "-"}</Text>
+                </View>
+              </View>
+              <View>
+                <View style={tw('p-5')}>
 
-            <Text style={styles.header}>ทักษะ</Text>
-            {dataSkills?.skills?.map((skill, index) => (
-              <Text key={index} style={styles.text}>{skill.name || "-"}</Text>
-            ))}
+
+                  {dataHistoryWork?.workExperience?.length > 0 && (
+                    <Text style={tw('text-xl font-bold')}>ทักษะ</Text>
+                  )}
+                  <View style={tw('flex flex-col mt-2 gap-y-2')}>
+                    {dataSkills?.skills?.map((skill, index) => (
+                      <View key={index}>
+                        <Text>{skill.name || "-"}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {/* Right Section */}
+          <View style={tw('w-2/3 p-5 px-10')}>
+            <View style={tw('flex flex-col gap-5')}>
+              <Text style={[styles.fontNameThai, tw('font-bold ')]}>{dataUser.firstName} {dataUser.lastName}</Text>
+              <Text style={[styles.fontNameEng, tw('font-bold capitalize')]}>{dataUser.firstNameEng} {dataUser.lastNameEng}</Text>
+            </View>
+            {dataEducations?.grade?.length > 0 && (
+              <View style={tw('mt-10')}>
+                <Text style={tw('text-xl font-bold')}>การศึกษา</Text>
+                <View style={tw('mt-2 flex flex-wrap gap-5')}>
+                  {dataEducations?.university?.map((education, index) => (
+                    <View key={index}>
+                      <View style={tw('flex flex-row flex-wrap gap-2')}>
+                        <Text>{dataEducations.educationLevel[index] || "-"}</Text>
+                        <Text>{dataEducations.university[index] || "-"}</Text>
+                        <Text>คณะ{dataEducations.faculty[index] || "-"}</Text>
+                        <Text>สาขา{dataEducations.branch[index] || "-"}</Text>
+                        {dataEducations.yearGraduation[index] ? (
+                          <Text>ปีที่จบการศึกษา: {dataEducations.yearGraduation[index] || "-"}</Text>
+                        ) : (
+                          <Text>กำลังศึกษา: ชั้นปีที่ {dataEducations.level}</Text>
+                        )}
+                        <Text>เกรดเฉลี่ย: {dataEducations.grade[index] || "-"}</Text>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            <View style={tw('mt-10')}>
+              {dataHistoryWork?.workExperience?.length > 0 && (
+                <Text style={tw('text-xl font-bold')}>ประสบการณ์ฝึกงาน</Text>
+              )}
+              <View style={tw('mt-2 flex flex-row flex-wrap gap-5')}>
+                {dataHistoryWork?.internships?.map((e, index) => (
+                  <View key={index}>
+                    <View style={tw('flex flex-row flex-wrap gap-2')}>
+                      <View style={tw('w-full')}>
+                        <Text>{e.dateStart} - {e.dateEnd}</Text>
+                      </View>
+                      <Text>สถานที่ฝึกงาน: {e.place}</Text>
+                      <Text>ตำแหน่ง: {e.position}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </View>
+
+            <View style={tw('mt-10')}>
+              {dataHistoryWork?.workExperience?.length > 0 && (
+                <Text style={tw('text-xl font-bold')}>ประสบการณ์ทำงานน</Text>
+              )}
+              <View style={tw('mt-2 flex flex-row flex-wrap gap-5')}>
+                {dataHistoryWork?.workExperience?.map((e, index) => (
+                  <View key={index}>
+                    <View style={tw('flex flex-row flex-wrap gap-2')}>
+                      <View style={tw('w-full')}>
+                        <Text>{e.dateStart} - {e.dateEnd}</Text>
+                      </View>
+                      <Text>สถานที่ทำงาน: {e.place}</Text>
+                      <Text>ตำแหน่ง: {e.position}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </View>
           </View>
         </View>
 
-        <View style={styles.rightSection}>
-          <Text style={styles.header}>{dataUser.firstName} {dataUser.lastName}</Text>
-
-          <Text style={styles.header}>การศึกษา</Text>
-          {dataEducations?.university?.map((education, index) => (
-            <View key={index} style={styles.text}>
-              <Text>{dataEducations.educationLevel[index] || "-"}</Text>
-              <Text>{dataEducations.university[index] || "-"}</Text>
-              <Text>คณะ{dataEducations.faculty[index] || "-"}</Text>
-              <Text>สาขา{dataEducations.branch[index] || "-"}</Text>
-              <Text>ปีที่จบการศึกษา: {dataEducations.yearGraduation[index] || "-"}</Text>
-              <Text>เกรดเฉลี่ย: {dataEducations.grade[index] || "-"}</Text>
-            </View>
-          ))}
-
-          <Text style={styles.header}>ประสบการณ์ฝึกงาน</Text>
-          {dataHistoryWork?.internships?.map((e, index) => (
-            <View key={index} style={styles.text}>
-              <Text>{e.dateStart} - {e.dateEnd}</Text>
-              <Text>สถานที่ฝึกงาน: {e.place}</Text>
-              <Text>ตำแหน่ง: {e.position}</Text>
-            </View>
-          ))}
-
-          <Text style={styles.header}>ประสบการณ์ทำงาน</Text>
-          {dataHistoryWork?.workExperience?.map((e, index) => (
-            <View key={index} style={styles.text}>
-              <Text>{e.dateStart} - {e.dateEnd}</Text>
-              <Text>สถานที่ทำงาน: {e.place}</Text>
-              <Text>ตำแหน่ง: {e.position}</Text>
-            </View>
-          ))}
-        </View>
       </Page>
     </Document>
   );

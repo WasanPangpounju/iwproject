@@ -4,12 +4,12 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useTheme } from '@/app/ThemeContext';
 import Icon from '@mdi/react';
-import { mdiAccountEdit, mdiFilePdfBox, mdiCloseCircle, mdiDownload, mdiArrowDownDropCircle, mdiPencil, mdiContentSave, mdiDelete } from '@mdi/js';
+import { mdiAccountEdit, mdiFilePdfBox, mdiCloseCircle, mdiArrowLeftCircle, mdiArrowDownDropCircle, mdiPencil, mdiContentSave, mdiDelete } from '@mdi/js';
 import Swal from 'sweetalert2';
 import PDFFile from './PDFFile';
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 
-function Resume({ type, dataUser, id, setLoader }) {
+function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
 
     const {
         setFontSize,
@@ -137,6 +137,8 @@ function Resume({ type, dataUser, id, setLoader }) {
     //new data
     //dataUser
     const [newTel, setNewTel] = useState('');
+    const [newFirstNameEng, setNewFirstName] = useState('');
+    const [newLastNameEng, setNewLastName] = useState('');
 
     //skill
     const [newSkill, setNewSkill] = useState([]);
@@ -163,8 +165,11 @@ function Resume({ type, dataUser, id, setLoader }) {
     //handleSubmit
     //handle object
     function mergeArrayObject(nonGetArray, getArray, key) {
+        if (!nonGetArray || !Array.isArray(nonGetArray)) {
+            return; // ถ้า nonGetArray เป็น undefined, null หรือไม่ใช่อาร์เรย์
+        }
         // ถ้า nonGetArray เป็นอาร์เรย์ว่าง ให้คืนค่า getArray โดยตรง
-        if (nonGetArray.length === 0) {
+        if (nonGetArray?.length === 0) {
             return getArray;
         }
 
@@ -183,8 +188,11 @@ function Resume({ type, dataUser, id, setLoader }) {
     }
     //handle array
     function mergeArray(nonGetArray, getArray) {
+        if (!nonGetArray || !Array.isArray(nonGetArray)) {
+            return; // ถ้า nonGetArray เป็น undefined, null หรือไม่ใช่อาร์เรย์
+        }
         // ถ้า nonGetArray เป็นอาร์เรย์ว่าง ให้คืนค่า getArray โดยตรง
-        if (nonGetArray.length === 0) {
+        if (nonGetArray?.length === 0) {
             return getArray;
         }
 
@@ -204,8 +212,12 @@ function Resume({ type, dataUser, id, setLoader }) {
 
         setLoader(true);
         const tempTel = newTel || dataUser?.tel;
+        const tempFirstNameEng = newFirstNameEng || dataUser?.firstNameEng;
+        const tempLastNameEng = newLastNameEng || dataUser?.lastNameEng;
         const bodyDataUser = {
-            tel: tempTel
+            tel: tempTel,
+            firstNameEng: tempFirstNameEng,
+            lastNameEng: tempLastNameEng,
         }
 
         //skill
@@ -257,6 +269,7 @@ function Resume({ type, dataUser, id, setLoader }) {
             workExperience: tempWork,
         };
 
+        let errorStatus = false;
 
         try {
             const resDataUser = await fetch(
@@ -269,35 +282,58 @@ function Resume({ type, dataUser, id, setLoader }) {
                     body: JSON.stringify(bodyDataUser),
                 }
             );
+            if (!resDataUser.ok) {
+                errorStatus = true;
+            }
 
-            const resSkill = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/skill`,
-                {
-                    method: 'POST',
+            if (dataSkills && dataSkills?.skills?.length > 0) {
+                console.log("skill")
+
+                const resSkill = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/skill`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(bodySkill),
+                    });
+                if (!resSkill.ok) {
+                    errorStatus = true;
+                }
+            }
+
+            if (dataEducations && dataEducations?.grade?.length > 0) {
+                console.log("education")
+                const resEducation = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`, {
+                    method: "POST",
                     headers: {
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(bodySkill),
+                    body: JSON.stringify(bodyEducation)
                 });
+                if (!resEducation) {
+                    errorStatus = true;
+                }
+            }
 
-            const resEducation = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(bodyEducation)
-            });
+            if (dataHistoryWork && (dataHistoryWork?.internships?.length > 0 ||dataHistoryWork?.workExperience?.length > 0 )) {
+                console.log("work")
 
-            const resHistoryWork = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/historyWork`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(bodyHistoryWork),
-                });
+                const resHistoryWork = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/historyWork`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(bodyHistoryWork),
+                    });
+                if (!resHistoryWork.ok) {
+                    errorStatus = true;
+                }
+            }
 
 
-            if (!resDataUser.ok || !resSkill.ok || !resEducation.ok || !resHistoryWork.ok) {
+            if (errorStatus) {
                 setLoader(false);
                 Swal.fire({
                     title: "เกิดข้อผิดพลาด",
@@ -325,15 +361,17 @@ function Resume({ type, dataUser, id, setLoader }) {
         }
 
     }
-
     return (
         <div className='min-h-screen'>
-            <p>รูปแบบที่ {type}</p>
-            {dataUser && dataHistoryWork?.internships?.length > 0 ? (
+            <div className='flex gap-2 items-center '>
+                <Icon className='cursor-pointer' onClick={() => setStatusResume(0)} path={mdiArrowLeftCircle} size={1} />
+                <p>รูปแบบที่ {type}</p>
+            </div>
+            {dataUser ? (
                 <div className='flex justify-center'>
                     <form onSubmit={handleSubmit}>
                         <div className={` mt-10 flex overflow-hidden min-h-[50rem] w-[42rem] border`}>
-                            <div className=' text-white '>
+                            <div className=' text-white max-w-60'>
                                 <div className='bg-[#fea661] p-5 flex justify-center'>
                                     <Image priority alt="icon" className='w-32 h-32' src={dataUser.profile || "/image/main/user.png"} height={1000} width={1000} />
                                 </div>
@@ -345,10 +383,10 @@ function Resume({ type, dataUser, id, setLoader }) {
                                             <p>อายุ: {yearToday - dataUser.yearBirthday || "-"}</p>
                                             <div className='flex flex-wrap gap-1'>
                                                 <p>ที่อยู่: </p>
-                                                <p>ตำบล{dataUser.addressTambon}</p>
-                                                <p>อำเภอ{dataUser.addressAmphor}</p>
-                                                <p>จังหวัด{dataUser.addressProvince}</p>
-                                                <p>{dataUser.addressZipCode}</p>
+                                                <p>ตำบล{dataUser.addressTambon || " - "}</p>
+                                                <p>อำเภอ{dataUser.addressAmphor || " - "}</p>
+                                                <p>จังหวัด{dataUser.addressProvince || " - "}</p>
+                                                <p>รหัสไปรษณีย์ {dataUser.addressZipCode || ""}</p>
                                             </div>
                                             <div className='flex gap-1 whitespace-nowrap '>
                                                 <label>เบอร์โทร: </label>
@@ -356,21 +394,25 @@ function Resume({ type, dataUser, id, setLoader }) {
                                                     <input
                                                         type="text"
                                                         className='inputResume'
+                                                        inputMode="numeric"
+                                                        pattern="\d{10}"
+                                                        maxLength={10}
                                                         onChange={(e) => setNewTel(e.target.value)}
-                                                        defaultValue={dataUser.tel || ""}
+                                                        defaultValue={dataUser.tel || " - "}
                                                     />
                                                 ) : (
                                                     <p>{dataUser.tel || "-"}</p>
                                                 )}
                                             </div>
-                                            <p className='whitespace-nowrap '>อีเมล์: {dataUser.email || "-"}</p>
+                                            <p className='whitespace-nowrap '>อีเมล์: {dataUser.email || " - "}</p>
                                         </div>
                                     </div>
-                                    <div className=''>
-                                        <div className="p-5">
-                                            <p className='text-lg font-bold'>ทักษะ</p>
-                                            <div className='flex flex-col mt-2 gap-y-2'>
-                                                {dataSkills?.skills?.map((skill, index) => (
+
+                                    <div className="p-5">
+                                        <p className='text-lg font-bold'>ทักษะ</p>
+                                        <div className='flex flex-col mt-2 gap-y-2'>
+                                            {dataSkills?.skills?.length > 0 ? (
+                                                dataSkills?.skills?.map((skill, index) => (
                                                     <div key={index}>
                                                         {editMode ? (
                                                             <input
@@ -380,212 +422,263 @@ function Resume({ type, dataUser, id, setLoader }) {
                                                                 onBlur={(e) => handleArray(e.target.value, index, setNewSkill)}
                                                             />
                                                         ) : (
-                                                            <p>{skill.name || "-"}</p>
+                                                            <p>{skill.name || " - "}</p>
                                                         )}
                                                     </div>
-                                                ))}
-                                            </div>
+                                                ))
+                                            ) : (
+                                                <p className='text-red-400 bg-white p-2'>* ไม่มีข้อมูลทักษะ</p>
+                                            )}
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                             <div className=' p-5 px-10'>
                                 <div>
-                                    <p className='text-2xl font-bold'>{dataUser.firstName} {dataUser.lastName}</p>
+                                    <div className='flex gap-3'>
+                                        <p className='text-2xl font-bold'>{dataUser.firstName}</p>
+                                        <p className='text-2xl font-bold'> {dataUser.lastName}</p>
+                                    </div>
+                                    <div className='flex gap-3 mt-1'>
+                                        {!editMode && dataUser?.firstNameEng && dataUser?.lastNameEng || editMode ? (
+                                            editMode ? (
+                                                <>
+                                                    <div>
+                                                        <label>Name</label>
+                                                        <input
+                                                            type="text"
+                                                            className='inputResume'
+                                                            onChange={(e) => setNewFirstName(e.target.value)}
+                                                            defaultValue={dataUser?.firstNameEng || ""}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label>LastName</label>
+                                                        <input
+                                                            type="text"
+                                                            className='inputResume'
+                                                            onChange={(e) => setNewLastName(e.target.value)}
+                                                            defaultValue={dataUser?.lastNameEng || ""}
+                                                        />
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <p className='text-xl font-bold capitalize'>{dataUser.firstNameEng}</p>
+                                                    <p className='text-xl font-bold capitalize'> {dataUser.lastNameEng}</p>
+                                                </>
+                                            )
+                                        ) : (
+                                            <p className='text-red-400'>* เพิ่มชื่อภาษาอังกฤษของคุณ</p>
+                                        )}
+                                    </div>
                                 </div>
                                 <div className='mt-10'>
                                     <p className='text-lg font-bold'>การศึกษา</p>
                                     <div className='mt-2 flex flex-wrap gap-5'>
-                                        {dataEducations?.university?.map((education, index) => (
-                                            <div key={index}>
-                                                {editMode ? (
-                                                    <div className='flex flex-wrap gap-2'>
-                                                        <p>{dataEducations.educationLevel[index] || "-"}</p>
-                                                        <div>
-                                                            <label>มหาวิทยาลัย: </label>
-                                                            <input
-                                                                type="text"
-                                                                className='inputResume'
-                                                                defaultValue={dataEducations.university[index] || ""}
-                                                                onBlur={(e) => handleArray(e.target.value, index, setNewUniversity)}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label>คณะ: </label>
-                                                            <input
-                                                                type="text"
-                                                                className='inputResume'
-                                                                defaultValue={dataEducations.faculty[index] || ""}
-                                                                onBlur={(e) => handleArray(e.target.value, index, setNewFaculty)}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label>สาขา: </label>
-                                                            <input
-                                                                type="text"
-                                                                className='inputResume'
-                                                                defaultValue={dataEducations.branch[index] || ""}
-                                                                onBlur={(e) => handleArray(e.target.value, index, setNewBranch)}
-                                                            />
-                                                        </div>
-                                                        {dataEducations.yearGraduation[index] ? (
+                                        {dataEducations?.grade?.length > 0 ? (
+                                            dataEducations?.university?.map((education, index) => (
+                                                <div key={index}>
+                                                    {editMode ? (
+                                                        <div className='flex flex-wrap gap-2'>
+                                                            <p>{dataEducations.educationLevel[index] || "-"}</p>
                                                             <div>
-                                                                <label>ปีที่จบการศึกษา: </label>
+                                                                <label>มหาวิทยาลัย: </label>
                                                                 <input
                                                                     type="text"
                                                                     className='inputResume'
-                                                                    defaultValue={dataEducations.yearGraduation[index] || ""}
-                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewYearGraduation)}
+                                                                    defaultValue={dataEducations.university[index] || ""}
+                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewUniversity)}
                                                                 />
                                                             </div>
-
-                                                        ) : (
                                                             <div>
-                                                                <label>กำลังศึกษาชั้นปีที่: </label>
+                                                                <label>คณะ: </label>
                                                                 <input
                                                                     type="text"
                                                                     className='inputResume'
-                                                                    defaultValue={dataEducations.level || ""}
-                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewLevel)}
+                                                                    defaultValue={dataEducations.faculty[index] || ""}
+                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewFaculty)}
                                                                 />
                                                             </div>
-                                                        )}
-                                                        <div>
-                                                            <label>เกรดเฉลี่ย: </label>
-                                                            <input
-                                                                type="text"
-                                                                className='inputResume'
-                                                                defaultValue={dataEducations.grade[index] || ""}
-                                                                onBlur={(e) => handleArray(e.target.value, index, setNewGrade)}
-                                                            />
+                                                            <div>
+                                                                <label>สาขา: </label>
+                                                                <input
+                                                                    type="text"
+                                                                    className='inputResume'
+                                                                    defaultValue={dataEducations.branch[index] || ""}
+                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewBranch)}
+                                                                />
+                                                            </div>
+                                                            {dataEducations.yearGraduation[index] ? (
+                                                                <div>
+                                                                    <label>ปีที่จบการศึกษา: </label>
+                                                                    <input
+                                                                        type="text"
+                                                                        className='inputResume'
+                                                                        defaultValue={dataEducations.yearGraduation[index] || ""}
+                                                                        onBlur={(e) => handleArray(e.target.value, index, setNewYearGraduation)}
+                                                                    />
+                                                                </div>
+
+                                                            ) : (
+                                                                <div>
+                                                                    <label>กำลังศึกษาชั้นปีที่: </label>
+                                                                    <input
+                                                                        type="text"
+                                                                        className='inputResume'
+                                                                        defaultValue={dataEducations.level || ""}
+                                                                        onBlur={(e) => handleArray(e.target.value, index, setNewLevel)}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                            <div>
+                                                                <label>เกรดเฉลี่ย: </label>
+                                                                <input
+                                                                    type="text"
+                                                                    className='inputResume'
+                                                                    defaultValue={dataEducations.grade[index] || ""}
+                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewGrade)}
+                                                                />
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                ) : (
-                                                    <div className='flex flex-wrap gap-2'>
+                                                    ) : (
+                                                        <div className='flex flex-wrap gap-2'>
 
-                                                        <p>{dataEducations.educationLevel[index] || "-"}</p>
-                                                        <p>{dataEducations.university[index] || "-"}</p>
-                                                        <p>คณะ{dataEducations.faculty[index] || "-"}</p>
-                                                        <p>สาขา{dataEducations.branch[index] || "-"}</p>
-                                                        {dataEducations.yearGraduation[index] ? (
-                                                            <p>ปีที่จบการศึกษา: {dataEducations.yearGraduation[index] || "-"}</p>
-                                                        ) : (
-                                                            <p>กำลังศึกษา: ชั้นปีที่ {dataEducations.level}</p>
-                                                        )}
-                                                        <p>เกรดเฉลี่ย: {dataEducations.grade[index] || "-"}</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
+                                                            <p>{dataEducations.educationLevel[index] || "-"}</p>
+                                                            <p>{dataEducations.university[index] || " - "}</p>
+                                                            <p>คณะ{dataEducations.faculty[index] || " - "}</p>
+                                                            <p>สาขา{dataEducations.branch[index] || " - "}</p>
+                                                            {dataEducations.yearGraduation[index] ? (
+                                                                <p>ปีที่จบการศึกษา: {dataEducations.yearGraduation[index] || " - "}</p>
+                                                            ) : (
+                                                                <p>กำลังศึกษา: ชั้นปีที่ {dataEducations.level || " - "}</p>
+                                                            )}
+                                                            <p>เกรดเฉลี่ย: {dataEducations.grade[index] || " - "}</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p className='text-red-400'>* ไม่มีข้อมูลการศึกษา</p>
+                                        )}
                                     </div>
                                 </div>
                                 <div className='mt-10'>
                                     <p className='text-lg font-bold'>ประสบการณ์ฝึกงาน</p>
                                     <div className='mt-2 flex flex-wrap gap-5'>
-                                        {dataHistoryWork?.internships?.map((e, index) => (
-                                            <div key={index}>
-                                                {editMode ? (
-                                                    <div className='flex flex-wrap gap-2'>
-                                                        <div className='flex'>
-                                                            <input
-                                                                type="text"
-                                                                className='inputResume w-28'
-                                                                defaultValue={e.dateStart || ""}
-                                                                onBlur={(e) => handleArray(e.target.value, index, setNewInternshipDateStart)}
-                                                            />
-                                                            <p>-</p>
-                                                            <input
-                                                                type="text"
-                                                                className='inputResume w-28'
-                                                                defaultValue={e.dateEnd || ""}
-                                                                onBlur={(e) => handleArray(e.target.value, index, setNewInternshipDateEnd)}
-                                                            />
+                                        {dataHistoryWork?.internships?.length > 0 ? (
+                                            dataHistoryWork?.internships?.map((e, index) => (
+                                                <div key={index}>
+                                                    {editMode ? (
+                                                        <div className='flex flex-wrap gap-2'>
+                                                            <div className='flex'>
+                                                                <input
+                                                                    type="text"
+                                                                    className='inputResume w-28'
+                                                                    defaultValue={e.dateStart || ""}
+                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewInternshipDateStart)}
+                                                                />
+                                                                <p>-</p>
+                                                                <input
+                                                                    type="text"
+                                                                    className='inputResume w-28'
+                                                                    defaultValue={e.dateEnd || ""}
+                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewInternshipDateEnd)}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label>สถานที่ฝึกงาน: </label>
+                                                                <input
+                                                                    type="text"
+                                                                    className='inputResume'
+                                                                    defaultValue={e.place || ""}
+                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewInternshipPlace)}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label>ตำแหน่ง: </label>
+                                                                <input
+                                                                    type="text"
+                                                                    className='inputResume'
+                                                                    defaultValue={e.position || ""}
+                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewInternshipPosition)}
+                                                                />
+                                                            </div>
                                                         </div>
-                                                        <div>
-                                                            <label>สถานที่ฝึกงาน: </label>
-                                                            <input
-                                                                type="text"
-                                                                className='inputResume'
-                                                                defaultValue={e.place || ""}
-                                                                onBlur={(e) => handleArray(e.target.value, index, setNewInternshipPlace)}
-                                                            />
+                                                    ) : (
+                                                        <div className='flex flex-wrap gap-2'>
+                                                            <div className='w-full'>
+                                                                <p>{e.dateStart} - {e.dateEnd}</p>
+                                                            </div>
+                                                            <p>สถานที่ฝึกงาน: {e.place}</p>
+                                                            <p>ตำแหน่ง: {e.position}</p>
                                                         </div>
-                                                        <div>
-                                                            <label>ตำแหน่ง: </label>
-                                                            <input
-                                                                type="text"
-                                                                className='inputResume'
-                                                                defaultValue={e.position || ""}
-                                                                onBlur={(e) => handleArray(e.target.value, index, setNewInternshipPosition)}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className='flex flex-wrap gap-2'>
-                                                        <div className='w-full'>
-                                                            <p>{e.dateStart} - {e.dateEnd}</p>
-                                                        </div>
-                                                        <p>สถานที่ฝึกงาน: {e.place}</p>
-                                                        <p>ตำแหน่ง: {e.position}</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
+                                                    )}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p className='text-red-400'>* ไม่มีข้อมูลการฝึกงาน</p>
+                                        )}
                                     </div>
                                 </div>
                                 <div className='mt-10'>
                                     <p className='text-lg font-bold'>ประสบการณ์ทำงาน</p>
                                     <div className='mt-2 flex flex-wrap gap-5'>
-                                        {dataHistoryWork?.workExperience?.map((e, index) => (
-                                            <div key={index}>
-                                                {editMode ? (
-                                                    <div className='flex flex-wrap gap-2'>
-                                                        <div className='flex'>
-                                                            <input
-                                                                type="text"
-                                                                className='inputResume w-28'
-                                                                defaultValue={e.dateStart || ""}
-                                                                onBlur={(e) => handleArray(e.target.value, index, setNewWorkDateStart)}
-                                                            />
-                                                            <p>-</p>
-                                                            <input
-                                                                type="text"
-                                                                className='inputResume w-28'
-                                                                defaultValue={e.dateEnd || ""}
-                                                                onBlur={(e) => handleArray(e.target.value, index, setNewWorkDateEnd)}
-                                                            />
+                                        {dataHistoryWork?.workExperience?.length > 0 ? (
+                                            dataHistoryWork?.workExperience?.map((e, index) => (
+                                                <div key={index}>
+                                                    {editMode ? (
+                                                        <div className='flex flex-wrap gap-2'>
+                                                            <div className='flex'>
+                                                                <input
+                                                                    type="text"
+                                                                    className='inputResume w-28'
+                                                                    defaultValue={e.dateStart || ""}
+                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewWorkDateStart)}
+                                                                />
+                                                                <p>-</p>
+                                                                <input
+                                                                    type="text"
+                                                                    className='inputResume w-28'
+                                                                    defaultValue={e.dateEnd || ""}
+                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewWorkDateEnd)}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label>สถานที่ฝึกงาน: </label>
+                                                                <input
+                                                                    type="text"
+                                                                    className='inputResume'
+                                                                    defaultValue={e.place || ""}
+                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewWorkPlace)}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label>ตำแหน่ง: </label>
+                                                                <input
+                                                                    type="text"
+                                                                    className='inputResume'
+                                                                    defaultValue={e.position || ""}
+                                                                    onBlur={(e) => handleArray(e.target.value, index, setNewWorkPosition)}
+                                                                />
+                                                            </div>
                                                         </div>
-                                                        <div>
-                                                            <label>สถานที่ฝึกงาน: </label>
-                                                            <input
-                                                                type="text"
-                                                                className='inputResume'
-                                                                defaultValue={e.place || ""}
-                                                                onBlur={(e) => handleArray(e.target.value, index, setNewWorkPlace)}
-                                                            />
+                                                    ) : (
+                                                        <div className='flex flex-wrap gap-2'>
+                                                            <div className='w-full'>
+                                                                <p>{e.dateStart} - {e.dateEnd}</p>
+                                                            </div>
+                                                            <p>สถานที่ฝึกงาน: {e.place}</p>
+                                                            <p>ตำแหน่ง: {e.position}</p>
                                                         </div>
-                                                        <div>
-                                                            <label>ตำแหน่ง: </label>
-                                                            <input
-                                                                type="text"
-                                                                className='inputResume'
-                                                                defaultValue={e.position || ""}
-                                                                onBlur={(e) => handleArray(e.target.value, index, setNewWorkPosition)}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className='flex flex-wrap gap-2'>
-                                                        <div className='w-full'>
-                                                            <p>{e.dateStart} - {e.dateEnd}</p>
-                                                        </div>
-                                                        <p>สถานที่ฝึกงาน: {e.place}</p>
-                                                        <p>ตำแหน่ง: {e.position}</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
+                                                    )}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p className='text-red-400'>* ไม่มีข้อมูลการทำงาน</p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -614,7 +707,7 @@ function Resume({ type, dataUser, id, setLoader }) {
                                 </button>
                             </div>
                         ) : (
-                            <div className="flex gap-10 w-full justify-center mt-5">
+                            <div className="flex gap-10 w-full justify-center items-center mt-5">
                                 <div
                                     onClick={() => setEditMode(true)}
                                     className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
@@ -622,23 +715,28 @@ function Resume({ type, dataUser, id, setLoader }) {
                                     <Icon path={mdiAccountEdit} size={1} />
                                     <p>แก้ไขข้อมูล</p>
                                 </div>
-                                <div
-                                    className=
-                                    {
-                                        `${inputTextColor} ${inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#0d96f8]" : ""} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
-                                    }
-                                >
-                                    <Icon path={mdiFilePdfBox} size={1} />
-                                    <p>Export PDF</p>
-                                </div>
+                                <PDFDownloadLink document={<PDFFile dataUser={dataUser} dataSkills={dataSkills} dataEducations={dataEducations} dataHistoryWork={dataHistoryWork} yearToday={yearToday} />} fileName={`${dataUser?.idCard}resume`}>
+                                    {({ loading }) => (
+                                        loading ?
+                                            <p >กำลังโหลดเตรียมเอกสาร...</p> :
+                                            <div
+                                                className=
+                                                {
+                                                    `${inputTextColor} ${inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#0d96f8]" : ""} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
+                                                }
+                                            >
+                                                <Icon path={mdiFilePdfBox} size={1} />
+                                                <p>Export PDF</p>
+                                            </div>
+                                    )}
+                                </PDFDownloadLink>
+
                             </div>
                         )}
                     </form>
-                    <div className="border m-5 w-screen h-screen">
-                        <PDFViewer className='w-full h-full'>
-                            <PDFFile dataUser={dataUser} dataSkills={dataSkills} dataEducations={dataEducations} dataHistoryWork={dataHistoryWork} yearToday={yearToday} />
-                        </PDFViewer>
-                    </div>
+                    {/* <PDFViewer className='w-full h-screen'>
+                        <PDFFile dataUser={dataUser} dataSkills={dataSkills} dataEducations={dataEducations} dataHistoryWork={dataHistoryWork} yearToday={yearToday} />
+                    </PDFViewer> */}
                 </div>
 
             ) : (

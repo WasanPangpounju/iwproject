@@ -206,17 +206,6 @@ function Register({ statusAgreement }) {
                 body: JSON.stringify({ id: session?.user?.id || id, user, password, firstName, lastName, typeDisabled, university, email, typePerson, idCard })
             })
 
-            if (!res.ok) {
-                setLoader(false);
-                Swal.fire({
-                    title: "เกิดข้อผิดพลาด",
-                    text: "ลงทะเบียนไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-                    icon: "error",
-                    confirmButtonText: "ตกลง",
-                    confirmButtonColor: "#f27474",
-                })
-            }
-
             const resEducation = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`, {
                 method: "POST",
                 headers: {
@@ -224,18 +213,6 @@ function Register({ statusAgreement }) {
                 },
                 body: JSON.stringify({ uuid: session?.user?.id || id, email, typePerson, university })
             })
-
-
-            if (!resEducation.ok) {
-                setLoader(false);
-                Swal.fire({
-                    title: "เกิดข้อผิดพลาด",
-                    text: "ลงทะเบียนไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-                    icon: "error",
-                    confirmButtonText: "ตกลง",
-                    confirmButtonColor: "#f27474",
-                })
-            }
 
             try {
                 const resSessionEmail = await signIn("credentials", {
@@ -255,13 +232,16 @@ function Register({ statusAgreement }) {
                     });
                 } else {
                     setLoader(false);
-                    Swal.fire({
-                        title: "เกิดข้อผิดพลาด",
-                        text: "ลงทะเบียนไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-                        icon: "error",
-                        confirmButtonText: "ตกลง",
-                        confirmButtonColor: "#f27474",
-                    });
+                    if (!res.ok || !resEducation.ok) {
+                        setLoader(false);
+                        Swal.fire({
+                            title: "เกิดข้อผิดพลาด",
+                            text: "ลงทะเบียนไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
+                            icon: "error",
+                            confirmButtonText: "ตกลง",
+                            confirmButtonColor: "#f27474",
+                        })
+                    }
                 }
             } catch (err) {
                 console.log(err);
