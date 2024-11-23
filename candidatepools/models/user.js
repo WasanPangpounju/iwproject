@@ -11,8 +11,18 @@ const UserSchema = new Schema(
             required: true,
             unique: true, // ตรวจสอบให้แน่ใจว่าอีเมลไม่ซ้ำกัน
         },
+        role:{
+            type: String,
+            required: true,
+            default: "user"
+        },
+        typePerson:{
+            type: String,
+            required: true
+        },
         password:{
             type: String,
+            required: true
         },
         firstName:{
             type: String,
@@ -21,6 +31,17 @@ const UserSchema = new Schema(
         lastName:{
             type: String,
             required: true
+        },
+        email:{
+            type: String,
+            required: true,
+            unique: true, // ตรวจสอบให้แน่ใจว่าอีเมลไม่ซ้ำกัน
+        },
+        firstNameEng:{
+            type: String,
+        },
+        lastNameEng:{
+            type: String,
         },
         profile:{
             type: String,
@@ -34,11 +55,7 @@ const UserSchema = new Schema(
         university:{
             type: String,
         },
-        email:{
-            type: String,
-            required: true,
-            unique: true, // ตรวจสอบให้แน่ใจว่าอีเมลไม่ซ้ำกัน
-        },
+      
         prefix:{
             type: String,
         },
@@ -108,15 +125,7 @@ const UserSchema = new Schema(
         relationship:{
             type: String,
         },
-        role:{
-            type: String,
-            require: true,
-            default: "user"
-        },
-        typePerson:{
-            type: String,
-            required: true
-        },
+      
     },
     {
         timestamps: true

@@ -28,6 +28,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
     "react-pdf": "^9.1.1",
+    "react-pdf-tailwind": "^2.3.0",
     "react-spinners": "^0.14.1",
     "sweetalert2": "^11.12.4",
     "uuid": "^10.0.0"
