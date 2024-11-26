@@ -347,8 +347,6 @@ function EditPersonal() {
 
     setLoader(true);
 
-    console.log("in submit");
-
     // console.log("user:", user);
     // console.log("password:", password);
     // console.log("firstName:", firstName);
