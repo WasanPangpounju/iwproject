@@ -769,7 +769,7 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                         </div>
                                         <div className='px-5'>
                                             <p className='text-lg font-bold'>การศึกษา</p>
-                                            <div className='mt-2 flex flex-wrap gap-5'>
+                                            <div className='mt-2 flex flex-wrap gap-3'>
                                                 {dataEducations?.grade?.length > 0 ? (
                                                     dataEducations?.university?.map((education, index) => (
                                                         <div key={index}>
