@@ -361,6 +361,7 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
         }
 
     }
+
     return (
         <div className='min-h-screen '>
             <div className='flex gap-2 items-center '>
@@ -380,8 +381,16 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                         <div className='p-5'>
                                             <p className='text-lg font-bold'>ข้อมูลส่วนตัว</p>
                                             <div className=' flex flex-col mt-2 gap-y-2'>
-
-                                                <p>อายุ: {yearToday - dataUser.yearBirthday || "-"}</p>
+                                                <div className='flex flex-wrap gap-2'>
+                                                    <p>วันเกิด: {dataUser.dateBirthday || "-"} {dataUser.monthBirthday || "-"} {dataUser.yearBirthday || "-"}</p>
+                                                    <p>({yearToday - dataUser.yearBirthday || "-"}ปี)</p>
+                                                </div>
+                                                <div className='flex gap-1 flex-wrap'>
+                                                    <p>ความพิการ: </p>
+                                                    {dataUser?.typeDisabled?.map((d, index) => (
+                                                        <p key={index} className=''>{d || " - "}</p>
+                                                    ))}
+                                                </div>
                                                 <div className='flex flex-wrap gap-1'>
                                                     <p>ที่อยู่: </p>
                                                     <p>ตำบล{dataUser.addressTambon || " - "}</p>
@@ -405,6 +414,7 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                                         <p>{dataUser.tel || "-"}</p>
                                                     )}
                                                 </div>
+
                                                 <p className='whitespace-nowrap '>อีเมล์: {dataUser.email || " - "}</p>
                                             </div>
                                         </div>
@@ -728,7 +738,9 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                                     </>
                                                 )
                                             ) : (
-                                                <p className='text-red-400'>* เพิ่มชื่อภาษาอังกฤษของคุณ</p>
+                                                <div className='bg-white p-1'>
+                                                    <p className='text-red-400'>* เพิ่มชื่อภาษาอังกฤษของคุณ</p>
+                                                </div>
                                             )}
 
                                         </div>
@@ -739,8 +751,16 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                         <div className='px-5 '>
                                             <p className='text-lg font-bold'>ข้อมูลส่วนตัว</p>
                                             <div className='flex flex-col mt-2 gap-y-2'>
-
-                                                <p>อายุ: {yearToday - dataUser.yearBirthday || "-"}</p>
+                                                <div className='flex flex-wrap gap-2'>
+                                                    <p>วันเกิด: {dataUser.dateBirthday || "-"} {dataUser.monthBirthday || "-"} {dataUser.yearBirthday || "-"}</p>
+                                                    <p>({yearToday - dataUser.yearBirthday || "-"}ปี)</p>
+                                                </div>
+                                                <div className='flex gap-1 flex-wrap'>
+                                                    <p>ความพิการ: </p>
+                                                    {dataUser?.typeDisabled?.map((d, index) => (
+                                                        <p key={index} className=''>{d || " - "}</p>
+                                                    ))}
+                                                </div>
                                                 <div className='flex flex-wrap gap-1'>
                                                     <p>ที่อยู่: </p>
                                                     <p>ตำบล{dataUser.addressTambon || " - "}</p>
@@ -945,7 +965,7 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
 
                                         <div className=''>
                                             <p className='text-lg font-bold'>ประสบการณ์ทำงาน</p>
-                                            <div className=' flex flex-wrap gap-5'>
+                                            <div className='mt-2 flex flex-wrap gap-5'>
                                                 {dataHistoryWork?.workExperience?.length > 0 ? (
                                                     dataHistoryWork?.workExperience?.map((e, index) => (
                                                         <div key={index}>
@@ -1059,8 +1079,16 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                     <div className='p-5 '>
                                         <p className='text-lg font-bold'>ข้อมูลส่วนตัว</p>
                                         <div className='flex flex-col mt-2 gap-y-2 ps-5'>
-
-                                            <p>อายุ: {yearToday - dataUser.yearBirthday || "-"}</p>
+                                            <div className='flex flex-wrap gap-2'>
+                                                <p>วันเกิด: {dataUser.dateBirthday || "-"} {dataUser.monthBirthday || "-"} {dataUser.yearBirthday || "-"}</p>
+                                                <p>({yearToday - dataUser.yearBirthday || "-"}ปี)</p>
+                                            </div>
+                                            <div className='flex gap-1 flex-wrap'>
+                                                <p>ความพิการ: </p>
+                                                {dataUser?.typeDisabled?.map((d, index) => (
+                                                    <p key={index} className=''>{d || " - "}</p>
+                                                ))}
+                                            </div>
                                             <div className='flex flex-wrap gap-1'>
                                                 <p>ที่อยู่: </p>
                                                 <p>ตำบล{dataUser.addressTambon || " - "}</p>
@@ -1283,7 +1311,7 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                                                     <p>-</p>
                                                                     <input
                                                                         type="text"
-                                                                        className='inputResume w-28'
+                                                                        className=' inputResume w-28'
                                                                         defaultValue={e.dateEnd || ""}
                                                                         onBlur={(e) => handleArray(e.target.value, index, setNewWorkDateEnd)}
                                                                     />
@@ -1360,7 +1388,7 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                     <Icon path={mdiAccountEdit} size={1} />
                                     <p>แก้ไขข้อมูล</p>
                                 </div>
-                                <PDFDownloadLink document={<PDFFile dataUser={dataUser} dataSkills={dataSkills} dataEducations={dataEducations} dataHistoryWork={dataHistoryWork} yearToday={yearToday} />} fileName={`${dataUser?.idCard}resume`}>
+                                <PDFDownloadLink document={<PDFFile type={type} dataUser={dataUser} dataSkills={dataSkills} dataEducations={dataEducations} dataHistoryWork={dataHistoryWork} yearToday={yearToday} />} fileName={`${dataUser?.idCard}resumev_${type}`}>
                                     {({ loading }) => (
                                         loading ?
                                             <p >กำลังโหลดเตรียมเอกสาร...</p> :
@@ -1380,7 +1408,7 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                         )}
                     </form>
                     {/* <PDFViewer className='w-full h-screen'>
-                        <PDFFile dataUser={dataUser} dataSkills={dataSkills} dataEducations={dataEducations} dataHistoryWork={dataHistoryWork} yearToday={yearToday} />
+                        <PDFFile type={type} dataUser={dataUser} dataSkills={dataSkills} dataEducations={dataEducations} dataHistoryWork={dataHistoryWork} yearToday={yearToday} />
                     </PDFViewer> */}
                 </div>
 
