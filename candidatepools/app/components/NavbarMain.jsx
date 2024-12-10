@@ -219,7 +219,7 @@ function NavbarMain({ status }) {
           } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`} role="menuitem" aria-label="ช่วยเหลือ">
         <Icon path={mdiHelpCircle} size={1} aria-hidden="true" aria-label="ช่วยเหลือ" />
         <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
-          ช่วยเหลือ
+          ติดต่อเรา
         </p>
       </Link>
 
