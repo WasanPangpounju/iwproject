@@ -141,7 +141,6 @@ export default function Home() {
     }
   }
 
-  console.log("bgColorMain", bgColorMain);
   return (
     <div className={`${bgColorMain} ${bgColor}`}>
       <NavbarLogo />

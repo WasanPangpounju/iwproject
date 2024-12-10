@@ -424,7 +424,7 @@ function WorkHistory() {
             };
         });
     }
-    
+
     //function submit
     async function handleSubmit(e, fieldSkills, fieldTrains) {
         e.preventDefault();
@@ -684,7 +684,7 @@ function WorkHistory() {
                                     )}
                                     <div className='mt-5 flex gap-5 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ทักษะที่มี <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                            <label >ด้าน <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                             <div className="relative col w-fit mt-1">
                                                 <select
                                                     className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
@@ -694,9 +694,16 @@ function WorkHistory() {
                                                     disabled={!editMode}
                                                 >
                                                     <option value="0">-</option>
-                                                    <option value="LowSkill">Low Skill</option>
-                                                    <option value="MediumSkill">Medium Skill</option>
-                                                    <option value="HardSkill">Hard Skill</option>
+                                                    <option value="ด้านคอมพิวเตอร์">ด้านคอมพิวเตอร์</option>
+                                                    <option value="ด้านการสื่อสาร">ด้านการสื่อสาร</option>
+                                                    <option value="ด้านการออกแบบ/กราฟฟิก">ด้านการออกแบบ/กราฟฟิก</option>
+                                                    <option value="ด้านการบริการ">ด้านการบริการ</option>
+                                                    <option value="ด้านบัญชี/การเงิน">ด้านบัญชี/การเงิน</option>
+                                                    <option value="ด้านการสอน">ด้านการสอน</option>
+                                                    <option value="ด้านการขาย">ด้านการขาย</option>
+                                                    <option value="ด้านการจัดการข้อมูล">ด้านการจัดการข้อมูล</option>
+                                                    <option value="ด้านการเขียน">ด้านการเขียน</option>
+                                                    <option value="ด้านอื่นๆ">ด้านอื่นๆ</option>
                                                 </select>
                                                 <Icon className={`cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                             </div>
