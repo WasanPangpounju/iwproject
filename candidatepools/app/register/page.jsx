@@ -14,6 +14,9 @@ import Image from 'next/image';
 import Footer from '../components/Footer';
 import { useTheme } from "../ThemeContext";
 import { v4 as uuidv4 } from 'uuid';
+import universitys from '@/app/data/universitys.json'
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 function Register({ statusAgreement }) {
 
@@ -40,7 +43,8 @@ function Register({ statusAgreement }) {
         inputEditColor,
         inputGrayColor,
         setInputGrayColor,
-        inputTextColor
+        inputTextColor,
+        textColorKey,
     } = useTheme();
 
     //check agreement
@@ -294,6 +298,8 @@ function Register({ statusAgreement }) {
         });
     }
 
+    // console.log(universitys)
+    console.log(university)
     return (
         <div className={`${bgColorMain} ${bgColor}`}>
             <NavbarLogo />
@@ -396,12 +402,44 @@ function Register({ statusAgreement }) {
                     </div>
                     <div className={`${fontSize} ${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label>สถาบันการศึกษา:</label>
-                        <input
+                        {/* <input
                             onChange={(e) => setUniversity(e.target.value)}
                             type="text"
                             className={`${bgColorMain} w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                             placeholder='กรอกรายละเอียด'
-                        />
+                        /> */}
+                        <div className={`${bgColorMain} ${bgColor} w-96 border px-3 border-gray-400 rounded-lg`}>
+                            <Autocomplete
+                                options={universitys}
+                                getOptionLabel={(option) => option.university}
+                                inputValue={university || ''}  // ควบคุมค่าที่ผู้ใช้งานป้อนใน input
+                                onInputChange={(event, newInputValue) => {
+                                    setUniversity(newInputValue);  // อัปเดตค่าที่ผู้ใช้งานป้อนเอง
+                                }}
+                               
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        placeholder="ระบุมหาวิทยาลัย"
+                                        sx={{
+                                            height: '100%',
+                                            width: '100%',
+                                            '& .MuiOutlinedInput-root': {
+                                                padding: 0,    // ปิด padding ภายใน input ของ Material-UI
+                                                '& fieldset': {
+                                                    display: 'none'  // ซ่อน border ของ input
+                                                }
+                                            },
+                                            '& .MuiInputBase-input': {
+                                                color: textColorKey  // สีตัวอักษร (เทียบ Tailwind `text-gray-900`)
+                                            }
+                                        }}
+                                    />
+                                )}
+                              
+                            />
+                        </div>
+
                     </div>
                     <div className={`${fontSize} mt-4 w-[35rem] font-bold  flex justify-between items-center'`}>
                         <label>Email:</label>

@@ -230,7 +230,9 @@ function Navbar({ }) {
     setInputGrayColor,
     inputGrayColor,
     inputTextColor,
-    setInputTextColor
+    setInputTextColor,
+    setTextColorKey,
+    textColorKey
   } = useTheme();
 
   return (
@@ -288,6 +290,7 @@ function Navbar({ }) {
         <div
           onClick={() => {
             setBgColor("bg-black text-white"); // Change background to black and text to white
+            setTextColorKey('white')
             setBgColorNavbar("bg-black");
             setBgColorWhite("text-white");
             setBgColorMain("bg-black");
@@ -306,6 +309,7 @@ function Navbar({ }) {
         <div
           onClick={() => {
             setBgColor("bg-black text-[#e7e703]"); // Change background to black and text to yellow
+            setTextColorKey('#e7e703')
             setBgColorNavbar("bg-black"); // Change navbar background to black
             setBgColorWhite("text-[#e7e703]");
             setBgColorMain("bg-black");
@@ -325,6 +329,7 @@ function Navbar({ }) {
         <div
           onClick={() => {
             setBgColor("bg-[#F4F6FA] text-black"); // Reset to default background and text color
+            setTextColorKey('black')
             setBgColorNavbar("bg-[#F97201]");
             // setBgColorNavbar("bg-white");
             setBgColorWhite("text-white");

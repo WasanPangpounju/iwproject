@@ -7,6 +7,7 @@ export function ThemeProvider({ children }) {
   const [fontHeadSize, setFontHeadSize] = useState("text-2xl");
 
   const [bgColor, setBgColor] = useState("bg-[#F4F6FA] text-black");
+  const [textColorKey, setTextColorKey] = useState("black");
   const [bgColorNavbar, setBgColorNavbar] = useState("bg-[#F97201]");
   const [bgColorWhite, setBgColorWhite] = useState("text-white");
   const [bgColorMain, setBgColorMain] = useState("#e6ffff");
@@ -45,7 +46,9 @@ export function ThemeProvider({ children }) {
       setInputGrayColor,
       inputGrayColor,
       setInputTextColor,
-      inputTextColor
+      inputTextColor,
+      setTextColorKey,
+      textColorKey
     }}>
       {children}
     </ThemeContext.Provider>

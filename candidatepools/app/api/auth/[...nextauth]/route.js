@@ -39,13 +39,18 @@ const authOption = {
                         return null;
                     }
 
-                    // ตรวจสอบรหัสผ่าน
-                    const isPasswordValid = await bcrypt.compare(password, userDocument.password);
-                    if (!isPasswordValid) {
+                    // ตรวจสอบรหัสผ่านแบบตรงๆ (Plain-text comparison)
+                    if (password !== userDocument.password) {
                         console.log("Invalid password");
                         return null;
                     }
 
+                    // // ตรวจสอบรหัสผ่าน bcrypt
+                    // const isPasswordValid = await bcrypt.compare(password, userDocument.password);
+                    // if (!isPasswordValid) {
+                    //     console.log("Invalid password");
+                    //     return null;
+                    // }
                     // ส่งคืนข้อมูลผู้ใช้หากสำเร็จ
                     return userDocument;
 
