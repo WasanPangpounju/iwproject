@@ -17,7 +17,7 @@ function MainPage() {
     const {
         setFontSize,
         fontHeadSize,
-    setFontHeadSize,
+        setFontHeadSize,
         setBgColor,
         setBgColorNavbar,
         setBgColorWhite,
@@ -34,8 +34,8 @@ function MainPage() {
         setTextBlue,
         textBlue,
         setRegisterColor,
-          registerColor,
-      } = useTheme();
+        registerColor,
+    } = useTheme();
 
     const router = useRouter();
     const { status, data: session } = useSession();
@@ -58,6 +58,12 @@ function MainPage() {
         } else {
             router.replace('/agreement');
         }
+
+        if (session?.user?.role === "admin") {
+            router.replace("/admin");
+        } else if (session?.user?.role === "supervisor") {
+            router.replace("/supervisor");
+        } 
 
     }, [status, session, router]);
     // Redirect to register if dataUser is empty or null
@@ -102,9 +108,9 @@ function MainPage() {
 
     return (
         <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
-            <NavbarLogo dataUser={dataUser}/>
+            <NavbarLogo dataUser={dataUser} />
             <div className="flex">
-                <NavbarMain status="main"/>
+                <NavbarMain status="main" />
                 <div className="w-10/12 px-7 py-5">
                     {/* <div className={`bg-white rounded-lg p-5`}> */}
                     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>

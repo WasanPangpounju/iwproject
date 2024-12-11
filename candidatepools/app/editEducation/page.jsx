@@ -91,14 +91,6 @@ function editEducation() {
     }
 
     //add array
-    const handleUniversity = (e, index) => {
-        const newUniversity = e; // ค่าที่ได้รับจาก input
-        setUniversity((prevUniversities) => {
-            const updatedUniversities = Array.isArray(prevUniversities) ? [...prevUniversities] : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
-            updatedUniversities[index] = newUniversity; // อัปเดตค่าใหม่
-            return updatedUniversities.filter(uni => uni !== "").concat(Array(updatedUniversities.length - updatedUniversities.filter(uni => uni !== "").length).fill(""));
-        });
-    };
 
     const handleFaculty = (e, index) => {
         const newFaculty = e; // ค่าที่ได้รับจาก input
@@ -645,6 +637,56 @@ function editEducation() {
         window.open(fileUrl, '_blank');
     }
 
+    //select university 
+    const [optionUniversity, setOptionUniversity] = useState([]);
+    const [isFocusUni, setIsFocusUni] = useState(null)
+    const [inputUniversity, setInputUniversity] = useState([]);
+
+    function handleOptionUni(uni, index) {
+        const temp = uni
+        // ค้นหาคำที่มีความคล้าย
+        const filteredOptions = universitys.filter((uni) =>
+            uni.university.toLowerCase().includes(temp.toLowerCase()) // เปรียบเทียบแบบ case-insensitive
+        );
+        setOptionUniversity(filteredOptions);
+
+        setInputUniversity((prev) => {
+            const newInputUniversity = [...prev];
+            newInputUniversity[index] = temp;
+            return newInputUniversity;
+        });
+    }
+
+
+    function handleUniversity(uni, index) {
+        const input = uni;
+        setUniversity((prevUniversities) => {
+            const updatedUniversities = Array.isArray(prevUniversities) ? [...prevUniversities] : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
+            updatedUniversities[index] = input; // อัปเดตค่าใหม่
+            return updatedUniversities.filter(uni => uni !== "").concat(Array(updatedUniversities.length - updatedUniversities.filter(uni => uni !== "").length).fill(""));
+        });
+        setInputUniversity((prevUniversities) => {
+            const updatedUniversities = Array.isArray(prevUniversities) ? [...prevUniversities] : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
+            updatedUniversities[index] = input; // อัปเดตค่าใหม่
+            return updatedUniversities.filter(uni => uni !== "").concat(Array(updatedUniversities.length - updatedUniversities.filter(uni => uni !== "").length).fill(""));
+        });
+    }
+
+    function SeletedOption(uni, index) {
+        const input = uni;
+        setUniversity((prevUniversities) => {
+            const updatedUniversities = Array.isArray(prevUniversities) ? [...prevUniversities] : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
+            updatedUniversities[index] = input; // อัปเดตค่าใหม่
+            return updatedUniversities.filter(uni => uni !== "").concat(Array(updatedUniversities.length - updatedUniversities.filter(uni => uni !== "").length).fill(""));
+        });
+        setInputUniversity((prevUniversities) => {
+            const updatedUniversities = Array.isArray(prevUniversities) ? [...prevUniversities] : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
+            updatedUniversities[index] = input; // อัปเดตค่าใหม่
+            return updatedUniversities.filter(uni => uni !== "").concat(Array(updatedUniversities.length - updatedUniversities.filter(uni => uni !== "").length).fill(""));
+        });
+        setOptionUniversity([]);
+    }
+    
     return (
         <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
             <NavbarLogo title="ประวัติการศึกษา" dataUser={dataUser} />
@@ -812,14 +854,42 @@ function editEducation() {
                                                     placeholder="ระบุสถานศึกษา"
                                                 />
                                             )} */}
-                                            <input
+                                            {/* <input
                                                 type="text"
                                                 className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 onBlur={(e) => handleUniversity(e.target.value, index)}
                                                 defaultValue={Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
                                                 readOnly={!editMode}
                                                 placeholder="ระบุสถานศึกษา"
-                                            />
+                                            /> */}
+                                            <div className='relative'>
+                                                <input
+                                                    value={Array.isArray(inputUniversity) && inputUniversity[index] !== undefined ? inputUniversity[index] : Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
+                                                    onChange={(e) => handleOptionUni(e.target.value, index)}
+                                                    onFocus={() => setIsFocusUni(index)} //
+                                                    onBlur={(e) => {
+                                                        handleUniversity(e.target.value, index);
+                                                        setTimeout(() => setIsFocusUni(null));
+                                                    }}
+                                                    type="text"
+                                                    readOnly={!editMode}
+                                                    className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    placeholder='ระบุสถานศึกษา'
+                                                />
+                                                <div className={`z-10 w-full absolute shadow max-h-24 overflow-scroll`}>
+                                                    {isFocusUni === index && optionUniversity?.length > 0 && (
+                                                        optionUniversity.map((uni, i) => (
+                                                            <div
+                                                                key={i}
+                                                                className={`px-2 py-1 border ${bgColor} hover:bg-gray-300 cursor-pointer`}
+                                                                onClick={(e) => {e.stopPropagation(); SeletedOption(uni.university, index)}}
+                                                            >
+                                                                {uni.university}
+                                                            </div>
+                                                        ))
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
                                         {/* วิทยาเขต */}
                                         {index === 0 && typePerson === 'นักศึกษาพิการ' && (

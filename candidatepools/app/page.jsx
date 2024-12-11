@@ -83,6 +83,7 @@ export default function Home() {
       const res = await signIn("credentials", {
         email,
         password,
+        loginMod,
         redirect: false,
       });
 
@@ -118,16 +119,31 @@ export default function Home() {
           setLoader(false);
         }
       } else {
-        setLoader(false);
-        Swal.fire({
-          title: "เข้าสู่ระบบสำเร็จ",
-          icon: "success",
-          confirmButtonText: "ตกลง",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            router.replace("/main");
-          }
-        });
+
+        if (loginMod === "admin") {
+          setLoader(false);
+          Swal.fire({
+            title: "เข้าสู่ระบบสำเร็จ",
+            icon: "success",
+            confirmButtonText: "ตกลง",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              router.replace("/admin");
+            }
+          });
+        } else {
+          setLoader(false);
+          Swal.fire({
+            title: "เข้าสู่ระบบสำเร็จ",
+            icon: "success",
+            confirmButtonText: "ตกลง",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              router.replace("/main");
+            }
+          });
+        }
+
       }
     } catch (err) {
       setLoader(false);
@@ -156,18 +172,26 @@ export default function Home() {
         <div className={`${bgColorMain2} rounded-b-lg`}>
           <div className="flex ">
             <div
-              onClick={() => setLoginMod("user")}
-              className={`${
-                loginMod === "user" ? "bg-[#F97201]" : "bg-[#75C7C2]"
-              } ${fontSize} hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
+               onClick={() => {
+                setLoginMod("user");
+                setEmail('');
+                setPassword('');
+                setError('');
+              }}
+              className={`${loginMod === "user" ? "bg-[#F97201]" : "bg-[#75C7C2]"
+                } ${fontSize} hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
             >
               นักศึกษาพิการ
             </div>
             <div
-              onClick={() => setLoginMod("admin")}
-              className={`${
-                loginMod === "admin" ? "bg-[#F97201]" : "bg-[#75C7C2]"
-              } ${fontSize} hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
+              onClick={() => {
+                setLoginMod("admin");
+                setEmail('');
+                setPassword('');
+                setError('');
+              }}
+              className={`${loginMod === "admin" ? "bg-[#F97201]" : "bg-[#75C7C2]"
+                } ${fontSize} hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
             >
               ผู้ดูแลระบบ
             </div>
@@ -183,6 +207,7 @@ export default function Home() {
             </p>
             <div className="mt-7 flex flex-col gap-5">
               <input
+                value={email || ""}
                 onChange={(e) => setEmail(e.target.value)}
                 className={`${bgColorMain} ${fontSize} w-72 border py-2 px-5 rounded-lg`}
                 type="text"
@@ -190,6 +215,7 @@ export default function Home() {
               />
               <div className="relative">
                 <input
+                  value={password || ""}
                   onChange={(e) => setPassword(e.target.value)}
                   className={`${bgColorMain} ${fontSize} w-72 border py-2 px-5 rounded-lg`}
                   type={showPassword ? "text" : "password"}
@@ -210,16 +236,28 @@ export default function Home() {
             {error ? (
               <div className="self-start mt-3 text-red-500">*{error}</div>
             ) : null}
-            <div className="self-end mt-4">
-              <Link
-                // className="text-blue-500 hover:cursor-pointer hover:underline"
-                className={`${textBlue} ${fontSize} hover:cursor-pointer hover:underline`}
-                href="#"
-              >
-                ลืมรหัสผ่าน ?
-              </Link>
-            </div>
-            <div className="mt-5">
+            {loginMod === 'user' ? (
+              <div className="self-end mt-4">
+                <Link
+                  // className="text-blue-500 hover:cursor-pointer hover:underline"
+                  className={`${textBlue} ${fontSize} hover:cursor-pointer hover:underline`}
+                  href="#"
+                >
+                  ลืมรหัสผ่าน ?
+                </Link>
+              </div>
+            ) : (
+              <div className="self-end mt-4">
+                <Link
+                  // className="text-blue-500 hover:cursor-pointer hover:underline"
+                  className={`${textBlue} ${fontSize} hover:cursor-pointer hover:underline`}
+                  href="#"
+                >
+                  ลืมรหัสผ่านสำหรับผู้ดูแล ?
+                </Link>
+              </div>
+            )}
+            <div className="mt-10">
               <button
                 type="submit"
                 className={`${fontSize} bg-[#F97201] text-white py-2 px-5 rounded-lg`}
@@ -227,55 +265,60 @@ export default function Home() {
                 เข้าสู่ระบบ
               </button>
             </div>
-            <p className={`mt-4 ${fontSize}`}>
-              ยังไม่ได้เป็นสมาชิก?
-              <Link
-                // className="mx-2 text-[#F97201] hover:cursor-pointer hover:underline"
-                className={`mx-2 ${registerColor} hover:cursor-pointer hover:underline`}
-                href="/agreement"
-              >
-                สมัครสมาชิก
-              </Link>
-            </p>
-            <div className="mt-5 flex  justify-center flex-col items-center">
-              <hr className={`${lineBlack} border  w-64`} />
-              {/* <p className="bg-white p-1 absolute">หรือ</p> */}
-              <p className={`${bgColorMain2} ${fontSize} p-1 absolute`}>หรือ</p>
-            </div>
-            <div
-              className={`${fontSize} mt-8 text-gray-400 flex flex-col gap-3`}
-            >
-              <div
-                onClick={() => {
-                  signIn("google");
-                }}
-                className="hover:cursor-pointer gap-2 py-1 px-5 border rounded-lg flex"
-              >
-                <Image
-                  alt="icon-google"
-                  className="w-5 h-5"
-                  src="/image/main/google.png"
-                  height={1000}
-                  width={1000}
-                  priority
-                />
-                <p>เข้าสู่ระบบด้วย Google</p>
-              </div>
-              <div
-                onClick={() => signIn("line")}
-                className="hover:cursor-pointer gap-2 py-1 px-5 border rounded-lg flex"
-              >
-                <Image
-                  alt="icon-line"
-                  className="w-5 h-5"
-                  src="/image/main/line.png"
-                  height={1000}
-                  width={1000}
-                  priority
-                />
-                <p>เข้าสู่ระบบด้วย Line</p>
-              </div>
-            </div>
+            {loginMod === 'user' && (
+              <>
+                <p className={`mt-4 ${fontSize}`}>
+                  ยังไม่ได้เป็นสมาชิก?
+                  <Link
+                    // className="mx-2 text-[#F97201] hover:cursor-pointer hover:underline"
+                    className={`mx-2 ${registerColor} hover:cursor-pointer hover:underline`}
+                    href="/agreement"
+                  >
+                    สมัครสมาชิก
+                  </Link>
+                </p>
+
+                <div className="mt-5 flex  justify-center flex-col items-center">
+                  <hr className={`${lineBlack} border  w-64`} />
+                  {/* <p className="bg-white p-1 absolute">หรือ</p> */}
+                  <p className={`${bgColorMain2} ${fontSize} p-1 absolute`}>หรือ</p>
+                </div>
+                <div
+                  className={`${fontSize} mt-8 text-gray-400 flex flex-col gap-3`}
+                >
+                  <div
+                    onClick={() => {
+                      signIn("google");
+                    }}
+                    className="hover:cursor-pointer gap-2 py-1 px-5 border rounded-lg flex"
+                  >
+                    <Image
+                      alt="icon-google"
+                      className="w-5 h-5"
+                      src="/image/main/google.png"
+                      height={1000}
+                      width={1000}
+                      priority
+                    />
+                    <p>เข้าสู่ระบบด้วย Google</p>
+                  </div>
+                  <div
+                    onClick={() => signIn("line")}
+                    className="hover:cursor-pointer gap-2 py-1 px-5 border rounded-lg flex"
+                  >
+                    <Image
+                      alt="icon-line"
+                      className="w-5 h-5"
+                      src="/image/main/line.png"
+                      height={1000}
+                      width={1000}
+                      priority
+                    />
+                    <p>เข้าสู่ระบบด้วย Line</p>
+                  </div>
+                </div>
+              </>
+            )}
           </form>
         </div>
       </div>

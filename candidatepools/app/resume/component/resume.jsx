@@ -364,8 +364,10 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
 
     return (
         <div className='min-h-screen '>
-            <div className='flex gap-2 items-center '>
-                <Icon className='cursor-pointer' onClick={() => setStatusResume(0)} path={mdiArrowLeftCircle} size={1} />
+            <div className='cursor-pointer flex gap-2 items-center '
+                onClick={() => setStatusResume(0)}
+            >
+                <Icon className='' path={mdiArrowLeftCircle} size={1} />
                 <p>รูปแบบที่ {type}</p>
             </div>
             {dataUser ? (
@@ -447,8 +449,8 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                 </div>
                                 <div className=' p-5 px-10'>
                                     <div>
-                                        <div className='flex gap-3'>
-                                            <p className='text-2xl font-bold'>{dataUser.firstName}</p>
+                                        <div className='flex gap-3 whitespace-nowrap'>
+                                            <p className='text-2xl font-bold '>{dataUser.firstName}</p>
                                             <p className='text-2xl font-bold'> {dataUser.lastName}</p>
                                         </div>
                                         <div className='flex gap-3 mt-1'>
@@ -476,8 +478,8 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <p className='text-xl font-bold capitalize'>{dataUser.firstNameEng}</p>
-                                                        <p className='text-xl font-bold capitalize'> {dataUser.lastNameEng}</p>
+                                                        <p className='text-xl font-bold capitalize whitespace-nowrap'>{dataUser.firstNameEng}</p>
+                                                        <p className='text-xl font-bold capitalize whitespace-nowrap'> {dataUser.lastNameEng}</p>
                                                     </>
                                                 )
                                             ) : (
@@ -704,8 +706,8 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                         <Image priority alt="icon" className='w-32 h-32 rounded-full' src={dataUser.profile || "/image/main/user.png"} height={1000} width={1000} />
                                     </div>
                                     <div className='py-5 px-10 flex flex-col justify-center  '>
-                                        <div className=' flex gap-3'>
-                                            <p className='text-3xl font-bold'>{dataUser.firstName}</p>
+                                        <div className=' flex gap-3 whitespace-nowrap'>
+                                            <p className='text-3xl font-bold '>{dataUser.firstName}</p>
                                             <p className='text-3xl font-bold'> {dataUser.lastName}</p>
                                         </div>
                                         <div className=' flex gap-3'>
@@ -733,8 +735,8 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <p className='text-xl font-bold capitalize'>{dataUser?.firstNameEng || ""}</p>
-                                                        <p className='text-xl font-bold capitalize'> {dataUser?.lastNameEng || ""}</p>
+                                                        <p className='text-xl font-bold capitalize whitespace-nowrap'>{dataUser?.firstNameEng || ""}</p>
+                                                        <p className='text-xl font-bold capitalize whitespace-nowrap'> {dataUser?.lastNameEng || ""}</p>
                                                     </>
                                                 )
                                             ) : (
@@ -1032,9 +1034,9 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                         <Image priority alt="icon" className='w-32 h-32 rounded-full' src={dataUser.profile || "/image/main/user.png"} height={1000} width={1000} />
                                     </div>
                                     <div className='py-5 px-8 flex flex-col justify-center  '>
-                                        <div className=' flex gap-3'>
-                                            <p className='text-3xl font-bold'>{dataUser.firstName}</p>
-                                            <p className='text-3xl font-bold'> {dataUser.lastName}</p>
+                                        <div className=' flex gap-3 whitespace-nowrap'>
+                                            <p className='text-2xl font-bold'>{dataUser.firstName}</p>
+                                            <p className='text-2xl font-bold'> {dataUser.lastName}</p>
                                         </div>
                                         <div className=' flex gap-3'>
                                             {!editMode && dataUser?.firstNameEng && dataUser?.lastNameEng || editMode ? (
@@ -1061,7 +1063,7 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <p className='text-xl font-bold capitalize text-gray-500'>{dataUser?.firstNameEng || ""}</p>
+                                                        <p className='text-xl font-bold capitalize text-gray-500 '>{dataUser?.firstNameEng || ""}</p>
                                                         <p className='text-xl font-bold capitalize text-gray-500'> {dataUser?.lastNameEng || ""}</p>
                                                     </>
                                                 )
