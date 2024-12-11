@@ -10,6 +10,9 @@ import NavbarMain from '../components/NavbarMain';
 import Icon from '@mdi/react';
 import { saveAs } from 'file-saver';
 import { mdiDelete, mdiDownload, mdiPencil, mdiAlertCircle, mdiAccountEdit, mdiContentSave, mdiArrowDownDropCircle, mdiCloseCircle, mdiPlus } from '@mdi/js';
+import universitys from '@/app/data/universitys.json'
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 //firebase
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // Import Firebase Storage
@@ -46,7 +49,8 @@ function editEducation() {
         inputEditColor,
         setInputGrayColor,
         inputGrayColor,
-        inputTextColor
+        inputTextColor,
+        textColorKey
     } = useTheme();
 
     //value data user
@@ -763,8 +767,51 @@ function editEducation() {
                                             </div>
                                         )}
                                         {/* สถาบันการศึกษา */}
-                                        <div className="flex col flex-col">
+                                        <div className="flex col flex-col ">
                                             <label>สถาบันการศึกษา/มหาวิทยาลัย <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                            {/* {editMode ? (
+                                                <div className={`${bgColorMain} ${bgColor} mt-1 w-64 border px-3 border-gray-400 rounded-lg`}>
+                                                    <Autocomplete
+                                                        options={universitys}
+                                                        value={university[index]}
+                                                        getOptionLabel={(option) => option.university}
+                                                        inputValue={university || ''}  // ควบคุมค่าที่ผู้ใช้งานป้อนใน input
+                                                        onInputChange={(event, newInputValue) => {
+                                                            setUniversity(newInputValue);  // อัปเดตค่าที่ผู้ใช้งานป้อนเอง
+                                                        }}
+
+                                                        renderInput={(params) => (
+                                                            <TextField
+                                                                {...params}
+                                                                placeholder="ระบุมหาวิทยาลัย"
+                                                                sx={{
+                                                                    height: '100%',
+                                                                    width: '100%',
+                                                                    '& .MuiOutlinedInput-root': {
+                                                                        padding: 0,    // ปิด padding ภายใน input ของ Material-UI
+                                                                        '& fieldset': {
+                                                                            display: 'none'  // ซ่อน border ของ input
+                                                                        }
+                                                                    },
+                                                                    '& .MuiInputBase-input': {
+                                                                        color: textColorKey  // สีตัวอักษร (เทียบ Tailwind `text-gray-900`)
+                                                                    }
+                                                                }}
+                                                            />
+                                                        )}
+
+                                                    />
+                                                </div>
+                                            ) : (
+                                                <input
+                                                    type="text"
+                                                    className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    onBlur={(e) => handleUniversity(e.target.value, index)}
+                                                    defaultValue={Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
+                                                    readOnly={!editMode}
+                                                    placeholder="ระบุสถานศึกษา"
+                                                />
+                                            )} */}
                                             <input
                                                 type="text"
                                                 className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}

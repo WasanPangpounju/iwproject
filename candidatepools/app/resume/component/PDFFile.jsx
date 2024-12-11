@@ -127,10 +127,10 @@ const PDFFile = ({ type, dataUser, dataSkills, dataEducations, dataHistoryWork, 
                           <Text>{dataEducations.university[index] || "-"}</Text>
                           <Text>คณะ{dataEducations.faculty[index] || "-"}</Text>
                           <Text>สาขา{dataEducations.branch[index] || "-"}</Text>
-                          {dataEducations.yearGraduation[index] ? (
-                            <Text>ปีที่จบการศึกษา: {dataEducations.yearGraduation[index] || "-"}</Text>
-                          ) : (
+                          {dataEducations?.typePerson === "นักศึกษาพิการ" && index === 0 ? (
                             <Text>กำลังศึกษา: ชั้นปีที่ {dataEducations.level}</Text>
+                          ) : (
+                            <Text>ปีที่จบการศึกษา: {dataEducations.yearGraduation[index] || "-"}</Text>
                           )}
                           <Text>เกรดเฉลี่ย: {dataEducations.grade[index] || "-"}</Text>
                         </View>
@@ -235,10 +235,10 @@ const PDFFile = ({ type, dataUser, dataSkills, dataEducations, dataHistoryWork, 
                             <Text>{dataEducations.university[index] || "-"}</Text>
                             <Text>คณะ{dataEducations.faculty[index] || "-"}</Text>
                             <Text>สาขา{dataEducations.branch[index] || "-"}</Text>
-                            {dataEducations.yearGraduation[index] ? (
-                              <Text>ปีที่จบการศึกษา: {dataEducations.yearGraduation[index] || "-"}</Text>
-                            ) : (
+                            {dataEducations?.typePerson === "นักศึกษาพิการ" && index === 0 ? (
                               <Text>กำลังศึกษา: ชั้นปีที่ {dataEducations.level}</Text>
+                            ) : (
+                              <Text>ปีที่จบการศึกษา: {dataEducations.yearGraduation[index] || "-"}</Text>
                             )}
                             <Text>เกรดเฉลี่ย: {dataEducations.grade[index] || "-"}</Text>
                           </View>
@@ -362,10 +362,10 @@ const PDFFile = ({ type, dataUser, dataSkills, dataEducations, dataHistoryWork, 
                             <Text>{dataEducations.university[index] || "-"}</Text>
                             <Text>คณะ{dataEducations.faculty[index] || "-"}</Text>
                             <Text>สาขา{dataEducations.branch[index] || "-"}</Text>
-                            {dataEducations.yearGraduation[index] ? (
-                              <Text>ปีที่จบการศึกษา: {dataEducations.yearGraduation[index] || "-"}</Text>
-                            ) : (
+                            {dataEducations?.typePerson === "นักศึกษาพิการ" && index === 0 ? (
                               <Text>กำลังศึกษา: ชั้นปีที่ {dataEducations.level}</Text>
+                            ) : (
+                              <Text>ปีที่จบการศึกษา: {dataEducations.yearGraduation[index] || "-"}</Text>
                             )}
                             <Text>เกรดเฉลี่ย: {dataEducations.grade[index] || "-"}</Text>
                           </View>
