@@ -24,7 +24,7 @@ const authOption = {
             async authorize(credentials) {
                 console.log("Authorizing user:", credentials); // เพิ่ม log ที่นี่
 
-                const { email, password } = credentials;
+                const { email, password, loginMod } = credentials;
 
                 try {
                     await mongoDB();
@@ -36,6 +36,17 @@ const authOption = {
 
                     if (!userDocument) {
                         console.log("User not found");
+                        return null;
+                    }
+
+                    if(loginMod === 'user' && userDocument.role === 'supervisor'){
+                        console.log("Email is not role user");
+                        return null;
+                    } else if(loginMod === 'user' && userDocument.role === 'admin'){
+                        console.log("Email is not role user");
+                        return null;
+                    } else if(loginMod === 'admin' && userDocument.role === 'user'){
+                        console.log("Email is not role user");
                         return null;
                     }
 
@@ -68,11 +79,15 @@ const authOption = {
         async jwt({ token, user, account, profile }) {
             try {
                 // ตรวจสอบว่ามาจาก LINE หรือไม่
+                const existingUser = await Users.findOne({ email: user.email });
+
                 if (account && account.provider === 'line') {
                     token.id = profile?.sub || uuidv4();
+                    token.role = existingUser?.role || 'user';
                 } else if (user) {
                     const existingUser = await Users.findOne({ email: user.email });
                     token.id = existingUser?.uuid || uuidv4();
+                    token.role = existingUser?.role || 'user';
                 }
             } catch (error) {
                 console.error("JWT callback error:", error);
@@ -81,6 +96,7 @@ const authOption = {
         },
         async session({ session, token }) {
             session.user.id = token.id;
+            session.user.role = token.role;
             return session;
         }
     },

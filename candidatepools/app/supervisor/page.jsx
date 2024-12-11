@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 import { useTheme } from "../ThemeContext";
 
 
-function AboutPage() {
+function SupervisorPage() {
     const [loader, setLoader] = useState(true)
 
     const router = useRouter();
@@ -35,12 +35,12 @@ function AboutPage() {
             router.replace("/agreement");
         }
 
-        if (session?.user?.role === "admin") {
+        if (session?.user?.role === "user") {
+            router.replace("/main");
+        } else if (session?.user?.role === "admin") {
             router.replace("/admin");
-        } else if (session?.user?.role === "supervisor") {
-            router.replace("/supervisor");
         } 
-
+        
     }, [status, session, router]);
 
     //get data from user
@@ -91,23 +91,13 @@ function AboutPage() {
     } = useTheme();
 
     return (
-        <div className={`${fontSize} ${bgColorMain} ${bgColor}`}>
-            <NavbarLogo title="เกี่ยวกับเรา" dataUser={dataUser} />
+        <div className={`${bgColorMain} ${bgColor}`}>
+            <NavbarLogo title="supervisor" dataUser={dataUser} />
             <div className="flex">
-                <NavbarMain status="about" />
+                <NavbarMain status="main" />
                 <div className="w-10/12 px-7 py-5">
                     {/* <div className={`bg-white rounded-lg p-5`}> */}
                     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
-                        <p>ข้อมูลเกี่ยวกับเรา</p>
-                        <div className='mt-5'>
-                            -
-                        </div>
-                        <div className='mt-10 flex'>
-                            <video width="640" height="360" controls>
-                                <source src="https://firebasestorage.googleapis.com/v0/b/iwproject-3fb0f.appspot.com/o/system%2Fvideo%2FIW%20%E0%B8%A3%E0%B8%A7%E0%B8%A1%205%20%E0%B8%9B%E0%B8%B5-Sub.mp4?alt=media&token=5c7ffc37-df11-4f0a-ab52-369fef95a89f" type="video/mp4" />
-                                เบราว์เซอร์ของคุณไม่รองรับการเล่นวิดีโอ
-                            </video>
-                        </div>
 
                     </div>
                 </div>
@@ -121,4 +111,4 @@ function AboutPage() {
     )
 }
 
-export default AboutPage
+export default SupervisorPage

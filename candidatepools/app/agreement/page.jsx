@@ -72,7 +72,14 @@ function Agreement() {
             getUser(session.user.id);
         }
 
+        if (session?.user?.role === "admin") {
+            router.replace("/admin");
+        } else if (session?.user?.role === "supervisor") {
+            router.replace("/supervisor");
+        } 
+
     }, [status, session, router]);
+
     useEffect(() => {
         if (!dataUser) return;
 
