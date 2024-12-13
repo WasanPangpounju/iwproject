@@ -79,13 +79,13 @@ const authOption = {
         async jwt({ token, user, account, profile }) {
             try {
                 // ตรวจสอบว่ามาจาก LINE หรือไม่
-                const existingUser = await Users.findOne({ email: user.email });
+                const existingUser = await Users.findOne({ email: user?.email });
 
                 if (account && account.provider === 'line') {
                     token.id = profile?.sub || uuidv4();
                     token.role = existingUser?.role || 'user';
                 } else if (user) {
-                    const existingUser = await Users.findOne({ email: user.email });
+                    const existingUser = await Users.findOne({ email: user?.email });
                     token.id = existingUser?.uuid || uuidv4();
                     token.role = existingUser?.role || 'user';
                 }

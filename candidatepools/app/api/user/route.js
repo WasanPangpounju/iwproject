@@ -9,7 +9,7 @@ export async function POST(req) {
 
         // const hashedPassword = await bcrypt.hash(password, 10); // 10 คือค่า salt rounds
 
-        // console.log(id ,user, password, firstName, lastName, typeDisabled, university, email, typePerson, idCard)
+        console.log(id ,user, password, firstName, lastName, typeDisabled, university, email, typePerson, idCard)
         await mongoDB();
         await Users.create({ uuid: id, user: user, password: password, firstName: firstName, lastName: lastName, typeDisabled: typeDisabled, university: university, email: email, typePerson: typePerson, idCard: idCard });
         return NextResponse.json({ message: "Created User" }, { status: 201 })

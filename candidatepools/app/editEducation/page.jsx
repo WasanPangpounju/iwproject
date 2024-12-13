@@ -686,7 +686,7 @@ function editEducation() {
         });
         setOptionUniversity([]);
     }
-    
+
     return (
         <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
             <NavbarLogo title="ประวัติการศึกษา" dataUser={dataUser} />
@@ -876,19 +876,19 @@ function editEducation() {
                                                     className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                     placeholder='ระบุสถานศึกษา'
                                                 />
-                                                <div className={`z-10 w-full absolute shadow max-h-24 overflow-scroll`}>
-                                                    {isFocusUni === index && optionUniversity?.length > 0 && (
-                                                        optionUniversity.map((uni, i) => (
+                                                {isFocusUni === index && optionUniversity?.length > 0 && (
+                                                    <div className={`z-10 w-full absolute shadow max-h-24 overflow-scroll hide-scrollbar`}>
+                                                        {optionUniversity.map((uni, i) => (
                                                             <div
                                                                 key={i}
                                                                 className={`px-2 py-1 border ${bgColor} hover:bg-gray-300 cursor-pointer`}
-                                                                onClick={(e) => {e.stopPropagation(); SeletedOption(uni.university, index)}}
+                                                                onClick={(e) => { e.stopPropagation(); SeletedOption(uni.university, index) }}
                                                             >
                                                                 {uni.university}
                                                             </div>
-                                                        ))
-                                                    )}
-                                                </div>
+                                                        ))}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                         {/* วิทยาเขต */}
