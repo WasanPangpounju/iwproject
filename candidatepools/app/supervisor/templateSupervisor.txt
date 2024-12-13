@@ -1,13 +1,13 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
-import NavbarLogo from '../components/NavbarLogo'
-import NavbarSupervisor from './components/NavbarSupervisor'
+import NavbarLogo from '@/app/components/NavbarLogo'
+import NavbarSupervisor from '@/app/supervisor/components/NavbarSupervisor'
 import Image from 'next/image'
-import Loader from '../components/Loader'
+import Loader from '@/app/components/Loader'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useTheme } from '../ThemeContext'
+import { useTheme } from '@/app/ThemeContext'
 
 
 function SupervisorPage() {
@@ -92,9 +92,9 @@ function SupervisorPage() {
 
     return (
         <div className={`${bgColorMain} ${bgColor}`}>
-            <NavbarLogo dataUser={dataUser} />
+            <NavbarLogo title="ข้อมูลนักศึกษา" dataUser={dataUser} />
             <div className="flex">
-                <NavbarSupervisor status="main" />
+                <NavbarSupervisor status="dataStudent" />
                 <div className="w-10/12 px-7 py-5">
                     {/* <div className={`bg-white rounded-lg p-5`}> */}
                     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>

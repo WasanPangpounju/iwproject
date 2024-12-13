@@ -20,6 +20,15 @@ const nextConfig = {
     },
     trailingSlash: true,
     // assetPrefix: process.env.NODE_ENV === 'production' ? 'https://career.iwsif.org' : '', // Comment out or remove
+    async rewrites() {
+        return [
+            {
+                source: '/supervisor/students/detail/:id',
+                destination: '/supervisor/students/detail/[id].jsx',
+            }
+        ]
+    }
+    
 };
 
 module.exports = nextConfig;

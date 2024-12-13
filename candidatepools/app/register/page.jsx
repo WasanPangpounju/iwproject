@@ -315,7 +315,6 @@ function Register({ statusAgreement }) {
         setOptionUniversity(filteredOptions);
     }
     function SeletedOption(uni) {
-        console.log(uni)
         setUniversity(uni);
         setOptionUniversity([]);
     }
@@ -432,19 +431,20 @@ function Register({ statusAgreement }) {
                                 className={`${bgColorMain} w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                                 placeholder='กรอกรายละเอียด'
                             />
-                            <div className={`w-full absolute shadow max-h-24 overflow-scroll`}>
-                                {isFocusUni && optionUniversity?.length > 0 && (
-                                    optionUniversity.map((uni, index) => (
-                                        <div
-                                            key={index}
-                                            className={`px-2 py-1 border ${bgColor} hover:bg-gray-300 cursor-pointer`}
-                                            onClick={() => SeletedOption(uni.university)}
-                                        >
-                                            {uni.university}
-                                        </div>
-                                    ))
-                                )}
-                            </div>
+                            {isFocusUni && optionUniversity?.length > 0 && (
+                                <div className={`w-full absolute shadow max-h-24 overflow-scroll hide-scrollbar`}>
+                                
+                                    {optionUniversity.map((uni, index) => (
+                                    <div
+                                        key={index}
+                                        className={`px-2 py-1 border ${bgColor} hover:bg-gray-300 cursor-pointer`}
+                                        onClick={() => SeletedOption(uni.university)}
+                                    >
+                                        {uni.university}
+                                    </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                         {/* <div className={`${bgColorMain} ${bgColor} w-96 border px-3 border-gray-400 rounded-lg`}>
                             <Autocomplete
