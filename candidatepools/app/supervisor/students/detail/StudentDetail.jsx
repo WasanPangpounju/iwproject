@@ -101,12 +101,6 @@ function StudentDetail({ id, setIdDetail, setLoader }) {
     const [selectNav, setSelectNav] = useState('ข้อมูลส่วนบุลคล')
     return (
         <div>
-            <div className='cursor-pointer flex gap-2 items-center '
-                onClick={() => setIdDetail(null)}
-            >
-                <Icon className='' path={mdiArrowLeftCircle} size={1} />
-                <p>ย้อนกลับ</p>
-            </div>
             <div className='flex gap-10 mt-5'>
                 <div>
                     <Image priority alt="icon" className='w-24 ' src={dataUser.profile || "/image/main/user.png"} height={1000} width={1000} />
