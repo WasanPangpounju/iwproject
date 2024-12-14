@@ -2,6 +2,12 @@ import { NextResponse } from "next/server";
 import { mongoDB } from "@/lib/mongodb";
 import Educations from "@/models/education"; 
 
+export async function GET(req) {
+    await mongoDB();
+    const educations = await Educations.find({ })
+    return NextResponse.json({ educations });
+}
+
 export async function POST(req) {
     try {
         const {

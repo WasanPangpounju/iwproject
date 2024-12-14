@@ -291,7 +291,7 @@ function EditPersonal() {
         ?.tambon.find((t) => t.name_th === dataUser.addressTambon)?.id || null
     );
 
-    if (dataUser.typeDisabled.length > 1) {
+    if (dataUser?.typeDisabled?.length > 1) {
       setSelectTypeDisabled("พิการมากกว่า 1 ประเภท");
     } else {
       setSelectTypeDisabled("พิการ 1 ประเภท");
@@ -446,7 +446,7 @@ function EditPersonal() {
       !tempSelectTypeDisabled ||
       !tempProfile
     ) {
-      setError("กรุณากรอกข้อมูลให้ครบทุกช่องที่มี *");
+      setError("กรุณากรอกข้อมูลให้ครบทุกช่อง");
       setLoader(false);
       return;
     }

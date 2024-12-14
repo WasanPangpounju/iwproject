@@ -91,7 +91,6 @@ function editEducation() {
     }
 
     //add array
-
     const handleFaculty = (e, index) => {
         const newFaculty = e; // ค่าที่ได้รับจาก input
         setFaculty((prevFaculties) => {
