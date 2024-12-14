@@ -2,6 +2,12 @@ import { NextResponse } from "next/server";
 import { mongoDB } from "@/lib/mongodb"; // เชื่อมต่อ MongoDB ของคุณ
 import Resume from "@/models/resume";
 
+export async function GET(req) {
+    await mongoDB();
+    const interestedWork = await Resume.find({ })
+    return NextResponse.json({ interestedWork });
+}
+
 export async function POST(req) {
     try {
         // เชื่อมต่อฐานข้อมูลก่อน (หากยังไม่เชื่อมต่อ)

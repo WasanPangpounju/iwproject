@@ -9,7 +9,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '@/app/ThemeContext'
 import Icon from '@mdi/react'
-import { mdiPlus, mdiAlertCircle, mdiMagnify, mdiArrowDownDropCircle, mdiPencil, mdiContentSave, mdiDelete } from '@mdi/js'
+import { mdiArrowLeftCircle, mdiAlertCircle, mdiMagnify, mdiArrowDownDropCircle, mdiPencil, mdiContentSave, mdiCloseThick } from '@mdi/js'
 import dataWorkType from '@/app/interestedwork/dataWorkType'
 import Link from 'next/link'
 import StudentDetail from './detail/StudentDetail'
@@ -76,7 +76,8 @@ function SupervisorPage() {
         if (session?.user?.id) {
             getUser(session.user.id);
             getDataStudent();
-            getDataEducation()
+            getDataEducation();
+            getDataWorks();
         } else {
             router.replace("/agreement");
         }
@@ -184,14 +185,125 @@ function SupervisorPage() {
         }
     }
 
+    //getData work
+    const [dataWorks, setDataWorks] = useState([]);
+    async function getDataWorks() {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/interestedwork`, {
+                method: "GET",
+                cache: "no-store"
+            });
+
+            if (!res.ok) {
+                throw new Error("Error getting data from API");
+            }
+
+            const data = await res.json();
+            setDataWorks(data.interestedWork || {});
+
+        } catch (err) {
+            console.error("Error fetching API", err);
+        }
+    }
+
     //table
     function createData(name, university, level, disabled, details, uuid) {
         return { name, university, level, disabled, details, uuid };
     }
 
+    //type search
+    const [wordSearch, setWordSearch] = useState('')
+    const [typeDisabledSearch, setTypeDisabledSearch] = useState('')
+    const [typePersonSearch, setTypePersonSearch] = useState('')
+    const [workSearch, setWorkSearch] = useState('')
+
+    //handle search filter
+    const [wordSearchFilter, setWordSearchFilter] = useState([])
+
+    function handleSearch(e) {
+        e.preventDefault();
+        // if (wordSearchFilter?.length > 3) {
+        //     return;
+        // }
+        if (wordSearch && !wordSearchFilter.includes(wordSearch)) {
+            setWordSearchFilter((prev) => {
+                setWordSearch('');
+                return [...prev, wordSearch];
+            });
+        }
+    }
+    function deleteWordSearch(index) {
+        setWordSearchFilter((prev) => {
+            // ใช้ filter เพื่อลบคำที่ตรงกับ index
+            return prev.filter((_, i) => i !== index);
+        });
+    }
+
+    console.log(wordSearchFilter)
+
     const rows = studentData?.map((std, index) => {
+
+        const tempWordSearch = wordSearchFilter?.length === 0 ? [wordSearch] : wordSearchFilter
+
         const education = dataEducations?.find(edu => edu?.uuid === std?.uuid)
-        console.log(education)
+        const name = `${std?.firstName} ${std?.lastName}`;
+
+        const interestedWork = dataWorks?.find(work => work?.uuid === std?.uuid)
+        const updatedStd = {
+            ...std,
+            interestedWork: interestedWork?.interestedWork || [
+                {
+                    detail: "temp",
+                    province: "temp",
+                    type: "temp"
+                }
+            ]
+        };
+
+        const hasMatchUniversityFilter = education?.university?.find(uni =>
+            tempWordSearch?.some(word => uni.toLowerCase().includes(word.toLowerCase()))
+        );
+
+        const hasMatchNameFilter = tempWordSearch?.some(word =>
+            name?.toLowerCase().includes(word.toLowerCase())
+        );
+
+        const tempWordUniversity = education?.university?.find(uni => uni.toLowerCase().includes(wordSearch.toLowerCase()))
+        const hasMatchUniversity = education?.university?.some(uni =>
+            uni.toLowerCase().includes(tempWordUniversity?.toLowerCase())
+        );
+
+        const hasMatchName = name?.toLowerCase().includes(wordSearch.toLowerCase());
+
+        const hasMatchDisabled = std?.typeDisabled?.some(disa =>
+            disa.toLowerCase().includes(typeDisabledSearch?.toLowerCase())
+        );
+
+        const hasMatchTypePerson = education?.typePerson?.toLowerCase().includes(typePersonSearch.toLowerCase());
+
+        const tempInterestedWork = updatedStd?.interestedWork?.find(work => work?.type.toLowerCase().includes(workSearch.toLowerCase()))
+        const hasMatchInterestedWork = updatedStd?.interestedWork?.some(work =>
+            work?.type.toLowerCase().includes(tempInterestedWork?.type.toLowerCase())
+        );
+
+        if (!hasMatchInterestedWork) {
+            return null;
+        }
+        if (!hasMatchTypePerson) {
+            return null;
+        }
+        if (!hasMatchDisabled) {
+            return null;
+        }
+
+        if (!wordSearch) {
+            if (!hasMatchUniversityFilter && !hasMatchNameFilter) {
+                return null;
+            }
+        } else if (!hasMatchUniversity && !hasMatchName) {
+            return null;
+        }
+
         if (std.role === 'user') {
             return createData(
                 `${std.firstName} ${std.lastName}`,
@@ -210,7 +322,6 @@ function SupervisorPage() {
         }
         return null;
     }).filter(row => row !== null);
-
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -238,14 +349,16 @@ function SupervisorPage() {
                         {!idDetail ? (
                             <>
                                 <p>ค้นหา</p>
-                                <form className='mt-5 flex justify-between flex-wrap gap-y-5 items-end'>
+                                <form onSubmit={(e) => handleSearch(e)} className='mt-5 flex justify-between flex-wrap gap-y-5 items-end'>
                                     <div className='flex gap-5 gap-y-3 flex-wrap'>
                                         <div className='flex flex-col gap-1'>
                                             <label>คำค้นหา</label>
                                             <input
+                                                value={wordSearch}
                                                 type="text"
                                                 className={`${bgColorMain} w-56 border border-gray-400 py-1 px-4 rounded-md`}
                                                 placeholder='ขื่อ-สกุล, มหาวิทยาลัย'
+                                                onChange={(e) => setWordSearch(e.target.value)}
                                             />
                                         </div>
                                         <div className='flex flex-col gap-1'>
@@ -254,6 +367,7 @@ function SupervisorPage() {
                                                 <select
                                                     className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-1 px-4 rounded-lg`}
                                                     style={{ appearance: 'none' }}
+                                                    onChange={(e) => setTypeDisabledSearch(e.target.value)}
                                                 >
                                                     <option value="">ทั้งหมด</option>
                                                     <option value="พิการทางการมองเห็น">พิการทางการมองเห็น</option>
@@ -273,6 +387,7 @@ function SupervisorPage() {
                                                 <select
                                                     className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
                                                     style={{ appearance: 'none' }}
+                                                    onChange={(e) => setTypePersonSearch(e.target.value)}
                                                 >
                                                     <option value="">ทั้งหมด</option>
                                                     <option value="นักศึกษาพิการ">นักศึกษาพิการ</option>
@@ -287,6 +402,7 @@ function SupervisorPage() {
                                                 <select
                                                     className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
                                                     style={{ appearance: 'none' }}
+                                                    onChange={(e) => setWorkSearch(e.target.value)}
                                                 >
                                                     <option value="">ทั้งหมด</option>
                                                     {dataWorkType?.map((work, index) => (
@@ -297,7 +413,6 @@ function SupervisorPage() {
                                             </div>
                                         </div>
                                     </div>
-
                                     <div className="">
                                         <button type="submit"
                                             className={` ${bgColorWhite} ${inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#0d96f8]" : ""}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
@@ -306,13 +421,27 @@ function SupervisorPage() {
                                             <p>ค้นหา</p>
                                         </button>
                                     </div>
-
                                 </form>
-                                <hr className='mt-10 mb-3 border-gray-500' />
+                                {wordSearchFilter?.length > 0 && (
+                                    <div className='mt-5 flex gap-2 flex-wrap'>
+                                        {wordSearchFilter?.map((word, index) => (
+                                            <div key={index}
+                                                className={`${bgColorWhite} ${inputGrayColor === "bg-[#74c7c2]" || "" ? `${index % 2 !== 0 ? "bg-gray-400" : index % 2 === 0 ? "bg-orange-400" : ""}` : "border border-white"}
+                                            px-8 py-1 rounded-lg relative cursor-pointer`}
+                                                onClick={() => deleteWordSearch(index)}
+                                            >
+                                                {word}
+                                                <Icon className={` cursor-pointer text-white-400 absolute right-0 top-[8px] mx-3`} path={mdiCloseThick} size={.5} />
+
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                <hr className={`${wordSearchFilter?.length > 0 ? "mt-2" : "mt-10"} mb-3 border-gray-500`} />
                                 {loaderTable ? (
                                     <div className='py-2'>กำลังโหลดข้อมูล...</div>
                                 ) : (
-                                    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                                    <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow: 'none' }}>
                                         <TableContainer sx={{ maxHeight: 700 }}>
                                             <Table stickyHeader aria-label="sticky table">
                                                 <TableHead>
@@ -388,7 +517,21 @@ function SupervisorPage() {
                                 )}
                             </>
                         ) : (
-                            <StudentDetail id={idDetail} setIdDetail={setIdDetail} setLoader={setLoader} />
+                            <div>
+                                <div className='cursor-pointer flex gap-2 items-center '
+                                    onClick={() => {
+                                        setIdDetail(null);
+                                        setWordSearch('');
+                                        setTypeDisabledSearch('');
+                                        setTypePersonSearch('');
+                                        setWorkSearch('');
+                                    }}
+                                >
+                                    <Icon className='' path={mdiArrowLeftCircle} size={1} />
+                                    <p>ย้อนกลับ</p>
+                                </div>
+                                <StudentDetail id={idDetail} setIdDetail={setIdDetail} setLoader={setLoader} />
+                            </div>
                         )}
                     </div>
                 </div>
