@@ -4,15 +4,17 @@ import React, { useState, useEffect } from 'react'
 import NavbarLogo from '@/app/components/NavbarLogo'
 import NavbarSupervisor from '@/app/supervisor/components/NavbarSupervisor'
 import Image from 'next/image'
-import Loader from '@/app/components/Loader'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '@/app/ThemeContext'
 import Icon from '@mdi/react';
 import { mdiAccountEdit, mdiFilePdfBox, mdiCloseCircle, mdiArrowLeftCircle, mdiArrowDownDropCircle, mdiPencil, mdiContentSave, mdiDelete } from '@mdi/js';
+import StudentPersonal from './StudentPersonal'
+import StudentEducation from './StudentEducation'
+import StudentHistoryWork from './StudentHistoryWork'
+import StudentSkills from './StudentSkills'
 
-function StudentDetail({ id, setIdDetail }) {
-    const [loader, setLoader] = useState(true)
+function StudentDetail({ id, setIdDetail, setLoader }) {
 
     const router = useRouter();
     const { status, data: session } = useSession();
@@ -112,7 +114,7 @@ function StudentDetail({ id, setIdDetail }) {
                 <div className='flex flex-col gap-2 justify-center'>
                     <p>{dataUser?.prefix || ""} {dataUser?.firstName} {dataUser?.lastName} </p>
                     <p>ชื่อเล่น: {dataUser?.nickname || "ไม่มีข้อมูล"}</p>
-                    <p>อายุ: {dataUser?.yearBirthday ? `${yearToday - dataUser?.yearBirthday} ปี`:"ไม่มีข้อมูล"} </p>
+                    <p>อายุ: {dataUser?.yearBirthday ? `${yearToday - dataUser?.yearBirthday} ปี` : "ไม่มีข้อมูล"} </p>
                 </div>
             </div>
             <div>
@@ -144,6 +146,17 @@ function StudentDetail({ id, setIdDetail }) {
                 </nav>
             </div>
             <hr className='border-gray-500 mt-1' />
+            {selectNav === "ข้อมูลส่วนบุลคล" ? (
+                <StudentPersonal dataUser={dataUser} setLoader={setLoader}/>
+            ) : selectNav === "ประวัติการศึกษา" ?(
+                <StudentEducation  dataUser={dataUser} id={id} setLoader={setLoader}/>
+            ) : selectNav === "ประวัติการฝึกงาน/ทำงาน" ? (
+                <StudentHistoryWork dataUser={dataUser} id={id} setLoader={setLoader}/>
+            ) : selectNav === "ความสามารถ/การอบรม" ? (
+                <StudentSkills dataUser={dataUser} id={id} setLoader={setLoader}/>
+            ): (
+                <div>เกิดข้อผิดพลาด</div>
+            )}
         </div>
     )
 }

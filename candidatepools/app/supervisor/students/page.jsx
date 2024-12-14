@@ -76,6 +76,7 @@ function SupervisorPage() {
         if (session?.user?.id) {
             getUser(session.user.id);
             getDataStudent();
+            getDataEducation()
         } else {
             router.replace("/agreement");
         }
@@ -162,25 +163,53 @@ function SupervisorPage() {
         }
     }
 
+    //get Education
+    const [dataEducations, setDataEducations] = useState(null)
+    async function getDataEducation(id) {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`, {
+                method: "GET",
+                cache: "no-store"
+            });
+
+            if (!res.ok) {
+                throw new Error("Error getting data from API");
+            }
+
+            const data = await res.json();
+            setDataEducations(data.educations || {});
+
+        } catch (err) {
+            console.error("Error fetching API", err);
+        }
+    }
+
     //table
     function createData(name, university, level, disabled, details, uuid) {
         return { name, university, level, disabled, details, uuid };
     }
 
     const rows = studentData?.map((std, index) => {
+        const education = dataEducations?.find(edu => edu?.uuid === std?.uuid)
+        console.log(education)
         if (std.role === 'user') {
             return createData(
                 `${std.firstName} ${std.lastName}`,
-                `${std.university}`,
-                `${std.typePerson === 'นักศึกษาพิการ' && std.educationLevel ? `${std.educationLevel} ปี ${std.level}` : std.typePerson === 'บัณฑิตพิการ' ? 'บัณฑิตพิการ' : 'ไม่มีข้อมูล'}`,
-                `${std.typeDisabled?.length > 1 ? std.typeDisabled[0] : `${std.typeDisabled[0]}...`}`,
+                `${education?.university?.join(',\n') || 'ไม่มีข้อมูล'}`,
+                `${`${education?.typePerson === 'นักศึกษาพิการ'
+                    && education?.educationLevel.length > 1
+                    ? `${education?.educationLevel[0]} ปี ${education?.level[0]}`
+                    : education?.typePerson === 'บัณฑิตพิการ'
+                        ? 'บัณฑิตพิการ'
+                        : 'ไม่มีข้อมูล'}`}`,
+                // `${std.typeDisabled?.length > 1 ? std.typeDisabled[0] : `${std.typeDisabled[0]}...`}`,
+                `${std?.typeDisabled?.join(',\n') || 'ไม่มีข้อมูล'}`,
                 "s",
                 `${std?.uuid}`
             );
         }
         return null;
     }).filter(row => row !== null);
-
 
 
     const [page, setPage] = React.useState(0);
@@ -301,6 +330,13 @@ function SupervisorPage() {
                                                 </TableHead>
                                                 <TableBody>
                                                     {rows
+                                                        .sort((a, b) => {
+                                                            // แทน 'columnToSort' ด้วยชื่อฟิลด์ที่ต้องการเรียง
+                                                            const columnToSort = 'name'; // เช่น เรียงตามชื่อ
+                                                            if (a[columnToSort] < b[columnToSort]) return 1; // เรียงจากมากไปน้อย
+                                                            if (a[columnToSort] > b[columnToSort]) return -1;
+                                                            return 0; // กรณีที่เท่ากัน
+                                                        })
                                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                                         .map((row, index) => {
                                                             const student = studentData.find(std => std?.uuid === row.uuid)
@@ -352,7 +388,7 @@ function SupervisorPage() {
                                 )}
                             </>
                         ) : (
-                            <StudentDetail id={idDetail} setIdDetail={setIdDetail} />
+                            <StudentDetail id={idDetail} setIdDetail={setIdDetail} setLoader={setLoader} />
                         )}
                     </div>
                 </div>
