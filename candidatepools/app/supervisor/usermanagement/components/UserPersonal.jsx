@@ -20,7 +20,7 @@ import { set } from "mongoose";
 import { useTheme } from "@/app/ThemeContext";
 import universitys from '@/app/data/universitys.json'
 
-function UserPersonal({ dataUser, setLoader }) {
+function UserPersonal({ dataUser, setLoader, page }) {
     const {
         setFontSize,
         setBgColor,
@@ -1670,77 +1670,81 @@ function UserPersonal({ dataUser, setLoader }) {
                                 )}
                             </div>
                         </div>
-                        <div className="flex col flex-col ">
-                            <label>Username <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                            <input
-                                type="text"
-                                className={`${!editMode
-                                    ? `${inputEditColor} cursor-default focus:outline-none`
-                                    : " "
-                                    } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
-                                onChange={(e) => {
-                                    setUser(e.target.value);
-                                }}
-                                defaultValue={getUser || ""}
-                                placeholder="สร้าง username ของคุณ"
-                                readOnly={!editMode}
-                            />
-                        </div>
-                        <div className="relative flex col flex-col">
-                            <label>Password <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                            <input
-                                defaultValue={getPassword || ""}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className={`${!editMode
-                                    ? `${inputEditColor} cursor-default focus:outline-none`
-                                    : " "
-                                    } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
-                                type={showPassword ? "text" : "password"}
-                                placeholder="รหัสผ่าน"
-                            />
-                            {editMode && (
-                                <Image
-                                    onClick={(e) => setShowPassword((e) => !e)}
-                                    alt="icon-eye"
-                                    className="hover:cursor-pointer absolute top-[34px] right-5 w-4 h-4"
-                                    src="/image/main/eye.png"
-                                    height={1000}
-                                    width={1000}
-                                    priority
-                                />
-                            )}
-                        </div>
-                        <div className={`flex flex-col`}>
-                            <label>
-                                ประเภทผู้ใช้งาน <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
-                            </label>
-                            <div className="relative col w-fit mt-1">
-                                <select
-                                    onChange={(e) => {
-                                        setRole(e.target.value);
-                                    }}
-                                    className={` ${!editMode
-                                        ? ` ${inputEditColor}  cursor-default `
-                                        : `cursor-pointer`
-                                        } ${bgColorMain} w-44  border border-gray-400 py-2 px-4 rounded-lg`}
-                                    placeholder="ประเภท"
-                                    style={{ appearance: "none" }}
-                                    disabled={!editMode}
-                                    value={role || getRole || "0"}
-                                >
-                                    <option value="0">-</option>
-                                    <option value="user">user</option>
-                                    <option value="admin">admin</option>
-                                    <option value="supervisor">supervisor</option>
-                                </select>
-                                <Icon
-                                    className={`${!editMode ? "hidden" : ""
-                                        } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                                    path={mdiArrowDownDropCircle}
-                                    size={0.8}
-                                />
-                            </div>
-                        </div>
+                        {page === "supervisor" && (
+                            <>
+                                <div className="flex col flex-col ">
+                                    <label>Username <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                    <input
+                                        type="text"
+                                        className={`${!editMode
+                                            ? `${inputEditColor} cursor-default focus:outline-none`
+                                            : " "
+                                            } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
+                                        onChange={(e) => {
+                                            setUser(e.target.value);
+                                        }}
+                                        defaultValue={getUser || ""}
+                                        placeholder="สร้าง username ของคุณ"
+                                        readOnly={!editMode}
+                                    />
+                                </div>
+                                <div className="relative flex col flex-col">
+                                    <label>Password <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                    <input
+                                        defaultValue={getPassword || ""}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className={`${!editMode
+                                            ? `${inputEditColor} cursor-default focus:outline-none`
+                                            : " "
+                                            } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="รหัสผ่าน"
+                                    />
+                                    {editMode && (
+                                        <Image
+                                            onClick={(e) => setShowPassword((e) => !e)}
+                                            alt="icon-eye"
+                                            className="hover:cursor-pointer absolute top-[34px] right-5 w-4 h-4"
+                                            src="/image/main/eye.png"
+                                            height={1000}
+                                            width={1000}
+                                            priority
+                                        />
+                                    )}
+                                </div>
+                                <div className={`flex flex-col`}>
+                                    <label>
+                                        ประเภทผู้ใช้งาน <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                                    </label>
+                                    <div className="relative col w-fit mt-1">
+                                        <select
+                                            onChange={(e) => {
+                                                setRole(e.target.value);
+                                            }}
+                                            className={` ${!editMode
+                                                ? ` ${inputEditColor}  cursor-default `
+                                                : `cursor-pointer`
+                                                } ${bgColorMain} w-44  border border-gray-400 py-2 px-4 rounded-lg`}
+                                            placeholder="ประเภท"
+                                            style={{ appearance: "none" }}
+                                            disabled={!editMode}
+                                            value={role || getRole || "0"}
+                                        >
+                                            <option value="0">-</option>
+                                            <option value="user">user</option>
+                                            <option value="admin">admin</option>
+                                            <option value="supervisor">supervisor</option>
+                                        </select>
+                                        <Icon
+                                            className={`${!editMode ? "hidden" : ""
+                                                } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
+                                            path={mdiArrowDownDropCircle}
+                                            size={0.8}
+                                        />
+                                    </div>
+                                </div>
+                            </>
+                        )}
                         {(role && role === "user") || (!role && getRole === "user") ? (
                             <>
                             </>

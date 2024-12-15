@@ -892,7 +892,7 @@ function editEducation() {
                                         </div>
                                         {/* วิทยาเขต */}
                                         {index === 0 && typePerson === 'นักศึกษาพิการ' && (
-                                            campus[index] || editMode ? (
+                                            (campus?.length > 1 && campus[index]) || editMode ? (
                                                 <div className="flex col flex-col">
                                                     <label>วิทยาเขต</label>
                                                     <input
