@@ -220,18 +220,29 @@ function SupervisorPage() {
     //handle search filter
     const [wordSearchFilter, setWordSearchFilter] = useState([])
 
+    // function handleSearch(e) {
+    //     e.preventDefault();
+    //     // if (wordSearchFilter?.length > 3) {
+    //     //     return;
+    //     // }
+    //     if (wordSearch && !wordSearchFilter.includes(wordSearch)) {
+    //         setWordSearchFilter((prev) => {
+    //             setWordSearch('');
+    //             return [...prev, wordSearch];
+    //         });
+    //     }
+    // }
     function handleSearch(e) {
         e.preventDefault();
-        // if (wordSearchFilter?.length > 3) {
-        //     return;
-        // }
-        if (wordSearch && !wordSearchFilter.includes(wordSearch)) {
-            setWordSearchFilter((prev) => {
+    
+        if (wordSearch) {
+            setWordSearchFilter(() => {
                 setWordSearch('');
-                return [...prev, wordSearch];
+                return [wordSearch]; // แทนที่คำค้นหาใหม่
             });
         }
     }
+
     function deleteWordSearch(index) {
         setWordSearchFilter((prev) => {
             // ใช้ filter เพื่อลบคำที่ตรงกับ index
@@ -283,17 +294,19 @@ function SupervisorPage() {
         const hasMatchInterestedWork = updatedStd?.interestedWork?.some(work =>
             work?.type.toLowerCase().includes(tempInterestedWork?.type.toLowerCase())
         );
-
+      
         if (!hasMatchInterestedWork) {
             return null;
         }
+        
         if (!hasMatchTypePerson) {
             return null;
         }
-        if (!hasMatchDisabled) {
+      
+        if (!hasMatchDisabled && typeDisabledSearch) {
             return null;
         }
-
+        
         if (!wordSearch) {
             if (!hasMatchUniversityFilter && !hasMatchNameFilter) {
                 return null;
@@ -307,7 +320,7 @@ function SupervisorPage() {
                 `${std.firstName} ${std.lastName}`,
                 `${education?.university?.join(',\n') || 'ไม่มีข้อมูล'}`,
                 `${`${education?.typePerson === 'นักศึกษาพิการ'
-                    && education?.educationLevel.length > 1
+                    && education?.educationLevel.length >= 1
                     ? `${education?.educationLevel[0]} ปี ${education?.level[0]}`
                     : education?.typePerson === 'บัณฑิตพิการ'
                         ? 'บัณฑิตพิการ'

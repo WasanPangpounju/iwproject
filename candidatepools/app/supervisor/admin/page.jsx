@@ -14,6 +14,7 @@ import dataWorkType from '@/app/interestedwork/dataWorkType'
 import Link from 'next/link'
 import EditUser from '@/app/supervisor/usermanagement/components/EditUser'
 import AddUser from '@/app/supervisor/usermanagement/components/AddUser'
+import useProvinceData from '@/app/components/province'
 
 //table
 import Paper from '@mui/material/Paper';
@@ -44,7 +45,7 @@ const columns = [
     },
     {
         id: 'disabled',
-        label: 'ประเภทผู้ใช้งาน',
+        label: 'จังหวัด',
         minWidth: 170,
     },
     {
@@ -55,13 +56,15 @@ const columns = [
     },
 ];
 
-function UserManagement() {
+function AdminManagement() {
     const [loader, setLoader] = useState(false)
-
     const router = useRouter();
     const { status, data: session } = useSession();
     const [dataUser, setDataUser] = useState([])
 
+    //data Province
+    const dataProvince = useProvinceData();
+   
     // Validate session and fetch user data
     useEffect(() => {
         if (status === "loading") {
@@ -214,7 +217,7 @@ function UserManagement() {
 
     //type search
     const [wordSearch, setWordSearch] = useState('')
-    const [typePersonSearch, setTypePersonSearch] = useState('')
+    const [addressProvince, setAddressProvince] = useState('')
 
     //handle search filter
     const [wordSearchFilter, setWordSearchFilter] = useState([])
@@ -238,53 +241,53 @@ function UserManagement() {
 
     const rows = studentData?.map((std, index) => {
 
-        if(std?.uuid === session?.user?.id){
+        if (std?.uuid === session?.user?.id) {
             return null;
         }
-        
+
         const tempWordSearch = wordSearchFilter?.length === 0 ? [wordSearch] : wordSearchFilter
 
-        const education = dataEducations?.find(edu => edu?.uuid === std?.uuid)
-        const name = `${std?.firstName} ${std?.lastName}`;
-    
-        const hasMatchUniversityFilter = education?.university?.find(uni =>
-            tempWordSearch?.some(word => uni.toLowerCase().includes(word.toLowerCase()))
+        const hasMatchUniversityFilter = tempWordSearch?.some(word =>
+            std?.university?.toLowerCase().includes(word.toLowerCase())
         );
+
+        const name = `${std?.firstName} ${std?.lastName}`;
+
         const hasMatchNameFilter = tempWordSearch?.some(word =>
             name?.toLowerCase().includes(word.toLowerCase())
         );
 
-        const tempWordUniversity = education?.university?.find(uni => uni.toLowerCase().includes(wordSearch.toLowerCase()))
-        const hasMatchUniversity = education?.university?.some(uni =>
-            uni.toLowerCase().includes(tempWordUniversity?.toLowerCase())
+        const hasMatchUniversity = tempWordSearch?.some(word =>
+            std?.university?.toLowerCase().includes(word.toLowerCase())
         );
-
         const hasMatchName = name?.toLowerCase().includes(wordSearch.toLowerCase());
 
-        const hasMatchTypePerson = std?.role?.toLowerCase().includes(typePersonSearch.toLowerCase());
-
-        
-   
+        const hasMatchTypePerson = std?.addressProvince?.toLowerCase().includes(addressProvince.toLowerCase());
         if (!hasMatchTypePerson) {
             return null;
         }
 
-        if (!wordSearch) {
+        if (!wordSearch || wordSearch === "") {
             if (!hasMatchUniversityFilter && !hasMatchNameFilter) {
                 return null;
             }
+            
         } else if (!hasMatchUniversity && !hasMatchName) {
             return null;
         }
+    
+        if (std?.role === "admin") {
+            return createData(
+                `${std.firstName} ${std.lastName}`,
+                `${std?.university || 'ไม่มีข้อมูล'}`,
+                `${std?.position || 'ไม่มีข้อมูล'}`,
+                `${std?.addressProvince}`,
+                "s",
+                `${std?.uuid}`
+            );
+        }
+        return null;
 
-        return createData(
-            `${std.firstName} ${std.lastName}`,
-            `${education?.university?.join(',\n') || std?.university || 'ไม่มีข้อมูล'}`,
-            `${std?.position || 'ไม่มีข้อมูล'}`,
-            `${std?.role}`,
-            "s",
-            `${std?.uuid}`
-        );
     }).filter(row => row !== null);
 
     const [page, setPage] = React.useState(0);
@@ -307,9 +310,9 @@ function UserManagement() {
 
     return (
         <div className={`${fontSize} ${bgColorMain} ${bgColor}`}>
-            <NavbarLogo title="จัดการผู้ใช้งาน" dataUser={dataUser} />
+            <NavbarLogo title="ข้อมูลเจ้าหน้าที่" dataUser={dataUser} />
             <div className="flex">
-                <NavbarSupervisor status="usermanagement" />
+                <NavbarSupervisor status="adminManagement" />
                 <div className="w-10/12 px-7 py-5">
                     {/* <div className={`bg-white rounded-lg p-5`}> */}
                     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
@@ -319,7 +322,7 @@ function UserManagement() {
                                     onClick={() => {
                                         setAddUser(false);
                                         setWordSearch('');
-                                        setTypePersonSearch('');
+                                        setAddressProvince('');
                                     }}
                                 >
                                     <Icon className='' path={mdiArrowLeftCircle} size={1} />
@@ -345,17 +348,17 @@ function UserManagement() {
                                             </div>
 
                                             <div className='flex flex-col gap-1'>
-                                                <label >ประเภทผู้ใช้งาน</label>
+                                                <label >จังหวัด</label>
                                                 <div className="relative col w-fit">
                                                     <select
                                                         className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
                                                         style={{ appearance: 'none' }}
-                                                        onChange={(e) => setTypePersonSearch(e.target.value)}
+                                                        onChange={(e) => setAddressProvince(e.target.value)}
                                                     >
                                                         <option value="">ทั้งหมด</option>
-                                                        <option value="user">user</option>
-                                                        <option value="admin">admin</option>
-                                                        <option value="supervisor">supervisor</option>
+                                                        {dataProvince?.map((pv, index) => (
+                                                             <option key={index} value={pv.name_th}>{pv.name_th}</option>
+                                                        ))}
                                                     </select>
                                                     <Icon className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`} path={mdiArrowDownDropCircle} size={.5} />
                                                 </div>
@@ -369,16 +372,6 @@ function UserManagement() {
                                                 </button>
                                             </div>
                                         </div>
-                                        <div className="flex items-end">
-                                            <button type="submit"
-                                                className={` ${bgColorWhite} ${inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#74d886]" : ""}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-                                                onClick={() => setAddUser(true)}
-                                            >
-                                                <Icon path={mdiPlus} size={.7} />
-                                                <p>เพิ่มผู้ใช้งาน</p>
-                                            </button>
-                                        </div>
-
                                     </form>
                                     {wordSearchFilter?.length > 0 && (
                                         <div className='mt-5 flex gap-2 flex-wrap'>
@@ -484,13 +477,13 @@ function UserManagement() {
                                         onClick={() => {
                                             setIdDetail(null);
                                             setWordSearch('');
-                                            setTypePersonSearch('');
+                                            setAddressProvince('');
                                         }}
                                     >
                                         <Icon className='' path={mdiArrowLeftCircle} size={1} />
                                         <p>ย้อนกลับ</p>
                                     </div>
-                                    <EditUser id={idDetail} setIdDetail={setIdDetail} setLoader={setLoader} page="supervisor" />
+                                    <EditUser id={idDetail} setIdDetail={setIdDetail} setLoader={setLoader} page="admin" />
                                 </div>
                             )
                         )}
@@ -506,4 +499,4 @@ function UserManagement() {
     )
 }
 
-export default UserManagement
+export default AdminManagement

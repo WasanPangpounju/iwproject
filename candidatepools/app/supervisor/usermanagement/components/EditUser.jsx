@@ -14,7 +14,7 @@ import StudentSkills from '@/app/supervisor/students/detail/StudentSkills'
 import UserPersonal from '@/app/supervisor/usermanagement/components/UserPersonal'
 import Swal from 'sweetalert2'
 
-function EditUser({ id, setIdDetail, setLoader }) {
+function EditUser({ id, setIdDetail, setLoader, page }) {
 
     const router = useRouter();
     const { status, data: session } = useSession();
@@ -188,7 +188,7 @@ function EditUser({ id, setIdDetail, setLoader }) {
                     <div className='flex flex-col gap-2 justify-center'>
                         <p>{dataUser?.prefix || ""} {dataUser?.firstName} {dataUser?.lastName} </p>
                         <p>ชื่อเล่น: {dataUser?.nickname || "ไม่มีข้อมูล"}</p>
-                        <p>อายุ: {dataUser?.yearBirthday ? `${yearToday - dataUser?.yearBirthday} ปี` : "ไม่มีข้อมูล"} </p>
+                        <p>ตำแหน่ง: {dataUser?.position || "ไม่มีข้อมูล"} </p>
                     </div>
                     <div className='absolute right-0 top-0'>
                         <Icon onClick={() => deletedUser(dataUser?._id, dataUser?.idCard, dataUser?.firstName)} className={` cursor-pointer text-red-400 mx-2`} path={mdiCloseCircle} size={.8} />
@@ -250,7 +250,7 @@ function EditUser({ id, setIdDetail, setLoader }) {
                 )
             )} */}
             {selectNav === "ข้อมูลส่วนบุลคล" && (
-                <UserPersonal dataUser={dataUser} setLoader={setLoader} />
+                <UserPersonal dataUser={dataUser} setLoader={setLoader} page={page} />
             )}
         </div>
     )

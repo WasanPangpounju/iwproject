@@ -321,13 +321,13 @@ function AddUser({ setAddUser, dataUser, setLoader }) {
         }
 
         // Validate nickname
-        if (tempNickname.length > 0) {
-            if (tempNickname.length < 2) {
+        if (tempNickname?.length > 0) {
+            if (tempNickname?.length < 2) {
                 setError("ใส่ชื่อเล่นที่ถูกต้อง");
                 setLoader(false);
                 return;
             }
-            if (tempNickname.trim() !== tempNickname) {
+            if (tempNickname?.trim() !== tempNickname) {
                 setError("ใส่ชื่อเล่นที่ถูกต้อง");
                 setLoader(false);
                 return;
@@ -541,15 +541,7 @@ function AddUser({ setAddUser, dataUser, setLoader }) {
                 }
             );
 
-            const resEducation = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ uuid: id || id, tempEmail, tempTypePerson, tempUniversity })
-            })
-
-            if (!res.ok || !resEducation.ok) {
+            if (!res.ok) {
                 setLoader(false);
                 Swal.fire({
                     title: "เกิดข้อผิดพลาด",
@@ -1643,7 +1635,6 @@ function AddUser({ setAddUser, dataUser, setLoader }) {
                                 value={role || "0"}
                             >
                                 <option value="0">-</option>
-                                <option value="user">user</option>
                                 <option value="admin">admin</option>
                                 <option value="supervisor">supervisor</option>
                             </select>
@@ -1655,27 +1646,23 @@ function AddUser({ setAddUser, dataUser, setLoader }) {
                             />
                         </div>
                     </div>
-                    {(role && role === "user") ? (
-                        <>
-                        </>
-                    ) : (
-                        <div className="flex col flex-col ">
-                            <label>ตำแหน่ง <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                            <input
-                                type="text"
-                                className={`${!editMode
-                                    ? `${inputEditColor} cursor-default focus:outline-none`
-                                    : " "
-                                    } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
-                                onChange={(e) => {
-                                    setPosition(e.target.value);
-                                }}
-                                defaultValue={""}
-                                placeholder="ตำแหน่งงานปัจจุบัน"
-                                readOnly={!editMode}
-                            />
-                        </div>
-                    )}
+
+                    <div className="flex col flex-col ">
+                        <label>ตำแหน่ง <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                        <input
+                            type="text"
+                            className={`${!editMode
+                                ? `${inputEditColor} cursor-default focus:outline-none`
+                                : " "
+                                } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
+                            onChange={(e) => {
+                                setPosition(e.target.value);
+                            }}
+                            defaultValue={""}
+                            placeholder="ตำแหน่งงานปัจจุบัน"
+                            readOnly={!editMode}
+                        />
+                    </div>
 
                 </div>
 
