@@ -19,6 +19,7 @@ import { PulseLoader } from "react-spinners";
 import { set } from "mongoose";
 import { useTheme } from "@/app/ThemeContext";
 import universitys from '@/app/data/universitys.json'
+import { v4 as uuidv4 } from 'uuid';
 
 function AddUser({ setAddUser, dataUser, setLoader }) {
     const {
@@ -223,42 +224,43 @@ function AddUser({ setAddUser, dataUser, setLoader }) {
         const tempNickname = nickname;
         const tempRole = role;
         const tempPosition = position;
+        const tempTypePerson = "";
 
-        console.log("tempUser:", tempUser);
-        console.log("tempPassword:", tempPassword);
-        console.log("tempFirstName:", tempFirstName);
-        console.log("tempLastName:", tempLastName);
-        console.log("tempProfile:", tempProfile);
-        console.log("tempTypeDisabled:", tempTypeDisabled);
-        console.log("tempDetailDisabled:", tempDetailDisabled);
-        console.log("tempUniversity:", tempUniversity);
-        console.log("tempEmail:", tempEmail);
-        console.log("tempPrefix:", tempPrefix);
-        console.log("tempNickname:", tempNickname);
-        console.log("tempSex:", tempSex);
-        console.log("tempDateBirthday:", tempDateBirthday);
-        console.log("tempMonthBirthday:", tempMonthBirthday);
-        console.log("tempYearBirthday:", tempYearBirthday);
-        console.log("tempNationality:", tempNationality);
-        console.log("tempReligion:", tempReligion);
-        console.log("tempIdCard:", tempIdCard);
-        console.log("tempAddressIdCard:", tempAddressIdCard);
-        console.log("tempAddressIdCardProvince:", tempAddressIdCardProvince);
-        console.log("tempAddressIdCardAmphor:", tempAddressIdCardAmphor);
-        console.log("tempAddressIdCardTambon:", tempAddressIdCardTambon);
-        console.log("tempAddressIdCardZipCode:", tempAddressIdCardZipCode);
-        console.log("tempAddress:", tempAddress);
-        console.log("tempAddressProvince:", tempAddressProvince);
-        console.log("tempAddressAmphor:", tempAddressAmphor);
-        console.log("tempAddressTambon:", tempAddressTambon);
-        console.log("tempAddressZipCode:", tempAddressZipCode);
-        console.log("tempTel:", tempTel);
-        console.log("tempTelEmergency:", tempTelEmergency);
-        console.log("tempRelationship:", tempRelationship);
-        console.log("tempProfile:", tempProfile);
-        console.log("tempRole:", tempRole);
-        console.log("tempPosition:", tempPosition);
-        console.log("tempRole:", tempRole);
+        // console.log("tempUser:", tempUser);
+        // console.log("tempPassword:", tempPassword);
+        // console.log("tempFirstName:", tempFirstName);
+        // console.log("tempLastName:", tempLastName);
+        // console.log("tempProfile:", tempProfile);
+        // console.log("tempTypeDisabled:", tempTypeDisabled);
+        // console.log("tempDetailDisabled:", tempDetailDisabled);
+        // console.log("tempUniversity:", tempUniversity);
+        // console.log("tempEmail:", tempEmail);
+        // console.log("tempPrefix:", tempPrefix);
+        // console.log("tempNickname:", tempNickname);
+        // console.log("tempSex:", tempSex);
+        // console.log("tempDateBirthday:", tempDateBirthday);
+        // console.log("tempMonthBirthday:", tempMonthBirthday);
+        // console.log("tempYearBirthday:", tempYearBirthday);
+        // console.log("tempNationality:", tempNationality);
+        // console.log("tempReligion:", tempReligion);
+        // console.log("tempIdCard:", tempIdCard);
+        // console.log("tempAddressIdCard:", tempAddressIdCard);
+        // console.log("tempAddressIdCardProvince:", tempAddressIdCardProvince);
+        // console.log("tempAddressIdCardAmphor:", tempAddressIdCardAmphor);
+        // console.log("tempAddressIdCardTambon:", tempAddressIdCardTambon);
+        // console.log("tempAddressIdCardZipCode:", tempAddressIdCardZipCode);
+        // console.log("tempAddress:", tempAddress);
+        // console.log("tempAddressProvince:", tempAddressProvince);
+        // console.log("tempAddressAmphor:", tempAddressAmphor);
+        // console.log("tempAddressTambon:", tempAddressTambon);
+        // console.log("tempAddressZipCode:", tempAddressZipCode);
+        // console.log("tempTel:", tempTel);
+        // console.log("tempTelEmergency:", tempTelEmergency);
+        // console.log("tempRelationship:", tempRelationship);
+        // console.log("tempProfile:", tempProfile);
+        // console.log("tempRole:", tempRole);
+        // console.log("tempPosition:", tempPosition);
+        // console.log("tempRole:", tempRole);
 
         if (role !== "user") {
             if (
@@ -393,7 +395,9 @@ function AddUser({ setAddUser, dataUser, setLoader }) {
             return;
         }
 
+        const id = uuidv4();
         const bodyData = {
+            id: id,
             user: tempUser,
             password: tempPassword,
             firstName: tempFirstName,
@@ -537,7 +541,15 @@ function AddUser({ setAddUser, dataUser, setLoader }) {
                 }
             );
 
-            if (!res.ok) {
+            const resEducation = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ uuid: id || id, tempEmail, tempTypePerson, tempUniversity })
+            })
+
+            if (!res.ok || !resEducation.ok) {
                 setLoader(false);
                 Swal.fire({
                     title: "เกิดข้อผิดพลาด",
