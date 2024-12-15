@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import Swal from 'sweetalert2';
-import Icon from '@mdi/react';
+
 import { saveAs } from 'file-saver';
+import Icon from '@mdi/react';
 import { mdiDelete, mdiDownload, mdiPencil, mdiAlertCircle, mdiAccountEdit, mdiContentSave, mdiArrowDownDropCircle, mdiCloseCircle, mdiPlus } from '@mdi/js';
 import universitys from '@/app/data/universitys.json'
 

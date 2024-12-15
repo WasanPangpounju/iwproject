@@ -239,8 +239,6 @@ function SupervisorPage() {
         });
     }
 
-    console.log(wordSearchFilter)
-
     const rows = studentData?.map((std, index) => {
 
         const tempWordSearch = wordSearchFilter?.length === 0 ? [wordSearch] : wordSearchFilter
@@ -415,9 +413,9 @@ function SupervisorPage() {
                                     </div>
                                     <div className="">
                                         <button type="submit"
-                                            className={` ${bgColorWhite} ${inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#0d96f8]" : ""}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
+                                            className={` ${bgColorWhite} ${inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#0d96f8]" : ""}  hover:cursor-pointer py-1 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
                                         >
-                                            <Icon path={mdiMagnify} size={.7} />
+                                            <Icon path={mdiMagnify} size={1} />
                                             <p>ค้นหา</p>
                                         </button>
                                     </div>
@@ -441,79 +439,83 @@ function SupervisorPage() {
                                 {loaderTable ? (
                                     <div className='py-2'>กำลังโหลดข้อมูล...</div>
                                 ) : (
-                                    <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow: 'none' }}>
-                                        <TableContainer sx={{ maxHeight: 700 }}>
-                                            <Table stickyHeader aria-label="sticky table">
-                                                <TableHead>
-                                                    <TableRow>
-                                                        {columns.map((column) => (
-                                                            <TableCell
-                                                                key={column.id}
-                                                                align={column.align}
-                                                                style={{ minWidth: column.minWidth }}
-                                                            >
-                                                                {column.label}
-                                                            </TableCell>
-                                                        ))}
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {rows
-                                                        .sort((a, b) => {
-                                                            // แทน 'columnToSort' ด้วยชื่อฟิลด์ที่ต้องการเรียง
-                                                            const columnToSort = 'name'; // เช่น เรียงตามชื่อ
-                                                            if (a[columnToSort] < b[columnToSort]) return 1; // เรียงจากมากไปน้อย
-                                                            if (a[columnToSort] > b[columnToSort]) return -1;
-                                                            return 0; // กรณีที่เท่ากัน
-                                                        })
-                                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                        .map((row, index) => {
-                                                            const student = studentData.find(std => std?.uuid === row.uuid)
-                                                            if (student) {
-                                                                return (
-                                                                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                                                        {columns.map((column) => {
-                                                                            if (column.id === 'details') {
-                                                                                return (
-                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                        <div
-                                                                                            onClick={() => setIdDetail(student?.uuid)}
-                                                                                            className='cursor-pointer text-center flex justify-center'
-                                                                                        >
-                                                                                            <Icon className={`cursor-pointer text-black`} path={mdiAlertCircle} size={1} />
-                                                                                        </div>
-                                                                                    </TableCell>
-                                                                                );
-                                                                            } else {
-                                                                                const value = row[column.id];
-                                                                                return (
-                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                        {column.format && typeof value === 'number'
-                                                                                            ? column.format(value)
-                                                                                            : value}
-                                                                                    </TableCell>
-                                                                                );
-                                                                            }
+                                    studentData?.length > 1 ? (
+                                        <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow: 'none' }}>
+                                            <TableContainer sx={{ maxHeight: 700 }}>
+                                                <Table stickyHeader aria-label="sticky table">
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            {columns.map((column) => (
+                                                                <TableCell
+                                                                    key={column.id}
+                                                                    align={column.align}
+                                                                    style={{ minWidth: column.minWidth }}
+                                                                >
+                                                                    {column.label}
+                                                                </TableCell>
+                                                            ))}
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        {rows
+                                                            .sort((a, b) => {
+                                                                // แทน 'columnToSort' ด้วยชื่อฟิลด์ที่ต้องการเรียง
+                                                                const columnToSort = 'name'; // เช่น เรียงตามชื่อ
+                                                                if (a[columnToSort] < b[columnToSort]) return 1; // เรียงจากมากไปน้อย
+                                                                if (a[columnToSort] > b[columnToSort]) return -1;
+                                                                return 0; // กรณีที่เท่ากัน
+                                                            })
+                                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                            .map((row, index) => {
+                                                                const student = studentData.find(std => std?.uuid === row.uuid)
+                                                                if (student) {
+                                                                    return (
+                                                                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                                                                            {columns.map((column) => {
+                                                                                if (column.id === 'details') {
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            <div
+                                                                                                onClick={() => setIdDetail(student?.uuid)}
+                                                                                                className='cursor-pointer text-center flex justify-center'
+                                                                                            >
+                                                                                                <Icon className={`cursor-pointer text-black`} path={mdiAlertCircle} size={1} />
+                                                                                            </div>
+                                                                                        </TableCell>
+                                                                                    );
+                                                                                } else {
+                                                                                    const value = row[column.id];
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            {column.format && typeof value === 'number'
+                                                                                                ? column.format(value)
+                                                                                                : value}
+                                                                                        </TableCell>
+                                                                                    );
+                                                                                }
 
-                                                                        })}
-                                                                    </TableRow>
-                                                                )
-                                                            }
-                                                            return null;
-                                                        })}
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                        <TablePagination
-                                            rowsPerPageOptions={[10, 25, 100]}
-                                            component="div"
-                                            count={rows.length}
-                                            rowsPerPage={rowsPerPage}
-                                            page={page}
-                                            onPageChange={handleChangePage}
-                                            onRowsPerPageChange={handleChangeRowsPerPage}
-                                        />
-                                    </Paper>
+                                                                            })}
+                                                                        </TableRow>
+                                                                    )
+                                                                }
+                                                                return null;
+                                                            })}
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                            <TablePagination
+                                                rowsPerPageOptions={[10, 25, 100]}
+                                                component="div"
+                                                count={rows.length}
+                                                rowsPerPage={rowsPerPage}
+                                                page={page}
+                                                onPageChange={handleChangePage}
+                                                onRowsPerPageChange={handleChangeRowsPerPage}
+                                            />
+                                        </Paper>
+                                    ) : (
+                                        <div>ไม่มีข้อมูลนักศึกษา</div>
+                                    )
                                 )}
                             </>
                         ) : (

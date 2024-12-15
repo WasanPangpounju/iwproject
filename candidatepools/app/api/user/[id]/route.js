@@ -9,6 +9,34 @@ export async function GET(req) {
     return NextResponse.json({ user });
 }
 
+
+export async function DELETE(req) {
+    const id = req.nextUrl.pathname.split('/').filter(Boolean).pop();
+    await mongoDB();
+    try {
+        // Attempt to find and delete the user by the correct field
+        const result = await Users.findByIdAndDelete(id);
+        if (!result) {
+            return new Response(JSON.stringify({ error: "User not found or already deleted." }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+        return new Response(JSON.stringify({ message: "User deleted successfully." }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return new Response(JSON.stringify({ error: `Failed to delete user: ${error.message}` }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+        });
+    }
+}
+
+
+
 export async function PUT(req) {
     const id = req.nextUrl.pathname.split('/').filter(Boolean).pop();
 
@@ -50,7 +78,9 @@ export async function PUT(req) {
             tel,
             telEmergency,
             relationship,
-            typePerson
+            typePerson,
+            role,
+            position
         } = await req.json();
 
         // อัปเดตข้อมูลผู้ใช้ในฐานข้อมูล
@@ -92,6 +122,8 @@ export async function PUT(req) {
                 telEmergency,
                 relationship,
                 typePerson,
+                role,
+                position
             },
             { new: true } // ส่งกลับเอกสารที่อัปเดตใหม่
         );
