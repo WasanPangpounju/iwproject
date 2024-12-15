@@ -18,7 +18,6 @@ const UserSchema = new Schema(
         },
         typePerson:{
             type: String,
-            required: true
         },
         password:{
             type: String,
@@ -123,6 +122,9 @@ const UserSchema = new Schema(
             type: String,
         },
         relationship:{
+            type: String,
+        },
+        position:{
             type: String,
         },
       

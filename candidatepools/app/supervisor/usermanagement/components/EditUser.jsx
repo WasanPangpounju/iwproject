@@ -7,13 +7,14 @@ import { useRouter } from 'next/navigation'
 import { useTheme } from '@/app/ThemeContext'
 import Icon from '@mdi/react';
 import { mdiCloseCircle, mdiFilePdfBox, mdiArrowLeftCircle, mdiArrowDownDropCircle, mdiPencil, mdiContentSave, mdiDelete } from '@mdi/js';
-import StudentPersonal from './StudentPersonal'
-import StudentEducation from './StudentEducation'
-import StudentHistoryWork from './StudentHistoryWork'
-import StudentSkills from './StudentSkills'
+import StudentPersonal from '@/app/supervisor/students/detail/StudentPersonal'
+import StudentEducation from '@/app/supervisor/students/detail/StudentEducation'
+import StudentHistoryWork from '@/app/supervisor/students/detail/StudentHistoryWork'
+import StudentSkills from '@/app/supervisor/students/detail/StudentSkills'
+import UserPersonal from '@/app/supervisor/usermanagement/components/UserPersonal'
 import Swal from 'sweetalert2'
 
-function StudentDetail({ id, setIdDetail, setLoader }) {
+function EditUser({ id, setIdDetail, setLoader }) {
 
     const router = useRouter();
     const { status, data: session } = useSession();
@@ -206,40 +207,53 @@ function StudentDetail({ id, setIdDetail, setLoader }) {
                     >
                         ข้อมูลส่วนบุลคล
                     </div>
-                    <div
-                        className={`${selectNav === "ประวัติการศึกษา" ? inputGrayColor === "bg-[#74c7c2]" || "" ? `bg-[#0d96f8] ${bgColorWhite}` : "" : ""} cursor-pointer px-4 py-2 rounded-md`}
-                        onClick={() => setSelectNav('ประวัติการศึกษา')}
-                    >
-                        ประวัติการศึกษา
-                    </div>
-                    <div
-                        className={`${selectNav === "ประวัติการฝึกงาน/ทำงาน" ? inputGrayColor === "bg-[#74c7c2]" || "" ? `bg-[#0d96f8] ${bgColorWhite}` : "" : ""} cursor-pointer px-4 py-2 rounded-md`}
-                        onClick={() => setSelectNav('ประวัติการฝึกงาน/ทำงาน')}
-                    >
-                        ประวัติการฝึกงาน/ทำงาน
-                    </div>
-                    <div
-                        className={`${selectNav === "ความสามารถ/การอบรม" ? inputGrayColor === "bg-[#74c7c2]" || "" ? `bg-[#0d96f8] ${bgColorWhite}` : "" : ""} cursor-pointer px-4 py-2 rounded-md`}
-                        onClick={() => setSelectNav('ความสามารถ/การอบรม')}
-                    >
-                        ความสามารถ/การอบรม
-                    </div>
+                    {/* {dataUser?.role === "user" && (
+                        <>
+                            <div
+                                className={`${selectNav === "ประวัติการศึกษา" ? inputGrayColor === "bg-[#74c7c2]" || "" ? `bg-[#0d96f8] ${bgColorWhite}` : "" : ""} cursor-pointer px-4 py-2 rounded-md`}
+                                onClick={() => setSelectNav('ประวัติการศึกษา')}
+                            >
+                                ประวัติการศึกษา
+                            </div>
+                            <div
+                                className={`${selectNav === "ประวัติการฝึกงาน/ทำงาน" ? inputGrayColor === "bg-[#74c7c2]" || "" ? `bg-[#0d96f8] ${bgColorWhite}` : "" : ""} cursor-pointer px-4 py-2 rounded-md`}
+                                onClick={() => setSelectNav('ประวัติการฝึกงาน/ทำงาน')}
+                            >
+                                ประวัติการฝึกงาน/ทำงาน
+                            </div>
+                            <div
+                                className={`${selectNav === "ความสามารถ/การอบรม" ? inputGrayColor === "bg-[#74c7c2]" || "" ? `bg-[#0d96f8] ${bgColorWhite}` : "" : ""} cursor-pointer px-4 py-2 rounded-md`}
+                                onClick={() => setSelectNav('ความสามารถ/การอบรม')}
+                            >
+                                ความสามารถ/การอบรม
+                            </div>
+                        </>
+                    )} */}
                 </nav>
             </div>
             <hr className='border-gray-500 mt-1' />
-            {selectNav === "ข้อมูลส่วนบุลคล" ? (
-                <StudentPersonal dataUser={dataUser} setLoader={setLoader} />
-            ) : selectNav === "ประวัติการศึกษา" ? (
-                <StudentEducation dataUser={dataUser} id={id} setLoader={setLoader} />
-            ) : selectNav === "ประวัติการฝึกงาน/ทำงาน" ? (
-                <StudentHistoryWork dataUser={dataUser} id={id} setLoader={setLoader} />
-            ) : selectNav === "ความสามารถ/การอบรม" ? (
-                <StudentSkills dataUser={dataUser} id={id} setLoader={setLoader} />
+            {/* {dataUser?.role === "user" ? (
+                selectNav === "ข้อมูลส่วนบุลคล" ? (
+                    <StudentPersonal dataUser={dataUser} setLoader={setLoader} />
+                ) : selectNav === "ประวัติการศึกษา" ? (
+                    <StudentEducation dataUser={dataUser} id={id} setLoader={setLoader} />
+                ) : selectNav === "ประวัติการฝึกงาน/ทำงาน" ? (
+                    <StudentHistoryWork dataUser={dataUser} id={id} setLoader={setLoader} />
+                ) : selectNav === "ความสามารถ/การอบรม" ? (
+                    <StudentSkills dataUser={dataUser} id={id} setLoader={setLoader} />
+                ) : (
+                    <div>เกิดข้อผิดพลาด</div>
+                )
             ) : (
-                <div>เกิดข้อผิดพลาด</div>
+                selectNav === "ข้อมูลส่วนบุลคล" && (
+                    <UserPersonal dataUser={dataUser} setLoader={setLoader} />
+                )
+            )} */}
+            {selectNav === "ข้อมูลส่วนบุลคล" && (
+                <UserPersonal dataUser={dataUser} setLoader={setLoader} />
             )}
         </div>
     )
 }
 
-export default StudentDetail
+export default EditUser
