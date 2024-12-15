@@ -50,11 +50,10 @@ export async function POST(req) {
         await mongoDB();
 
         // ตรวจสอบว่ามี id หรือไม่ ถ้าไม่มี ให้สร้าง UUID ใหม่
-        const userId = id || uuidv4();
 
         // สร้างผู้ใช้งานใน MongoDB
         await Users.create({
-            uuid: userId,
+            uuid: id,
             user: user,
             password: password,
             firstName: firstName,
