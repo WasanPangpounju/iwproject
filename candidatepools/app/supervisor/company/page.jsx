@@ -12,7 +12,7 @@ import Icon from '@mdi/react'
 import { mdiArrowLeftCircle, mdiAlertCircle, mdiMagnify, mdiArrowDownDropCircle, mdiPlus, mdiContentSave, mdiCloseThick } from '@mdi/js'
 import dataWorkType from '@/app/interestedwork/dataWorkType'
 import Link from 'next/link'
-import EditUser from '@/app/supervisor/usermanagement/components/EditUser'
+import EditCompany from './component/EditCompany'
 import AddUser from '@/app/supervisor/usermanagement/components/AddUser'
 import useProvinceData from '@/app/components/province'
 import AddCompany from './component/AddCompany'
@@ -31,22 +31,22 @@ import TableRow from '@mui/material/TableRow';
 const columns = [
     {
         id: 'name',
-        label: 'ชื่อ-สกุล',
+        label: 'หน่วยงาน',
         minWidth: 170
     },
     {
         id: 'university',
-        label: 'สถาบันการศึกษา',
+        label: 'ประเภทงาน',
         minWidth: 170,
     },
     {
         id: 'level',
-        label: 'ตำแหน่ง',
+        label: 'จังหวัด',
         minWidth: 170,
     },
     {
         id: 'disabled',
-        label: 'จังหวัด',
+        label: 'ประสานงาน',
         minWidth: 170,
     },
     {
@@ -80,9 +80,7 @@ function CompanyPage() {
 
         if (session?.user?.id) {
             getUser(session.user.id);
-            getDataStudent();
-            getDataEducation();
-            getDataWorks();
+            getDataCompany();
         } else {
             router.replace("/agreement");
         }
@@ -144,12 +142,12 @@ function CompanyPage() {
     } = useTheme();
 
     //getDatastudent
-    const [studentData, setStudentData] = useState([]);
+    const [companyData, setCompanyData] = useState([]);
     const [loaderTable, setLoaderTable] = useState(true);
-    async function getDataStudent() {
+    async function getDataCompany() {
         try {
             const res = await fetch(
-                `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/students`,
+                `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/company`,
                 {
                     method: "GET",
                     cache: "no-store",
@@ -161,53 +159,11 @@ function CompanyPage() {
             }
 
             const data = await res.json();
-            setStudentData(data.user || {});
+            setCompanyData(data.companys || {});
         } catch (err) {
             console.error("Error fetching API", err);
         } finally {
             setLoaderTable(false);
-        }
-    }
-
-    //get Education
-    const [dataEducations, setDataEducations] = useState(null)
-    async function getDataEducation(id) {
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`, {
-                method: "GET",
-                cache: "no-store"
-            });
-
-            if (!res.ok) {
-                throw new Error("Error getting data from API");
-            }
-
-            const data = await res.json();
-            setDataEducations(data.educations || {});
-
-        } catch (err) {
-            console.error("Error fetching API", err);
-        }
-    }
-
-    //getData work
-    const [dataWorks, setDataWorks] = useState([]);
-    async function getDataWorks() {
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/interestedwork`, {
-                method: "GET",
-                cache: "no-store"
-            });
-
-            if (!res.ok) {
-                throw new Error("Error getting data from API");
-            }
-
-            const data = await res.json();
-            setDataWorks(data.interestedWork || {});
-
-        } catch (err) {
-            console.error("Error fetching API", err);
         }
     }
 
@@ -241,54 +197,46 @@ function CompanyPage() {
         });
     }
 
-    const rows = studentData?.map((std, index) => {
-
-        if (std?.uuid === session?.user?.id) {
-            return null;
-        }
+    const rows = companyData?.map((cpn, index) => {
 
         const tempWordSearch = wordSearchFilter?.length === 0 ? [wordSearch] : wordSearchFilter
 
-        const hasMatchUniversityFilter = tempWordSearch?.some(word =>
-            std?.university?.toLowerCase().includes(word.toLowerCase())
-        );
-
-        const name = `${std?.firstName} ${std?.lastName}`;
+        const name = `${cpn?.nameCompany}`;
 
         const hasMatchNameFilter = tempWordSearch?.some(word =>
             name?.toLowerCase().includes(word.toLowerCase())
         );
 
-        const hasMatchUniversity = tempWordSearch?.some(word =>
-            std?.university?.toLowerCase().includes(word.toLowerCase())
-        );
         const hasMatchName = name?.toLowerCase().includes(wordSearch.toLowerCase());
 
-        const hasMatchTypePerson = std?.addressProvince?.toLowerCase().includes(addressProvince.toLowerCase());
+        const hasMatchTypePerson = cpn?.province?.toLowerCase().includes(addressProvince.toLowerCase());
+        const hasMatchWorkType = cpn?.work_type?.toLowerCase().includes(workType.toLowerCase());
+        
         if (!hasMatchTypePerson) {
             return null;
         }
 
-        if (!wordSearch || wordSearch === "") {
-            if (!hasMatchUniversityFilter && !hasMatchNameFilter) {
-                return null;
-            }
-
-        } else if (!hasMatchUniversity && !hasMatchName) {
+        if (!hasMatchWorkType) {
             return null;
         }
 
-        if (std?.role === "admin") {
-            return createData(
-                `${std.firstName} ${std.lastName}`,
-                `${std?.university || 'ไม่มีข้อมูล'}`,
-                `${std?.position || 'ไม่มีข้อมูล'}`,
-                `${std?.addressProvince}`,
-                "s",
-                `${std?.uuid}`
-            );
+        if (!wordSearch || wordSearch === "") {
+            if (!hasMatchNameFilter) {
+                return null;
+            }
+          
+        } else if (!hasMatchName) {
+            return null;
         }
-        return null;
+       
+        return createData(
+            `${cpn.nameCompany}`,
+            `${cpn?.work_type || 'ไม่มีข้อมูล'}`,
+            `${cpn?.province || 'ไม่มีข้อมูล'}`,
+            `${cpn?.coordinator}`,
+            "s",
+            `${cpn?._id}`
+        );
 
     }).filter(row => row !== null);
 
@@ -345,7 +293,7 @@ function CompanyPage() {
                                                     value={wordSearch}
                                                     type="text"
                                                     className={`${bgColorMain} w-56 border border-gray-400 py-1 px-4 rounded-md`}
-                                                    placeholder='ขื่อ-สกุล, มหาวิทยาลัย'
+                                                    placeholder='หน่วยงาน'
                                                     onChange={(e) => setWordSearch(e.target.value)}
                                                 />
                                             </div>
@@ -420,7 +368,7 @@ function CompanyPage() {
                                     {loaderTable ? (
                                         <div className='py-2'>กำลังโหลดข้อมูล...</div>
                                     ) : (
-                                        studentData?.length > 1 ? (
+                                        companyData?.length >= 1 ? (
                                             <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow: 'none' }}>
                                                 <TableContainer sx={{ maxHeight: 700 }}>
                                                     <Table stickyHeader aria-label="sticky table">
@@ -448,8 +396,7 @@ function CompanyPage() {
                                                                 })
                                                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                                                 .map((row, index) => {
-                                                                    const student = studentData.find(std => std?.uuid === row.uuid)
-                                                                    if (student) {
+                                                               
                                                                         return (
                                                                             <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                                                                                 {columns.map((column) => {
@@ -457,7 +404,7 @@ function CompanyPage() {
                                                                                         return (
                                                                                             <TableCell key={column.id} align={column.align}>
                                                                                                 <div
-                                                                                                    onClick={() => setIdDetail(student?.uuid)}
+                                                                                                    onClick={() => setIdDetail(row?.uuid)}
                                                                                                     className='cursor-pointer text-center flex justify-center'
                                                                                                 >
                                                                                                     <Icon className={`cursor-pointer text-black`} path={mdiAlertCircle} size={1} />
@@ -478,8 +425,8 @@ function CompanyPage() {
                                                                                 })}
                                                                             </TableRow>
                                                                         )
-                                                                    }
-                                                                    return null;
+                                                                    
+                                                
                                                                 })}
                                                         </TableBody>
                                                     </Table>
@@ -512,7 +459,7 @@ function CompanyPage() {
                                         <Icon className='' path={mdiArrowLeftCircle} size={1} />
                                         <p>ย้อนกลับ</p>
                                     </div>
-                                    <EditUser id={idDetail} setIdDetail={setIdDetail} setLoader={setLoader} page="admin" />
+                                    <EditCompany id={idDetail} setIdDetail={setIdDetail} setLoader={setLoader}  />
                                 </div>
                             )
                         )}
