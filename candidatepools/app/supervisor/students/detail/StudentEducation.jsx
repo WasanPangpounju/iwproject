@@ -319,7 +319,7 @@ function StudentEducation({ dataUser, id, setLoader }) {
         e.preventDefault();
 
         setLoader(true);
-        
+     
         n -= 1; // ลดค่า n เพื่อใช้ index ที่ถูกต้อง
 
         // console.log("typePerson: " + typePerson);
@@ -340,12 +340,14 @@ function StudentEducation({ dataUser, id, setLoader }) {
         // ตรวจสอบว่า uploadProgress มีค่าหรือไม่
         if (uploadProgress !== 0) {
             setError("เอกสารกำลังอัพโหลด");
+            setLoader(false);
             return;
         }
 
         // ตรวจสอบ typePerson
         if (typePerson === "0" || !typePerson) {
             setError("ระบุข้อมูลให้ครบทุกช่อง");
+            setLoader(false);
             return;
         }
 
@@ -365,6 +367,7 @@ function StudentEducation({ dataUser, id, setLoader }) {
             !grade[n]
         ) {
             setError("ระบุข้อมูลให้ครบทุกช่อง");
+            setLoader(false);
             return;
         }
 
@@ -372,6 +375,7 @@ function StudentEducation({ dataUser, id, setLoader }) {
         if (typePerson === "นักศึกษาพิการ") {
             if (!level[0]) {
                 setError("ระบุข้อมูลให้ครบทุกช่อง");
+                setLoader(false);
                 return;
             }
         }
@@ -379,6 +383,7 @@ function StudentEducation({ dataUser, id, setLoader }) {
         else if (typePerson === "บัณฑิตพิการ") {
             if (!yearGraduation || n >= yearGraduation.length || !yearGraduation[n]) {
                 setError("ระบุข้อมูลให้ครบทุกช่อง");
+                setLoader(false);
                 return;
             }
         }

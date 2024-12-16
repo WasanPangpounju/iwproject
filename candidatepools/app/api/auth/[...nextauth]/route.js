@@ -5,7 +5,7 @@ import Users from "@/models/user";
 import GoogleProvider from "next-auth/providers/google";
 import LineProvider from 'next-auth/providers/line';
 import { v4 as uuidv4 } from 'uuid';
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
 
 const authOption = {
     providers: [
@@ -26,6 +26,7 @@ const authOption = {
 
                 const { email, password, loginMod } = credentials;
 
+                
                 try {
                     await mongoDB();
 
@@ -33,7 +34,7 @@ const authOption = {
                     const userDocument = await Users.findOne({
                         $or: [{ email }, { user: email }]
                     });
-
+                
                     if (!userDocument) {
                         console.log("User not found");
                         return null;
@@ -85,7 +86,6 @@ const authOption = {
                     token.id = profile?.sub || uuidv4();
                     token.role = existingUser?.role || 'user';
                 } else if (user) {
-                    const existingUser = await Users.findOne({ email: user?.email });
                     token.id = existingUser?.uuid || uuidv4();
                     token.role = existingUser?.role || 'user';
                 }
