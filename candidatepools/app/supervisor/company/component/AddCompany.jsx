@@ -132,12 +132,6 @@ function AddCompany({ setAddCompany, dataUse, setLoader }) {
             return;
         }
 
-        // จำกัดจำนวนทักษะไม่ให้เกิน 5 รายการ
-        if (fieldwalfare.length >= 5) {
-            setErrorFieldWalfare("");
-            return;
-        }
-
         setErrorFieldWalfare("");
         setGetFieldwalfare([...fieldwalfare, {}]); // เพิ่มออบเจกต์ว่างใน fieldwalfare
     };
@@ -182,25 +176,87 @@ function AddCompany({ setAddCompany, dataUse, setLoader }) {
     async function handleSubmit(e) {
         e.preventDefault();
 
+        setLoader(true);
         if (!nameCompany || !addressIdCard || !addressIdCardProvince || !addressIdCardAmphor || !addressIdCardTambon || !addressIdCardZipCode ||
             !dateStart || !dateEnd || !timeStart || !timeEnd || !welfare || !coordinator || !telCoordinator) {
             setError('กรุณกรอกข้อมูลให้ครบทุกช่อง');
+            setLoader(false);
             return;
         }
 
-        console.log("nameCompany: ", nameCompany)
-        console.log("address: ", addressIdCard)
-        console.log("province: ", addressIdCardProvince)
-        console.log("amphor: ", addressIdCardAmphor)
-        console.log("tambon: ", addressIdCardTambon)
-        console.log("zipcode: ", addressIdCardZipCode)
-        console.log("dateStart: ", dateStart)
-        console.log("dateEnd: ", dateEnd)
-        console.log("timeStart: ", timeStart)
-        console.log("timeEnd: ", timeEnd)
-        console.log("welfare: ", welfare)
-        console.log("coordinator: ", coordinator)
-        console.log("tel coordinator: ", telCoordinator)
+        // console.log("nameCompany: ", nameCompany)
+        // console.log("address: ", addressIdCard)
+        // console.log("province: ", addressIdCardProvince)
+        // console.log("amphor: ", addressIdCardAmphor)
+        // console.log("tambon: ", addressIdCardTambon)
+        // console.log("zipcode: ", addressIdCardZipCode)
+        // console.log("dateStart: ", dateStart)
+        // console.log("dateEnd: ", dateEnd)
+        // console.log("timeStart: ", timeStart)
+        // console.log("timeEnd: ", timeEnd)
+        // console.log("welfare: ", welfare)
+        // console.log("coordinator: ", coordinator)
+        // console.log("tel coordinator: ", telCoordinator)
+
+        try {
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/company`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        nameCompany: nameCompany,
+                        address: addressIdCard,
+                        province: addressIdCardProvince,
+                        amphor: addressIdCardAmphor,
+                        tambon: addressIdCardTambon,
+                        zipcode: addressIdCardZipCode,
+                        work_type: workType,
+                        work_detail: workDetail,
+                        date_start: dateStart,
+                        date_end: dateEnd,
+                        time_start: timeStart,
+                        time_end: timeEnd,
+                        welfare: welfare,
+                        coordinator: coordinator,
+                        coordinator_tel: telCoordinator
+                    }),
+                }
+            )
+
+            if (!res.ok) {
+                setLoader(false);
+                Swal.fire({
+                    title: "เกิดข้อผิดพลาด",
+                    text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
+                    icon: "error",
+                    confirmButtonText: "ตกลง",
+                    confirmButtonColor: "#f27474",
+                }).then(() => {
+                    setAddCompany(false);
+                    setError('')
+                });
+                setLoader(false);
+                return;
+            }
+            setLoader(false);
+            Swal.fire({
+                title: "บันทึกข้อมูลสำเร็จ",
+                icon: "success",
+                confirmButtonText: "ตกลง",
+                confirmButtonColor: "#0d96f8",
+            }).then(() => {
+                setAddCompany(false);
+                window.location.reload();
+                setError('')
+            });
+        
+            setLoader(false);
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     return (
@@ -463,7 +519,7 @@ function AddCompany({ setAddCompany, dataUse, setLoader }) {
                             className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                             readOnly={!editMode}
                             placeholder="ระบุรายละเอียด"
-
+                            onChange={((e) => setWorkDetail(e.target.value))}
                         />
                     </div>
                     <div className='flex gap-x-10 gap-y-5 '>
@@ -570,7 +626,7 @@ function AddCompany({ setAddCompany, dataUse, setLoader }) {
                                 *{errorFieldWalfare}
                             </div>
                         )}
-                        {fieldwalfare.length < 5 && editMode && (
+                        {fieldwalfare.length < 10 && editMode && (
                             <div className={`mt-2`}>
                                 <div
                                     className={` cursor-pointer  rounded-lg bg-[#4a94ff] w-fit`}
@@ -581,7 +637,7 @@ function AddCompany({ setAddCompany, dataUse, setLoader }) {
                             </div>
                         )}
                     </div>
-                    <div className='w-full flex gap-y-5 gap-x-10'>
+                    <div className='w-full flex flex-wrap gap-y-5 gap-x-10'>
                         <div className='flex flex-col gap-1'>
                             <label >ผู้ประสานงาน <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                             <input

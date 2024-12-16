@@ -704,7 +704,7 @@ function StudentPersonal({ dataUser, setLoader }) {
 
     return (
         <div className="mt-5">
-            {dataUser ? (
+            {dataUser?.length !== 0 ? (
                 <form
                     onSubmit={handleEditSubmit}
                     className={`${fontSize} flex gap-x-10 gap-y-5 gap- flex-wrap`}
