@@ -363,8 +363,8 @@ function EditCompany({ id, setIdDetail, setLoader }) {
             showLoaderOnConfirm: true,
             preConfirm: async (input) => {
                 try {
-                    if (input !== idCard) {
-                        throw new Error("ชื่อไม่ถูกต้อง.");
+                    if (input !== name) {
+                        throw new Error("ชื่อบริษัทไม่ถูกต้อง.");
                     }
                     return { status: "success", message: "ยืนยัน." };
                 } catch (error) {
@@ -391,7 +391,7 @@ function EditCompany({ id, setIdDetail, setLoader }) {
 
                     let timerInterval;
                     Swal.fire({
-                        title: "กำลังลบข้อมูลบัญชี",
+                        title: "กำลังลบข้อมูลบริษัท",
                         html: "<b></b> milliseconds.",
                         timer: 2000,
                         timerProgressBar: true,
