@@ -27,8 +27,10 @@ const nextConfig = {
                 destination: '/supervisor/students/detail/[id].jsx',
             }
         ]
-    }
-    
+    },
+    reactStrictMode: true,
+
+
 };
 
 module.exports = nextConfig;

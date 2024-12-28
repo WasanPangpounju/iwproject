@@ -9,6 +9,14 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useTheme } from "../ThemeContext";
 import Link from 'next/link'
+import Icon from "@mdi/react";
+import {
+    mdiAccountEdit,
+    mdiContentSave,
+    mdiArrowDownDropCircle,
+    mdiCloseCircle,
+} from "@mdi/js";
+import ChatComponent from '../components/ChatComponent'
 
 function HelpPage() {
     const [loader, setLoader] = useState(true)
@@ -92,38 +100,68 @@ function HelpPage() {
                     {/* <div className={`bg-white rounded-lg p-5`}> */}
                     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
                         <div className={`flex flex-col gap-5 `}>
-                            <div>
-                                <p>ที่ทำการ</p>
-                                <p>มูลนิธินวัตกรรมทางสังคม เลขที่ 286 อาคารราฟเฟิล คอร์ท ถนนรัชดาภิเษก 20 (ซอยรุ่งเรือง) แขวงสามเสนนอก เขตห้วยขวาง กรุงเทพฯ 10310</p>
+                            <div className=''>
+                                <p className='text-xl font-extrabold'>ที่ทำการ</p>
+                                <p className='mt-3'>มูลนิธินวัตกรรมทางสังคม เลขที่ 286 อาคารราฟเฟิล คอร์ท ถนนรัชดาภิเษก 20 (ซอยรุ่งเรือง) แขวงสามเสนนอก เขตห้วยขวาง กรุงเทพฯ 10310</p>
                             </div>
-                            <div>
-                                <p>เบอร์ติดต่อ</p>
-                                <p>โทรศัพท์ 02-279-9385</p>
-                                <p>โทรสาร 02-279-9345</p>
+                            <div >
+                                <p className='text-xl font-extrabold'>เบอร์ติดต่อ</p>
+                                <div className='flex flex-col gap-1 mt-3'>
+                                    <p>โทรศัพท์ 02-279-9385</p>
+                                    <p>โทรสาร 02-279-9345</p>
+                                </div >
                             </div>
-                            <div className='flex flex-col'>
-                                <p>ติดตามเรา</p>
-                                <Link
-                                    className='underline'
-                                    target='_blank'
-                                    rel="noopener noreferrer"
-                                    href="https://www.facebook.com/konpikanthai/">
-                                    คนพิการต้องมีงานทำ
-                                </Link>
-                                <Link
-                                    className='underline'
-                                    target='_blank'
-                                    rel="noopener noreferrer"
-                                    href="https://www.facebook.com/socialinnovationfoundation/">
-                                    มูลนิธินวัตกรรมทางสังคม
-                                </Link>
-                                <Link
-                                    className='underline'
-                                    target='_blank'
-                                    rel="noopener noreferrer"
-                                    href="https://www.youtube.com/embed/kndCcFWHy-c?list=PLwffPXXUDsmFZb6R8WFAjFTp0Dvkro4bv">
-                                    คนพิการต้องมีงานทำ
-                                </Link>
+                            <div className=''>
+                                <p className='text-xl font-extrabold'>ติดตามเรา</p>
+                                <div className='mt-3 flex flex-col gap-2'>
+                                    <Link
+                                        target='_blank'
+                                        rel="noopener noreferrer"
+                                        href="https://www.facebook.com/konpikanthai/"
+                                        className='flex gap-4 items-center cursor-pointer w-fit'>
+                                        <Image
+                                            src="/image/facebook.png" height={1000} width={1000} priority alt="facebookIcon"
+                                            className='w-7'
+                                        />
+                                        <p
+                                            className='underline'
+                                        >
+                                            คนพิการต้องมีงานทำ
+                                        </p>
+                                    </Link>
+                                    <Link
+                                        target='_blank'
+                                        rel="noopener noreferrer"
+                                        href="https://www.facebook.com/socialinnovationfoundation/"
+                                        className='flex gap-4 items-center cursor-pointer w-fit'>
+                                        <Image
+                                            src="/image/facebook.png" height={1000} width={1000} priority alt="facebookIcon"
+                                            className='w-7'
+                                        />
+                                        <p
+                                            className='underline'
+                                        >
+                                            มูลนิธินวัตกรรมทางสังคม
+                                        </p>
+                                    </Link>
+                                    <Link
+                                        target='_blank'
+                                        rel="noopener noreferrer"
+                                        href="https://www.youtube.com/embed/kndCcFWHy-c?list=PLwffPXXUDsmFZb6R8WFAjFTp0Dvkro4bv"
+                                        className='flex gap-4 items-center cursor-pointer w-fit'>
+                                        <Image
+                                            src="/image/youtube.png" height={1000} width={1000} priority alt="facebookIcon"
+                                            className='w-7'
+                                        />
+                                        <p
+                                            className='underline'
+                                        >
+                                            คนพิการต้องมีงานทำ
+                                        </p>
+                                    </Link>
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -134,6 +172,7 @@ function HelpPage() {
                     <Loader />
                 </div>
             )}
+            <ChatComponent />
         </div>
     )
 }

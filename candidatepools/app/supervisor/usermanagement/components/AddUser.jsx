@@ -1635,8 +1635,8 @@ function AddUser({ setAddUser, dataUser, setLoader }) {
                                 value={role || "0"}
                             >
                                 <option value="0">-</option>
-                                <option value="admin">admin</option>
-                                <option value="supervisor">supervisor</option>
+                                <option value="admin">super user</option>
+                                <option value="supervisor">admin</option>
                             </select>
                             <Icon
                                 className={`${!editMode ? "hidden" : ""
