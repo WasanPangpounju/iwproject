@@ -387,8 +387,7 @@ function StudentPersonal({ dataUser, setLoader }) {
             !tempAddressTambon ||
             !tempAddressZipCode ||
             !tempTel ||
-            !tempSelectTypeDisabled ||
-            !tempProfile
+            !tempSelectTypeDisabled
         ) {
             setError("กรุณากรอกข้อมูลให้ครบทุกช่อง");
             setLoader(false);
@@ -1868,7 +1867,7 @@ function StudentPersonal({ dataUser, setLoader }) {
                     <div className="w-full flex">
                         <div className="flex col flex-col ">
                             <label className={`${!editMode ? "hidden" : ""}`}>
-                                อัปโหลดรูปโปรไฟล์ <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                                อัปโหลดรูปโปรไฟล์
                             </label>
 
                             <div className="w-32 h-32 relative my-1">

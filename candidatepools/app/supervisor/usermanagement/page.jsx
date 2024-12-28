@@ -281,7 +281,7 @@ function UserManagement() {
             `${std.firstName} ${std.lastName}`,
             `${education?.university?.join(',\n') || std?.university || 'ไม่มีข้อมูล'}`,
             `${std?.position || 'ไม่มีข้อมูล'}`,
-            `${std?.role}`,
+            `${std?.role === "user" ? "user":std?.role === "admin" ? "super user":"admin"}`,
             "s",
             `${std?.uuid}`
         );
@@ -354,8 +354,8 @@ function UserManagement() {
                                                     >
                                                         <option value="">ทั้งหมด</option>
                                                         <option value="user">user</option>
-                                                        <option value="admin">admin</option>
-                                                        <option value="supervisor">supervisor</option>
+                                                        <option value="admin">super user</option>
+                                                        <option value="supervisor">admin</option>
                                                     </select>
                                                     <Icon className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`} path={mdiArrowDownDropCircle} size={.5} />
                                                 </div>

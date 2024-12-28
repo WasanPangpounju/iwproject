@@ -1732,8 +1732,8 @@ function UserPersonal({ dataUser, setLoader, page }) {
                                         >
                                             <option value="0">-</option>
                                             <option value="user">user</option>
-                                            <option value="admin">admin</option>
-                                            <option value="supervisor">supervisor</option>
+                                            <option value="admin">super user</option>
+                                            <option value="supervisor">admin</option>
                                         </select>
                                         <Icon
                                             className={`${!editMode ? "hidden" : ""
