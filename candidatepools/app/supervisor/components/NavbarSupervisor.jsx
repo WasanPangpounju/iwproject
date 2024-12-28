@@ -17,6 +17,7 @@ import {
   mdiFileEditOutline,
   mdiHomeAccount,
   mdiCog,
+  mdiForum,
 } from '@mdi/js';
 
 import styles from "@/app/components/styles/NavbarMain.module.css";
@@ -153,6 +154,16 @@ function NavbarSupervisor({ status }) {
         <Icon path={mdiAccountGroup} size={1} aria-hidden="true" aria-label="จัดการผู้ใช้งาน" />
         <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           จัดการผู้ใช้งาน
+        </p>
+      </Link>
+      <Link href={`${pathDefault}/chat`}
+        className={`${status === "chat"
+          ? "bg-[#fee2d9] text-[#ff7201]"
+          : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
+          } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`} role="menuitem" aria-label="ข้อความ">
+        <Icon path={mdiForum} size={1} aria-hidden="true" aria-label="ข้อความ" />
+        <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
+          ข้อความ
         </p>
       </Link>
       <Link href={`${pathDefault}/reports`}

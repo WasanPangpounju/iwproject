@@ -3,18 +3,28 @@ import mongoose, { Schema } from "mongoose";
 
 const ChatSchema = new Schema(
     {
-        message: {
+        uuid: {
             type: String,
             required: true,
         },
-        sender: {
-            type: String, // "user" หรือ "admin"
-            required: true,
-        },
-        timestamp: {
-            type: Date,
-            default: Date.now,
-        },
+        roomChat: [{
+            message: {
+                type: String,
+                required: true,
+                trim: true,
+            },
+            senderRole: {
+                type: String,
+                required: true,
+            },
+            timestamp: {
+                type: Date,
+                default: Date.now,
+            },
+        }]
+    },
+    {
+        timestamps: true,
     }
 );
 

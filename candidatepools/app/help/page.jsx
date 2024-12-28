@@ -172,7 +172,7 @@ function HelpPage() {
                     <Loader />
                 </div>
             )}
-            <ChatComponent />
+            <ChatComponent id={session?.user?.id}/>
         </div>
     )
 }
