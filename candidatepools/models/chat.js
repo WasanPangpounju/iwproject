@@ -7,6 +7,10 @@ const ChatSchema = new Schema(
             type: String,
             required: true,
         },
+        statusRead: {
+            type: String,
+            required: true,
+        },
         roomChat: [{
             message: {
                 type: String,

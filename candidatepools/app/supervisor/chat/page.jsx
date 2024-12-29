@@ -95,6 +95,8 @@ function ChatPage() {
 
     const [chats, setChats] = useState([]);
     const [dataChats, setDataChats] = useState([])
+    //for system search
+    const [filteredUsers, setFilteredUsers] = useState([]);
 
     async function getChats() {
         try {
@@ -150,7 +152,10 @@ function ChatPage() {
             const data = await res.json();
             // ตรวจสอบว่า data.user ไม่เป็น null และเป็น object
             if (data?.user && typeof data.user === "object") {
+
                 setDataChats((prev) => [...prev, data.user]); // เพิ่ม object เข้าไปในอาร์เรย์
+                setFilteredUsers((prev) => [...prev, data.user])
+
             } else {
                 console.error("Expected 'data.user' to be a valid object but got:", data?.user);
             }
@@ -161,6 +166,7 @@ function ChatPage() {
             setLoader(false);
         }
     }
+
 
     //show chat
     const [showChat, setShowChat] = useState([]);
@@ -236,13 +242,48 @@ function ChatPage() {
         chatEndRef.current?.scrollIntoView({ behavior: "auto" });
     }, [showChat]); // ใช้ dependency array เป็น [] เพื่อให้ทำงานเฉพาะครั้งแรก
 
-    console.log("statusChat: ", statusChat)
-    // console.log(dataChats)
-    console.log(chats)
-    console.log(showChat)
-    console.log(dataChats)
+    //serch user
+    const [inputSearch, setInputSearch] = useState('');
+
+    useEffect(() => {
+        if (inputSearch.trim() === '') {
+            setFilteredUsers(dataChats || []); // คืนค่าทั้งหมดถ้าไม่มีคำค้นหา
+            return;
+        }
+
+        // ค้นหาใน dataChats
+        const filtered = dataChats?.filter((user) => {
+            const name = `${user?.firstName} ${user?.lastName}`; // รวมชื่อและนามสกุล
+            return name.toLowerCase().includes(inputSearch.toLowerCase());
+        });
+
+        setFilteredUsers(filtered || []);
+    }, [inputSearch])
+
+    async function handleUpdateStatusRead(id) {
+        try {
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages/${id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ statusRead: false }),
+                });
+            if (res.ok) {
+                const data = await res.json(); // รับข้อมูลที่ได้จาก API
+
+               console.log(data?.data)
+            }
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     return (
-        <div className={`${bgColorMain} ${bgColor}`}>
+        <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
             <NavbarLogo title="ข้อความ" dataUser={dataUser} />
             <div className="flex">
                 <NavbarSupervisor status="chat" />
@@ -255,35 +296,58 @@ function ChatPage() {
                                 <div className={`${bgColor} border w-fit flex rounded-lg items-center gap-2 px-2 py-1`}>
                                     <input type="text" className={`${bgColor} px-2  outline-none `}
                                         placeholder='ค้นหา'
-
+                                        value={inputSearch}
+                                        onChange={(e) => setInputSearch(e.target.value)}
                                     />
                                     <Icon className={` cursor-pointer`} path={mdiMagnify} size={1} />
                                 </div>
                             </div>
-                            <hr className='w-full'/>
-                          {!dataChats ? (
-                            <div className='flex flex-col gap-2 justify-center items-center mt-3 text-xs'>
-                                 <ClipLoader color="" size={15} />
-                                <p>กำลังโหลด...</p>
-                            </div>
-                          ):(
-                            <div className='flex-grow   overflow-scroll'>
-                            
-                            {dataChats?.map((user, index) => (
-                                <div key={index} className={`${statusChat === user?.uuid ? "bg-gray-200" : ""} transition-colors flex px-5  py-2 border gap-3 items-center cursor-pointer  hover:bg-gray-200`}
-                                    onClick={() => {
-                                        setShowChat(chats?.find((c) => c.uuid === user?.uuid));
-                                        setStatusChat(user?.uuid)
-                                        setInput("")
-                                    }}
-                                >
-                                    <Image priority alt="icon" className='w-11 h-11 flex-shrink-0 rounded-full' src={user?.profile || "/image/main/user.png"} height={1000} width={1000} />
-                                    <p className={`whitespace-nowrap text-ellipsis overflow-hidden `}>{user?.firstName} {user?.lastName}</p>
+                            <hr className='w-full' />
+                            {!filteredUsers ? (
+                                <div className='flex flex-col gap-2 justify-center items-center mt-3 text-xs'>
+                                    <ClipLoader color="" size={15} />
+                                    <p>กำลังโหลด...</p>
                                 </div>
-                            ))}
+                            ) : (
+                                <div className='flex-grow  ' style={{
+                                    overflowY: "auto",
+                                    scrollbarWidth: "none", // สำหรับ Firefox
+                                    msOverflowStyle: "none", // สำหรับ IE
+                                }}>
 
-                        </div>
-                          )}
+                                    {filteredUsers?.map((user, index) => {
+                                        const chatLatest = chats?.find((c) => c?.uuid === user?.uuid);
+                                        let sender = false;
+
+                                        if (chatLatest?.roomChat[chatLatest?.roomChat?.length - 1]?.senderRole === "admin") {
+                                            sender = true
+                                        }
+
+                                        console.log(chatLatest)
+                                        return (
+                                            <div
+                                                key={index}
+                                                className={`${statusChat === user?.uuid ? "bg-gray-200" : !chatLatest?.statusRead ? "bg-gray-200" : ""} transition-colors flex px-5  py-2 border gap-3 items-center cursor-pointer  hover:bg-gray-200 `}
+                                                onClick={(e) => {
+                                                    setShowChat(chats?.find((c) => c.uuid === user?.uuid));
+                                                    setStatusChat(user?.uuid)
+                                                    setInput("")
+                                                    handleUpdateStatusRead(user?.uuid)
+                                                }}
+                                            >
+                                                <Image priority alt="icon" className='w-11 h-11 flex-shrink-0 rounded-full' src={user?.profile || "/image/main/user.png"} height={1000} width={1000} />
+                                                <div className='flex flex-col text-ellipsis overflow-hidden '>
+
+                                                    <p className={`whitespace-nowrap text-ellipsis overflow-hidden `}>{user?.firstName} {user?.lastName}</p>
+                                                    <p className={`whitespace-nowrap text-ellipsis overflow-hidden text-gray-500`}>{sender ? "คุณ: " : ""} {chatLatest?.roomChat[chatLatest?.roomChat?.length - 1]?.message}</p>
+                                                </div>
+
+                                            </div>
+                                        )
+                                    })}
+
+                                </div>
+                            )}
                         </div>
                         {/* chat */}
                         <form onSubmit={(e) => sendMessage(e, statusChat)} className={`border-l-2 w-full px-10 py-5 flex flex-col `}>
@@ -293,7 +357,11 @@ function ChatPage() {
                                 </div>
                             ) : (
                                 <>
-                                    <div className=' flex-grow  px-3 py-10  overflow-y-auto no-scrollbar'>
+                                    <div className=' flex-grow  px-3 py-10  ' style={{
+                                        overflowY: "auto",
+                                        scrollbarWidth: "none", // สำหรับ Firefox
+                                        msOverflowStyle: "none", // สำหรับ IE
+                                    }}>
                                         <div className={'flex flex-col gap-1'}>
                                             {showChat && showChat?.roomChat?.map((chat, index) => (
                                                 <div key={index} className={`${chat?.senderRole === "user" ? "flex-row-reverse self-start " : `self-end`} flex gap-3 items-start `}>
