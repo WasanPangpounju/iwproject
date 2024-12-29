@@ -156,7 +156,6 @@ function ChatComponent({ id }) {
         setShowTime(index + 1)
     }
 
-
     return (
         <div className='fixed bottom-0 right-0 m-5 lg:m-10 '>
             {openChat ? (
@@ -198,18 +197,16 @@ function ChatComponent({ id }) {
                                     <div className='flex flex-col items-end gap-1'>
                                         <div
                                             className={`border py-1 px-2 rounded-xl ${bgColor} w-fit ${chat.senderRole === "user" ? "self-end" : `self-start ${bgColorNavbar} ${bgColorWhite}`}`}
-                                            onClick={() => handleShowTime(index)} // คลิกที่ข้อความเพื่อแสดง/ซ่อนเวลา
+                                            // onClick={() => handleShowTime(index)} // คลิกที่ข้อความเพื่อแสดง/ซ่อนเวลา
 
                                         >
                                             <p className='max-w-44 break-words'>{chat.message}</p>
                                         </div>
-
-                                        {showTime && showTime === index + 1 && (
+                                        {/* {showTime && showTime === index + 1 && (
                                             <div className='flex gap-2 items-center'>
                                                 <p className='text-[9px] '>{formattedTime} {formattedDate}</p>
                                             </div>
-                                        )}
-
+                                        )} */}
                                     </div>
                                 </div>
                             )
