@@ -12,7 +12,6 @@ import Image from 'next/image';
 function ChatComponent({ id, dataUser }) {
 
     useEffect(() => {
-        console.log("object")
         getMessage();
     }, [id])
 
@@ -105,7 +104,7 @@ function ChatComponent({ id, dataUser }) {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ userId: id, message: input, senderRole: "user" }),
+                    body: JSON.stringify({ userId: id, message: input, senderRole: "user", statusRead: true }),
                 }
             );
 
@@ -127,7 +126,6 @@ function ChatComponent({ id, dataUser }) {
 
     async function getMessage() {
         try {
-            console.log("fser")
             const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages/${id}`, {
                 method: "GET",
                 cache: "no-store"
@@ -145,7 +143,6 @@ function ChatComponent({ id, dataUser }) {
         }
     }
 
-    console.log(message)
     //show time
     const [showTime, setShowTime] = useState(null)
 
@@ -160,7 +157,7 @@ function ChatComponent({ id, dataUser }) {
     return (
         <div className='fixed bottom-0 right-0 m-5 lg:m-10 '>
             {openChat ? (
-                <form onSubmit={sendMessage} className='border w-80 shadow overflow-hidden'> 
+                <form onSubmit={sendMessage} className='border w-80 shadow overflow-hidden'>
                     <div className={`${bgColorWhite} ${bgColorNavbar} flex justify-between py-2 px-4 cursor-pointer shadow-md items-center`}
                         onClick={() => setOpenChat(false)}
                     >
@@ -170,7 +167,12 @@ function ChatComponent({ id, dataUser }) {
                         </div>
                         <Icon className='' path={mdiClose} size={.8} aria-hidden="true" aria-label="close_chat" />
                     </div>
-                    <div className={`${bgColorMain2} h-80 pb-3 px-4 flex flex-col overflow-y-auto no-scrollbar gap-1`} >
+                    <div className={`${bgColorMain2} h-80 pb-3 px-4 flex flex-col gap-1`}
+                        style={{
+                            overflowY: "auto",
+                            scrollbarWidth: "none", // สำหรับ Firefox
+                            msOverflowStyle: "none", // สำหรับ IE
+                        }}>
                         {message?.length > 0 && message?.map((chat, index) => {
                             const isDifferentRole = index === 0 || chat.senderRole !== message[index - 1].senderRole;
                             const date = new Date(chat?.timestamp)
