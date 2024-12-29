@@ -2,13 +2,14 @@
 
 import React from 'react'
 import Icon from "@mdi/react";
-import { mdiForum, mdiSend, mdiClose, mdiCheck } from "@mdi/js";
+import { mdiForum, mdiSend, mdiClose, mdiCheck, mdiShieldAccount } from "@mdi/js";
 import { useState, useEffect, useRef } from 'react';
 import { useTheme } from '../ThemeContext';
 import { ClipLoader } from 'react-spinners';
+import Image from 'next/image';
 
 
-function ChatComponent({ id }) {
+function ChatComponent({ id, dataUser }) {
 
     useEffect(() => {
         console.log("object")
@@ -159,14 +160,17 @@ function ChatComponent({ id }) {
     return (
         <div className='fixed bottom-0 right-0 m-5 lg:m-10 '>
             {openChat ? (
-                <form onSubmit={sendMessage} className='border w-80 shadow overflow-hidden'>
-                    <div className={`${bgColorWhite} ${bgColorNavbar} flex justify-between py-2 px-4 cursor-pointer shadow-md`}
+                <form onSubmit={sendMessage} className='border w-80 shadow overflow-hidden'> 
+                    <div className={`${bgColorWhite} ${bgColorNavbar} flex justify-between py-2 px-4 cursor-pointer shadow-md items-center`}
                         onClick={() => setOpenChat(false)}
                     >
-                        <p>สนทนากับเจ้าหน้าที่</p>
+                        <div className='flex gap-2 items-center'>
+                            <Icon className={`cursor-pointer`} path={mdiShieldAccount} size={1} />
+                            <p>สนทนากับเจ้าหน้าที่</p>
+                        </div>
                         <Icon className='' path={mdiClose} size={.8} aria-hidden="true" aria-label="close_chat" />
                     </div>
-                    <div className={`${bgColorMain2} h-80 pb-3 px-4 flex flex-col overflow-y-auto gap-1`} >
+                    <div className={`${bgColorMain2} h-80 pb-3 px-4 flex flex-col overflow-y-auto no-scrollbar gap-1`} >
                         {message?.length > 0 && message?.map((chat, index) => {
                             const isDifferentRole = index === 0 || chat.senderRole !== message[index - 1].senderRole;
                             const date = new Date(chat?.timestamp)
@@ -184,22 +188,25 @@ function ChatComponent({ id }) {
 
 
                             return (
-                                <div key={index} className={`${isDifferentRole ? "mt-2" : ""} flex items-center gap-2 ${chat.senderRole === "user" ? "self-end" : `self-start`}`}>
-                                    {showTime !== message?.length && index === message?.length - 1 && (
+                                <div key={index} className={`${isDifferentRole ? "mt-2" : ""} flex items-end gap-2 ${chat.senderRole === "user" ? "self-end" : `flex-row-reverse self-start`}`}>
+                                    {chat.senderRole === "user" && showTime !== message?.length && index === message?.length - 1 && (
                                         <div className=''>
                                             {loaderMessage ? (
                                                 <ClipLoader color="" size={10} />
                                             ) : (
-                                                <Icon className='' path={mdiCheck} size={.5} aria-hidden="true" aria-label="close_chat" />
+                                                <div className='flex gap-1'>
+                                                    <p className='text-[10px]'>ส่งแล้ว</p>
+                                                    <Icon className='' path={mdiCheck} size={.5} aria-hidden="true" aria-label="close_chat" />
+                                                </div>
                                             )}
                                         </div>
                                     )}
                                     <div className='flex flex-col items-end gap-1'>
                                         <div
-                                            className={`border py-1 px-2 rounded-xl ${bgColor} w-fit ${chat.senderRole === "user" ? "self-end" : `self-start ${bgColorNavbar} ${bgColorWhite}`}`}
-                                            // onClick={() => handleShowTime(index)} // คลิกที่ข้อความเพื่อแสดง/ซ่อนเวลา
-
+                                            className={`border py-1 px-2 rounded-xl ${bgColor} w-fit ${chat.senderRole === "user" ? "self-end rounded-tr-none" : `rounded-tl-none self-start ${bgColorNavbar} ${bgColorWhite}`}`}
+                                        // onClick={() => handleShowTime(index)} // คลิกที่ข้อความเพื่อแสดง/ซ่อนเวลา
                                         >
+
                                             <p className='max-w-44 break-words'>{chat.message}</p>
                                         </div>
                                         {/* {showTime && showTime === index + 1 && (
@@ -207,6 +214,17 @@ function ChatComponent({ id }) {
                                                 <p className='text-[9px] '>{formattedTime} {formattedDate}</p>
                                             </div>
                                         )} */}
+                                    </div>
+                                    <div className='self-start '>
+                                        {chat?.senderRole === "user" ? (
+                                            <Image priority alt="icon" className='w-5 h-5 shadow flex-shrink-0 rounded-full border'
+                                                src={dataUser?.profile || "/image/main/user.png"}
+                                                height={1000} width={1000}
+                                            />
+                                        ) : (
+                                            <Icon className={`cursor-pointer`} path={mdiShieldAccount} size={.8} />
+
+                                        )}
                                     </div>
                                 </div>
                             )
