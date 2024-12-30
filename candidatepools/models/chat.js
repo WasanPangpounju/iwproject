@@ -8,7 +8,11 @@ const ChatSchema = new Schema(
             required: true,
         },
         statusRead: {
-            type: String,
+            type: Boolean,
+            required: true,
+        },
+        statusReadAdmin: {
+            type: Boolean,
             required: true,
         },
         roomChat: [{
