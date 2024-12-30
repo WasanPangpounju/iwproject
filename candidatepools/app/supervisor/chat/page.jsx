@@ -429,7 +429,7 @@ function ChatPage() {
                                                                         </div>
                                                                     ) : (
                                                                         <div className='flex gap-1 items-center'>
-                                                                            <p className='text-[10px]'>อ่านแล้ว</p>
+                                                                            <p className='text-[10px]'>เห็นแล้ว</p>
                                                                             {/* <Icon className='' path={mdiCheck} size={.5} aria-hidden="true" aria-label="close_chat" /> */}
                                                                         </div>
                                                                     )}
