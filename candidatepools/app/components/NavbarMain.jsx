@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React,{ useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Icon from "@mdi/react";
@@ -20,7 +20,6 @@ import {
 } from '@mdi/js';
 
 import styles from "@/app/components/styles/NavbarMain.module.css";
-import { useState } from "react";
 import { signOut } from "next-auth/react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
@@ -49,6 +48,7 @@ function NavbarMain({ status }) {
   } = useTheme();
 
   const router = useRouter();
+
 
   // Logout
   function handleLogout() {
@@ -201,7 +201,7 @@ function NavbarMain({ status }) {
         </p>
       </Link>
 
-      <Link href="/aboutMe" 
+      <Link href="/aboutMe"
         className={`${status === "about"
           ? "bg-[#fee2d9] text-[#ff7201]"
           : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
@@ -212,7 +212,7 @@ function NavbarMain({ status }) {
         </p>
       </Link>
 
-      <Link href="/help" 
+      <Link href="/help"
         className={`${status === "help"
           ? "bg-[#fee2d9] text-[#ff7201]"
           : "hover:bg-[#fee2d9] hover:text-[#ff7201]"

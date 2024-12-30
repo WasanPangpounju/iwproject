@@ -19,13 +19,15 @@ export async function PUT(req) {
 
         const {
             statusRead,
+            statusReadAdmin
         } = await req.json();
 
         // อัปเดตข้อมูลผู้ใช้ในฐานข้อมูล
         const result = await Chats.findOneAndUpdate(
             { uuid: id }, // ใช้ email เป็น filter
             {
-                statusRead
+                statusRead,
+                statusReadAdmin
             },
             { new: true } // ส่งกลับเอกสารที่อัปเดตใหม่
         );

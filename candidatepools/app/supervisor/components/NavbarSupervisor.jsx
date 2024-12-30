@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Icon from "@mdi/react";
 import {
-    mdiDomain,
+  mdiDomain,
   mdiBriefcaseOutline,
   mdiAccountSchool,
   mdiAccountGroup,
@@ -21,7 +21,6 @@ import {
 } from '@mdi/js';
 
 import styles from "@/app/components/styles/NavbarMain.module.css";
-import { useState } from "react";
 import { signOut } from "next-auth/react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
@@ -50,6 +49,10 @@ function NavbarSupervisor({ status }) {
   } = useTheme();
 
   const router = useRouter();
+
+  useEffect(() => {
+    getChats();
+  }, [])
 
   //set path default
   const pathDefault = '/supervisor'
@@ -96,6 +99,33 @@ function NavbarSupervisor({ status }) {
     setIsResumeMenuOpen(false); // ปิดเมนู
   };
 
+  //get chats
+  const [chats, setChats] = useState([]);
+  async function getChats() {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages`,
+        {
+          method: "GET",
+          cache: "no-store",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Error getting data from API");
+      }
+
+      const data = await res.json();
+      setChats(data.chats || {});
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const sumChatNotRead = chats?.reduce((count, chat) => {
+    return chat?.statusReadAdmin ? count + 1 : count;
+  }, 0)
+
   return (
     <nav className={`${bgColorMain2} ${bgColor} ${fontSize} w-60 min-h-screen`} role="navigation" aria-label="หลักการนำทาง">
       <Link
@@ -120,7 +150,7 @@ function NavbarSupervisor({ status }) {
           } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`} role="menuitem" aria-label="ข้อมูลนักศึกษา">
         <Icon path={mdiAccountSchool} size={1} aria-hidden="true" aria-label="ข้อมูลนักศึกษา" />
         <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
-        ข้อมูลนักศึกษา
+          ข้อมูลนักศึกษา
         </p>
       </Link>
 
@@ -131,7 +161,7 @@ function NavbarSupervisor({ status }) {
           } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`} role="menuitem" aria-label="ข้อมูลเจ้าหน้าที่">
         <Icon path={mdiAccountDetails} size={1} aria-hidden="true" aria-label="ข้อมูลเจ้าหน้าที่" />
         <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
-        ข้อมูลเจ้าหน้าที่
+          ข้อมูลเจ้าหน้าที่
         </p>
       </Link>
 
@@ -160,11 +190,15 @@ function NavbarSupervisor({ status }) {
         className={`${status === "chat"
           ? "bg-[#fee2d9] text-[#ff7201]"
           : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
-          } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`} role="menuitem" aria-label="ข้อความ">
-        <Icon path={mdiForum} size={1} aria-hidden="true" aria-label="ข้อความ" />
+          }  focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`} role="menuitem" aria-label="ข้อความ">
+        <div className="relative">
+          <Icon path={mdiForum} size={1} aria-hidden="true" aria-label="ข้อความ" />
+          {/* <div className={`bg-red-500 w-2 h-2 rounded-full absolute right-0 top-[-4px] shadow`}></div> */}
+        </div>
         <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           ข้อความ
         </p>
+
       </Link>
       <Link href={`${pathDefault}/reports`}
         className={`${status === "reports"
@@ -173,17 +207,17 @@ function NavbarSupervisor({ status }) {
           } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`} role="menuitem" aria-label="รายงาน">
         <Icon path={mdiChartBox} size={1} aria-hidden="true" aria-label="รายงาน" />
         <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
-            รายงาน
+          รายงาน
         </p>
       </Link>
-      <Link href="#" 
+      <Link href="#"
         className={`${status === "setting"
           ? "bg-[#fee2d9] text-[#ff7201]"
           : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
           } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`} role="menuitem" aria-label="ตั้งค่าการใช้งาน">
         <Icon path={mdiCog} size={1} aria-hidden="true" aria-label="ตั้งค่าการใช้งาน" />
         <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
-            ตั้งค่าการใช้งาน
+          ตั้งค่าการใช้งาน
         </p>
       </Link>
 

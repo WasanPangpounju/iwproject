@@ -8,7 +8,6 @@ import { useTheme } from '../ThemeContext';
 import { ClipLoader } from 'react-spinners';
 import Image from 'next/image';
 
-
 function ChatComponent({ id, dataUser }) {
 
     useEffect(() => {
@@ -78,15 +77,16 @@ function ChatComponent({ id, dataUser }) {
     //sendMessage
     const [input, setInput] = useState("")
     const [message, setMessage] = useState([])
+    const [dataMessage, setDataMessage] = useState(null)
     const [loaderMessage, setLoaderMessage] = useState(false)
 
     async function sendMessage(e) {
         e.preventDefault();
-
-        setLoaderMessage(true);
         if (!input.trim()) {
             return;
         }
+        setLoaderMessage(true);
+
         // เพิ่มข้อความใหม่ลงใน message ที่มีอยู่แล้ว
         setMessage((prevMessages) => [
             ...(Array.isArray(prevMessages) ? prevMessages : []), // ตรวจสอบ prevMessages ว่าเป็น array หรือไม่
@@ -104,7 +104,7 @@ function ChatComponent({ id, dataUser }) {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ userId: id, message: input, senderRole: "user", statusRead: true }),
+                    body: JSON.stringify({ userId: id, message: input, senderRole: "user", statusRead: false, statusReadAdmin: true }),
                 }
             );
 
@@ -114,7 +114,7 @@ function ChatComponent({ id, dataUser }) {
                 setLoaderMessage(false);
                 // ตรวจสอบว่า prevMessages เป็น array หรือไม่
                 setMessage(data.data.roomChat);
-
+                setDataMessage(data.data)
                 setInput(''); // เคลียร์ input หลังจากส่ง
             }
         } catch (err) {
@@ -137,6 +137,7 @@ function ChatComponent({ id, dataUser }) {
 
             const data = await res.json();
             setMessage(data.chats?.roomChat || {});
+            setDataMessage(data.chats)
 
         } catch (err) {
             console.error("Error fetching API", err);
@@ -152,6 +153,27 @@ function ChatComponent({ id, dataUser }) {
             return;
         }
         setShowTime(index + 1)
+    }
+
+    async function handleUpdateStatusRead(id) {
+        try {
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages/${id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ statusRead: false }),
+                });
+            if (res.ok) {
+                const data = await res.json(); // รับข้อมูลที่ได้จาก API
+                setDataMessage(data?.data)
+            }
+
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     return (
@@ -185,37 +207,47 @@ function ChatComponent({ id, dataUser }) {
                             const formattedTime = date.toLocaleTimeString('th-TH', {
                                 hour: '2-digit',
                                 minute: '2-digit',
-                                second: '2-digit',
                             });
 
 
                             return (
                                 <div key={index} className={`${isDifferentRole ? "mt-2" : ""} flex items-end gap-2 ${chat.senderRole === "user" ? "self-end" : `flex-row-reverse self-start`}`}>
-                                    {chat.senderRole === "user" && showTime !== message?.length && index === message?.length - 1 && (
-                                        <div className=''>
-                                            {loaderMessage ? (
-                                                <ClipLoader color="" size={10} />
-                                            ) : (
-                                                <div className='flex gap-1'>
-                                                    <p className='text-[10px]'>ส่งแล้ว</p>
-                                                    <Icon className='' path={mdiCheck} size={.5} aria-hidden="true" aria-label="close_chat" />
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                    <div className='flex flex-col items-end gap-1'>
-                                        <div
-                                            className={`border py-1 px-2 rounded-xl ${bgColor} w-fit ${chat.senderRole === "user" ? "self-end rounded-tr-none" : `rounded-tl-none self-start ${bgColorNavbar} ${bgColorWhite}`}`}
-                                        // onClick={() => handleShowTime(index)} // คลิกที่ข้อความเพื่อแสดง/ซ่อนเวลา
-                                        >
 
-                                            <p className='max-w-44 break-words'>{chat.message}</p>
+                                    <div className='flex flex-col items-end '>
+                                        <div className={`${chat.senderRole === "user" ? "":"self-start"} text-[10px]`}>
+                                            {formattedDate}, {formattedTime}
                                         </div>
-                                        {/* {showTime && showTime === index + 1 && (
+                                        <div className={`${chat.senderRole === "user" ? "":"self-start"}  flex flex-col items-end gap-1`}>
+
+                                            <div
+                                                className={`border py-1 px-2 rounded-xl ${bgColor} w-fit ${chat.senderRole === "user" ? "self-end rounded-tr-none" : `rounded-tl-none self-start ${bgColorNavbar} ${bgColorWhite}`}`}
+                                            // onClick={() => handleShowTime(index)} // คลิกที่ข้อความเพื่อแสดง/ซ่อนเวลา
+                                            >
+
+                                                <p className='max-w-44 break-words'>{chat.message}</p>
+                                            </div>
+                                            {/* {showTime && showTime === index + 1 && (
                                             <div className='flex gap-2 items-center'>
                                                 <p className='text-[9px] '>{formattedTime} {formattedDate}</p>
                                             </div>
                                         )} */}
+                                        </div>
+                                        {chat.senderRole === "user" && showTime !== message?.length && index === message?.length - 1 && (
+                                            <div className='mt-1'>
+                                                {loaderMessage ? (
+                                                    <ClipLoader color="" size={10} />
+                                                ) : dataMessage?.statusReadAdmin ? (
+                                                    <div className='flex gap-1 items-center'>
+                                                        <p className='text-[10px]'>ส่งแล้ว</p>
+                                                    </div>
+                                                ) : (
+                                                    <div className='flex gap-1 items-center'>
+                                                        <p className='text-[10px]'>เห็นแล้ว</p>
+                                                    </div>
+
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                     <div className='self-start '>
                                         {chat?.senderRole === "user" ? (
@@ -258,9 +290,15 @@ function ChatComponent({ id, dataUser }) {
                 </form>
             ) : (
                 <div
-                    onClick={() => setOpenChat(true)}
-                    className='cursor-pointer'
+                    onClick={() => {
+                        setOpenChat(true)
+                        handleUpdateStatusRead(id)
+                    }}
+                    className='cursor-pointer relative '
                 >
+                    {dataMessage?.statusRead && (
+                        <div className={`${bgColorNavbar === "bg-[#F97201]" ? "bg-red-500" : `${bgColorNavbar}`} w-2 h-2 rounded-full absolute top-0 right-0`}></div>
+                    )}
                     <Icon className={`${bgColorNavbar === "bg-[#F97201]" ? "text-[#F97201]" : `${bgColor}`} `} path={mdiForum} size={2} aria-hidden="true" aria-label="open_chat" />
                 </div>
             )}

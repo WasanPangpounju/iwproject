@@ -205,7 +205,7 @@ function ChatPage() {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ userId: id, message: input, senderRole: "admin" }),
+                    body: JSON.stringify({ userId: id, message: input, senderRole: "admin", statusRead: true, statusReadAdmin: false }),
                 }
             );
 
@@ -269,18 +269,27 @@ function ChatPage() {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ statusRead: false }),
+                    body: JSON.stringify({ statusReadAdmin: false }),
                 });
             if (res.ok) {
                 const data = await res.json(); // รับข้อมูลที่ได้จาก API
+                if (chats?.some((u) => u?.uuid === id)) {
+                    setChats((prevUsers) =>
+                        prevUsers.map((user) =>
+                            user.uuid === id
+                                ? { ...user, ...data.data } // อัปเดตข้อมูลที่ตรงกัน
+                                : user // คงข้อมูลเดิมถ้าไม่ตรงกัน
+                        )
+                    );
+                }
 
-               console.log(data?.data)
             }
 
         } catch (err) {
             console.log(err)
         }
     }
+
 
     return (
         <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
@@ -315,36 +324,57 @@ function ChatPage() {
                                     msOverflowStyle: "none", // สำหรับ IE
                                 }}>
 
-                                    {filteredUsers?.map((user, index) => {
-                                        const chatLatest = chats?.find((c) => c?.uuid === user?.uuid);
-                                        let sender = false;
+                                    {filteredUsers
+                                        ?.sort((a, b) => {
+                                            const chatA = chats?.find((c) => c?.uuid === a?.uuid);
+                                            const chatB = chats?.find((c) => c?.uuid === b?.uuid);
 
-                                        if (chatLatest?.roomChat[chatLatest?.roomChat?.length - 1]?.senderRole === "admin") {
-                                            sender = true
-                                        }
+                                            const timeA = new Date(chatA?.roomChat[chatA?.roomChat?.length - 1]?.timestamp || 0).getTime();
+                                            const timeB = new Date(chatB?.roomChat[chatB?.roomChat?.length - 1]?.timestamp || 0).getTime();
 
-                                        console.log(chatLatest)
-                                        return (
-                                            <div
-                                                key={index}
-                                                className={`${statusChat === user?.uuid ? "bg-gray-200" : !chatLatest?.statusRead ? "bg-gray-200" : ""} transition-colors flex px-5  py-2 border gap-3 items-center cursor-pointer  hover:bg-gray-200 `}
-                                                onClick={(e) => {
-                                                    setShowChat(chats?.find((c) => c.uuid === user?.uuid));
-                                                    setStatusChat(user?.uuid)
-                                                    setInput("")
-                                                    handleUpdateStatusRead(user?.uuid)
-                                                }}
-                                            >
-                                                <Image priority alt="icon" className='w-11 h-11 flex-shrink-0 rounded-full' src={user?.profile || "/image/main/user.png"} height={1000} width={1000} />
-                                                <div className='flex flex-col text-ellipsis overflow-hidden '>
+                                            return timeB - timeA; // จัดเรียงจากเวลาล่าสุดไปยังเก่าสุด
+                                        })?.map((user, index) => {
+                                            const chatLatest = chats?.find((c) => c?.uuid === user?.uuid);
+                                            let sender = false;
 
-                                                    <p className={`whitespace-nowrap text-ellipsis overflow-hidden `}>{user?.firstName} {user?.lastName}</p>
-                                                    <p className={`whitespace-nowrap text-ellipsis overflow-hidden text-gray-500`}>{sender ? "คุณ: " : ""} {chatLatest?.roomChat[chatLatest?.roomChat?.length - 1]?.message}</p>
+                                            if (chatLatest?.roomChat[chatLatest?.roomChat?.length - 1]?.senderRole === "admin") {
+                                                sender = true
+                                            }
+                                            const isRead = chatLatest?.statusReadAdmin;
+
+                                            const date = new Date(chatLatest?.roomChat[chatLatest?.roomChat?.length - 1]?.timestamp)
+                                            const formattedDate = date.toLocaleDateString('th-TH', {
+                                                weekday: 'short', // วันในสัปดาห์ (เช่น "จ.", "อ.", "พ.")
+                                                year: 'numeric',
+                                                month: 'short',
+                                                day: 'numeric',
+                                            });
+                                            const formattedTime = date.toLocaleTimeString('th-TH', {
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                            });
+
+                                            return (
+                                                <div
+                                                    key={index}
+                                                    className={` ${statusChat === user?.uuid ? "bg-gray-200" : ""}  transition-colors flex px-5  py-2 border gap-3 items-center cursor-pointer  hover:bg-gray-200 relative`}
+                                                    onClick={(e) => {
+                                                        setShowChat(chats?.find((c) => c.uuid === user?.uuid));
+                                                        setStatusChat(user?.uuid)
+                                                        setInput("")
+                                                        handleUpdateStatusRead(user?.uuid)
+                                                    }}
+                                                >
+                                                    <Image priority alt="icon" className='w-11 h-11 flex-shrink-0 rounded-full' src={user?.profile || "/image/main/user.png"} height={1000} width={1000} />
+                                                    <div className='flex flex-col text-ellipsis overflow-hidden '>
+                                                        <p className={` text-[10px]`}>{formattedDate} ,{formattedTime}</p>
+                                                        <p className={` whitespace-nowrap text-ellipsis overflow-hidden `}>{user?.firstName} {user?.lastName}</p>
+                                                        <p className={`${isRead ? `` : "text-gray-400"} whitespace-nowrap text-ellipsis overflow-hidden `}>{sender ? "คุณ: " : ""} {chatLatest?.roomChat[chatLatest?.roomChat?.length - 1]?.message}</p>
+                                                    </div>
+                                                    <div className={`${isRead ? `bg-red-500` : `bg-gray-400`} m-2  rounded-full w-3 h-3 absolute top-0 right-0`}></div>
                                                 </div>
-
-                                            </div>
-                                        )
-                                    })}
+                                            )
+                                        })}
 
                                 </div>
                             )}
@@ -363,35 +393,61 @@ function ChatPage() {
                                         msOverflowStyle: "none", // สำหรับ IE
                                     }}>
                                         <div className={'flex flex-col gap-1'}>
-                                            {showChat && showChat?.roomChat?.map((chat, index) => (
-                                                <div key={index} className={`${chat?.senderRole === "user" ? "flex-row-reverse self-start " : `self-end`} flex gap-3 items-start `}>
-                                                    {chat?.senderRole === "admin" && index === showChat?.roomChat.length - 1 && (
-                                                        <div className='self-end'>
-                                                            {loaderMessage ? (
-                                                                <ClipLoader color="" size={10} />
-                                                            ) : (
-                                                                <div className='flex gap-1'>
+                                            {showChat && showChat?.roomChat?.map((chat, index) => {
+                                                const date = new Date(chat?.timestamp)
+                                                const formattedDate = date.toLocaleDateString('th-TH', {
+                                                    weekday: 'short', // วันในสัปดาห์ (เช่น "จ.", "อ.", "พ.")
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                });
+                                                const formattedTime = date.toLocaleTimeString('th-TH', {
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                });
 
-                                                                    <p className='text-[10px]'>ส่งแล้ว</p>
-                                                                    <Icon className='' path={mdiCheck} size={.5} aria-hidden="true" aria-label="close_chat" />
+                                                return (
+                                                    <div key={index} className={`${chat?.senderRole === "user" ? "flex-row-reverse self-start " : `self-end`} flex gap-3 items-start mt-1`}>
+                                                        <div className='flex flex-col '>
+                                                            <div className='flex flex-col'>
+                                                                <div className={`${chat?.senderRole === "user" ? "self-start" : "self-end"} `}>
+                                                                    <p className={` text-[10px]`}>{formattedDate}, {formattedTime}</p>
+                                                                </div>
+                                                                <div className={`${chat?.senderRole === "user" ? `${bgColorNavbar} ${bgColorWhite} rounded-tl-none self-start` : `self-end rounded-tr-none`} border py-1 px-2  rounded-lg ${bgColor} w-fit`}>
+                                                                    <p className='max-w-96 break-words'>{chat?.message}</p>
+
+                                                                </div>
+                                                            </div>
+                                                            {chat?.senderRole === "admin" && index === showChat?.roomChat.length - 1 && (
+                                                                <div className='self-end mt-1'>
+                                                                    {loaderMessage ? (
+                                                                        <ClipLoader color="" size={10} />
+                                                                    ) : showChat?.statusRead ? (
+                                                                        <div className='flex gap-1 items-center'>
+                                                                            <p className='text-[10px]'>ส่งแล้ว</p>
+                                                                            {/* <Icon className='' path={mdiCheck} size={.5} aria-hidden="true" aria-label="close_chat" /> */}
+                                                                        </div>
+                                                                    ) : (
+                                                                        <div className='flex gap-1 items-center'>
+                                                                            <p className='text-[10px]'>อ่านแล้ว</p>
+                                                                            {/* <Icon className='' path={mdiCheck} size={.5} aria-hidden="true" aria-label="close_chat" /> */}
+                                                                        </div>
+                                                                    )}
                                                                 </div>
                                                             )}
                                                         </div>
-                                                    )}
-                                                    <div className={`${chat?.senderRole === "user" ? `${bgColorNavbar} ${bgColorWhite} rounded-tl-none` : `rounded-tr-none`} border py-1 px-2  rounded-lg ${bgColor} w-fit`}>
-                                                        <p className='max-w-96 break-words'>{chat?.message}</p>
-                                                    </div>
-                                                    {chat?.senderRole === "user" ? (
-                                                        <Image priority alt="icon" className='w-5 h-5 shadow flex-shrink-0 rounded-full border'
-                                                            src={`${dataChats?.find((d) => d?.uuid === showChat?.uuid)?.profile || "/image/main/user.png"}`}
-                                                            height={1000} width={1000}
-                                                        />
-                                                    ) : (
-                                                        <Icon className={`cursor-pointer`} path={mdiShieldAccount} size={1} />
+                                                        {chat?.senderRole === "user" ? (
+                                                            <Image priority alt="icon" className='w-5 h-5 shadow flex-shrink-0 rounded-full border'
+                                                                src={`${dataChats?.find((d) => d?.uuid === showChat?.uuid)?.profile || "/image/main/user.png"}`}
+                                                                height={1000} width={1000}
+                                                            />
+                                                        ) : (
+                                                            <Icon className={`cursor-pointer`} path={mdiShieldAccount} size={1} />
 
-                                                    )}
-                                                </div>
-                                            ))}
+                                                        )}
+                                                    </div>
+                                                )
+                                            })}
                                         </div>
                                         <div ref={chatEndRef} />
                                     </div>

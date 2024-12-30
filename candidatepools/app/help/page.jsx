@@ -90,6 +90,7 @@ function HelpPage() {
         registerColor,
         inputEditColor,
     } = useTheme();
+    
 
     return (
         <div className={`${fontSize} ${bgColorMain} ${bgColor}`}>
