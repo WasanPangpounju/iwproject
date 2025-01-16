@@ -409,10 +409,10 @@ function Register({ statusAgreement }) {
 
                     </div>
                     <div className={`${fontSize} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
-                        <label> ประเภทบุลคล:</label>
+                        <label> ประเภทบุคคล:</label>
                         <div className="relative ">
                             <select onChange={(e) => setTypePerson(e.target.value)} className={`${bgColorMain} cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg`} style={{ appearance: 'none' }}>
-                                <option value="0">เลือกประเภทบุลคล</option>
+                                <option value="0">เลือกประเภทบุคคล</option>
                                 <option value="นักศึกษาพิการ">นักศึกษาพิการ</option>
                                 <option value="บัณฑิตพิการ">บัณฑิตพิการ</option>
                             </select>

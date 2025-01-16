@@ -1620,7 +1620,7 @@ function UserPersonal({ dataUser, setLoader, page }) {
                                 setRelationship(e.target.value);
                             }}
                             defaultValue={getRelationship || ""}
-                            placeholder="บุลคลใกล้ชิด"
+                            placeholder="บุคคลใกล้ชิด"
                             readOnly={!editMode}
                         />
                     </div>

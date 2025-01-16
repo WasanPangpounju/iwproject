@@ -98,7 +98,7 @@ function EditUser({ id, setIdDetail, setLoader, page }) {
     const yearToday = today.getFullYear();
 
     //set selected navbar
-    const [selectNav, setSelectNav] = useState('ข้อมูลส่วนบุลคล')
+    const [selectNav, setSelectNav] = useState('ข้อมูลส่วนบุคคล')
 
     //delete account
     async function deletedUser(id, idCard, name) {
@@ -202,10 +202,10 @@ function EditUser({ id, setIdDetail, setLoader, page }) {
             <div>
                 <nav className='flex gap-2 mt-5'>
                     <div
-                        className={`${selectNav === "ข้อมูลส่วนบุลคล" ? inputGrayColor === "bg-[#74c7c2]" || "" ? `bg-[#0d96f8] ${bgColorWhite}` : "" : ""}  cursor-pointer px-4 py-2 rounded-md`}
-                        onClick={() => setSelectNav('ข้อมูลส่วนบุลคล')}
+                        className={`${selectNav === "ข้อมูลส่วนบุคคล" ? inputGrayColor === "bg-[#74c7c2]" || "" ? `bg-[#0d96f8] ${bgColorWhite}` : "" : ""}  cursor-pointer px-4 py-2 rounded-md`}
+                        onClick={() => setSelectNav('ข้อมูลส่วนบุคคล')}
                     >
-                        ข้อมูลส่วนบุลคล
+                        ข้อมูลส่วนบุคคล
                     </div>
                     {/* {dataUser?.role === "user" && (
                         <>
@@ -233,7 +233,7 @@ function EditUser({ id, setIdDetail, setLoader, page }) {
             </div>
             <hr className='border-gray-500 mt-1' />
             {/* {dataUser?.role === "user" ? (
-                selectNav === "ข้อมูลส่วนบุลคล" ? (
+                selectNav === "ข้อมูลส่วนบุคคล" ? (
                     <StudentPersonal dataUser={dataUser} setLoader={setLoader} />
                 ) : selectNav === "ประวัติการศึกษา" ? (
                     <StudentEducation dataUser={dataUser} id={id} setLoader={setLoader} />
@@ -245,11 +245,11 @@ function EditUser({ id, setIdDetail, setLoader, page }) {
                     <div>เกิดข้อผิดพลาด</div>
                 )
             ) : (
-                selectNav === "ข้อมูลส่วนบุลคล" && (
+                selectNav === "ข้อมูลส่วนบุคคล" && (
                     <UserPersonal dataUser={dataUser} setLoader={setLoader} />
                 )
             )} */}
-            {selectNav === "ข้อมูลส่วนบุลคล" && (
+            {selectNav === "ข้อมูลส่วนบุคคล" && (
                 <UserPersonal dataUser={dataUser} setLoader={setLoader} page={page} />
             )}
         </div>
