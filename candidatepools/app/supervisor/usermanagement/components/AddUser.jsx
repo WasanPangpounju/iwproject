@@ -1518,7 +1518,7 @@ function AddUser({ setAddUser, dataUser, setLoader }) {
                             setRelationship(e.target.value);
                         }}
                         defaultValue={""}
-                        placeholder="บุลคลใกล้ชิด"
+                        placeholder="บุคคลใกล้ชิด"
                         readOnly={!editMode}
                     />
                 </div>
