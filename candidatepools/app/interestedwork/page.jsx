@@ -97,7 +97,9 @@ function InterestedWork() {
     // เพิ่มข้อมูล
     const [workType, setWorkType] = useState([]);
     const [workDetail, setWorkDetail] = useState([]);
-    const [workProvince, setWorkProvince] = useState([]);
+    const [workProvince1, setWorkProvince1] = useState([]);
+    const [workProvince2, setWorkProvince2] = useState([]);
+    const [workProvince3, setWorkProvince3] = useState([]);
 
     // จัดการการเปลี่ยนแปลงข้อมูลสำหรับประเภทงาน
     const handleWorkType = (e, index) => {
@@ -134,9 +136,41 @@ function InterestedWork() {
     };
 
     // จัดการการเปลี่ยนแปลงข้อมูลสำหรับจังหวัดงาน
-    const handleWorkProvince = (e, index) => {
+    const handleWorkProvince1 = (e, index) => {
         const newTemp = e; // ค่าที่ได้รับจาก input
-        setWorkProvince((prevTemp) => {
+        setWorkProvince1((prevTemp) => {
+            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevTemp เป็น array หรือไม่
+
+            // เติมค่าในตำแหน่งที่ขาดหายไปด้วยสตริงว่าง
+            while (updatedTemp.length <= index) {
+                updatedTemp.push(""); // รักษาขนาดของอาร์เรย์
+            }
+
+            // อัปเดตค่าในตำแหน่งที่ระบุ
+            updatedTemp[index] = newTemp;
+            return updatedTemp;
+        });
+    };
+    // จัดการการเปลี่ยนแปลงข้อมูลสำหรับจังหวัดงาน
+    const handleWorkProvince2 = (e, index) => {
+        const newTemp = e; // ค่าที่ได้รับจาก input
+        setWorkProvince2((prevTemp) => {
+            const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevTemp เป็น array หรือไม่
+
+            // เติมค่าในตำแหน่งที่ขาดหายไปด้วยสตริงว่าง
+            while (updatedTemp.length <= index) {
+                updatedTemp.push(""); // รักษาขนาดของอาร์เรย์
+            }
+
+            // อัปเดตค่าในตำแหน่งที่ระบุ
+            updatedTemp[index] = newTemp;
+            return updatedTemp;
+        });
+    };
+    // จัดการการเปลี่ยนแปลงข้อมูลสำหรับจังหวัดงาน
+    const handleWorkProvince3 = (e, index) => {
+        const newTemp = e; // ค่าที่ได้รับจาก input
+        setWorkProvince3((prevTemp) => {
             const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevTemp เป็น array หรือไม่
 
             // เติมค่าในตำแหน่งที่ขาดหายไปด้วยสตริงว่าง
@@ -156,8 +190,8 @@ function InterestedWork() {
 
     const handleAddWork = () => {
         // ตรวจสอบให้แน่ใจว่าทุกฟิลด์ถูกกรอกก่อนที่จะเพิ่มข้อมูลใหม่
-        if ((!workType[works.length - 1] || !workDetail[works.length - 1] || !workProvince[works.length - 1]) &&
-            (!getWorkType[works.length - 1] || !getWorkDetail[works.length - 1] || !getWorkProvince[works.length - 1])) {
+        if ((!workType[works.length - 1] || !workDetail[works.length - 1] || !workProvince1[works.length - 1]) &&
+            (!getWorkType[works.length - 1] || !getWorkDetail[works.length - 1] || !getWorkProvince1[works.length - 1])) {
             setError("กรุณากรอกข้อมูลให้ครบก่อนเพิ่มข้อมูลใหม่");
             return;
         }
@@ -192,12 +226,16 @@ function InterestedWork() {
                 // ลบข้อมูลที่เกี่ยวข้องจากอาร์เรย์สถานะ
                 setWorkType((prev) => prev.filter((_, i) => i !== temp));
                 setWorkDetail((prev) => prev.filter((_, i) => i !== temp));
-                setWorkProvince((prev) => prev.filter((_, i) => i !== temp));
+                setWorkProvince1((prev) => prev.filter((_, i) => i !== temp));
+                setWorkProvince2((prev) => prev.filter((_, i) => i !== temp));
+                setWorkProvince3((prev) => prev.filter((_, i) => i !== temp));
 
                 // ลบข้อมูลจาก get
                 setGetWorkType((prev) => prev.filter((_, i) => i !== temp));
                 setGetWorkDetail((prev) => prev.filter((_, i) => i !== temp));
-                setGetWorkProvince((prev) => prev.filter((_, i) => i !== temp));
+                setGetWorkProvince1((prev) => prev.filter((_, i) => i !== temp));
+                setGetWorkProvince2((prev) => prev.filter((_, i) => i !== temp));
+                setGetWorkProvince3((prev) => prev.filter((_, i) => i !== temp));
             }
         });
     };
@@ -229,8 +267,13 @@ function InterestedWork() {
 
         const mergedWorkType = mergeArrayValues(workType, getWorkType);
         const mergedWorkDetail = mergeArrayValues(workDetail, getWorkDetail);
-        const mergedWorkProvince = mergeArrayValues(workProvince, getWorkProvince);
+        const mergedWorkProvince1 = mergeArrayValues(workProvince1, getWorkProvince1);
+        const mergedWorkProvince2 = mergeArrayValues(workProvince2, getWorkProvince2);
+        const mergedWorkProvince3 = mergeArrayValues(workProvince3, getWorkProvince3);
 
+        console.log(mergedWorkProvince1)
+        console.log(mergedWorkProvince2)
+        console.log(mergedWorkProvince3)
         // ลดค่าตัวนับของแต่ละฟิลด์ลง 1
         fieldWorks -= 1;
 
@@ -238,17 +281,30 @@ function InterestedWork() {
         const hasAnyWorkField =
             mergedWorkType[fieldWorks] ||
             mergedWorkDetail[fieldWorks] ||
-            mergedWorkProvince[fieldWorks];
+            mergedWorkProvince1[fieldWorks];
 
         const isWorkFieldComplete =
             mergedWorkType[fieldWorks] &&
             mergedWorkDetail[fieldWorks] &&
-            mergedWorkProvince[fieldWorks];
+            mergedWorkProvince1[fieldWorks];
 
         if (hasAnyWorkField && !isWorkFieldComplete) {
             setError("กรุณาระบุข้อมูลให้ครบทุกช่อง");
             setLoader(false);
             return;
+        }
+
+        for(let i=0;i<=mergedWorkProvince1?.length;i++){
+            if(mergedWorkProvince1[i] === "0"){
+                setError("กรุณาระบุข้อมูลให้ถูกต้อง");
+                setLoader(false);
+                return;
+            }
+            if(mergedWorkProvince3[i] && mergedWorkProvince3[i] !== "0" && (mergedWorkProvince2[i] === "0" || !mergedWorkProvince2[i])){
+                setError("กรุณาระบุข้อมูลให้ถูกต้อง");
+                setLoader(false);
+                return;
+            }
         }
 
         // หากไม่มีข้อมูลเลยในทุกส่วน
@@ -267,7 +323,9 @@ function InterestedWork() {
             interestedWork: mergedWorkDetail.map((detail, index) => ({
                 type: mergedWorkType[index],
                 detail,
-                province: mergedWorkProvince[index],
+                province1: mergedWorkProvince1[index],
+                province2: mergedWorkProvince2[index],
+                province3: mergedWorkProvince3[index],
             })),
         };
 
@@ -325,7 +383,9 @@ function InterestedWork() {
     //set default value 
     const [getWorkType, setGetWorkType] = useState([]);
     const [getWorkDetail, setGetWorkDetail] = useState([]);
-    const [getWorkProvince, setGetWorkProvince] = useState([]);
+    const [getWorkProvince1, setGetWorkProvince1] = useState([]);
+    const [getWorkProvince2, setGetWorkProvince2] = useState([]);
+    const [getWorkProvince3, setGetWorkProvince3] = useState([]);
 
     //set default value 
     const [dataWorks, setDataWorks] = useState([]);
@@ -335,7 +395,9 @@ function InterestedWork() {
         // ตั้งค่าตัวแปรต่าง ๆ จากข้อมูลใน dataHistoryWork
         setGetWorkType(dataWorks.interestedWork?.map(work => work.type) || []);
         setGetWorkDetail(dataWorks.interestedWork?.map(work => work.detail) || []);
-        setGetWorkProvince(dataWorks.interestedWork?.map(work => work.province) || []);
+        setGetWorkProvince1(dataWorks.interestedWork?.map(work => work.province1) || []);
+        setGetWorkProvince2(dataWorks.interestedWork?.map(work => work.province2) || []);
+        setGetWorkProvince3(dataWorks.interestedWork?.map(work => work.province3) || []);
 
         // set ฟิลด์เริ่มต้น
         if (Array.isArray(dataWorks.interestedWork) && dataWorks.interestedWork.length > 0) {
@@ -425,13 +487,49 @@ function InterestedWork() {
                                         />
                                     </div>
                                     <div className='flex flex-col gap-1'>
-                                        <label >จังหวัด <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                        <label >จังหวัดที่ 1 <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                         <div className="relative col w-fit mt-1">
                                             <select
                                                 className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                                 style={{ appearance: 'none' }}
-                                                onChange={(e) => handleWorkProvince(e.target.value, index)}
-                                                value={workProvince[index] || getWorkProvince[index] || ""}
+                                                onChange={(e) => handleWorkProvince1(e.target.value, index)}
+                                                value={workProvince1[index] || getWorkProvince1[index] || ""}
+                                                disabled={!editMode}
+                                            >
+                                                <option value="0">-</option>
+                                                {dataProvince.map((province, index) => (
+                                                    <option key={index} value={province?.name_th}>{province?.name_th}</option>
+                                                ))}
+                                            </select>
+                                            <Icon className={`cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-col gap-1'>
+                                        <label >จังหวัดที่ 2 </label>
+                                        <div className="relative col w-fit mt-1">
+                                            <select
+                                                className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                style={{ appearance: 'none' }}
+                                                onChange={(e) => handleWorkProvince2(e.target.value, index)}
+                                                value={workProvince2[index] || getWorkProvince2[index] || ""}
+                                                disabled={!editMode}
+                                            >
+                                                <option value="0">-</option>
+                                                {dataProvince.map((province, index) => (
+                                                    <option key={index} value={province?.name_th}>{province?.name_th}</option>
+                                                ))}
+                                            </select>
+                                            <Icon className={`cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-col gap-1'>
+                                        <label >จังหวัดที่ 3 </label>
+                                        <div className="relative col w-fit mt-1">
+                                            <select
+                                                className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                style={{ appearance: 'none' }}
+                                                onChange={(e) => handleWorkProvince3(e.target.value, index)}
+                                                value={workProvince3[index] || getWorkProvince3[index] || ""}
                                                 disabled={!editMode}
                                             >
                                                 <option value="0">-</option>
@@ -461,7 +559,7 @@ function InterestedWork() {
 
                         <div>
                             {error && (
-                                <div className="w-full text-center">
+                                <div className="w-full text-center mt-5">
                                     <p className="text-red-500">* {error}</p>
                                 </div>
                             )}
