@@ -11,7 +11,9 @@ const ResumeSchema = new Schema(
             {
                 type: { type: String, required: true },
                 detail: { type: String, required: true },
-                province: { type: String, required: true },
+                province1: { type: String },
+                province2: { type: String },
+                province3: { type: String },
             }
         ],
     },

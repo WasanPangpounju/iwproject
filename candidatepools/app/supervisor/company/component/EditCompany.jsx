@@ -430,7 +430,7 @@ function EditCompany({ id, setIdDetail, setLoader }) {
             {dataCompany ? (
                 <div className='flex gap-10 mt-5 relative'>
                     <div>
-                        <Image priority alt="icon" className='w-48 ' src={"/image/main/work.jpg"} height={1000} width={1000} />
+                        <Image priority alt="icon" className='w-48 h-max-32' src={"/image/main/work.jpg"} height={1000} width={1000} />
                     </div>
                     <div className='flex flex-col gap-2 justify-center'>
                         <p>ชื่อบริษัท: {dataCompany?.nameCompany || "ไม่มีข้อมูล"} </p>

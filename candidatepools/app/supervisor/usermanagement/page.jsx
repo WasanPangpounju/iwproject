@@ -221,7 +221,7 @@ function UserManagement() {
 
     function handleSearch(e) {
         e.preventDefault();
-    
+
         if (wordSearch) {
             setWordSearchFilter(() => {
                 setWordSearch('');
@@ -238,15 +238,15 @@ function UserManagement() {
 
     const rows = studentData?.map((std, index) => {
 
-        if(std?.uuid === session?.user?.id){
+        if (std?.uuid === session?.user?.id) {
             return null;
         }
-        
+
         const tempWordSearch = wordSearchFilter?.length === 0 ? [wordSearch] : wordSearchFilter
 
         const education = dataEducations?.find(edu => edu?.uuid === std?.uuid)
         const name = `${std?.firstName} ${std?.lastName}`;
-    
+
         const hasMatchUniversityFilter = education?.university?.find(uni =>
             tempWordSearch?.some(word => uni.toLowerCase().includes(word.toLowerCase()))
         );
@@ -263,8 +263,8 @@ function UserManagement() {
 
         const hasMatchTypePerson = std?.role?.toLowerCase().includes(typePersonSearch.toLowerCase());
 
-        
-   
+
+
         if (!hasMatchTypePerson) {
             return null;
         }
@@ -281,7 +281,7 @@ function UserManagement() {
             `${std.firstName} ${std.lastName}`,
             `${education?.university?.join(',\n') || std?.university || 'ไม่มีข้อมูล'}`,
             `${std?.position || 'ไม่มีข้อมูล'}`,
-            `${std?.role === "user" ? "user":std?.role === "admin" ? "super user":"admin"}`,
+            `${std?.role === "user" ? "user" : std?.role === "admin" ? "super user" : "admin"}`,
             "s",
             `${std?.uuid}`
         );
@@ -369,15 +369,17 @@ function UserManagement() {
                                                 </button>
                                             </div>
                                         </div>
-                                        <div className="flex items-end">
-                                            <button type="submit"
-                                                className={` ${bgColorWhite} ${inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#74d886]" : ""}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-                                                onClick={() => setAddUser(true)}
-                                            >
-                                                <Icon path={mdiPlus} size={.7} />
-                                                <p>เพิ่มผู้ใช้งาน</p>
-                                            </button>
-                                        </div>
+                                        {session?.user?.id && (
+                                            <div className="flex items-end">
+                                                <button type="submit"
+                                                    className={` ${bgColorWhite} ${inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#74d886]" : ""}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
+                                                    onClick={() => setAddUser(true)}
+                                                >
+                                                    <Icon path={mdiPlus} size={.7} />
+                                                    <p>เพิ่มผู้ใช้งาน</p>
+                                                </button>
+                                            </div>
+                                        )}
 
                                     </form>
                                     {wordSearchFilter?.length > 0 && (

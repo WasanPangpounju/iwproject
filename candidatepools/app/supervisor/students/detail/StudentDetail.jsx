@@ -182,7 +182,7 @@ function StudentDetail({ id, setIdDetail, setLoader }) {
             {dataUser ? (
                 <div className='flex gap-10 mt-5 relative'>
                     <div>
-                        <Image priority alt="icon" className='w-24 ' src={dataUser.profile || "/image/main/user.png"} height={1000} width={1000} />
+                        <Image priority alt="icon" className='w-28 h-28' src={dataUser.profile || "/image/main/user.png"} height={1000} width={1000} />
                     </div>
                     <div className='flex flex-col gap-2 justify-center'>
                         <p>{dataUser?.prefix || ""} {dataUser?.firstName} {dataUser?.lastName} </p>

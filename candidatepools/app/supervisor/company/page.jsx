@@ -211,7 +211,7 @@ function CompanyPage() {
 
         const hasMatchTypePerson = cpn?.province?.toLowerCase().includes(addressProvince.toLowerCase());
         const hasMatchWorkType = cpn?.work_type?.toLowerCase().includes(workType.toLowerCase());
-        
+
         if (!hasMatchTypePerson) {
             return null;
         }
@@ -224,11 +224,11 @@ function CompanyPage() {
             if (!hasMatchNameFilter) {
                 return null;
             }
-          
+
         } else if (!hasMatchName) {
             return null;
         }
-       
+
         return createData(
             `${cpn.nameCompany}`,
             `${cpn?.work_type || 'ไม่มีข้อมูล'}`,
@@ -339,15 +339,17 @@ function CompanyPage() {
                                                 </button>
                                             </div>
                                         </div>
-                                        <div className="flex items-end">
-                                            <button type="submit"
-                                                className={` ${bgColorWhite} ${inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#74d886]" : ""}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-                                                onClick={() => setAddCompany(true)}
-                                            >
-                                                <Icon path={mdiPlus} size={.7} />
-                                                <p>เพิ่มบริษัท</p>
-                                            </button>
-                                        </div>
+                                        {session?.user?.id && (
+                                            <div className="flex items-end">
+                                                <button type="submit"
+                                                    className={` ${bgColorWhite} ${inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#74d886]" : ""}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
+                                                    onClick={() => setAddCompany(true)}
+                                                >
+                                                    <Icon path={mdiPlus} size={.7} />
+                                                    <p>เพิ่มบริษัท</p>
+                                                </button>
+                                            </div>
+                                        )}
                                     </form>
                                     {wordSearchFilter?.length > 0 && (
                                         <div className='mt-5 flex gap-2 flex-wrap'>
@@ -396,37 +398,37 @@ function CompanyPage() {
                                                                 })
                                                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                                                 .map((row, index) => {
-                                                               
-                                                                        return (
-                                                                            <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                                                                {columns.map((column) => {
-                                                                                    if (column.id === 'details') {
-                                                                                        return (
-                                                                                            <TableCell key={column.id} align={column.align}>
-                                                                                                <div
-                                                                                                    onClick={() => setIdDetail(row?.uuid)}
-                                                                                                    className='cursor-pointer text-center flex justify-center'
-                                                                                                >
-                                                                                                    <Icon className={`cursor-pointer text-black`} path={mdiAlertCircle} size={1} />
-                                                                                                </div>
-                                                                                            </TableCell>
-                                                                                        );
-                                                                                    } else {
-                                                                                        const value = row[column.id];
-                                                                                        return (
-                                                                                            <TableCell key={column.id} align={column.align}>
-                                                                                                {column.format && typeof value === 'number'
-                                                                                                    ? column.format(value)
-                                                                                                    : value}
-                                                                                            </TableCell>
-                                                                                        );
-                                                                                    }
 
-                                                                                })}
-                                                                            </TableRow>
-                                                                        )
-                                                                    
-                                                
+                                                                    return (
+                                                                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                                                                            {columns.map((column) => {
+                                                                                if (column.id === 'details') {
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            <div
+                                                                                                onClick={() => setIdDetail(row?.uuid)}
+                                                                                                className='cursor-pointer text-center flex justify-center'
+                                                                                            >
+                                                                                                <Icon className={`cursor-pointer text-black`} path={mdiAlertCircle} size={1} />
+                                                                                            </div>
+                                                                                        </TableCell>
+                                                                                    );
+                                                                                } else {
+                                                                                    const value = row[column.id];
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            {column.format && typeof value === 'number'
+                                                                                                ? column.format(value)
+                                                                                                : value}
+                                                                                        </TableCell>
+                                                                                    );
+                                                                                }
+
+                                                                            })}
+                                                                        </TableRow>
+                                                                    )
+
+
                                                                 })}
                                                         </TableBody>
                                                     </Table>
@@ -459,7 +461,7 @@ function CompanyPage() {
                                         <Icon className='' path={mdiArrowLeftCircle} size={1} />
                                         <p>ย้อนกลับ</p>
                                     </div>
-                                    <EditCompany id={idDetail} setIdDetail={setIdDetail} setLoader={setLoader}  />
+                                    <EditCompany id={idDetail} setIdDetail={setIdDetail} setLoader={setLoader} />
                                 </div>
                             )
                         )}
