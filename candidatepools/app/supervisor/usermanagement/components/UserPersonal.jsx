@@ -1641,7 +1641,24 @@ function UserPersonal({ dataUser, setLoader, page }) {
                         {/* สถาบันการศึกษา */}
                         <div className={`${fontSize} ${bgColorMain} flex col flex-col`}>
                             <label>สถาบันการศึกษา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                            <div className='relative'>
+                            <div className="relative mt-1">
+                                <select
+                                    onChange={(e) => {
+                                        setUniversity(e.target.value); // ตั้งค่าใหม่
+                                    }}
+                                    className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                    style={{ appearance: 'none' }}
+                                    disabled={!editMode}
+                                    value={university || getUniversity || ""}
+                                >
+                                    <option value="0">-</option>
+                                    {universitys?.map((uni, index) => (
+                                        <option key={index} value={uni?.university}>{uni?.university}</option>
+                                    ))}
+                                </select>
+                                <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                            </div>
+                            {/* <div className='relative'>
                                 <input
                                     value={university || getUniversity || ""}
                                     onChange={(e) => handleUniversity(e.target.value)}
@@ -1668,7 +1685,7 @@ function UserPersonal({ dataUser, setLoader, page }) {
                                         ))}
                                     </div>
                                 )}
-                            </div>
+                            </div> */}
                         </div>
                         {page === "supervisor" && (
                             <>

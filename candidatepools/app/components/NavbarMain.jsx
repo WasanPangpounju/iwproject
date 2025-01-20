@@ -1,6 +1,6 @@
 "use client";
 
-import React,{ useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Icon from "@mdi/react";
@@ -52,22 +52,31 @@ function NavbarMain({ status }) {
 
   // Logout
   function handleLogout() {
-    Swal.fire({
-      title: "ออกจากระบบสำเร็จ",
-      icon: "success",
-      confirmButtonText: "ตกลง",
-      confirmButtonColor: "#0d96f8",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        signOut({ redirect: false })
-          .then(() => {
-            console.log("ออกจากระบบสำเร็จ");
-          })
-          .catch((err) => {
-            console.log("Sign out error:", err);
-          });
-      }
-    });
+    // Swal.fire({
+    //   title: "ออกจากระบบสำเร็จ",
+    //   icon: "success",
+    //   confirmButtonText: "ตกลง",
+    //   confirmButtonColor: "#0d96f8",
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     signOut({ redirect: false })
+    //       .then(() => {
+    //         console.log("ออกจากระบบสำเร็จ");
+    //       })
+    //       .catch((err) => {
+    //         console.log("Sign out error:", err);
+    //       });
+    //   }
+    // });
+    signOut({ redirect: false })
+      .then(() => {
+        console.log("ออกจากระบบสำเร็จ");
+        window?.location?.reload();
+      })
+      .catch((err) => {
+        console.log("Sign out error:", err);
+      });
+
   }
 
   //edit menu open

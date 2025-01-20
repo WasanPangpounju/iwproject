@@ -150,6 +150,7 @@ function Register({ statusAgreement }) {
             return;
         }
 
+        
         try {
             const resCheckUser = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/checkUser`, {
                 method: "POST",
@@ -298,8 +299,6 @@ function Register({ statusAgreement }) {
         });
     }
 
-    // console.log(universitys)
-
     //select university 
     const [optionUniversity, setOptionUniversity] = useState([]);
     const [isFocusUni, setIsFocusUni] = useState(false)
@@ -421,7 +420,16 @@ function Register({ statusAgreement }) {
                     </div>
                     <div className={`${fontSize} ${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label>สถาบันการศึกษา:</label>
-                        <div className='relative'>
+                        <div className="relative ">
+                            <select onChange={(e) => handleUniversity(e.target.value)} className={`${bgColorMain} cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg`} style={{ appearance: 'none' }}>
+                                <option value="0">เลือกสถาบันการศึกษา</option>
+                                {universitys?.map((uni, index) => (
+                                    <option key={index} value={uni?.university}>{uni?.university}</option>
+                                ))}
+                            </select>
+                            <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
+                        </div>
+                        {/* <div className='relative'>
                             <input
                                 value={university}
                                 onChange={(e) => handleUniversity(e.target.value)}
@@ -445,7 +453,7 @@ function Register({ statusAgreement }) {
                                     ))}
                                 </div>
                             )}
-                        </div>
+                        </div> */}
                         {/* <div className={`${bgColorMain} ${bgColor} w-96 border px-3 border-gray-400 rounded-lg`}>
                             <Autocomplete
                                 options={universitys}

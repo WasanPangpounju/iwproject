@@ -319,7 +319,7 @@ function StudentEducation({ dataUser, id, setLoader }) {
         e.preventDefault();
 
         setLoader(true);
-     
+
         n -= 1; // ลดค่า n เพื่อใช้ index ที่ถูกต้อง
 
         // console.log("typePerson: " + typePerson);
@@ -631,72 +631,96 @@ function StudentEducation({ dataUser, id, setLoader }) {
         <div className='mt-5'>
             {dataEducations ? (
                 <form onSubmit={(e) => handleSubmit(e, fields.length)} className=" flex gap-x-10 gap-y-5 gap- flex-wrap">
-                {dataEducations && (
-                    fields.map((field, index) => (
-                        <div className="flex gap-x-10 gap-y-5 flex-wrap" key={index}>
-                            {/* ประเภทบุคล */}
+                    {dataEducations && (
+                        fields.map((field, index) => (
+                            <div className="flex gap-x-10 gap-y-5 flex-wrap" key={index}>
+                                {/* ประเภทบุคล */}
 
-                            {index === 0 && (
-                                <div className="flex flex-col w-full">
-                                    <label>ประเภทบุลคล <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                {index === 0 && (
+                                    <div className="flex flex-col w-full">
+                                        <label>ประเภทบุคคล <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                        <div className="relative col w-fit mt-1">
+                                            <select
+                                                onChange={(e) => setTypePerson(e.target.value)}
+                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                style={{ appearance: 'none' }}
+                                                disabled={!editMode}
+                                                value={typePerson || "-"}
+                                            >
+                                                <option value="0">-</option>
+                                                <option value="นักศึกษาพิการ">นักศึกษาพิการ</option>
+                                                <option value="บัณฑิตพิการ">บัณฑิตพิการ</option>
+                                            </select>
+                                            <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                                        </div>
+                                    </div>
+
+                                )}
+                                {index > 0 && (
+                                    editMode ? (
+                                        <div className="w-full flex gap-5 items-end">
+                                            <div
+                                                onClick={() => deleteField(index)}
+                                                className={`${!editMode ? "hidden" : ""} w-fit cursor-pointer`}
+                                            >
+                                                <Icon className="text-red-400" path={mdiCloseCircle} size={1} />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <hr className='w-full' />
+                                    )
+                                )}
+
+                                {/* ส่วนที่เหลือ */}
+                                <div className="flex flex-col">
+                                    <label>ระดับชั้น <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                     <div className="relative col w-fit mt-1">
                                         <select
-                                            onChange={(e) => setTypePerson(e.target.value)}
+                                            onChange={(e) => {
+                                                let newEducationLevels = Array.isArray(educationLevel) ? [...educationLevel] : []; // ตรวจสอบว่า educationLevel เป็น array
+                                                newEducationLevels[index] = e.target.value; // อัปเดตค่าตาม index
+                                                setEducationLevel(newEducationLevels); // ตั้งค่าใหม่
+                                            }}
                                             className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-2 px-4 rounded-lg`}
                                             style={{ appearance: 'none' }}
                                             disabled={!editMode}
-                                            value={typePerson || "-"}
+                                            value={Array.isArray(educationLevel) && educationLevel[index] !== undefined ? educationLevel[index] : "-"}
                                         >
                                             <option value="0">-</option>
-                                            <option value="นักศึกษาพิการ">นักศึกษาพิการ</option>
-                                            <option value="บัณฑิตพิการ">บัณฑิตพิการ</option>
+                                            <option value="ปริญญาตรี">ปริญญาตรี</option>
+                                            <option value="ปริญญาโท">ปริญญาโท</option>
+                                            <option value="ปริญญาเอก">ปริญญาเอก</option>
                                         </select>
                                         <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                     </div>
                                 </div>
-
-                            )}
-                            {index > 0 && (
-                                editMode ? (
-                                    <div className="w-full flex gap-5 items-end">
-                                        <div
-                                            onClick={() => deleteField(index)}
-                                            className={`${!editMode ? "hidden" : ""} w-fit cursor-pointer`}
-                                        >
-                                            <Icon className="text-red-400" path={mdiCloseCircle} size={1} />
+                                {/* ปีที่จบการศึกษา */}
+                                {index === 0 ? (
+                                    (typePerson === "บัณฑิตพิการ" || dataUser.typePerson === "บัณฑิตพิการ") && (
+                                        <div className="flex flex-col">
+                                            <label>ปีที่จบการศึกษา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                            <div className="relative col w-fit mt-1">
+                                                <select
+                                                    onChange={(e) => {
+                                                        let newData = Array.isArray(yearGraduation) ? [...yearGraduation] : []; // ตรวจสอบว่า yearGraduation เป็น array
+                                                        newData[index] = e.target.value; // อัปเดตค่าตาม index
+                                                        setYearGraduation(newData); // ตั้งค่าใหม่
+                                                    }}
+                                                    className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-32 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    style={{ appearance: 'none' }}
+                                                    disabled={!editMode}
+                                                    value={Array.isArray(yearGraduation) && yearGraduation[index] !== undefined ? yearGraduation[index] : "-"}
+                                                >
+                                                    <option value="0">-</option>
+                                                    {years.map((y, index) => (
+                                                        <option key={index} value={y}>{y}</option>
+                                                    ))}
+                                                </select>
+                                                <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                                            </div>
                                         </div>
-                                    </div>
+                                    )
                                 ) : (
-                                    <hr className='w-full' />
-                                )
-                            )}
-
-                            {/* ส่วนที่เหลือ */}
-                            <div className="flex flex-col">
-                                <label>ระดับชั้น <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                                <div className="relative col w-fit mt-1">
-                                    <select
-                                        onChange={(e) => {
-                                            let newEducationLevels = Array.isArray(educationLevel) ? [...educationLevel] : []; // ตรวจสอบว่า educationLevel เป็น array
-                                            newEducationLevels[index] = e.target.value; // อัปเดตค่าตาม index
-                                            setEducationLevel(newEducationLevels); // ตั้งค่าใหม่
-                                        }}
-                                        className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-2 px-4 rounded-lg`}
-                                        style={{ appearance: 'none' }}
-                                        disabled={!editMode}
-                                        value={Array.isArray(educationLevel) && educationLevel[index] !== undefined ? educationLevel[index] : "-"}
-                                    >
-                                        <option value="0">-</option>
-                                        <option value="ปริญญาตรี">ปริญญาตรี</option>
-                                        <option value="ปริญญาโท">ปริญญาโท</option>
-                                        <option value="ปริญญาเอก">ปริญญาเอก</option>
-                                    </select>
-                                    <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
-                                </div>
-                            </div>
-                            {/* ปีที่จบการศึกษา */}
-                            {index === 0 ? (
-                                (typePerson === "บัณฑิตพิการ" || dataUser.typePerson === "บัณฑิตพิการ") && (
                                     <div className="flex flex-col">
                                         <label>ปีที่จบการศึกษา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                         <div className="relative col w-fit mt-1">
@@ -719,36 +743,30 @@ function StudentEducation({ dataUser, id, setLoader }) {
                                             <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                         </div>
                                     </div>
-                                )
-                            ) : (
-                                <div className="flex flex-col">
-                                    <label>ปีที่จบการศึกษา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                                    <div className="relative col w-fit mt-1">
+                                )}
+                                {/* สถาบันการศึกษา */}
+                                <div className="flex col flex-col ">
+                                    <label>สถาบันการศึกษา/มหาวิทยาลัย <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                    <div className="relative mt-1">
                                         <select
                                             onChange={(e) => {
-                                                let newData = Array.isArray(yearGraduation) ? [...yearGraduation] : []; // ตรวจสอบว่า yearGraduation เป็น array
-                                                newData[index] = e.target.value; // อัปเดตค่าตาม index
-                                                setYearGraduation(newData); // ตั้งค่าใหม่
+                                                let newUniversities = Array.isArray(university) ? [...university] : []; // ตรวจสอบว่า educationLevel เป็น array
+                                                newUniversities[index] = e.target.value; // อัปเดตค่าตาม index
+                                                setUniversity(newUniversities); // ตั้งค่าใหม่
                                             }}
-                                            className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-32 border border-gray-400 py-2 px-4 rounded-lg`}
+                                            className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                                             style={{ appearance: 'none' }}
                                             disabled={!editMode}
-                                            value={Array.isArray(yearGraduation) && yearGraduation[index] !== undefined ? yearGraduation[index] : "-"}
+                                            value={Array.isArray(inputUniversity) && inputUniversity[index] !== undefined ? inputUniversity[index] : Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
                                         >
                                             <option value="0">-</option>
-                                            {years.map((y, index) => (
-                                                <option key={index} value={y}>{y}</option>
+                                            {universitys?.map((uni, index) => (
+                                                <option key={index} value={uni?.university}>{uni?.university}</option>
                                             ))}
                                         </select>
                                         <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
                                     </div>
-                                </div>
-                            )}
-                            {/* สถาบันการศึกษา */}
-                            <div className="flex col flex-col ">
-                                <label>สถาบันการศึกษา/มหาวิทยาลัย <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-
-                                <div className='relative'>
+                                    {/* <div className='relative'>
                                     <input
                                         value={Array.isArray(inputUniversity) && inputUniversity[index] !== undefined ? inputUniversity[index] : Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
                                         onChange={(e) => handleOptionUni(e.target.value, index)}
@@ -775,188 +793,188 @@ function StudentEducation({ dataUser, id, setLoader }) {
                                             ))}
                                         </div>
                                     )}
+                                </div> */}
                                 </div>
-                            </div>
-                            {/* วิทยาเขต */}
-                            {index === 0 && typePerson === 'นักศึกษาพิการ' && (
-                                campus[index] || editMode ? (
-                                    <div className="flex col flex-col">
-                                        <label>วิทยาเขต</label>
-                                        <input
-                                            type="text"
-                                            className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                            onBlur={(e) => handleCampus(e.target.value, index)}
-                                            defaultValue={Array.isArray(campus) && campus[index] !== undefined ? campus[index] : ""}
-                                            readOnly={!editMode}
-                                            placeholder="ระบุวิทยาเขตการศึกษา"
-                                        />
-                                    </div>
-                                ) : null
-                            )}
-                            {/* คณะ */}
-                            <div className="flex col flex-col">
-                                <label>คณะ <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                                <input
-                                    type="text"
-                                    className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                    onBlur={(e) => handleFaculty(e.target.value, index)}
-                                    defaultValue={Array.isArray(faculty) && faculty[index] !== undefined ? faculty[index] : ""}
-                                    readOnly={!editMode}
-                                    placeholder="คณะที่สังกัด"
-                                />
-                            </div>
-                            {/* สาขา */}
-                            <div className="flex col flex-col">
-                                <label>สาขา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                                <input
-                                    type="text"
-                                    className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                    onBlur={(e) => handleBranch(e.target.value, index)}
-                                    defaultValue={Array.isArray(branch) && branch[index] !== undefined ? branch[index] : ""}
-                                    readOnly={!editMode}
-                                    placeholder="สาขาที่สังกัด"
-                                />
-                            </div>
-                            {/* ชั้นปี */}
-                            {index === 0 && typePerson === "นักศึกษาพิการ" && (
-                                <div className="flex flex-col">
-                                    <label>ชั้นปี <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                                    <div className="relative col w-fit mt-1">
-                                        <select
-                                            onChange={(e) => {
-                                                let newData = Array.isArray(level) ? [...level] : []; // ตรวจสอบว่า level เป็น array
-                                                newData[index] = e.target.value; // อัปเดตค่าตาม index
-                                                setLevel(newData); // ตั้งค่าใหม่
-                                            }}
-                                            className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-32 border border-gray-400 py-2 px-4 rounded-lg`}
-                                            style={{ appearance: 'none' }}
-                                            disabled={!editMode}
-                                            value={Array.isArray(level) && level[index] !== undefined ? level[index] : "-"}
-                                        >
-                                            <option value="0">-</option>
-                                            <option value="1">ชั้นปี1</option>
-                                            <option value="2">ชั้นปี2</option>
-                                            <option value="3">ชั้นปี3</option>
-                                            <option value="4">ชั้นปี4</option>
-                                        </select>
-                                        <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
-                                    </div>
-                                </div>
-                            )}
-                            {/* เกรดเฉลี่ย */}
-                            <div className="flex col flex-col">
-                                <label>เกรดเฉลี่ย <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                                <input
-                                    type="text"
-                                    inputMode="numeric"
-                                    className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-24 border border-gray-400 py-2 px-4 rounded-lg`}
-                                    onBlur={(e) => handleGrade(e.target.value, index)}
-                                    defaultValue={Array.isArray(grade) && grade[index] !== undefined ? grade[index] : ""}
-                                    readOnly={!editMode}
-                                    placeholder="Ex. 3.12"
-                                />
-                            </div>
-                        </div>
-                    ))
-                )}
-
-                {errorEducation && (
-                    <div className="w-full">
-                        <p className="text-red-500">* {errorEducation}</p>
-                    </div>
-                )}
-                <div className={`${fields.length >= 4 ? "hidden" : ""} flex col flex-col justify-end w-full`}>
-                    <div onClick={() => addField(fields.length)} className={`${!editMode ? "hidden" : ""}  cursor-pointer  rounded-lg bg-[#4a94ff] w-fit`}>
-                        <Icon className={` text-white mx-3`} path={mdiPlus} size={1.5} />
-                    </div>
-                </div>
-
-                <hr className="w-full my-3" />
-                <div className="flex col flex-col">
-                    <label className="font-bold">เอกสารเพิ่มเติม</label>
-                    {editMode && (
-                        <>
-                            <div className="mt-3 flex gap-5 flex-wrap">
-                                <input
-                                    type="text"
-                                    className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                    onChange={(e) => setInputNameFile(e.target.value)} // ตั้งชื่อไฟล์
-                                    placeholder="ชื่อเอกสาร"
-                                    readOnly={!editMode}
-                                    value={inputNameFile}
-                                />
-                                <div className={`mt-1 flex items-center`}>
+                                {/* วิทยาเขต */}
+                                {index === 0 && typePerson === 'นักศึกษาพิการ' && (
+                                    campus[index] || editMode ? (
+                                        <div className="flex col flex-col">
+                                            <label>วิทยาเขต</label>
+                                            <input
+                                                type="text"
+                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                onBlur={(e) => handleCampus(e.target.value, index)}
+                                                defaultValue={Array.isArray(campus) && campus[index] !== undefined ? campus[index] : ""}
+                                                readOnly={!editMode}
+                                                placeholder="ระบุวิทยาเขตการศึกษา"
+                                            />
+                                        </div>
+                                    ) : null
+                                )}
+                                {/* คณะ */}
+                                <div className="flex col flex-col">
+                                    <label>คณะ <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                     <input
-                                        id="chooseFile"
-                                        ref={inputFileRef}
-                                        onChange={handleDocument}
-                                        type="file"
-                                        className=""
-                                        hidden
+                                        type="text"
+                                        className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                        onBlur={(e) => handleFaculty(e.target.value, index)}
+                                        defaultValue={Array.isArray(faculty) && faculty[index] !== undefined ? faculty[index] : ""}
+                                        readOnly={!editMode}
+                                        placeholder="คณะที่สังกัด"
                                     />
-                                    <div
-                                        onClick={openFileDialog}
-                                        className={`border rounded-lg py-2 px-8 text-center ${inputEditColor} ${editMode ? ' cursor-pointer' : ' cursor-not-allowed'
-                                            }`
-                                        }                                                    >
-                                        Choose File
+                                </div>
+                                {/* สาขา */}
+                                <div className="flex col flex-col">
+                                    <label>สาขา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                    <input
+                                        type="text"
+                                        className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                        onBlur={(e) => handleBranch(e.target.value, index)}
+                                        defaultValue={Array.isArray(branch) && branch[index] !== undefined ? branch[index] : ""}
+                                        readOnly={!editMode}
+                                        placeholder="สาขาที่สังกัด"
+                                    />
+                                </div>
+                                {/* ชั้นปี */}
+                                {index === 0 && typePerson === "นักศึกษาพิการ" && (
+                                    <div className="flex flex-col">
+                                        <label>ชั้นปี <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                        <div className="relative col w-fit mt-1">
+                                            <select
+                                                onChange={(e) => {
+                                                    let newData = Array.isArray(level) ? [...level] : []; // ตรวจสอบว่า level เป็น array
+                                                    newData[index] = e.target.value; // อัปเดตค่าตาม index
+                                                    setLevel(newData); // ตั้งค่าใหม่
+                                                }}
+                                                className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-32 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                style={{ appearance: 'none' }}
+                                                disabled={!editMode}
+                                                value={Array.isArray(level) && level[index] !== undefined ? level[index] : "-"}
+                                            >
+                                                <option value="0">-</option>
+                                                <option value="1">ชั้นปี1</option>
+                                                <option value="2">ชั้นปี2</option>
+                                                <option value="3">ชั้นปี3</option>
+                                                <option value="4">ชั้นปี4</option>
+                                            </select>
+                                            <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                                        </div>
                                     </div>
+                                )}
+                                {/* เกรดเฉลี่ย */}
+                                <div className="flex col flex-col">
+                                    <label>เกรดเฉลี่ย <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                    <input
+                                        type="text"
+                                        inputMode="numeric"
+                                        className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-24 border border-gray-400 py-2 px-4 rounded-lg`}
+                                        onBlur={(e) => handleGrade(e.target.value, index)}
+                                        defaultValue={Array.isArray(grade) && grade[index] !== undefined ? grade[index] : ""}
+                                        readOnly={!editMode}
+                                        placeholder="Ex. 3.12"
+                                    />
                                 </div>
                             </div>
-                            <div className="flex mt-5">
-                                <p>
-                                    <span className="text-red-500 font-bold">ตัวอย่าง</span>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;หนังสือรับรองผลการเรียน ปีที่ 1
-                                </p>
-                                <Icon onClick={openFileExample} className={`cursor-pointer text-gray-400 mx-3`} path={mdiAlertCircle} size={0.8} />
-                            </div>
-                            {uploadProgress > 0 && (
-                                <div className="mt-2">
-                                    <p>กำลังดาวน์โหลด: {uploadProgress.toFixed(2)}%</p>
-                                </div>
-                            )}
-                        </>
+                        ))
                     )}
-                </div>
-                {Array.isArray(file) && file.length > 0 ? (
-                    <div className="w-full mt-5">
-                        <p>ชื่อ</p>
-                        <hr className="w-full my-3" />
-                        {file.map((n, index) => (
-                            <div key={index} className="my-5">
-                                <div className="grid grid-cols-3 items-center ">
-                                    <div className="cursor-pointer" onClick={() => openFile(n)}>
-                                        <p>{nameFile[index]}</p>
-                                    </div>
-                                    <div className=" text-center">
-                                        <p>{sizeFile[index]} MB</p>
-                                    </div>
-                                    <div className="flex justify-end">
-                                        <Icon onClick={() => handleEditNameFile(id, nameFile[index], index)} className={`cursor-pointer text-gray-40 mx-1`} path={mdiPencil} size={.8} />
-                                        <Icon onClick={() => handleDownloadFile(n, nameFile[index])} className={`cursor-pointer text-gray-40 mx-1`} path={mdiDownload} size={.8} />
-                                        <Icon onClick={() => handleDeleteFile(nameFile[index], index)} className={`${editMode ? "" : "hidden"} cursor-pointer text-gray-40 mx-1`} path={mdiDelete} size={.8} />
+
+                    {errorEducation && (
+                        <div className="w-full">
+                            <p className="text-red-500">* {errorEducation}</p>
+                        </div>
+                    )}
+                    <div className={`${fields.length >= 4 ? "hidden" : ""} flex col flex-col justify-end w-full`}>
+                        <div onClick={() => addField(fields.length)} className={`${!editMode ? "hidden" : ""}  cursor-pointer  rounded-lg bg-[#4a94ff] w-fit`}>
+                            <Icon className={` text-white mx-3`} path={mdiPlus} size={1.5} />
+                        </div>
+                    </div>
+
+                    <hr className="w-full my-3" />
+                    <div className="flex col flex-col">
+                        <label className="font-bold">เอกสารเพิ่มเติม</label>
+                        {editMode && (
+                            <>
+                                <div className="mt-3 flex gap-5 flex-wrap">
+                                    <input
+                                        type="text"
+                                        className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                        onChange={(e) => setInputNameFile(e.target.value)} // ตั้งชื่อไฟล์
+                                        placeholder="ชื่อเอกสาร"
+                                        readOnly={!editMode}
+                                        value={inputNameFile}
+                                    />
+                                    <div className={`mt-1 flex items-center`}>
+                                        <input
+                                            id="chooseFile"
+                                            ref={inputFileRef}
+                                            onChange={handleDocument}
+                                            type="file"
+                                            className=""
+                                            hidden
+                                        />
+                                        <div
+                                            onClick={openFileDialog}
+                                            className={`border rounded-lg py-2 px-8 text-center ${inputEditColor} ${editMode ? ' cursor-pointer' : ' cursor-not-allowed'
+                                                }`
+                                            }                                                    >
+                                            Choose File
+                                        </div>
                                     </div>
                                 </div>
-                                <hr className="w-full my-1" />
-                            </div>
-                        ))}
+                                <div className="flex mt-5">
+                                    <p>
+                                        <span className="text-red-500 font-bold">ตัวอย่าง</span>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;หนังสือรับรองผลการเรียน ปีที่ 1
+                                    </p>
+                                    <Icon onClick={openFileExample} className={`cursor-pointer text-gray-400 mx-3`} path={mdiAlertCircle} size={0.8} />
+                                </div>
+                                {uploadProgress > 0 && (
+                                    <div className="mt-2">
+                                        <p>กำลังดาวน์โหลด: {uploadProgress.toFixed(2)}%</p>
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
-                ) : (
-                    <div className="w-full text-center text-gray-300">ยังไม่มีไฟล์ที่อัพโหลด</div>
-                )}
+                    {Array.isArray(file) && file.length > 0 ? (
+                        <div className="w-full mt-5">
+                            <p>ชื่อ</p>
+                            <hr className="w-full my-3" />
+                            {file.map((n, index) => (
+                                <div key={index} className="my-5">
+                                    <div className="grid grid-cols-3 items-center ">
+                                        <div className="cursor-pointer" onClick={() => openFile(n)}>
+                                            <p>{nameFile[index]}</p>
+                                        </div>
+                                        <div className=" text-center">
+                                            <p>{sizeFile[index]} MB</p>
+                                        </div>
+                                        <div className="flex justify-end">
+                                            <Icon onClick={() => handleEditNameFile(id, nameFile[index], index)} className={`cursor-pointer text-gray-40 mx-1`} path={mdiPencil} size={.8} />
+                                            <Icon onClick={() => handleDownloadFile(n, nameFile[index])} className={`cursor-pointer text-gray-40 mx-1`} path={mdiDownload} size={.8} />
+                                            <Icon onClick={() => handleDeleteFile(nameFile[index], index)} className={`${editMode ? "" : "hidden"} cursor-pointer text-gray-40 mx-1`} path={mdiDelete} size={.8} />
+                                        </div>
+                                    </div>
+                                    <hr className="w-full my-1" />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="w-full text-center text-gray-300">ยังไม่มีไฟล์ที่อัพโหลด</div>
+                    )}
 
-                {error && (
-                    <div className="w-full text-center">
-                        <p className="text-red-500">* {error}</p>
-                    </div>
-                )}
-                {editMode ? (
-                    <div className="flex gap-10 w-full justify-center mt-5">
-                        <div onClick={() => {
-                            setEditMode(false)
-                        }
-                        }
-                            className={`
+                    {error && (
+                        <div className="w-full text-center">
+                            <p className="text-red-500">* {error}</p>
+                        </div>
+                    )}
+                    {editMode ? (
+                        <div className="flex gap-10 w-full justify-center mt-5">
+                            <div onClick={() => {
+                                setEditMode(false)
+                            }
+                            }
+                                className={`
                                                 ${bgColorNavbar} 
                                                 ${bgColorWhite} 
                                                 hover:cursor-pointer 
@@ -966,30 +984,30 @@ function StudentEducation({ dataUser, id, setLoader }) {
                                                 flex justify-center items-center gap-1 
                                                 border border-white
                                               `}                                    >
-                            <Icon path={mdiCloseCircle} size={1} />
-                            <p>ยกเลิก</p>
+                                <Icon path={mdiCloseCircle} size={1} />
+                                <p>ยกเลิก</p>
+                            </div>
+                            <button type='submit'
+                                className=
+                                {
+                                    `${inputTextColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
+                                }                                    >
+                                <Icon path={mdiContentSave} size={1} />
+                                <p>บันทึก</p>
+                            </button>
                         </div>
-                        <button type='submit'
-                            className=
-                            {
-                                `${inputTextColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`
-                            }                                    >
-                            <Icon path={mdiContentSave} size={1} />
-                            <p>บันทึก</p>
-                        </button>
-                    </div>
-                ) : (
-                    <div className=" flex w-full justify-center mt-10">
-                        <div onClick={() => setEditMode(true)}
-                            className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-                        >
-                            <Icon path={mdiPencil} size={.8} />
-                            <p>แก้ไข</p>
+                    ) : (
+                        <div className=" flex w-full justify-center mt-10">
+                            <div onClick={() => setEditMode(true)}
+                                className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
+                            >
+                                <Icon path={mdiPencil} size={.8} />
+                                <p>แก้ไข</p>
+                            </div>
                         </div>
-                    </div>
-                )}
-            </form>
-            ):(
+                    )}
+                </form>
+            ) : (
                 <div>กำลังโหลด...</div>
             )}
 
