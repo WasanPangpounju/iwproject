@@ -773,7 +773,7 @@ function EditPersonal() {
           <Loader />
         </div>
       )}
-      <NavbarLogo title="ข้อมูลส่วนบุลคล" dataUser={dataUser} />
+      <NavbarLogo title="ข้อมูลส่วนบุคคล" dataUser={dataUser} />
       <div className="flex">
         <NavbarMain status="edit" />
         <div className="w-10/12 px-7 py-5">
@@ -1664,7 +1664,7 @@ function EditPersonal() {
                     setRelationship(e.target.value);
                   }}
                   defaultValue={getRelationship || ""}
-                  placeholder="บุลคลใกล้ชิด"
+                  placeholder="บุคคลใกล้ชิด"
                   readOnly={!editMode}
                 />
               </div>

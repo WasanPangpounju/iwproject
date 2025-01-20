@@ -701,7 +701,7 @@ function editEducation() {
 
                                         {index === 0 && (
                                             <div className="flex flex-col w-full">
-                                                <label>ประเภทบุลคล <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                                <label>ประเภทบุคคล <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
                                                 <div className="relative col w-fit mt-1">
                                                     <select
                                                         onChange={(e) => setTypePerson(e.target.value)}
@@ -810,6 +810,25 @@ function editEducation() {
                                         {/* สถาบันการศึกษา */}
                                         <div className="flex col flex-col ">
                                             <label>สถาบันการศึกษา/มหาวิทยาลัย <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
+                                            <div className="relative col w-fit mt-1">
+                                                <select
+                                                    onChange={(e) => {
+                                                        let newUniversities = Array.isArray(university) ? [...university] : []; // ตรวจสอบว่า educationLevel เป็น array
+                                                        newUniversities[index] = e.target.value; // อัปเดตค่าตาม index
+                                                        setUniversity(newUniversities); // ตั้งค่าใหม่
+                                                    }}
+                                                    className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                                                    style={{ appearance: 'none' }}
+                                                    disabled={!editMode}
+                                                    value={Array.isArray(inputUniversity) && inputUniversity[index] !== undefined ? inputUniversity[index] : Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
+                                                >
+                                                    <option value="0">-</option>
+                                                    {universitys?.map((uni, index) => (
+                                                        <option key={index} value={uni?.university}>{uni?.university}</option>
+                                                    ))}
+                                                </select>
+                                                <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
+                                            </div>
                                             {/* {editMode ? (
                                                 <div className={`${bgColorMain} ${bgColor} mt-1 w-64 border px-3 border-gray-400 rounded-lg`}>
                                                     <Autocomplete
@@ -861,7 +880,7 @@ function editEducation() {
                                                 readOnly={!editMode}
                                                 placeholder="ระบุสถานศึกษา"
                                             /> */}
-                                            <div className='relative'>
+                                            {/* <div className='relative'>
                                                 <input
                                                     value={Array.isArray(inputUniversity) && inputUniversity[index] !== undefined ? inputUniversity[index] : Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
                                                     onChange={(e) => handleOptionUni(e.target.value, index)}
@@ -888,7 +907,7 @@ function editEducation() {
                                                         ))}
                                                     </div>
                                                 )}
-                                            </div>
+                                            </div> */}
                                         </div>
                                         {/* วิทยาเขต */}
                                         {index === 0 && typePerson === 'นักศึกษาพิการ' && (
