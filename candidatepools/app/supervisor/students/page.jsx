@@ -393,7 +393,7 @@ function SupervisorPage() {
                                             </div>
                                         </div>
                                         <div className='flex flex-col gap-1'>
-                                            <label >ประเภทบุลคล</label>
+                                            <label >ประเภทบุคคล</label>
                                             <div className="relative col w-fit">
                                                 <select
                                                     className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
