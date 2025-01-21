@@ -1309,6 +1309,7 @@ function WorkHistory() {
                                                     disabled={!editMode}
                                                 >
                                                     <option value="0">-</option>
+                                                    <option value="ปัจจุบัน">ปัจจุบัน</option>
                                                     {years.map((year, index) => (
                                                         <option key={index} value={year}>{year}</option>
                                                     ))}
@@ -1465,6 +1466,7 @@ function WorkHistory() {
                                                     disabled={!editMode}
                                                 >
                                                     <option value="0">-</option>
+                                                    <option value="ปัจจุบัน">ปัจจุบัน</option>
                                                     {years.map((year, index) => (
                                                         <option key={index} value={year}>{year}</option>
                                                     ))}
