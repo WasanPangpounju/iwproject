@@ -10,8 +10,6 @@ import { useRouter } from 'next/navigation'
 import { useTheme } from '@/app/ThemeContext'
 import Icon from '@mdi/react'
 import { mdiArrowLeftCircle, mdiAlertCircle, mdiMagnify, mdiArrowDownDropCircle, mdiPlus, mdiContentSave, mdiCloseThick } from '@mdi/js'
-import dataWorkType from '@/app/interestedwork/dataWorkType'
-import Link from 'next/link'
 import EditUser from '@/app/supervisor/usermanagement/components/EditUser'
 import AddUser from '@/app/supervisor/usermanagement/components/AddUser'
 
