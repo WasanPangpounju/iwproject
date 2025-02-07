@@ -40,7 +40,7 @@ const PieChart = ({ d1, d2, d3, d4, d5, d6, d7, allStudents }) => {
                 },
             },
             datalabels: {
-                color: '#fff', // กำหนดสีตัวหนังสือ
+                color: 'black', // กำหนดสีตัวหนังสือ
                 anchor: 'center',
                 align: 'center',
                 font: {
