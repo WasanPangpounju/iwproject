@@ -1,58 +1,70 @@
 // components/BarChart.js
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { mdiBorderRadius } from '@mdi/js';
 
 // ลงทะเบียน ChartJS components ที่ใช้
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 //manage chart
-const BarChart = ({d1, d2, d3, d4, d5, d6, d7, allStudents}) => {
-    const labels = ['พิการทางการเห็น', 'พิการทางการได้ยินหรือสื่อความหมาย', 'พิการทางการเคลื่อนไหวหรือทางร่างกาย', 'พิการทางจิตใจหรือพฤติดรรม', 'พิการทางสติปัญญา', 'พิการทางการเรียนรู้', 'พิการทางออทิสติก'];
+const PieChart = ({ d1, d2, d3, d4, d5, d6, d7, allStudents }) => {
     const data = {
-        labels: labels,
+        labels:['พิการทางการมองเห็น', 'พิการทางการได้ยินหรือสื่อความหมาย', 'พิการทางการเคลื่อนไหวหรือทางร่างกาย', 'พิการทางจิตใจหรือพฤติดรรม', 'พิการทางสติปัญญา', 'พิการทางการเรียนรู้', 'พิการทางออทิสติก'],
         datasets: [{
-            axis: 'y',
-            label: `จำนวนความพิการของนักศึกษา`,
+            label: 'จำนวนนักศึกษาพิการ',
             data: [d1, d2, d3, d4, d5, d6, d7],
-            fill: false,
             backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-                'rgba(255, 205, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(201, 203, 207, 0.2)'
+                '#ffa152',
+                '#74c7c2',
+                '#ffc0c1',
+                '#ffd576',
+                '#80b4f8',
+                '#76cda1',
+                '#998fff',
             ],
-            borderColor: [
-                'rgb(255, 99, 132)',
-                'rgb(255, 159, 64)',
-                'rgb(255, 205, 86)',
-                'rgb(75, 192, 192)',
-                'rgb(54, 162, 235)',
-                'rgb(153, 102, 255)',
-                'rgb(201, 203, 207)'
-            ],
-            borderWidth: 1
+            hoverOffset: 4
         }]
     };
 
-    const config = {
-        type: 'bar',
-        data: data,
-        options: {
-            indexAxis: 'y',
-            maintainAspectRatio: false, // ป้องกันไม่ให้กราฟรักษาสัดส่วนเดิม
+    const options = {
+        plugins: {
+            legend: {
+                position: 'left', // วางแถบกำกับที่ด้านขวาของกราฟ
+                labels: {
+                    boxWidth: 20, // ขนาดของสัญลักษณ์ในแถบกำกับ
+                    padding: 30, // ระยะห่างระหว่างสัญลักษณ์และชื่อ
+                    font: {
+                        size: 17, // ขนาดตัวอักษร
+                    },
+                },
+            },
+            datalabels: {
+                color: '#fff', // กำหนดสีตัวหนังสือ
+                anchor: 'center',
+                align: 'center',
+                font: {
+                    weight: 'bold',
+                    size: 10,
+                },
+                formatter: (value, ctx) => {
+                    let sum = ctx.dataset.data.reduce((a, b) => a + b, 0); // คำนวณผลรวมของค่าใน dataset
+                    let percentage = ((value / sum) * 100).toFixed(1) + "%"; // คำนวณเปอร์เซ็นต์
+                    return `${value}\n${percentage}`; // แสดงทั้งจำนวนและเปอร์เซ็นต์
+                },
+            },
         },
+        indexAxis: 'y', // แนวแกนเป็นแนวนอน
+        maintainAspectRatio: false, // ไม่รักษาสัดส่วนเดิมของกราฟ
     };
 
     return (
-        <Bar
+        <Pie
             data={data}
-            options={config.options}
-            height={400}
+            height={600}
+            options={options}
         />
     );
 };
 
-export default BarChart;
+export default PieChart;
