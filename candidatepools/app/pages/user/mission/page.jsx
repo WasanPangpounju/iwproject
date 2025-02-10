@@ -123,9 +123,9 @@ function MissionPage() {
                             </div>
                         </div>
                         <div className='mt-5 grid grid-cols-1 md:grid-cols-2'>
-                            <div className={` p-3 ${bgColorMain2 === "bg-white" ? "bg-gray-100" : ""} rounded-md col hover:bg-gray-200`}>
+                            <div className={` p-3 ${bgColorMain2 === "bg-white" ? "bg-gray-100" : ""} rounded-md col `}>
                                 <div className='flex  gap-3 items-center'>
-                                    <div className={`${bgColorNavbar} ${bgColorWhite} rounded-full h-7 w-7 p-1 text-center`}>
+                                    <div className={`${bgColorNavbar} ${bgColorWhite} rounded-full h-7 w-7 p-1 text-center flex items-center justify-center`}>
                                         1
                                     </div>
                                     <p className={` font-bold ${inputTextColor === "text-white" ? "text-[#0c5c9b]" : ""}`}>Inclusion Job Fair</p>
@@ -136,9 +136,9 @@ function MissionPage() {
                                     </p>
                                 </div>
                             </div>
-                            <div className={`p-3 rounded-md col hover:bg-gray-200`}>
+                            <div className={`p-3 rounded-md col `}>
                                 <div className='flex gap-3 items-center'>
-                                    <div className={`${bgColorNavbar} ${bgColorWhite} rounded-full h-7 w-7 p-1 text-center`}>
+                                    <div className={`${bgColorNavbar} ${bgColorWhite} rounded-full h-7 w-7 p-1 text-center flex items-center justify-center`}>
                                         2
                                     </div>
                                     <p className={`font-bold ${inputTextColor === "text-white" ? "text-[#0c5c9b]" : ""}`}>Disability Awareness</p>
@@ -149,9 +149,9 @@ function MissionPage() {
                                     </p>
                                 </div>
                             </div>
-                            <div className={`p-3 rounded-md col hover:bg-gray-200`}>
+                            <div className={`p-3 rounded-md col `}>
                                 <div className='flex gap-3 items-center'>
-                                    <div className={`${bgColorNavbar} ${bgColorWhite} rounded-full h-7 w-7 p-1 text-center`}>
+                                    <div className={`${bgColorNavbar} ${bgColorWhite} rounded-full h-7 w-7 p-1 text-center flex items-center justify-center`}>
                                         3
                                     </div>
                                     <p className={`font-bold ${inputTextColor === "text-white" ? "text-[#0c5c9b]" : ""}`}>Follow Up</p>
@@ -163,9 +163,9 @@ function MissionPage() {
                                     </p>
                                 </div>
                             </div>
-                            <div className={`p-3 ${bgColorMain2 === "bg-white" ? "bg-gray-100" : ""} rounded-md col hover:bg-gray-200`}>
+                            <div className={`p-3 ${bgColorMain2 === "bg-white" ? "bg-gray-100" : ""} rounded-md col `}>
                                 <div className='flex gap-3 items-center'>
-                                    <div className={`${bgColorNavbar} ${bgColorWhite} rounded-full h-7 w-7 p-1 text-center`}>
+                                    <div className={`${bgColorNavbar} ${bgColorWhite} rounded-full h-7 w-7 p-1 text-center flex items-center justify-center`}>
                                         4
                                     </div>
                                     <p className={`font-bold ${inputTextColor === "text-white" ? "text-[#0c5c9b]" : ""}`}>Company Visit & Open House</p>

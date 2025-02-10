@@ -259,11 +259,11 @@ function NavbarMain({ status }) {
               <Icon path={mdiBullseyeArrow} size={1} aria-hidden="true" aria-label="ลักษณะงานที่สนใจ" />
               <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>พันธกิจ</p>
             </Link>
-            <Link href="/interestedwork" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ประวัติการศึกษา">
+            <Link href="/pages/user/university" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ประวัติการศึกษา">
               <Icon path={mdiTownHall} size={1} aria-hidden="true" aria-label="ลักษณะงานที่สนใจ" />
               <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>มหาวิทยาลัย</p>
             </Link>
-            <Link href="/interestedwork" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ประวัติการศึกษา">
+            <Link href="/pages/user/employer" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ประวัติการศึกษา">
               <Icon path={mdiDomain} size={1} aria-hidden="true" aria-label="ลักษณะงานที่สนใจ" />
               <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>นายจ้าง</p>
             </Link>
