@@ -5,18 +5,22 @@ import Image from "next/image";
 import Link from "next/link";
 import Icon from "@mdi/react";
 import {
-  mdiCertificate,
-  mdiBriefcaseOutline,
-  mdiSchool,
+  mdiDomain,
+  mdiBullseyeArrow,
   mdiAccount,
   mdiLogout,
   mdiHelpCircle,
-  mdiMessageAlert,
+  mdiAlertBox,
   mdiBullhorn,
   mdiFileAccount,
   mdiFileEditOutline,
   mdiHomeAccount,
   mdiBriefcaseAccount,
+  mdiAccountMultiple,
+  mdiTownHall,
+  mdiSchool,
+  mdiBriefcaseOutline,
+  mdiCertificate
 } from '@mdi/js';
 
 import styles from "@/app/components/styles/NavbarMain.module.css";
@@ -99,6 +103,17 @@ function NavbarMain({ status }) {
 
   const handleResumeMenuClose = () => {
     setIsResumeMenuOpen(false); // ปิดเมนู
+  };
+
+  //aboutme menu open
+  const [isAboutMenuOpen, setIsAboutMenuOpen] = useState(false);
+
+  const handleAboutMenuOpen = () => {
+    setIsAboutMenuOpen(true); // เปิดเมนู
+  };
+
+  const handleAboutMenuClose = () => {
+    setIsAboutMenuOpen(false); // ปิดเมนู
   };
 
   return (
@@ -210,16 +225,51 @@ function NavbarMain({ status }) {
         </p>
       </Link>
 
-      <Link href="/aboutMe"
+      <div
+        tabIndex="0" // ทำให้สามารถเข้าถึงได้ด้วยการกด Tab
+        role="menuitem"
         className={`${status === "about"
           ? "bg-[#fee2d9] text-[#ff7201]"
           : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
-          } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`} role="menuitem" aria-label="เกี่ยวกับเรา">
-        <Icon path={mdiMessageAlert} size={1} aria-hidden="true" aria-label="เกี่ยวกับเรา" />
+          } ${fontSize} cursor-pointer relative flex items-center px-7 gap-5 py-3 focus:bg-[#fee2d9] focus:text-[#ff7201]`}
+        aria-haspopup="true"
+        aria-expanded={isAboutMenuOpen} // แสดงสถานะว่าเปิดหรือปิดเมนู
+        onMouseEnter={handleAboutMenuOpen} // เปิดเมนูเมื่อ mouse hover
+        onMouseLeave={handleAboutMenuClose} // ปิดเมนูเมื่อ mouse ออกจากพื้นที่เมนู
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleAboutMenuOpen(); // เปิดเมนูเมื่อกด Enter
+          }
+          if (e.key === 'Escape') {
+            handleAboutMenuClose(); // ปิดเมนูเมื่อกด Escape
+          }
+        }}
+      >
+        <Icon path={mdiAccountMultiple} size={1} aria-hidden="true" aria-label="เกี่ยวกับเรา" />
         <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
           เกี่ยวกับเรา
         </p>
-      </Link>
+        {isAboutMenuOpen && ( // แสดงเมนูถ้า isEditMenuOpen เป็น true
+          <div className={`${bgColorMain2} ${bgColor}  max-w-fit absolute left-full top-0 z-10`} role="menu">
+            <Link href="/pages/user/origin" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ข้อมูลส่วนบุคคล">
+              <Icon path={mdiAlertBox} size={1} aria-hidden="true" aria-label="เรซูเม่" />
+              <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>ที่มา</p>
+            </Link>
+            <Link href="/pages/user/mission" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ประวัติการศึกษา">
+              <Icon path={mdiBullseyeArrow} size={1} aria-hidden="true" aria-label="ลักษณะงานที่สนใจ" />
+              <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>พันธกิจ</p>
+            </Link>
+            <Link href="/interestedwork" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ประวัติการศึกษา">
+              <Icon path={mdiTownHall} size={1} aria-hidden="true" aria-label="ลักษณะงานที่สนใจ" />
+              <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>มหาวิทยาลัย</p>
+            </Link>
+            <Link href="/interestedwork" className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3" role="menuitem" aria-label="ประวัติการศึกษา">
+              <Icon path={mdiDomain} size={1} aria-hidden="true" aria-label="ลักษณะงานที่สนใจ" />
+              <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>นายจ้าง</p>
+            </Link>
+          </div>
+        )}
+      </div>
 
       <Link href="/help"
         className={`${status === "help"
