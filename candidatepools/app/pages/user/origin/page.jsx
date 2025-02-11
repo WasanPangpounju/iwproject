@@ -89,7 +89,7 @@ function OriginPage() {
     } = useTheme();
 
     return (
-        <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
+        <div className={`${bgColorMain} ${bgColor} ${fontSize} xl:text-lg`}>
             <NavbarLogo title="ที่มา" dataUser={dataUser} />
             <div className="flex">
                 <NavbarMain status="about" />
@@ -97,7 +97,7 @@ function OriginPage() {
                     {/* <div className={`bg-white rounded-lg p-5`}> */}
                     <div className={`${bgColorNavbar === "bg-[#F97201]" ? "bg-[#ff8d2c]":""} ${bgColorWhite} rounded-lg `}>
                         <div className='flex justify-between'>
-                            <div className='flex flex-col gap-4 p-5 px-10 '>
+                            <div className='flex flex-col gap-3 p-5 px-10 '>
                                 <p className='text-2xl font-ex'>
                                     มูลนิธินวัตกรรมทางสังคม
                                 </p>

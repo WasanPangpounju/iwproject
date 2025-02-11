@@ -61,7 +61,7 @@ const PieChart = ({ d1, d2, d3, d4, d5, d6, d7, allStudents }) => {
     return (
         <Pie
             data={data}
-            height={600}
+            height={400}
             options={options}
         />
     );
