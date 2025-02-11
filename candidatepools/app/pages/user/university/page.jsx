@@ -91,7 +91,7 @@ function UniversityPage() {
     } = useTheme();
 
     return (
-        <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
+        <div className={`${bgColorMain} ${bgColor} ${fontSize} xl:text-lg`}>
             <NavbarLogo title="มหาวิทยาลัย" dataUser={dataUser} />
             <div className="flex">
                 <NavbarMain status="about" />

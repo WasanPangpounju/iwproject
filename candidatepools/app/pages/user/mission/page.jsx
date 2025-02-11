@@ -91,7 +91,7 @@ function MissionPage() {
     } = useTheme();
 
     return (
-        <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
+        <div className={`${bgColorMain} ${bgColor} ${fontSize} xl:xl:text-lg`}>
             <NavbarLogo title="พันธกิจ" dataUser={dataUser} />
             <div className="flex">
                 <NavbarMain status="about" />
@@ -122,7 +122,7 @@ function MissionPage() {
                                 </p>
                             </div>
                         </div>
-                        <div className='mt-5 grid grid-cols-1 md:grid-cols-2'>
+                        <div className='mt-5 grid grid-cols-1 md:grid-cols-2 '>
                             <div className={` p-3 ${bgColorMain2 === "bg-white" ? "bg-gray-100" : ""} rounded-md col `}>
                                 <div className='flex  gap-3 items-center'>
                                     <div className={`${bgColorNavbar} ${bgColorWhite} rounded-full h-7 w-7 p-1 text-center flex items-center justify-center`}>
@@ -131,7 +131,7 @@ function MissionPage() {
                                     <p className={` font-bold ${inputTextColor === "text-white" ? "text-[#0c5c9b]" : ""}`}>Inclusion Job Fair</p>
                                 </div>
                                 <div className='text-sm mt-2'>
-                                    <p className={`${fontSize}`}>
+                                    <p className={`xl:text-lg`}>
                                         มหกรรมการจ้างงานคนพิการ (Inclusion Job Fair - IJF) เพื่อให้องค์กรนายจ้าง และคนพิการได้สัมภาษณ์ เกิดเป็นโอกาสสำคัญในการจ้างงานคนพิการ
                                     </p>
                                 </div>
@@ -144,7 +144,7 @@ function MissionPage() {
                                     <p className={`font-bold ${inputTextColor === "text-white" ? "text-[#0c5c9b]" : ""}`}>Disability Awareness</p>
                                 </div>
                                 <div className='text-sm mt-2'>
-                                    <p className={`${fontSize}`}>
+                                    <p className={`xl:text-lg`}>
                                         เสริมสร้างความตระหนักรู้เรื่องคนพิการความพิการ ให้องค์กรนายจ้าง / สถาบันการศึกษา เพื่อรับรู้ถึงความสามารถ/ศักยภาพ ความท้าทาย แนวทางการพัฒนา คนพิการและการอยู่ร่วมกันอย่างทัดเทียมบนความหลากหลาย
                                     </p>
                                 </div>
@@ -157,7 +157,7 @@ function MissionPage() {
                                     <p className={`font-bold ${inputTextColor === "text-white" ? "text-[#0c5c9b]" : ""}`}>Follow Up</p>
                                 </div>
                                 <div className='text-sm mt-2'>
-                                    <p className={`${fontSize}`}>
+                                    <p className={`xl:text-lg`}>
                                         สนับสนุนการปรับตัวและความเข้าใจอันดี ในการทำงานของพนักงานพิการ และหัวหน้างานเพื่อให้สามารถทำงานอย่างราบรื่น ครองงานได้ในระยะยาว
                                         ให้องค์กรนายจ้าง / สถาบันการศึกษา เพื่อรับรู้ถึงความสามารถ/ศักยภาพ ความท้าทาย แนวทางการพัฒนา คนพิการและการอยู่ร่วมกันอย่างทัดเทียมบนความหลากหลาย
                                     </p>
@@ -171,7 +171,7 @@ function MissionPage() {
                                     <p className={`font-bold ${inputTextColor === "text-white" ? "text-[#0c5c9b]" : ""}`}>Company Visit & Open House</p>
                                 </div>
                                 <div className='text-sm mt-2'>
-                                    <p className={`${fontSize}`}>
+                                    <p className={`xl:text-lg`}>
                                         ประสานให้สถาบันการศึกษา พร้อมด้วยนักศึกษาพิการเข้าดูงานในบริษัทเรียนรู้หน้างานจริง ทำความรู้จักและเข้าใจบริบททางธุรกิจ นำสู่การเปิดให้ บัณฑิตพิการฝึกงาน (Internship) และรับเข้าทำงานร่วมกันในองค์กร
                                     </p>
                                 </div>
