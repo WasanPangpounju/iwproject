@@ -416,8 +416,6 @@ function EditPersonal() {
     const tempNickname = nickname ?? getNickname;
 
     if (
-      !tempUser ||
-      !tempPassword ||
       !tempFirstName ||
       !tempLastName ||
       !typeDisabled.length ||
@@ -442,8 +440,7 @@ function EditPersonal() {
       !tempAddressAmphor ||
       !tempAddressTambon ||
       !tempAddressZipCode ||
-      !tempTel ||
-      !tempSelectTypeDisabled
+      !tempTel
     ) {
       setError("กรุณากรอกข้อมูลให้ครบทุกช่อง");
       setLoader(false);
