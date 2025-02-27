@@ -8,7 +8,6 @@ const UserSchema = new Schema(
         },
         user:{
             type: String,
-            required: true,
             unique: true, // ตรวจสอบให้แน่ใจว่าอีเมลไม่ซ้ำกัน
         },
         role:{
