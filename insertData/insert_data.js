@@ -16,7 +16,7 @@ async function run() {
 
         // อ่านข้อมูลจาก Excel
         const workbook = xlsx.readFile('users.xlsx'); // แทนที่ด้วย path ที่แท้จริงของไฟล์ Excel
-        const sheetName = workbook.SheetNames[0];
+        const sheetName = "data";
         const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
         // สร้าง mapping ระหว่างประเภทที่มีอยู่กับประเภทที่ต้องการ
