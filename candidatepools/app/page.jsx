@@ -53,8 +53,12 @@ export default function Home() {
       return;
     }
 
-    if (session) {
+    if (session?.user?.role === "user") {
       router.replace("/main");
+    } else if (session?.user?.role === "admin") {
+      router.replace("/admin");
+    } else if (session?.user?.role === "supervisor") {
+      router.replace("/supervisor");
     }
   }, [session, router]);
 
@@ -120,29 +124,30 @@ export default function Home() {
         }
       } else {
 
-        if (loginMod === "admin") {
-          setLoader(false);
-          Swal.fire({
-            title: "เข้าสู่ระบบสำเร็จ",
-            icon: "success",
-            confirmButtonText: "ตกลง",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              router.replace("/admin");
-            }
-          });
-        } else {
-          setLoader(false);
-          Swal.fire({
-            title: "เข้าสู่ระบบสำเร็จ",
-            icon: "success",
-            confirmButtonText: "ตกลง",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              router.replace("/main");
-            }
-          });
-        }
+        // if (loginMod === "admin") {
+        //   // setLoader(false);
+        //   // Swal.fire({
+        //   //   title: "เข้าสู่ระบบสำเร็จ",
+        //   //   icon: "success",
+        //   //   confirmButtonText: "ตกลง",
+        //   // })
+        //   // .then((result) => {
+        //   //   if (result.isConfirmed) {
+        //   //     router.replace("/admin");
+        //   //   }
+        //   // });
+        // } else {
+        //   setLoader(false);
+        //   Swal.fire({
+        //     title: "เข้าสู่ระบบสำเร็จ",
+        //     icon: "success",
+        //     confirmButtonText: "ตกลง",
+        //   }).then((result) => {
+        //     if (result.isConfirmed) {
+        //       router.replace("/main");
+        //     }
+        //   });
+        // }
 
       }
     } catch (err) {
@@ -172,7 +177,7 @@ export default function Home() {
         <div className={`${bgColorMain2} rounded-b-lg`}>
           <div className="flex ">
             <div
-               onClick={() => {
+              onClick={() => {
                 setLoginMod("user");
                 setEmail('');
                 setPassword('');
