@@ -230,7 +230,8 @@ function Register({ statusAgreement }) {
                         icon: "success",
                         confirmButtonText: "ตกลง",
                         confirmButtonColor: "#0d96f8",
-                    }).then((result) => {
+                    })
+                    .then((result) => {
                         if (result.isConfirmed) {
                             router.push('/main');
                         }

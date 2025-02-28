@@ -3,7 +3,7 @@ const xlsx = require('xlsx');
 const { v4: uuidv4 } = require('uuid'); // ติดตั้ง uuid ด้วย npm install uuid
 
 // เชื่อมต่อกับ MongoDB Atlas
-const uri = 'mongodb+srv://adminiw:iw11admin@cluster0.jkuge.mongodb.net/iw'; // แทนที่ด้วย Connection String ของคุณ
+const uri = process.env.MONGODB_URI; // แทนที่ด้วย Connection String ของคุณ
 const client = new MongoClient(uri);
 
 async function run() {
@@ -43,6 +43,7 @@ async function run() {
             record.password = '1234';  // กำหนด password เป็น 1234
             record.typePerson = 'นักศึกษาพิการ';  // กำหนด typePerson เป็น นักศึกษาพิการ
             record.role = 'user'; // กำหนด role เป็น user
+            record.createdAt = new Date().toISOString(); // เพิ่มเวลาปัจจุบัน
 
             // แปลง monthBirthday เป็นชื่อเดือน
             if (record.monthBirthday) {

@@ -234,7 +234,7 @@ function ReportPage() {
             return null;
         }
 
-        const dateCreate = std?.createdAt;
+        const dateCreate = std?.createdAt ?? '';
         const yearCreate = dateCreate.split('-')[0];
         const education = dataEducations?.find(edu => edu?.uuid === std?.uuid);
 
@@ -631,7 +631,7 @@ function ReportPage() {
                                             <TablePagination
                                                 rowsPerPageOptions={[10, 25, 100]}
                                                 component="div"
-                                                count={rows.length}
+                                                count={resultRows.length}
                                                 rowsPerPage={rowsPerPage}
                                                 page={page}
                                                 onPageChange={handleChangePage}
