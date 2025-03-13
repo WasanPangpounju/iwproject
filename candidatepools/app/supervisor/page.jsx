@@ -181,7 +181,6 @@ function SupervisorPage() {
 
     //student age
     const currentYear = new Date().getFullYear();
-    console.log(currentYear)
     const count_age11_20 = allUser?.filter((user) => {
         const birthYear = Number(user?.yearBirthday)
         const age = currentYear - birthYear;
@@ -207,8 +206,6 @@ function SupervisorPage() {
         const age = currentYear - birthYear;
         return age > 50;
     })?.length;
-
-    console.log(allUser)
 
     return (
         <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
