@@ -1,6 +1,7 @@
 const { MongoClient } = require('mongodb');
 const xlsx = require('xlsx');
 const { v4: uuidv4 } = require('uuid'); // ติดตั้ง uuid ด้วย npm install uuid
+require("dotenv").config();
 
 // เชื่อมต่อกับ MongoDB Atlas
 const uri = process.env.MONGODB_URI; // แทนที่ด้วย Connection String ของคุณ
@@ -15,9 +16,12 @@ async function run() {
         const educationCollection = database.collection('educations'); // คอลเลกชัน educations
 
         // อ่านข้อมูลจาก Excel
-        const workbook = xlsx.readFile('users.xlsx'); // แทนที่ด้วย path ที่แท้จริงของไฟล์ Excel
-        const sheetName = "data";
-        const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+        const workbook = xlsx.readFile('update_users.xlsx'); // แทนที่ด้วย path ที่แท้จริงของไฟล์ Excel
+        const sheetNameUser = "user"; // ชื่อ sheet สำหรับ users
+        const sheetNameEducation = "education"; // ชื่อ sheet สำหรับ education
+
+        const dataUser = xlsx.utils.sheet_to_json(workbook.Sheets[sheetNameUser]);
+        const dataEducation = xlsx.utils.sheet_to_json(workbook.Sheets[sheetNameEducation]);
 
         // สร้าง mapping ระหว่างประเภทที่มีอยู่กับประเภทที่ต้องการ
         const disabledTypeMapping = {
@@ -32,18 +36,30 @@ async function run() {
 
         // สร้าง mapping สำหรับชื่อเดือน
         const monthNames = [
-            "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", 
-            "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", 
+            "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน",
+            "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม",
             "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
         ];
 
-        // กำหนดค่า password, typePerson, และ role สำหรับทุกระเบียน
-        for (const record of data) {
+        // ตรวจสอบให้แน่ใจว่า users และ educations มีจำนวนแถวเท่ากัน
+        if (dataUser.length !== dataEducation.length) {
+            console.error("จำนวนแถวของ user และ education ไม่ตรงกัน");
+            return;
+        }
+
+        // วนลูปตามจำนวนข้อมูลใน users
+        for (let i = 0; i < dataUser.length; i++) {
             const uuid = uuidv4(); // สร้าง UUID ใหม่สำหรับแต่ละระเบียน
+
+            let record = dataUser[i];
+            let educationRecord = dataEducation[i];
+
+            // กำหนดค่าเริ่มต้นสำหรับ user
             record.password = '1234';  // กำหนด password เป็น 1234
-            record.typePerson = 'นักศึกษาพิการ';  // กำหนด typePerson เป็น นักศึกษาพิการ
             record.role = 'user'; // กำหนด role เป็น user
             record.createdAt = new Date().toISOString(); // เพิ่มเวลาปัจจุบัน
+            record.uuid = uuid; // เพิ่ม UUID ให้กับ record
+            record.university = record.university || educationRecord.university || "-"; // ถ้าไม่มีค่า university ให้กำหนดเป็น "-"
 
             // แปลง monthBirthday เป็นชื่อเดือน
             if (record.monthBirthday) {
@@ -65,27 +81,54 @@ async function run() {
                     return disabledTypeMapping[originalType.trim()] || "เลือกประเภทความพิการ";
                 });
             } else {
-                // ถ้าไม่มีข้อมูลให้เลือกประเภทที่ 1
                 record.typeDisabled = ["เลือกประเภทความพิการ"]; // ค่าเริ่มต้น
             }
 
+            // ถ้า typePerson ของ education ไม่ใช่ "กำลังศึกษาระดับ ป.ตรี" ให้กำหนดเป็น "บัญฑิตพิการ"
+            if (educationRecord.typePerson !== "กำลังศึกษาระดับ ป.ตรี") {
+                educationRecord.typePerson = "บัณฑิตพิการ";
+                record.typePerson = "บัณฑิตพิการ";
+            } else {
+                educationRecord.typePerson = "นักศึกษาพิการ";
+                record.typePerson = "นักศึกษาพิการ";
+            }
+
+            if (educationRecord.level === "ชั้นปีที่ 1") {
+                educationRecord.level = '1'
+                educationRecord.educationLevel = "ปริญญาตรี"
+            } else if (educationRecord.level === "ชั้นปีที่ 2") {
+                educationRecord.level = '2'
+                educationRecord.educationLevel = "ปริญญาตรี"
+            } else if (educationRecord.level === "ชั้นปีที่ 3") {
+                educationRecord.level = '3'
+                educationRecord.educationLevel = "ปริญญาตรี"
+            } else if (educationRecord.level === "ชั้นปีที่ 4") {
+                educationRecord.level = '4'
+                educationRecord.educationLevel = "ปริญญาตรี"
+            }
+
+            // แปลงปี พ.ศ. เป็นปี ค.ศ.
+            if (educationRecord.yearGraduation) {
+                educationRecord.yearGraduation = parseInt(educationRecord.yearGraduation, 10) - 543; // ลบ 543
+            }
+
             // นำเข้าข้อมูลไปยังคอลเลกชัน users
-            record.uuid = uuid; // เพิ่ม UUID ให้กับ record เพื่อให้ตรงกับ educations
-            record.university = record.university || "-"; // กำหนด university ถ้าไม่มีค่า
             await userCollection.insertOne(record);
 
+            // ตรวจสอบและกำหนดค่า typePerson ให้กับ education
+            educationRecord.typePerson = educationRecord.typePerson || record.typePerson; // ใช้ typePerson จาก user ถ้าไม่มีค่าใน education
+
             // สร้างข้อมูลสำหรับคอลเลกชัน educations
-            const educationRecord = {
-                uuid: uuid, // ใช้ UUID เดียวกัน
-                typePerson: record.typePerson,
-                university: record.university, // ใช้ข้อมูล university จาก record
-            };
+            educationRecord.uuid = uuid; // ใช้ UUID เดียวกัน
+            educationRecord.university = educationRecord.university || record.university; // ใช้ university จาก education ถ้าไม่มีให้ใช้จาก user
 
             // นำเข้าข้อมูลไปยังคอลเลกชัน educations
             await educationCollection.insertOne(educationRecord);
         }
 
         console.log("นำเข้าข้อมูลเสร็จสิ้น!");
+    } catch (error) {
+        console.error("เกิดข้อผิดพลาด:", error);
     } finally {
         await client.close();
     }
