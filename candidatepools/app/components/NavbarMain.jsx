@@ -53,25 +53,14 @@ function NavbarMain({ status }) {
 
   const router = useRouter();
 
+  useEffect(() => {
+    // แก้ปัญหาหน้าแรกไม่ scroll
+    document.body.style.overflow = "auto";
+    document.documentElement.style.overflow = "auto";
+  }, [])
 
   // Logout
   function handleLogout() {
-    // Swal.fire({
-    //   title: "ออกจากระบบสำเร็จ",
-    //   icon: "success",
-    //   confirmButtonText: "ตกลง",
-    //   confirmButtonColor: "#0d96f8",
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     signOut({ redirect: false })
-    //       .then(() => {
-    //         console.log("ออกจากระบบสำเร็จ");
-    //       })
-    //       .catch((err) => {
-    //         console.log("Sign out error:", err);
-    //       });
-    //   }
-    // });
     signOut({ redirect: false })
       .then(() => {
         console.log("ออกจากระบบสำเร็จ");
@@ -281,21 +270,6 @@ function NavbarMain({ status }) {
           ติดต่อเรา
         </p>
       </Link>
-
-      {/* <Link
-        href="/graph"
-        className={`${status === "graph"
-          ? "bg-[#fee2d9] text-[#ff7201] cursor-default"
-          : "cursor-pointer hover:bg-[#fee2d9] hover:text-[#ff7201]"
-          } flex items-center px-7 gap-5 py-3 focus:bg-[#fee2d9] focus:text-[#ff7201]`}
-        aria-label="flowchage"
-      >
-        <Icon path={mdiHomeAccount} size={1} aria-hidden="true" aria-label="flowchage" />
-        <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
-          flowchage
-        </p>
-      </Link> */}
-
       <div
         onClick={handleLogout}
         className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3"

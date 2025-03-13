@@ -52,6 +52,9 @@ function NavbarSupervisor({ status }) {
 
   useEffect(() => {
     getChats();
+    // แก้ปัญหาหน้าแรกไม่ scroll
+    document.body.style.overflow = "auto";
+    document.documentElement.style.overflow = "auto";
   }, [])
 
   //set path default
@@ -59,22 +62,7 @@ function NavbarSupervisor({ status }) {
 
   // Logout
   function handleLogout() {
-    // Swal.fire({
-    //   title: "ออกจากระบบสำเร็จ",
-    //   icon: "success",
-    //   confirmButtonText: "ตกลง",
-    //   confirmButtonColor: "#0d96f8",
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     signOut({ redirect: false })
-    //       .then(() => {
-    //         console.log("ออกจากระบบสำเร็จ");
-    //       })
-    //       .catch((err) => {
-    //         console.log("Sign out error:", err);
-    //       });
-    //   }
-    // });
+
     signOut({ redirect: false })
       .then(() => {
         console.log("ออกจากระบบสำเร็จ");
