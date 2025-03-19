@@ -18,9 +18,8 @@ import { storage } from "@/app/firebaseConfig";
 import { PulseLoader } from "react-spinners";
 import { set } from "mongoose";
 import { useTheme } from "@/app/ThemeContext";
-import universitys from '@/app/data/universitys.json'
 
-function UserPersonal({ dataUser, setLoader, page }) {
+function StudentPersonal({ dataUser, setLoader }) {
     const {
         setFontSize,
         setBgColor,
@@ -58,7 +57,6 @@ function UserPersonal({ dataUser, setLoader, page }) {
     const [profile, setProfile] = useState(null);
     const [typeDisabled, setTypeDisabled] = useState([]);
     const [detailDisabled, setDetailDisabled] = useState(null);
-    const [position, setPosition] = useState(null);
     const [university, setUniversity] = useState(null);
     const [email, setEmail] = useState(null);
     const [prefix, setPrefix] = useState(null);
@@ -84,7 +82,6 @@ function UserPersonal({ dataUser, setLoader, page }) {
     const [tel, setTel] = useState(null);
     const [telEmergency, setTelEmergency] = useState(null);
     const [relationship, setRelationship] = useState(null);
-    const [role, setRole] = useState(null);
 
     // สร้าง Date object สำหรับวันที่ปัจจุบัน
     const today = new Date();
@@ -170,7 +167,6 @@ function UserPersonal({ dataUser, setLoader, page }) {
     const [getProfile, setGetProfile] = useState("");
     const [getTypeDisabled, setGetTypeDisabled] = useState([]);
     const [getDetailDisabled, setGetDetailDisabled] = useState("");
-    const [getPosition, setGetPosition] = useState("");
     const [getUniversity, setGetUniversity] = useState("");
     const [getEmail, setGetEmail] = useState("");
     const [getPrefix, setGetPrefix] = useState("");
@@ -196,7 +192,6 @@ function UserPersonal({ dataUser, setLoader, page }) {
     const [getTel, setGetTel] = useState("");
     const [getTelEmergency, setGetTelEmergency] = useState("");
     const [getRelationship, setGetRelationship] = useState("");
-    const [getRole, setGetRole] = useState("");
 
     useEffect(() => {
         if (!dataUser) return;
@@ -207,7 +202,7 @@ function UserPersonal({ dataUser, setLoader, page }) {
         setGetLastName(dataUser.lastName || "");
         setGetProfile(dataUser.profile || "");
         setTypeDisabled(dataUser.typeDisabled || []);
-        setGetPosition(dataUser.position || "");
+        setGetDetailDisabled(dataUser.detailDisabled || "");
         setGetUniversity(dataUser.university || "");
         setGetEmail(dataUser.email || "");
         setGetPrefix(dataUser.prefix || "");
@@ -233,7 +228,6 @@ function UserPersonal({ dataUser, setLoader, page }) {
         setGetTel(dataUser.tel || "");
         setGetTelEmergency(dataUser.telEmergency || "");
         setGetRelationship(dataUser.relationship || "");
-        setGetRole(dataUser?.role || "");
 
         setIDAddressIdCardProvince(
             dataProvince.find((p) => p.name_th === dataUser.addressIdCardProvince)?.id || null
@@ -288,6 +282,7 @@ function UserPersonal({ dataUser, setLoader, page }) {
     //value for validate filed
     const [error, setError] = useState("");
     const [errorIdCard, setErrorIdCard] = useState("");
+    const [errorIdCardDisabled, setErrorIdCardDisabled] = useState("");
 
 
     //submit edit
@@ -329,112 +324,74 @@ function UserPersonal({ dataUser, setLoader, page }) {
         const tempTypeDisabled = typeDisabled ?? getTypeDisabled;
         const tempDetailDisabled = detailDisabled ?? getDetailDisabled;
         const tempNickname = nickname ?? getNickname;
-        const tempRole = role ?? getRole;
-        const tempPosition = position ?? getPosition ?? "";
 
-        console.log("tempUser:", tempUser);
-        console.log("tempPassword:", tempPassword);
-        console.log("tempFirstName:", tempFirstName);
-        console.log("tempLastName:", tempLastName);
-        console.log("tempProfile:", tempProfile);
-        console.log("tempTypeDisabled:", tempTypeDisabled);
-        console.log("tempDetailDisabled:", tempDetailDisabled);
-        console.log("tempUniversity:", tempUniversity);
-        console.log("tempEmail:", tempEmail);
-        console.log("tempPrefix:", tempPrefix);
-        console.log("tempNickname:", tempNickname);
-        console.log("tempSex:", tempSex);
-        console.log("tempDateBirthday:", tempDateBirthday);
-        console.log("tempMonthBirthday:", tempMonthBirthday);
-        console.log("tempYearBirthday:", tempYearBirthday);
-        console.log("tempNationality:", tempNationality);
-        console.log("tempReligion:", tempReligion);
-        console.log("tempIdCard:", tempIdCard);
-        console.log("tempIdCardDisabled:", tempIdCardDisabled);
-        console.log("tempAddressIdCard:", tempAddressIdCard);
-        console.log("tempAddressIdCardProvince:", tempAddressIdCardProvince);
-        console.log("tempAddressIdCardAmphor:", tempAddressIdCardAmphor);
-        console.log("tempAddressIdCardTambon:", tempAddressIdCardTambon);
-        console.log("tempAddressIdCardZipCode:", tempAddressIdCardZipCode);
-        console.log("tempAddress:", tempAddress);
-        console.log("tempAddressProvince:", tempAddressProvince);
-        console.log("tempAddressAmphor:", tempAddressAmphor);
-        console.log("tempAddressTambon:", tempAddressTambon);
-        console.log("tempAddressZipCode:", tempAddressZipCode);
-        console.log("tempTel:", tempTel);
-        console.log("tempTelEmergency:", tempTelEmergency);
-        console.log("tempRelationship:", tempRelationship);
-        console.log("tempProfile:", tempProfile);
-        console.log("tempRole:", tempRole);
-        console.log("tempPosition:", tempPosition);
+        // console.log("tempUser:", tempUser);
+        // console.log("tempPassword:", tempPassword);
+        // console.log("tempFirstName:", tempFirstName);
+        // console.log("tempLastName:", tempLastName);
+        // console.log("tempProfile:", tempProfile);
+        // console.log("tempTypeDisabled:", tempTypeDisabled);
+        // console.log("tempDetailDisabled:", tempDetailDisabled);
+        // console.log("tempUniversity:", tempUniversity);
+        // console.log("tempEmail:", tempEmail);
+        // console.log("tempPrefix:", tempPrefix);
+        // console.log("tempNickname:", tempNickname);
+        // console.log("tempSex:", tempSex);
+        // console.log("tempDateBirthday:", tempDateBirthday);
+        // console.log("tempMonthBirthday:", tempMonthBirthday);
+        // console.log("tempYearBirthday:", tempYearBirthday);
+        // console.log("tempNationality:", tempNationality);
+        // console.log("tempReligion:", tempReligion);
+        // console.log("tempIdCard:", tempIdCard);
+        // console.log("tempIdCardDisabled:", tempIdCardDisabled);
+        // console.log("tempAddressIdCard:", tempAddressIdCard);
+        // console.log("tempAddressIdCardProvince:", tempAddressIdCardProvince);
+        // console.log("tempAddressIdCardAmphor:", tempAddressIdCardAmphor);
+        // console.log("tempAddressIdCardTambon:", tempAddressIdCardTambon);
+        // console.log("tempAddressIdCardZipCode:", tempAddressIdCardZipCode);
+        // console.log("tempAddress:", tempAddress);
+        // console.log("tempAddressProvince:", tempAddressProvince);
+        // console.log("tempAddressAmphor:", tempAddressAmphor);
+        // console.log("tempAddressTambon:", tempAddressTambon);
+        // console.log("tempAddressZipCode:", tempAddressZipCode);
+        // console.log("tempTel:", tempTel);
+        // console.log("tempTelEmergency:", tempTelEmergency);
+        // console.log("tempRelationship:", tempRelationship);
+        // console.log("tempProfile:", tempProfile);
 
-        if ((role && role === "user") || (!role && getRole === "user")) {
-            if (
-                !tempUser ||
-                !tempPassword ||
-                !tempFirstName ||
-                !tempLastName ||
-                !tempUniversity ||
-                !tempEmail ||
-                !tempPrefix ||
-                !tempSex ||
-                !tempDateBirthday ||
-                !tempMonthBirthday ||
-                !tempYearBirthday ||
-                !tempNationality ||
-                !tempReligion ||
-                !tempIdCard ||
-                !tempAddressIdCard ||
-                !tempAddressIdCardProvince ||
-                !tempAddressIdCardAmphor ||
-                !tempAddressIdCardTambon ||
-                !tempAddressIdCardZipCode ||
-                !tempAddress ||
-                !tempAddressProvince ||
-                !tempAddressAmphor ||
-                !tempAddressTambon ||
-                !tempAddressZipCode ||
-                !tempTel ||
-                !tempSelectTypeDisabled ||
-                !tempRole
-            ) {
-                setError("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-                setLoader(false);
-                return;
-            }
-        } else {
-            if (
-                !tempUser ||
-                !tempPassword ||
-                !tempFirstName ||
-                !tempLastName ||
-                !tempUniversity ||
-                !tempEmail ||
-                !tempPrefix ||
-                !tempSex ||
-                !tempDateBirthday ||
-                !tempMonthBirthday ||
-                !tempYearBirthday ||
-                !tempNationality ||
-                !tempReligion ||
-                !tempIdCard ||
-                !tempAddressIdCard ||
-                !tempAddressIdCardProvince ||
-                !tempAddressIdCardAmphor ||
-                !tempAddressIdCardTambon ||
-                !tempAddressIdCardZipCode ||
-                !tempAddress ||
-                !tempAddressProvince ||
-                !tempAddressAmphor ||
-                !tempAddressTambon ||
-                !tempAddressZipCode ||
-                !tempTel ||
-                !tempPosition
-            ) {
-                setError("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-                setLoader(false);
-                return;
-            }
+        if (
+            !tempUser ||
+            !tempPassword ||
+            !tempFirstName ||
+            !tempLastName ||
+            !typeDisabled.length ||
+            !tempUniversity ||
+            !tempEmail ||
+            !tempPrefix ||
+            !tempSex ||
+            !tempDateBirthday ||
+            !tempMonthBirthday ||
+            !tempYearBirthday ||
+            !tempNationality ||
+            !tempReligion ||
+            !tempIdCard ||
+            !tempIdCardDisabled ||
+            !tempAddressIdCard ||
+            !tempAddressIdCardProvince ||
+            !tempAddressIdCardAmphor ||
+            !tempAddressIdCardTambon ||
+            !tempAddressIdCardZipCode ||
+            !tempAddress ||
+            !tempAddressProvince ||
+            !tempAddressAmphor ||
+            !tempAddressTambon ||
+            !tempAddressZipCode ||
+            !tempTel ||
+            !tempSelectTypeDisabled
+        ) {
+            setError("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+            setLoader(false);
+            return;
         }
 
         // Validate name
@@ -508,8 +465,17 @@ function UserPersonal({ dataUser, setLoader, page }) {
 
         // Validate idCard and idCardDisabled
         if (tempIdCard.length !== 13 || !/^\d+$/.test(tempIdCard)) {
-            setErrorIdCard("ระบุเลขบัตรประจำตัวประชาชนให้ถูกต้อง");
-            setError("ระบุเลขบัตรประจำตัวประชาชนให้ถูกต้อง");
+            setErrorIdCard("เลขบัตรประจำตัวประชาชนให้ถูกต้อง");
+            setError("เลขบัตรประจำตัวประชาชนให้ถูกต้อง");
+            setLoader(false);
+            return;
+        }
+        if (
+            tempIdCardDisabled.length !== 13 ||
+            !/^\d+$/.test(tempIdCardDisabled)
+        ) {
+            setErrorIdCardDisabled("เลขบัตรประจำตัวเลขบัตรประจำตัวคนพิการให้ถูกต้อง");
+            setError("เลขบัตรประจำตัวเลขบัตรประจำตัวคนพิการให้ถูกต้อง");
             setLoader(false);
             return;
         }
@@ -558,17 +524,13 @@ function UserPersonal({ dataUser, setLoader, page }) {
             tel: tempTel,
             telEmergency: tempTelEmergency,
             relationship: tempRelationship,
-            role: tempRole,
-            position: tempPosition
+            inputGrayColor,
         };
 
-
-
         try {
-            
             if (
-                (tempIdCard !== dataUser.idCard ||
-                tempIdCardDisabled !== dataUser.idCardDisabled) && tempRole === "user"
+                tempIdCard !== dataUser.idCard ||
+                tempIdCardDisabled !== dataUser.idCardDisabled
             ) {
                 const resCheckID = await fetch(
                     `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/checkId`,
@@ -594,6 +556,7 @@ function UserPersonal({ dataUser, setLoader, page }) {
                 ) {
                     if (idCardExists && idCardDisabledExists) {
                         setErrorIdCard("เลขบัตรประชาชนนี้มีการใช้งานแล้ว");
+                        setErrorIdCardDisabled("เลขบัตรประจำตัวคนพิการนี้มีการใช้งานแล้ว");
                         setLoader(false);
                         return;
                     }
@@ -603,17 +566,20 @@ function UserPersonal({ dataUser, setLoader, page }) {
                         return;
                     }
                     if (idCardDisabledExists) {
+                        setErrorIdCardDisabled("เลขบัตรประจำตัวคนพิการนี้มีการใช้งานแล้ว");
                         setLoader(false);
                         return;
                     }
                 } else if (idCard !== dataUser.idCard) {
                     if (idCardExists) {
                         setErrorIdCard("เลขบัตรประชาชนนี้มีการใช้งานแล้ว");
+                        setErrorIdCardDisabled("");
                         setLoader(false);
                         return;
                     }
                 } else if (tempIdCardDisabled !== dataUser.idCardDisabled) {
                     if (idCardDisabledExists) {
+                        setErrorIdCardDisabled("เลขบัตรประจำตัวคนพิการนี้มีการใช้งานแล้ว");
                         setErrorIdCard("");
                         setLoader(false);
                         return;
@@ -621,6 +587,7 @@ function UserPersonal({ dataUser, setLoader, page }) {
                 }
             } else {
                 setErrorIdCard("");
+                setErrorIdCardDisabled("");
             }
             const res = await fetch(
                 `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${dataUser?.uuid}`,
@@ -632,6 +599,7 @@ function UserPersonal({ dataUser, setLoader, page }) {
                     body: JSON.stringify(bodyData),
                 }
             );
+
             if (!res.ok) {
                 setLoader(false);
                 Swal.fire({
@@ -655,7 +623,6 @@ function UserPersonal({ dataUser, setLoader, page }) {
                 confirmButtonColor: "#0d96f8",
             }).then(() => {
                 setEditMode(false);
-                window.location.reload()
                 setError('')
             });
         } catch (err) {
@@ -733,28 +700,6 @@ function UserPersonal({ dataUser, setLoader, page }) {
             setProfile(imageUrl); // Assume setProfile is a function that updates profile state or context
         }
     }, [imageUrl]);
-
-    //select university 
-    const [optionUniversity, setOptionUniversity] = useState([]);
-    const [isFocusUni, setIsFocusUni] = useState(false)
-
-    function handleUniversity(uni) {
-        const input = uni;
-        setUniversity(input)
-
-        // ค้นหาคำที่มีความคล้าย
-        const filteredOptions = universitys.filter((uni) =>
-            uni.university.toLowerCase().includes(input.toLowerCase()) // เปรียบเทียบแบบ case-insensitive
-        );
-        setOptionUniversity(filteredOptions);
-    }
-    function SeletedOption(uni) {
-        setUniversity(uni);
-        setOptionUniversity([]);
-    }
-
-    //eye show password
-    const [showPassword, setShowPassword] = useState(false);
 
     return (
         <div className="mt-5">
@@ -1084,7 +1029,32 @@ function UserPersonal({ dataUser, setLoader, page }) {
                             </div>
                         )}
                     </div>
-
+                    <div className="flex col flex-col w-64">
+                        <label>
+                            เลขบัตรประจำตัวคนพิการ <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                        </label>
+                        <input
+                            type="text"
+                            inputMode="numeric"
+                            pattern="\d{13}"
+                            maxLength={13}
+                            className={` ${!editMode
+                                ? `${inputEditColor} cursor-default focus:outline-none`
+                                : ""
+                                } ${bgColorMain} mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
+                            onChange={(e) => {
+                                setIdCardDisabled(e.target.value);
+                            }}
+                            defaultValue={getIdCardDisabled || ""}
+                            placeholder="เลขบัตร 13 หลัก"
+                            readOnly={!editMode}
+                        />
+                        {errorIdCardDisabled && (
+                            <div className="text-xs text-red-500 w-full text-end mt-1 text-ellipsis overflow-hidden whitespace-nowrap">
+                                {errorIdCardDisabled}
+                            </div>
+                        )}
+                    </div>
                     <div className="flex gap-x-10 gap-y-5 flex-wrap w-full">
                         <div className="flex col flex-col">
                             <label>
@@ -1636,158 +1606,268 @@ function UserPersonal({ dataUser, setLoader, page }) {
                         />
                     </div>
                     <div className="flex gap-x-10 gap-y-5 flex-wrap">
-
-                        {/* สถาบันการศึกษา */}
-                        <div className={`${fontSize} ${bgColorMain} flex col flex-col`}>
-                            <label>สถาบันการศึกษา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                            <div className="relative mt-1">
+                        <div className=" flex flex-col">
+                            <label>
+                                ประเภทความพิการ <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                            </label>
+                            <div className="relative col w-fit mt-1">
                                 <select
                                     onChange={(e) => {
-                                        setUniversity(e.target.value); // ตั้งค่าใหม่
+                                        setSelectTypeDisabled(e.target.value);
                                     }}
-                                    className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                    style={{ appearance: 'none' }}
+                                    className={`${!editMode
+                                        ? `${inputEditColor} cursor-default`
+                                        : `${bgColorMain} cursor-pointer`
+                                        } ${bgColorMain} w-64  border border-gray-400 py-2 px-4 rounded-lg`}
+                                    style={{ appearance: "none" }}
                                     disabled={!editMode}
-                                    value={university || getUniversity || ""}
+                                    value={selectTypeDisabled || "0"}
                                 >
                                     <option value="0">-</option>
-                                    {universitys?.map((uni, index) => (
-                                        <option key={index} value={uni?.university}>{uni?.university}</option>
-                                    ))}
+                                    <option value="พิการ 1 ประเภท">พิการ 1 ประเภท</option>
+                                    <option value="พิการมากกว่า 1 ประเภท">
+                                        พิการมากกว่า 1 ประเภท
+                                    </option>
                                 </select>
-                                <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
-                            </div>
-                            {/* <div className='relative'>
-                                <input
-                                    value={university || getUniversity || ""}
-                                    onChange={(e) => handleUniversity(e.target.value)}
-                                    onFocus={() => setIsFocusUni(true)} //
-                                    onBlur={() => setTimeout(() => setIsFocusUni(false))}
-                                    type="text"
-                                    className={`${!editMode
-                                        ? `${inputEditColor} cursor-default focus:outline-none`
-                                        : " "
-                                        } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
-                                    placeholder='ระบุชื่อสถานศึกษา'
+                                <Icon
+                                    className={`${!editMode ? "hidden" : ""
+                                        } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
+                                    path={mdiArrowDownDropCircle}
+                                    size={0.8}
                                 />
-                                {isFocusUni && optionUniversity?.length > 0 && (
-                                    <div className={`z-10 w-full absolute shadow max-h-24 overflow-scroll hide-scrollbar`}>
-
-                                        {optionUniversity.map((uni, index) => (
-                                            <div
-                                                key={index}
-                                                className={`px-2 py-1 border ${bgColor} hover:bg-gray-300 cursor-pointer`}
-                                                onClick={() => SeletedOption(uni.university)}
-                                            >
-                                                {uni.university}
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div> */}
+                            </div>
                         </div>
-                        {page === "supervisor" && (
-                            <>
-                                <div className="flex col flex-col ">
-                                    <label>Username <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                                    <input
-                                        type="text"
-                                        className={`${!editMode
-                                            ? `${inputEditColor} cursor-default focus:outline-none`
-                                            : " "
-                                            } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
-                                        onChange={(e) => {
-                                            setUser(e.target.value);
-                                        }}
-                                        defaultValue={getUser || ""}
-                                        placeholder="สร้าง username ของคุณ"
-                                        readOnly={!editMode}
-                                    />
-                                </div>
-                                <div className="relative flex col flex-col">
-                                    <label>Password <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                                    <input
-                                        defaultValue={getPassword || ""}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className={`${!editMode
-                                            ? `${inputEditColor} cursor-default focus:outline-none`
-                                            : " "
-                                            } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
-                                        type={showPassword ? "text" : "password"}
-                                        placeholder="รหัสผ่าน"
-                                    />
-                                    {editMode && (
-                                        <Image
-                                            onClick={(e) => setShowPassword((e) => !e)}
-                                            alt="icon-eye"
-                                            className="hover:cursor-pointer absolute top-[34px] right-5 w-4 h-4"
-                                            src="/image/main/eye.png"
-                                            height={1000}
-                                            width={1000}
-                                            priority
-                                        />
-                                    )}
-                                </div>
-                                <div className={`flex flex-col`}>
-                                    <label>
-                                        ประเภทผู้ใช้งาน <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
-                                    </label>
-                                    <div className="relative col w-fit mt-1">
-                                        <select
-                                            onChange={(e) => {
-                                                setRole(e.target.value);
-                                            }}
-                                            className={` ${!editMode
-                                                ? ` ${inputEditColor}  cursor-default `
-                                                : `cursor-pointer`
-                                                } ${bgColorMain} w-44  border border-gray-400 py-2 px-4 rounded-lg`}
-                                            placeholder="ประเภท"
-                                            style={{ appearance: "none" }}
-                                            disabled={!editMode}
-                                            value={role || getRole || "0"}
-                                        >
-                                            <option value="0">-</option>
-                                            <option value="user">user</option>
-                                            <option value="admin">super user</option>
-                                            <option value="supervisor">admin</option>
-                                        </select>
-                                        <Icon
-                                            className={`${!editMode ? "hidden" : ""
-                                                } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                                            path={mdiArrowDownDropCircle}
-                                            size={0.8}
-                                        />
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                        {(role && role === "user") || (!role && getRole === "user") ? (
-                            <>
-                            </>
-                        ) : (
-                            <div className="flex col flex-col ">
-                                <label>ตำแหน่ง <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                                <input
-                                    type="text"
-                                    className={`${!editMode
-                                        ? `${inputEditColor} cursor-default focus:outline-none`
-                                        : " "
-                                        } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
-                                    onChange={(e) => {
-                                        setPosition(e.target.value);
-                                    }}
-                                    defaultValue={getPosition || ""}
-                                    placeholder="ตำแหน่งงานปัจจุบัน"
-                                    readOnly={!editMode}
-                                />
+                        <div
+                            style={{
+                                display:
+                                    selectTypeDisabled === "พิการ 1 ประเภท"
+                                        ? "block"
+                                        : "none",
+                            }}
+                            className=" flex flex-col"
+                        >
+                            <label>
+                                เลือกความพิการ <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                            </label>
+                            <div className="relative col w-fit mt-1">
+                                <select
+                                    onChange={(e) => setTypeDisabled([e.target.value])}
+                                    className={`${typeDisabled && !editMode
+                                        ? `${inputEditColor} cursor-default`
+                                        : `${bgColorMain} cursor-pointer`
+                                        } ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-64  border border-gray-400 py-2 px-4 rounded-lg`}
+                                    style={{ appearance: "none" }}
+                                    disabled={!editMode}
+                                    value={typeDisabled[0] || "0"}
+                                >
+                                    <option value="0">-</option>
+                                    <option value="พิการทางการมองเห็น">
+                                        พิการทางการมองเห็น
+                                    </option>
+                                    <option value="พิการทางการได้ยินหรือสื่อความหมาย">
+                                        พิการทางการได้ยินหรือสื่อความหมาย
+                                    </option>
+                                    <option value="พิการทางการเคลื่อนไหวหรือทางร่างกาย">
+                                        พิการทางการเคลื่อนไหวหรือทางร่างกาย
+                                    </option>
+                                    <option value="พิการทางจิตใจหรือพฤติกรรม">
+                                        พิการทางจิตใจหรือพฤติกรรม
+                                    </option>
+                                    <option value="พิการทางสติปัญญา">พิการทางสติปัญญา</option>
+                                    <option value="พิการทางการเรียนรู้">
+                                        พิการทางการเรียนรู้
+                                    </option>
+                                    <option value="พิการทางการออทิสติก">
+                                        พิการทางการออทิสติก
+                                    </option>
+                                </select>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                        <div
+                            className=" flex flex-col my-5"
+                            style={{
+                                display:
+                                    selectTypeDisabled === "พิการมากกว่า 1 ประเภท"
+                                        ? "block"
+                                        : "none",
+                            }}
+                        >
+                            <div
+                                className={`${!typeDisabled.includes("พิการทางการมองเห็น") && !editMode
+                                    ? "hidden"
+                                    : ""
+                                    } ${bgColorMain} flex gap-x-3 mt-2`}
+                            >
+                                <input
+                                    type="checkbox"
+                                    className={`cursor-pointer w-10  border`}
+                                    onChange={() =>
+                                        handleCheckboxChange("พิการทางการมองเห็น")
+                                    }
+                                    checked={typeDisabled.includes("พิการทางการมองเห็น")}
+                                    hidden={!editMode}
+                                />
+                                <p className="text-ellipsis overflow-hidden whitespace-nowrap">
+                                    <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
+                                    พิการทางการมองเห็น
+                                </p>
+                            </div>
+                            <div
+                                className={`${!typeDisabled.includes(
+                                    "พิการทางการได้ยินหรือสื่อความหมาย"
+                                ) && !editMode
+                                    ? "hidden"
+                                    : ""
+                                    } flex gap-x-3 mt-2`}
+                            >
+                                <input
+                                    type="checkbox"
+                                    className="cursor-pointer w-10  border"
+                                    onChange={() =>
+                                        handleCheckboxChange(
+                                            "พิการทางการได้ยินหรือสื่อความหมาย"
+                                        )
+                                    }
+                                    checked={typeDisabled.includes(
+                                        "พิการทางการได้ยินหรือสื่อความหมาย"
+                                    )}
+                                    hidden={!editMode}
+                                />
+                                <p className="text-ellipsis overflow-hidden whitespace-nowrap">
+                                    <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
+                                    พิการทางการได้ยินหรือสื่อความหมาย
+                                </p>
+                            </div>
+                            <div
+                                className={`${!typeDisabled.includes(
+                                    "พิการทางการเคลื่อนไหวหรือทางร่างกาย"
+                                ) && !editMode
+                                    ? "hidden"
+                                    : ""
+                                    } flex gap-x-3 mt-2`}
+                            >
+                                <input
+                                    type="checkbox"
+                                    className="cursor-pointer w-10  border"
+                                    onChange={() =>
+                                        handleCheckboxChange(
+                                            "พิการทางการเคลื่อนไหวหรือทางร่างกาย"
+                                        )
+                                    }
+                                    checked={typeDisabled.includes(
+                                        "พิการทางการเคลื่อนไหวหรือทางร่างกาย"
+                                    )}
+                                    hidden={!editMode}
+                                />
+                                <p className="text-ellipsis overflow-hidden whitespace-nowrap">
+                                    <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
+                                    พิการทางการเคลื่อนไหวหรือทางร่างกาย
+                                </p>
+                            </div>
+                            <div
+                                className={`${!typeDisabled.includes("พิการทางจิตใจหรือพฤติกรรม") &&
+                                    !editMode
+                                    ? "hidden"
+                                    : ""
+                                    } ${bgColorMain} flex gap-x-3 mt-2`}
+                            >
+                                <input
+                                    type="checkbox"
+                                    className="cursor-pointer w-10  border"
+                                    onChange={() =>
+                                        handleCheckboxChange("พิการทางจิตใจหรือพฤติกรรม")
+                                    }
+                                    checked={typeDisabled.includes(
+                                        "พิการทางจิตใจหรือพฤติกรรม"
+                                    )}
+                                    hidden={!editMode}
+                                />
+                                <p className="text-ellipsis overflow-hidden whitespace-nowrap">
+                                    <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
+                                    พิการทางจิตใจหรือพฤติกรรม
+                                </p>
+                            </div>
+                            <div
+                                className={`${!typeDisabled.includes("พิการทางสติปัญญา") && !editMode
+                                    ? "hidden"
+                                    : ""
+                                    } ${bgColorMain} flex gap-x-3 mt-2`}
+                            >
+                                <input
+                                    type="checkbox"
+                                    className="cursor-pointer w-10  border"
+                                    onChange={() => handleCheckboxChange("พิการทางสติปัญญา")}
+                                    checked={typeDisabled.includes("พิการทางสติปัญญา")}
+                                    hidden={!editMode}
+                                />
+                                <p className="text-ellipsis overflow-hidden whitespace-nowrap">
+                                    <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
+                                    พิการทางสติปัญญา
+                                </p>
+                            </div>
 
+                            <div
+                                className={`${!typeDisabled.includes("พิการทางการเรียนรู้") && !editMode
+                                    ? "hidden"
+                                    : ""
+                                    } ${bgColorMain} flex gap-x-3 mt-2`}
+                            >
+                                <input
+                                    type="checkbox"
+                                    className="cursor-pointer w-10  border"
+                                    onChange={() =>
+                                        handleCheckboxChange("พิการทางการเรียนรู้")
+                                    }
+                                    checked={typeDisabled.includes("พิการทางการเรียนรู้")}
+                                    hidden={!editMode}
+                                />
+                                <p className="text-ellipsis overflow-hidden whitespace-nowrap">
+                                    <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
+                                    พิการทางการเรียนรู้
+                                </p>
+                            </div>
+                            <div
+                                className={`${!typeDisabled.includes("พิการทางการออทิสติก") && !editMode
+                                    ? "hidden"
+                                    : ""
+                                    } ${bgColorMain} flex gap-x-3 mt-2`}
+                            >
+                                <input
+                                    type="checkbox"
+                                    className="cursor-pointer w-10  border"
+                                    onChange={() =>
+                                        handleCheckboxChange("พิการทางการออทิสติก")
+                                    }
+                                    checked={typeDisabled.includes("พิการทางการออทิสติก")}
+                                    hidden={!editMode}
+                                />
+                                <p className="text-ellipsis overflow-hidden whitespace-nowrap">
+                                    <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
+                                    พิการทางการออทิสติก
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex col flex-col ">
+                            <label>รายละเอียดเพิ่มเติม </label>
+                            <input
+                                type="text"
+                                className={`${!editMode
+                                    ? `${inputEditColor} cursor-default focus:outline-none`
+                                    : " "
+                                    } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
+                                onChange={(e) => {
+                                    setDetailDisabled(e.target.value);
+                                }}
+                                defaultValue={getDetailDisabled || ""}
+                                placeholder="เพิ่มเติม (ถ้ามี)"
+                                readOnly={!editMode}
+                            />
+                        </div>
+                    </div>
                     <div className="w-full flex">
                         <div className="flex col flex-col ">
                             <label className={`${!editMode ? "hidden" : ""}`}>
-                                อัปโหลดรูปโปรไฟล์ 
+                                อัปโหลดรูปโปรไฟล์
                             </label>
 
                             <div className="w-32 h-32 relative my-1">
@@ -1877,4 +1957,4 @@ function UserPersonal({ dataUser, setLoader, page }) {
     )
 }
 
-export default UserPersonal
+export default StudentPersonal

@@ -53,7 +53,6 @@ const UserSchema = new Schema(
         university:{
             type: String,
         },
-      
         prefix:{
             type: String,
         },
