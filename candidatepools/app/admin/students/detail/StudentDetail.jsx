@@ -12,6 +12,8 @@ import StudentEducation from './StudentEducation'
 import StudentHistoryWork from './StudentHistoryWork'
 import StudentSkills from './StudentSkills'
 import Swal from 'sweetalert2'
+import StudentInterestedWork from './StudentInterestedWork'
+import StudentResume from './StudentResume'
 
 function StudentDetail({ id, setIdDetail, setLoader }) {
 
@@ -20,8 +22,29 @@ function StudentDetail({ id, setIdDetail, setLoader }) {
 
     // Validate session and fetch user data
     useEffect(() => {
-        getUser(id);
-    }, []);
+        if (status === "loading") {
+            return;
+        }
+        setLoader(false);
+
+        if (!session) {
+            router.replace("/");
+            return;
+        }
+
+        if (id) {
+            getUser(id);
+        } else {
+            router.replace("/agreement");
+        }
+
+        if (session?.user?.role === "user") {
+            router.replace("/main");
+        } else if (session?.user?.role === "supervisor") {
+            router.replace("/supervisor");
+        }
+
+    }, [status, session, router]);
 
     const [dataUser, setDataUser] = useState([])
     async function getUser(id) {
@@ -203,6 +226,18 @@ function StudentDetail({ id, setIdDetail, setLoader }) {
                     >
                         ความสามารถ/การอบรม
                     </div>
+                    <div
+                        className={`${selectNav === "ลักษณะงานที่สนใจ" ? inputGrayColor === "bg-[#74c7c2]" || "" ? `bg-[#0d96f8] ${bgColorWhite}` : "" : ""} cursor-pointer px-4 py-2 rounded-md`}
+                        onClick={() => setSelectNav('ลักษณะงานที่สนใจ')}
+                    >
+                        ลักษณะงานที่สนใจ
+                    </div>
+                    <div
+                        className={`${selectNav === "เรซูเม่" ? inputGrayColor === "bg-[#74c7c2]" || "" ? `bg-[#0d96f8] ${bgColorWhite}` : "" : ""} cursor-pointer px-4 py-2 rounded-md`}
+                        onClick={() => setSelectNav('เรซูเม่')}
+                    >
+                        เรซูเม่
+                    </div>
                 </nav>
             </div>
             <hr className='border-gray-500 mt-1' />
@@ -214,7 +249,11 @@ function StudentDetail({ id, setIdDetail, setLoader }) {
                 <StudentHistoryWork dataUser={dataUser} id={id} setLoader={setLoader} />
             ) : selectNav === "ความสามารถ/การอบรม" ? (
                 <StudentSkills dataUser={dataUser} id={id} setLoader={setLoader} />
-            ) : (
+            ) : selectNav === "ลักษณะงานที่สนใจ" ? (
+                <StudentInterestedWork dataUser={dataUser} id={id} setLoader={setLoader} />
+            ) : selectNav === "เรซูเม่" ? (
+                <StudentResume dataUser={dataUser} id={id} setLoader={setLoader} />
+            ) :(
                 <div>เกิดข้อผิดพลาด</div>
             )}
         </div>

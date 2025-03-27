@@ -7,6 +7,9 @@ const HistoryWorkSchema = new Schema(
             type: String,
             required: true,
         },
+        statusNow: {  
+            type: String,
+        },
         projects: [
             {
                 name: { type: String, required: true },
@@ -24,7 +27,9 @@ const HistoryWorkSchema = new Schema(
         internships: [
             {
                 dateStart: { type: String },
+                dateStartMonth: { type: String },
                 dateEnd: { type: String },
+                dateEndMonth: { type: String },
                 place: { type: String },
                 position: { type: String },
                 files: [
@@ -40,7 +45,9 @@ const HistoryWorkSchema = new Schema(
         workExperience: [
             {
                 dateStart: { type: String },
+                dateStartMonth: { type: String },
                 dateEnd: { type: String },
+                dateEndMonth: { type: String },
                 place: { type: String },
                 position: { type: String },
                 files: [
