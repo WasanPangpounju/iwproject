@@ -261,12 +261,7 @@ function AdminManagement() {
             std?.university?.toLowerCase().includes(word.toLowerCase())
         );
         const hasMatchName = name?.toLowerCase().includes(wordSearch.toLowerCase());
-
-        const hasMatchTypePerson = std?.addressProvince?.toLowerCase().includes(addressProvince.toLowerCase());
-        if (!hasMatchTypePerson) {
-            return null;
-        }
-
+        
         if (!wordSearch || wordSearch === "") {
             if (!hasMatchUniversityFilter && !hasMatchNameFilter) {
                 return null;

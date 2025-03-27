@@ -150,7 +150,7 @@ function Register({ statusAgreement }) {
             return;
         }
 
-        
+
         try {
             const resCheckUser = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/checkUser`, {
                 method: "POST",
@@ -231,11 +231,11 @@ function Register({ statusAgreement }) {
                         confirmButtonText: "ตกลง",
                         confirmButtonColor: "#0d96f8",
                     })
-                    .then((result) => {
-                        if (result.isConfirmed) {
-                            router.push('/main');
-                        }
-                    });
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                router.push('/main');
+                            }
+                        });
                 } else {
                     setLoader(false);
                     if (!res.ok || !resEducation.ok) {
@@ -319,6 +319,7 @@ function Register({ statusAgreement }) {
         setOptionUniversity([]);
     }
 
+    console.log(university)
     return (
         <div className={`${bgColorMain} ${bgColor}`}>
             <NavbarLogo />
@@ -421,7 +422,7 @@ function Register({ statusAgreement }) {
                     </div>
                     <div className={`${fontSize} ${bgColorMain} mt-4 w-[35rem] font-bold  flex justify-between items-center`}>
                         <label>สถาบันการศึกษา:</label>
-                        <div className="relative ">
+                        {/* <div className="relative ">
                             <select onChange={(e) => handleUniversity(e.target.value)} className={`${bgColorMain} cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg`} style={{ appearance: 'none' }}>
                                 <option value="0">เลือกสถาบันการศึกษา</option>
                                 {universitys?.map((uni, index) => (
@@ -429,32 +430,36 @@ function Register({ statusAgreement }) {
                                 ))}
                             </select>
                             <Icon className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3" path={mdiArrowDownDropCircle} size={.8} />
-                        </div>
-                        {/* <div className='relative'>
+                        </div> */}
+                        <div className='relative'>
                             <input
                                 value={university}
                                 onChange={(e) => handleUniversity(e.target.value)}
-                                onFocus={() => setIsFocusUni(true)} //
-                                onBlur={() => setTimeout(() => setIsFocusUni(false))}
+                                onFocus={() => setIsFocusUni(true)}
+                                onBlur={(e) => {
+                                    // ถ้า blur ไปที่ dropdown ให้ไม่ซ่อน
+                                    if (!e.relatedTarget || !e.relatedTarget.classList.contains("uni-option")) {
+                                        setTimeout(() => setIsFocusUni(false), 200);
+                                    }
+                                }}
                                 type="text"
                                 className={`${bgColorMain} w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                                 placeholder='กรอกรายละเอียด'
                             />
                             {isFocusUni && optionUniversity?.length > 0 && (
-                                <div className={`w-full absolute shadow max-h-24 overflow-scroll hide-scrollbar`}>
-                                
+                                <div className="w-full absolute shadow max-h-24 overflow-scroll hide-scrollbar">
                                     {optionUniversity.map((uni, index) => (
-                                    <div
-                                        key={index}
-                                        className={`px-2 py-1 border ${bgColor} hover:bg-gray-300 cursor-pointer`}
-                                        onClick={() => SeletedOption(uni.university)}
-                                    >
-                                        {uni.university}
-                                    </div>
+                                        <div
+                                            key={index}
+                                            className={`px-2 py-1 border ${bgColor} hover:bg-gray-300 cursor-pointer uni-option`}
+                                            onMouseDown={() => SeletedOption(uni.university)} // ใช้ onMouseDown แทน
+                                        >
+                                            {uni.university}
+                                        </div>
                                     ))}
                                 </div>
                             )}
-                        </div> */}
+                        </div>
                         {/* <div className={`${bgColorMain} ${bgColor} w-96 border px-3 border-gray-400 rounded-lg`}>
                             <Autocomplete
                                 options={universitys}
@@ -463,7 +468,7 @@ function Register({ statusAgreement }) {
                                 onInputChange={(event, newInputValue) => {
                                     setUniversity(newInputValue);  // อัปเดตค่าที่ผู้ใช้งานป้อนเอง
                                 }}
-                               
+
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -483,7 +488,7 @@ function Register({ statusAgreement }) {
                                         }}
                                     />
                                 )}
-                              
+
                             />
                         </div> */}
 
