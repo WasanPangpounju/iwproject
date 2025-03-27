@@ -325,43 +325,41 @@ function StudentPersonal({ dataUser, setLoader }) {
         const tempDetailDisabled = detailDisabled ?? getDetailDisabled;
         const tempNickname = nickname ?? getNickname;
 
-        // console.log("tempUser:", tempUser);
-        // console.log("tempPassword:", tempPassword);
-        // console.log("tempFirstName:", tempFirstName);
-        // console.log("tempLastName:", tempLastName);
-        // console.log("tempProfile:", tempProfile);
-        // console.log("tempTypeDisabled:", tempTypeDisabled);
-        // console.log("tempDetailDisabled:", tempDetailDisabled);
-        // console.log("tempUniversity:", tempUniversity);
-        // console.log("tempEmail:", tempEmail);
-        // console.log("tempPrefix:", tempPrefix);
-        // console.log("tempNickname:", tempNickname);
-        // console.log("tempSex:", tempSex);
-        // console.log("tempDateBirthday:", tempDateBirthday);
-        // console.log("tempMonthBirthday:", tempMonthBirthday);
-        // console.log("tempYearBirthday:", tempYearBirthday);
-        // console.log("tempNationality:", tempNationality);
-        // console.log("tempReligion:", tempReligion);
-        // console.log("tempIdCard:", tempIdCard);
-        // console.log("tempIdCardDisabled:", tempIdCardDisabled);
-        // console.log("tempAddressIdCard:", tempAddressIdCard);
-        // console.log("tempAddressIdCardProvince:", tempAddressIdCardProvince);
-        // console.log("tempAddressIdCardAmphor:", tempAddressIdCardAmphor);
-        // console.log("tempAddressIdCardTambon:", tempAddressIdCardTambon);
-        // console.log("tempAddressIdCardZipCode:", tempAddressIdCardZipCode);
-        // console.log("tempAddress:", tempAddress);
-        // console.log("tempAddressProvince:", tempAddressProvince);
-        // console.log("tempAddressAmphor:", tempAddressAmphor);
-        // console.log("tempAddressTambon:", tempAddressTambon);
-        // console.log("tempAddressZipCode:", tempAddressZipCode);
-        // console.log("tempTel:", tempTel);
-        // console.log("tempTelEmergency:", tempTelEmergency);
-        // console.log("tempRelationship:", tempRelationship);
-        // console.log("tempProfile:", tempProfile);
+        console.log("tempUser:", tempUser);
+        console.log("tempPassword:", tempPassword);
+        console.log("tempFirstName:", tempFirstName);
+        console.log("tempLastName:", tempLastName);
+        console.log("tempProfile:", tempProfile);
+        console.log("tempTypeDisabled:", tempTypeDisabled);
+        console.log("tempDetailDisabled:", tempDetailDisabled);
+        console.log("tempUniversity:", tempUniversity);
+        console.log("tempEmail:", tempEmail);
+        console.log("tempPrefix:", tempPrefix);
+        console.log("tempNickname:", tempNickname);
+        console.log("tempSex:", tempSex);
+        console.log("tempDateBirthday:", tempDateBirthday);
+        console.log("tempMonthBirthday:", tempMonthBirthday);
+        console.log("tempYearBirthday:", tempYearBirthday);
+        console.log("tempNationality:", tempNationality);
+        console.log("tempReligion:", tempReligion);
+        console.log("tempIdCard:", tempIdCard);
+        console.log("tempIdCardDisabled:", tempIdCardDisabled);
+        console.log("tempAddressIdCard:", tempAddressIdCard);
+        console.log("tempAddressIdCardProvince:", tempAddressIdCardProvince);
+        console.log("tempAddressIdCardAmphor:", tempAddressIdCardAmphor);
+        console.log("tempAddressIdCardTambon:", tempAddressIdCardTambon);
+        console.log("tempAddressIdCardZipCode:", tempAddressIdCardZipCode);
+        console.log("tempAddress:", tempAddress);
+        console.log("tempAddressProvince:", tempAddressProvince);
+        console.log("tempAddressAmphor:", tempAddressAmphor);
+        console.log("tempAddressTambon:", tempAddressTambon);
+        console.log("tempAddressZipCode:", tempAddressZipCode);
+        console.log("tempTel:", tempTel);
+        console.log("tempTelEmergency:", tempTelEmergency);
+        console.log("tempRelationship:", tempRelationship);
+        console.log("tempProfile:", tempProfile);
 
         if (
-            !tempUser ||
-            !tempPassword ||
             !tempFirstName ||
             !tempLastName ||
             !typeDisabled.length ||

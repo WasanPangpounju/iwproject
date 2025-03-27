@@ -370,8 +370,6 @@ function UserPersonal({ dataUser, setLoader, page }) {
 
         if ((role && role === "user") || (!role && getRole === "user")) {
             if (
-                !tempUser ||
-                !tempPassword ||
                 !tempFirstName ||
                 !tempLastName ||
                 !tempUniversity ||
@@ -404,8 +402,6 @@ function UserPersonal({ dataUser, setLoader, page }) {
             }
         } else {
             if (
-                !tempUser ||
-                !tempPassword ||
                 !tempFirstName ||
                 !tempLastName ||
                 !tempUniversity ||
@@ -565,10 +561,10 @@ function UserPersonal({ dataUser, setLoader, page }) {
 
 
         try {
-            
+
             if (
                 (tempIdCard !== dataUser.idCard ||
-                tempIdCardDisabled !== dataUser.idCardDisabled) && tempRole === "user"
+                    tempIdCardDisabled !== dataUser.idCardDisabled) && tempRole === "user"
             ) {
                 const resCheckID = await fetch(
                     `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/checkId`,
@@ -655,7 +651,6 @@ function UserPersonal({ dataUser, setLoader, page }) {
                 confirmButtonColor: "#0d96f8",
             }).then(() => {
                 setEditMode(false);
-                window.location.reload()
                 setError('')
             });
         } catch (err) {
@@ -1640,7 +1635,7 @@ function UserPersonal({ dataUser, setLoader, page }) {
                         {/* สถาบันการศึกษา */}
                         <div className={`${fontSize} ${bgColorMain} flex col flex-col`}>
                             <label>สถาบันการศึกษา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                            <div className="relative mt-1">
+                            {/* <div className="relative mt-1">
                                 <select
                                     onChange={(e) => {
                                         setUniversity(e.target.value); // ตั้งค่าใหม่
@@ -1656,13 +1651,13 @@ function UserPersonal({ dataUser, setLoader, page }) {
                                     ))}
                                 </select>
                                 <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
-                            </div>
-                            {/* <div className='relative'>
+                            </div> */}
+                            <div className='relative'>
                                 <input
                                     value={university || getUniversity || ""}
                                     onChange={(e) => handleUniversity(e.target.value)}
-                                    onFocus={() => setIsFocusUni(true)} //
-                                    onBlur={() => setTimeout(() => setIsFocusUni(false))}
+                                    onFocus={() => setIsFocusUni(true)}
+                                    onBlur={() => setTimeout(() => setIsFocusUni(false), 200)} // ✅ เพิ่ม delay ป้องกัน dropdown หายก่อนเลือก
                                     type="text"
                                     className={`${!editMode
                                         ? `${inputEditColor} cursor-default focus:outline-none`
@@ -1672,19 +1667,19 @@ function UserPersonal({ dataUser, setLoader, page }) {
                                 />
                                 {isFocusUni && optionUniversity?.length > 0 && (
                                     <div className={`z-10 w-full absolute shadow max-h-24 overflow-scroll hide-scrollbar`}>
-
                                         {optionUniversity.map((uni, index) => (
                                             <div
                                                 key={index}
                                                 className={`px-2 py-1 border ${bgColor} hover:bg-gray-300 cursor-pointer`}
-                                                onClick={() => SeletedOption(uni.university)}
+                                                onMouseDown={() => SeletedOption(uni.university)} // ✅ เปลี่ยน onClick เป็น onMouseDown
                                             >
                                                 {uni.university}
                                             </div>
                                         ))}
                                     </div>
                                 )}
-                            </div> */}
+                            </div>
+
                         </div>
                         {page === "supervisor" && (
                             <>
@@ -1787,7 +1782,7 @@ function UserPersonal({ dataUser, setLoader, page }) {
                     <div className="w-full flex">
                         <div className="flex col flex-col ">
                             <label className={`${!editMode ? "hidden" : ""}`}>
-                                อัปโหลดรูปโปรไฟล์ 
+                                อัปโหลดรูปโปรไฟล์
                             </label>
 
                             <div className="w-32 h-32 relative my-1">

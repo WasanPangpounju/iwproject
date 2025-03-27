@@ -354,7 +354,11 @@ function Resume({ type, dataUser, id, setLoader, setStatusResume }) {
                 confirmButtonText: "ตกลง",
                 confirmButtonColor: "#0d96f8",
             }).then(() => {
-                window.location.reload();
+                getDataSkill(id);
+                getEducation(id);
+                getHistoryWork(id);
+                setEditMode(false)
+                setLoader(false)
             });
         } catch (err) {
             console.log(err);

@@ -1546,7 +1546,7 @@ function AddUser({ setAddUser, dataUser, setLoader }) {
                     {/* สถาบันการศึกษา */}
                     <div className={`${fontSize} ${bgColorMain} flex col flex-col`}>
                         <label>สถาบันการศึกษา <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                        <div className="relative mt-1">
+                        {/* <div className="relative mt-1">
                             <select
                                 onChange={(e) => {
                                     setUniversity(e.target.value); // ตั้งค่าใหม่
@@ -1562,13 +1562,14 @@ function AddUser({ setAddUser, dataUser, setLoader }) {
                                 ))}
                             </select>
                             <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
-                        </div>
-                        {/* <div className='relative'>
+                        </div> */}
+
+                        <div className='relative'>
                             <input
                                 value={university || ""}
                                 onChange={(e) => handleUniversity(e.target.value)}
-                                onFocus={() => setIsFocusUni(true)} //
-                                onBlur={() => setTimeout(() => setIsFocusUni(false))}
+                                onFocus={() => setIsFocusUni(true)}
+                                onBlur={() => setTimeout(() => setIsFocusUni(false), 200)} // เพิ่ม delay ป้องกัน dropdown หายก่อนเลือก
                                 type="text"
                                 className={`${!editMode
                                     ? `${inputEditColor} cursor-default focus:outline-none`
@@ -1578,19 +1579,18 @@ function AddUser({ setAddUser, dataUser, setLoader }) {
                             />
                             {isFocusUni && optionUniversity?.length > 0 && (
                                 <div className={`z-10 w-full absolute shadow max-h-24 overflow-scroll hide-scrollbar`}>
-
                                     {optionUniversity.map((uni, index) => (
                                         <div
                                             key={index}
                                             className={`px-2 py-1 border ${bgColor} hover:bg-gray-300 cursor-pointer`}
-                                            onClick={() => SeletedOption(uni.university)}
+                                            onMouseDown={() => SeletedOption(uni.university)} // ✅ ใช้ onMouseDown แทน onClick
                                         >
                                             {uni.university}
                                         </div>
                                     ))}
                                 </div>
                             )}
-                        </div> */}
+                        </div>
                     </div>
                     <div className="flex col flex-col ">
                         <label>Username <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>

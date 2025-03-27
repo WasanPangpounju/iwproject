@@ -221,7 +221,7 @@ function AdminPage() {
                             <p>กำลังโหลด...</p>
                         ) : (
                             <>
-                                <p className='font-bold'>ข้อมูลผู้ใช้งานทั้งหมด</p>
+                                <p className='font-bold'>ข้อมูลนักศึกษา {dataUser?.university}</p>
                                 <div className={`mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2`}>
                                     <div className='flex flex-col justify-center gap-3 p-5 bg-gray-200 max-w-96'>
                                         <div className='bg-[#ffa152] rounded-sm py-2  flex flex-col justify-center items-center gap-1'>

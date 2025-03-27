@@ -148,6 +148,16 @@ function NavbarAdmin({ status }) {
           ข้อมูลนักศึกษา
         </p>
       </Link>
+      <Link href={`${pathDefault}/reports`}
+        className={`${status === "reports"
+          ? "bg-[#fee2d9] text-[#ff7201]"
+          : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
+          } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`} role="menuitem" aria-label="ข้อมูลนักศึกษา">
+        <Icon path={mdiChartBox} size={1} aria-hidden="true" aria-label="ข้อมูลนักศึกษา" />
+        <p className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}>
+          รายงาน
+        </p>
+      </Link>
 
       <div
         onClick={handleLogout}

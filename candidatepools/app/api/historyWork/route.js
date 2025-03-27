@@ -9,7 +9,7 @@ export async function POST(req) {
 
         // อ่านข้อมูลจาก request
         const data = await req.json();
-        const { uuid, projects, internships, workExperience } = data;
+        const { uuid, projects, internships, workExperience, statusNow } = data;
 
         if (!uuid) {
             return NextResponse.json({ message: "UUID is required" }, { status: 400 });
@@ -18,7 +18,7 @@ export async function POST(req) {
         // ตรวจสอบว่ามีข้อมูลอยู่แล้วหรือไม่
         const result = await HistoryWork.findOneAndUpdate(
             { uuid }, // ค้นหาข้อมูลจาก uuid
-            { projects, internships, workExperience }, // อัปเดตข้อมูลถ้าพบ uuid ตรงกัน
+            { projects, internships, workExperience, statusNow }, // อัปเดตข้อมูลถ้าพบ uuid ตรงกัน
             { upsert: true, new: true } // สร้างใหม่ถ้าไม่พบข้อมูล (upsert) และคืนค่าเอกสารที่อัปเดตแล้ว
         );
 
