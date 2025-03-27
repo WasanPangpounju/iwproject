@@ -810,7 +810,7 @@ function editEducation() {
                                         {/* สถาบันการศึกษา */}
                                         <div className="flex col flex-col ">
                                             <label>สถาบันการศึกษา/มหาวิทยาลัย <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span></label>
-                                            <div className="relative col w-fit mt-1">
+                                            {/* <div className="relative col w-fit mt-1">
                                                 <select
                                                     onChange={(e) => {
                                                         let newUniversities = Array.isArray(university) ? [...university] : []; // ตรวจสอบว่า educationLevel เป็น array
@@ -828,7 +828,7 @@ function editEducation() {
                                                     ))}
                                                 </select>
                                                 <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
-                                            </div>
+                                            </div> */}
                                             {/* {editMode ? (
                                                 <div className={`${bgColorMain} ${bgColor} mt-1 w-64 border px-3 border-gray-400 rounded-lg`}>
                                                     <Autocomplete
@@ -880,14 +880,20 @@ function editEducation() {
                                                 readOnly={!editMode}
                                                 placeholder="ระบุสถานศึกษา"
                                             /> */}
-                                            {/* <div className='relative'>
+                                            <div className='relative'>
                                                 <input
-                                                    value={Array.isArray(inputUniversity) && inputUniversity[index] !== undefined ? inputUniversity[index] : Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
+                                                    value={Array.isArray(inputUniversity) && inputUniversity[index] !== undefined
+                                                        ? inputUniversity[index]
+                                                        : Array.isArray(university) && university[index] !== undefined
+                                                            ? university[index]
+                                                            : ""}
                                                     onChange={(e) => handleOptionUni(e.target.value, index)}
-                                                    onFocus={() => setIsFocusUni(index)} //
+                                                    onFocus={() => setIsFocusUni(index)}
                                                     onBlur={(e) => {
-                                                        handleUniversity(e.target.value, index);
-                                                        setTimeout(() => setIsFocusUni(null));
+                                                        // ถ้า blur ไปที่ dropdown ให้ไม่ซ่อน
+                                                        if (!e.relatedTarget || !e.relatedTarget.classList.contains("uni-option")) {
+                                                            setTimeout(() => setIsFocusUni(false), 200);
+                                                        }
                                                     }}
                                                     type="text"
                                                     readOnly={!editMode}
@@ -895,19 +901,22 @@ function editEducation() {
                                                     placeholder='ระบุสถานศึกษา'
                                                 />
                                                 {isFocusUni === index && optionUniversity?.length > 0 && (
-                                                    <div className={`z-10 w-full absolute shadow max-h-24 overflow-scroll hide-scrollbar`}>
+                                                    <div className="z-10 w-full absolute shadow max-h-24 overflow-scroll hide-scrollbar">
                                                         {optionUniversity.map((uni, i) => (
                                                             <div
                                                                 key={i}
-                                                                className={`px-2 py-1 border ${bgColor} hover:bg-gray-300 cursor-pointer`}
-                                                                onClick={(e) => { e.stopPropagation(); SeletedOption(uni.university, index) }}
+                                                                className={`px-2 py-1 border ${bgColor} hover:bg-gray-300 cursor-pointer uni-option`}
+                                                                onMouseDown={(e) => {
+                                                                    e.preventDefault(); // ป้องกัน blur เมื่อกดที่ dropdown
+                                                                    SeletedOption(uni.university, index);
+                                                                }}
                                                             >
                                                                 {uni.university}
                                                             </div>
                                                         ))}
                                                     </div>
                                                 )}
-                                            </div> */}
+                                            </div>
                                         </div>
                                         {/* วิทยาเขต */}
                                         {index === 0 && typePerson === 'นักศึกษาพิการ' && (
