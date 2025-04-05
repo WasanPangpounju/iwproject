@@ -28,3 +28,10 @@ export async function POST(req) {
         return NextResponse.json({ message: "Error creating/updating education data" }, { status: 500 });
     }
 }
+
+
+export async function GET(req) {
+    await mongoDB();
+    const data = await HistoryWork.find({ })
+    return NextResponse.json({ data });
+}

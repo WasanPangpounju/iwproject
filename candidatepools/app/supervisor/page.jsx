@@ -98,7 +98,7 @@ function SupervisorPage() {
     }
 
     //get allUser
-    const [allUser, setAllUser] = useState([])
+    const [users, setUsers] = useState([])
     async function getDataAllUser() {
         try {
             const res = await fetch(
@@ -114,12 +114,13 @@ function SupervisorPage() {
             }
 
             const data = await res.json();
-            setAllUser(data.user || {});
+            setUsers(data.user || {});
         } catch (err) {
             console.error("Error fetching API", err);
         }
     }
 
+    const allUser = users?.filter((std) => std.role === "user");
     //get data educations
     const [allEducations, setAllEducations] = useState([])
     async function getDataEducations() {

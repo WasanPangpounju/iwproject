@@ -78,6 +78,7 @@ function SupervisorPage() {
             getDataStudent();
             getDataEducation();
             getDataWorks();
+            getHistoryWork();
         } else {
             router.replace("/agreement");
         }
@@ -206,6 +207,27 @@ function SupervisorPage() {
         }
     }
 
+    //getHistoryWork
+    const [historyWork, setHistoryWork] = useState([]);
+    async function getHistoryWork() {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/historyWork`, {
+                method: "GET",
+                cache: "no-store"
+            });
+
+            if (!res.ok) {
+                throw new Error("Error getting data from API");
+            }
+
+            const data = await res.json();
+            setHistoryWork(data.data || {});
+
+        } catch (err) {
+            console.error("Error fetching API", err);
+        }
+    }
+
     //table
     function createData(name, university, level, disabled, details, uuid) {
         return { name, university, level, disabled, details, uuid };
@@ -216,6 +238,7 @@ function SupervisorPage() {
     const [typeDisabledSearch, setTypeDisabledSearch] = useState('')
     const [typePersonSearch, setTypePersonSearch] = useState('')
     const [workSearch, setWorkSearch] = useState('')
+    const [statusWorkSearch, setStatusWorkSearch] = useState('')
 
     //handle search filter
     const [wordSearchFilter, setWordSearchFilter] = useState([])
@@ -234,7 +257,7 @@ function SupervisorPage() {
     // }
     function handleSearch(e) {
         e.preventDefault();
-    
+
         if (wordSearch) {
             setWordSearchFilter(() => {
                 setWordSearch('');
@@ -253,8 +276,8 @@ function SupervisorPage() {
     const rows = studentData?.map((std, index) => {
 
         const tempWordSearch = wordSearchFilter?.length === 0 ? [wordSearch] : wordSearchFilter
-
         const education = dataEducations?.find(edu => edu?.uuid === std?.uuid)
+        const statusNowWork = historyWork?.find((w) => w.uuid === std?.uuid)
         const name = `${std?.firstName} ${std?.lastName}`;
 
         const interestedWork = dataWorks?.find(work => work?.uuid === std?.uuid)
@@ -294,19 +317,27 @@ function SupervisorPage() {
         const hasMatchInterestedWork = updatedStd?.interestedWork?.some(work =>
             work?.type.toLowerCase().includes(tempInterestedWork?.type.toLowerCase())
         );
-      
+
+        let hasStatusNowWork = true;
+        if (statusWorkSearch?.trim()) {
+            hasStatusNowWork = statusNowWork?.statusNow?.trim() === statusWorkSearch.trim();
+           
+        }
+        
+        if (!hasStatusNowWork) {
+            return null;
+        }
         if (!hasMatchInterestedWork) {
             return null;
         }
-        
+
         if (!hasMatchTypePerson) {
             return null;
         }
-      
+
         if (!hasMatchDisabled && typeDisabledSearch) {
             return null;
         }
-        
         if (!wordSearch) {
             if (!hasMatchUniversityFilter && !hasMatchNameFilter) {
                 return null;
@@ -419,6 +450,23 @@ function SupervisorPage() {
                                                     {dataWorkType?.map((work, index) => (
                                                         <option key={index} value={work}>{work}</option>
                                                     ))}
+                                                </select>
+                                                <Icon className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`} path={mdiArrowDownDropCircle} size={.5} />
+                                            </div>
+                                        </div>
+                                        <div className='flex flex-col gap-1'>
+                                            <label >สถานะปัจจุบัน</label>
+                                            <div className="relative col w-fit">
+                                                <select
+                                                    className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
+                                                    style={{ appearance: 'none' }}
+                                                    onChange={(e) => setStatusWorkSearch(e.target.value)}
+                                                >
+                                                    <option value="">ทั้งหมด</option>
+                                                    <option value="กำลังศึกษา">กำลังศึกษา</option>
+                                                    <option value="ทำงาน">ทำงาน</option>
+                                                    <option value="ว่างงาน">ว่างงาน</option>
+                                                    <option value="อยากเปลี่ยนงาน">อยากเปลี่ยนงาน</option>
                                                 </select>
                                                 <Icon className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`} path={mdiArrowDownDropCircle} size={.5} />
                                             </div>
@@ -540,6 +588,7 @@ function SupervisorPage() {
                                         setTypeDisabledSearch('');
                                         setTypePersonSearch('');
                                         setWorkSearch('');
+                                        setStatusWorkSearch('');
                                     }}
                                 >
                                     <Icon className='' path={mdiArrowLeftCircle} size={1} />
