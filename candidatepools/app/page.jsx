@@ -54,7 +54,7 @@ export default function Home() {
     }
 
     if (session?.user?.role === "user") {
-      router.replace("/main");
+      router.replace("/iw");
     } else if (session?.user?.role === "admin") {
       router.replace("/admin");
     } else if (session?.user?.role === "supervisor") {

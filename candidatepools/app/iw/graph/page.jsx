@@ -1,17 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Loader from "../components/Loader";
-import Swal from "sweetalert2";
-import Link from "next/link";
-import NavbarLogo from "../components/NavbarLogo";
-import NavbarMain from "../components/NavbarMain";
-import Image from "next/image";
-
-import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -206,30 +198,23 @@ function GraphPage(bgColorNavbar) {
   console.log("abilityCount", abilityCount);
 
   return (
-    <div>
-      <NavbarLogo dataUser={dataUser} />
-      <div className="flex">
-        <NavbarMain status="graph" />
-        <div className="w-10/12 px-7 py-5">
-          {/* <div className={`bg-white rounded-lg p-5`}> */}
-          <div className={`${bgColorNavbar} rounded-lg p-5`}>
-            <p className="text-2xl font-bold">ข่าวประชาสัมพันธ์</p>
-            <div className="mt-5 flex justify-between border">
-              <h1>Employee Abilities Graph</h1>
-              <EmployeeAbilityGraph employees={employees} />
-            </div>
-            {/* <div className="mt-1 flex justify-between border">
+    <>
+      <div className={`${bgColorNavbar} rounded-lg p-5`}>
+        <p className="text-2xl font-bold">ข่าวประชาสัมพันธ์</p>
+        <div className="mt-5 flex justify-between border">
+          <h1>Employee Abilities Graph</h1>
+          <EmployeeAbilityGraph employees={employees} />
+        </div>
+        {/* <div className="mt-1 flex justify-between border">
               <h1>Employee Univercity Graph</h1>
               <UniversityChart employees={employees} />
             </div> */}
-            <div className="mt-1 flex justify-between border">
-              <h1>Employee University Graph</h1>
-              <div className="w-[30%]">
-                {" "}
-                {/* Set the width to 30% */}
-                <UniversityChart employees={employees} />
-              </div>
-            </div>
+        <div className="mt-1 flex justify-between border">
+          <h1>Employee University Graph</h1>
+          <div className="w-[30%]">
+            {" "}
+            {/* Set the width to 30% */}
+            <UniversityChart employees={employees} />
           </div>
         </div>
       </div>
@@ -238,7 +223,7 @@ function GraphPage(bgColorNavbar) {
           <Loader />
         </div>
       )}
-    </div>
+    </>
   );
 }
 
