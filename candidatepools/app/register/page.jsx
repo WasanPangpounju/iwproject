@@ -5,7 +5,7 @@ import Icon from '@mdi/react';
 import { mdiAccountEdit, mdiArrowDownDropCircle, mdiCloseCircle } from '@mdi/js';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import NavbarLogo from '../components/NavbarLogo';
+import NavbarLogo from '../components/HeaderLogo';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 import Loader from '../components/Loader';

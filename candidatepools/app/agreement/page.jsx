@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
-import NavbarLogo from '../components/NavbarLogo'
+import NavbarLogo from '../components/HeaderLogo'
 import Icon from '@mdi/react';
 import { mdiAccountEdit, mdiCloseCircle } from '@mdi/js';
 import Footer from '../components/Footer';

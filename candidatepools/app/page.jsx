@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "./ThemeContext";
-import NavbarLogo from "./components/NavbarLogo";
+import HeaderLogo from "./components/HeaderLogo";
 import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -56,9 +56,9 @@ export default function Home() {
     if (session?.user?.role === "user") {
       router.replace("/iw");
     } else if (session?.user?.role === "admin") {
-      router.replace("/admin");
+      router.replace("/ad");
     } else if (session?.user?.role === "supervisor") {
-      router.replace("/supervisor");
+      router.replace("/su");
     }
   }, [session, router]);
 
@@ -164,7 +164,7 @@ export default function Home() {
 
   return (
     <div className={`${bgColorMain} ${bgColor}`}>
-      <NavbarLogo />
+      <HeaderLogo />
       <div className="flex text-sm justify-center gap-20 mt-10 items-center ">
         <Image
           alt="poster"
