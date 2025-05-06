@@ -16,7 +16,7 @@ import {
   mdiDelete,
 } from "@mdi/js";
 import Swal from "sweetalert2";
-import dataWorkType from "./dataWorkType";
+import dataWorkType from "@/assets/dataWorkType";
 import useProvinceData from "@/app/components/province";
 
 function InterestedWork() {

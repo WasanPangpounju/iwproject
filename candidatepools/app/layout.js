@@ -87,7 +87,7 @@ import React from "react";
 import { ThemeProvider } from './ThemeContext'; // Adjust the import path
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar";
+import Header from "./components/Header";
 import "@fontsource/ibm-plex-sans-thai";
 import { AuthProvider } from "./Provider";
 import { useState } from "react"; // Import useState
@@ -116,7 +116,7 @@ export default function RootLayout({ children }) {
         <body className={`${bgColorMain, bgColorWhite}`}>
         
           <AuthProvider>
-            <Navbar />
+            <Header />
             <div>
               {children}
             </div>

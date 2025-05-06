@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/app/ThemeContext";
-import Resume from "./component/resume";
+import Resume from "@/app/components/Resume/resume";
 
 function ResumePage() {
   const [loader, setLoader] = useState(false);

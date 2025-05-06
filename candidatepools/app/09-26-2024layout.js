@@ -87,7 +87,7 @@ import React from "react";
 import { ThemeProvider } from './ThemeContext'; // Adjust the import path
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/Header";
 import "@fontsource/ibm-plex-sans-thai";
 import { AuthProvider } from "./Provider";
 import { useState } from "react"; // Import useState

@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 //components
-import NavbarLogo from "../components/NavbarLogo";
+import HeaderLogo from "../components/HeaderLogo";
 import NavbarMain from "../components/Menu/NavbarMain";
 
 export default function RootLayout({ children }) {
@@ -93,7 +93,7 @@ export default function RootLayout({ children }) {
 
   return (
     <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
-      <NavbarLogo dataUser={dataUser} />
+      <HeaderLogo dataUser={dataUser} />
       <div className="flex">
         <NavbarMain status="main" />
         <div className="w-10/12 px-7 py-5">{children}</div>
