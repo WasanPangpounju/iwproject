@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
-import NavbarLogo from '../components/HeaderLogo'
+import HeaderLogo from '../components/HeaderLogo'
 import Icon from '@mdi/react';
 import { mdiAccountEdit, mdiCloseCircle } from '@mdi/js';
 import Footer from '../components/Footer';
@@ -151,7 +151,7 @@ function Agreement() {
                 <Register statusAgreement={statusAgreement} />
             ) : (
                 <div>
-                    <NavbarLogo />
+                    <HeaderLogo />
                     <div className="w-full flex justify-center">
                         <div className="p-10 max-w-screen-xl">
                             <div className={`${bgColorMain2} p-10 rounded-lg`}>
