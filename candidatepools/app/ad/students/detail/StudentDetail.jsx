@@ -39,9 +39,9 @@ function StudentDetail({ id, setIdDetail, setLoader }) {
         }
 
         if (session?.user?.role === "user") {
-            router.replace("/main");
-        } else if (session?.user?.role === "supervisor") {
-            router.replace("/supervisor");
+            router.replace("/iw");
+        } else if (session?.user?.role === "su") {
+            router.replace("/su");
         }
 
     }, [status, session, router]);

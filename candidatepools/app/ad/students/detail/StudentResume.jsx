@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '@/app/ThemeContext'
-import Resume from '@/app/resume/component/resume'
+import Resume from '@/app/components/Resume/resume'
 
 function StudentResume({ dataUser, id, setLoader }) {
 

@@ -89,16 +89,6 @@ function Register({ statusAgreement }) {
         }
     }, [session], [router])
 
-    //check dataUser if have redirec to main pang
-    useEffect(() => {
-        if (dataUser === null) {
-            return;
-        }
-        if (dataUser.university) {
-            router.replace("/main");
-        }
-    }, [dataUser, router])
-
     //loader
     const [loader, setLoader] = useState(true)
     useEffect(() => {
@@ -232,9 +222,7 @@ function Register({ statusAgreement }) {
                         confirmButtonColor: "#0d96f8",
                     })
                         .then((result) => {
-                            if (result.isConfirmed) {
-                                router.push('/main');
-                            }
+                           
                         });
                 } else {
                     setLoader(false);

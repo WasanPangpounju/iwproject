@@ -8,7 +8,8 @@ import { useRouter } from "next/navigation";
 
 //components
 import HeaderLogo from "../components/HeaderLogo";
-import NavbarMain from "../components/Menu/NavbarMain";
+import NavbarAdmin from "../components/Menu/NavbarAdmin";
+
 
 export default function RootLayout({ children }) {
   const {
@@ -90,7 +91,7 @@ export default function RootLayout({ children }) {
     <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
       <HeaderLogo dataUser={dataUser} />
       <div className="flex">
-        <NavbarMain status="main" />
+        <NavbarAdmin status="ad" />
         <div className="w-10/12 px-7 py-5">{children}</div>
       </div>
     </div>
