@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
-import NavbarLogo from '@/app/components/HeaderLogo'
+import HeaderLogo from '@/app/components/HeaderLogo'
 import Image from 'next/image'
 import Loader from '@/app/components/Loader'
 import { useSession } from 'next-auth/react'
@@ -350,7 +350,7 @@ function StudentsPage() {
 
     return (
         <div className={`${fontSize} ${bgColorMain} ${bgColor}`}>
-            <NavbarLogo title={`ข้อมูลนักศึกษา ${dataUser?.university}`} dataUser={dataUser} />
+            <HeaderLogo title={`ข้อมูลนักศึกษา ${dataUser?.university}`} dataUser={dataUser} />
             <div className="flex">
                 <NavbarAdmin status="dataStudent" />
                 <div className="w-10/12 px-7 py-5">

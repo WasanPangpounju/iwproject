@@ -5,7 +5,7 @@ import Icon from '@mdi/react';
 import { mdiAccountEdit, mdiArrowDownDropCircle, mdiCloseCircle } from '@mdi/js';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import NavbarLogo from '../components/HeaderLogo';
+import HeaderLogo from '../components/HeaderLogo';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 import Loader from '../components/Loader';
@@ -322,7 +322,7 @@ function Register({ statusAgreement }) {
     console.log(university)
     return (
         <div className={`${bgColorMain} ${bgColor}`}>
-            <NavbarLogo />
+            <HeaderLogo />
             <div className='text-sm flex justify-center mt-10'>
                 <form onSubmit={handleRegister} className='flex flex-col justify-center items-center'>
                     <div className='w-96 self-end text-center'>

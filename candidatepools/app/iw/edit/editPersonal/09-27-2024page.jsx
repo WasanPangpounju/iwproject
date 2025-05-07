@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import NavbarLogo from "../components/NavbarLogo";
+import HeaderLogo from "../components/HeaderLogo";
 import NavbarMain from "../components/NavbarMain";
 import Loader from "../components/Loader";
 import { useState, useEffect, useRef } from "react";
@@ -726,7 +726,7 @@ function EditPersonal() {
           <Loader />
         </div>
       )}
-      <NavbarLogo title="ข้อมูลส่วนบุลคล" dataUser={dataUser} />
+      <HeaderLogo title="ข้อมูลส่วนบุลคล" dataUser={dataUser} />
       <div className="flex">
         <NavbarMain status="edit" />
         <div className="w-10/12 px-7 py-5">

@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 import { useTheme } from '../ThemeContext'
 import Icon from '@mdi/react'
 import { mdiAccountSchool, mdiAccountEdit, mdiFaceMan, mdiFaceWoman, mdiPlus, mdiContentSave, mdiCloseThick } from '@mdi/js'
-import PieChart from '@/app/admin/components/ChartDisabled'
+import PieChart from '@/app/ad/components/ChartDisabled'
 
 
 function AdminPage() {

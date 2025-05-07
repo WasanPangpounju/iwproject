@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import NavbarLogo from "@/app/components/HeaderLogo";
+import HeaderLogo from "@/app/components/HeaderLogo";
 import NavbarMain from "@/app/components/Menu/NavbarMain";
 import Image from "next/image";
 import Loader from "@/app/components/Loader";

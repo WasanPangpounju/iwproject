@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react'
-import NavbarLogo from '../components/NavbarLogo'
+import HeaderLogo from '../components/HeaderLogo'
 import NavbarMain from '../components/NavbarMain'
 import Image from 'next/image'
 import Loader from '../components/Loader'
@@ -1154,7 +1154,7 @@ function WorkHistory() {
 
     return (
         <div className={`${bgColorMain} ${bgColor}`}>
-            <NavbarLogo title="ประวัติการทำงาน / ฝึกงาน" dataUser={dataUser} />
+            <HeaderLogo title="ประวัติการทำงาน / ฝึกงาน" dataUser={dataUser} />
             <div className="flex">
                 <NavbarMain status="edit" />
                 <div className="w-10/12 px-7 py-5">
