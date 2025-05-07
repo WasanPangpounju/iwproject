@@ -14,6 +14,9 @@ import Footer from "./components/Footer";
 import RootLayout from "./layout";
 import React from "react";
 
+//hooks
+import useRoleRedirect from '@/hooks/useRoleRedirect'
+
 // export default function Home(bgColorNavbar,bgColorMain) {
 // export default function Home({ bgColorMain='bg-white', bgColorNavbar,bgColor }) {
 export default function Home() {
@@ -34,6 +37,8 @@ export default function Home() {
     registerColor,
   } = useTheme();
 
+  useRoleRedirect();
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -48,19 +53,6 @@ export default function Home() {
   //validate session
   const { status, data: session } = useSession();
   const router = useRouter();
-  useEffect(() => {
-    if (status === "loading") {
-      return;
-    }
-
-    if (session?.user?.role === "user") {
-      router.replace("/iw");
-    } else if (session?.user?.role === "admin") {
-      router.replace("/ad");
-    } else if (session?.user?.role === "supervisor") {
-      router.replace("/su");
-    }
-  }, [session, router]);
 
   //loader
   useEffect(() => {

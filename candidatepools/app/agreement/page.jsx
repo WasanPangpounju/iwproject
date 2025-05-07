@@ -72,22 +72,8 @@ function Agreement() {
             getUser(session.user.id);
         }
 
-        if (session?.user?.role === "admin") {
-            router.replace("/admin");
-        } else if (session?.user?.role === "supervisor") {
-            router.replace("/supervisor");
-        } 
-
     }, [status, session, router]);
 
-    useEffect(() => {
-        if (!dataUser) return;
-
-        if (dataUser.university) {
-            router.replace("/main")
-        }
-
-    }, [dataUser])
 
     // Fetch user data from API
     async function getUser(id) {
