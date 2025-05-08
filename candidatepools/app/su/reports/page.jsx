@@ -14,25 +14,20 @@ import {
   mdiContentSave,
   mdiCloseThick,
 } from "@mdi/js";
-import dataWorkType from "@/assets/dataWorkType";
-import Link from "next/link";
-import EditUser from "@/app/su/usermanagement/components/EditUser";
-import AddUser from "@/app/su/usermanagement/components/AddUser";
 import UniversityData from "./components/UniversityData";
 
-//table
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
+//select datas
+import universitys from "@/app/data/universitys.json";
+import dataWorkType from "@/assets/dataWorkType";
+import dataDisabled from "@/assets/dataDisabled";
 
 //excel
 import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+
+//component
+import ReportTable from "@/app/components/Table/ReportTable";
+import SelectChoice from "@/app/components/Form/SelectChoice";
 
 const columns = [
   {
@@ -384,7 +379,11 @@ function ReportPage() {
     setIsResumeMenuOpen(false); // ปิดเมนู
   };
   //header
-  const [header, setHeader] = useState("");
+  const [header, setHeader] = useState("แยกตามจำนวน");
+  const [content, setContent] = useState("ตามมหาวิทยาลัย");
+  const [contentType, setContentType] = useState("ทั้งหมด");
+  const [universityActive, setUniversityActive] =
+    useState("มหาวิทยาลัยทั้งหมด");
 
   //excel
   const handleExportExcel = async (dataUni) => {
@@ -484,122 +483,123 @@ function ReportPage() {
     link.click();
   };
 
+  //choice
+  const haederData = ["แยกตามจำนวน", "แยกตามประเภท"];
+  const contentData = [
+    "ตามมหาวิทยาลัย",
+    "ตามประเภทความพิการ",
+    "ตามประเภทบุคคล",
+    "ตามลักษณะงานที่สนใจ",
+  ];
+  const universityData = [
+    "ทั้งหมด",
+    ...universitys.map((item) => item.university),
+  ];
+  const disabledData = ["ทั้งหมด", ...dataDisabled.map((item) => item)];
+  const workData = ["ทั้งหมด", ...dataWorkType.map((item) => item)];
+
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
       <div className={`flex flex-col`}>
         <label>หัวข้อรายงาน</label>
-        <div className="relative col w-fit mt-1">
-          <select
-            onChange={(e) => {
-              setHeader(e.target.value);
-            }}
-            className={`cursor-pointer ${bgColorMain} w-64  border border-gray-400 py-1 px-4 rounded-lg`}
-            placeholder="กรอกชื่อผู้ใช้"
-            style={{ appearance: "none" }}
-          >
-            <option value="">เลือกหัวข้อรายงาน</option>
-            <option value="ตามมหาวิทยาลัย">ตามมหาวิทยาลัย</option>
-          </select>
-          <Icon
-            className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}
-            path={mdiArrowDownDropCircle}
-            size={0.6}
-          />
+        <div className="flex gap-5 mt-3">
+          <SelectChoice setValue={setHeader} data={haederData} />
+          {header === "แยกตามจำนวน" && (
+            <SelectChoice setValue={setContent} data={contentData} />
+          )}
+          {content === "ตามประเภทความพิการ" ||
+          content === "ตามลักษณะงานที่สนใจ" ? (
+            <SelectChoice
+              setValue={setContentType}
+              data={content === "ตามประเภทความพิการ" ? disabledData : workData}
+            />
+          ) : null}
+        </div>
+
+        <div className="mt-5">
+          <SelectChoice setValue={setUniversityActive} data={universityData} />
         </div>
       </div>
-
-      {header === "" ? (
-        <>
-          <div className="mt-10 flex flex-col gap-1 font-bold">
-            <div className="flex justify-between items-end">
-              <p>รายงานจำนวนนักศึกษาทั้งหมด จำแนกตามมหาวิทยาลัย</p>
-              <div className="relative group">
-                <div className={`bg-gray-300 px-4 py-2  cursor-pointer`}>
-                  Download Dataset
-                </div>
-                <div
-                  className={`hidden group-hover:block  ${bgColorMain2} shadow absolute top-[100%] right-0 z-10 w-56`}
-                >
-                  <div
-                    className="hover:bg-gray-300 relative px-4 py-2 cursor-pointer flex gap-5  items-center"
-                    onClick={() => handleExportToCSV(showData)}
-                  >
-                    <Icon
-                      className={`cursor-pointer text-gray-400 `}
-                      path={mdiFileDocument}
-                      size={0.7}
-                    />
-                    <p className="">Download as CSV File</p>
-                  </div>
-                  <div
-                    className="hover:bg-gray-300 relative px-4 py-2 cursor-pointer flex gap-5 items-center"
-                    onClick={() => handleExportExcel(showData)}
-                  >
-                    <Icon
-                      className={`cursor-pointer text-gray-400 `}
-                      path={mdiMicrosoftExcel}
-                      size={0.7}
-                    />
-                    <p className="">Download as Excel File</p>
-                  </div>
-                </div>
-              </div>
+      <div className="mt-10 flex flex-col gap-1 font-bold">
+        <div className="flex justify-between items-end">
+          <p>รายงานจำนวนนักศึกษาทั้งหมด จำแนกตามมหาวิทยาลัย</p>
+          <div className="relative group">
+            <div className={`bg-gray-300 px-4 py-2  cursor-pointer`}>
+              Download Dataset
             </div>
-            <hr className={` mb-3 border-gray-500`} />
-          </div>
-          <form
-            onSubmit={(e) => handleSearch(e)}
-            className=" mb-7 flex justify-between flex-wrap gap-y-5 items-end"
-          >
-            <div className="flex gap-5 gap-y-3 flex-wrap">
-              <div className="flex flex-col gap-1">
-                <label>คำค้นหา</label>
-                <input
-                  value={wordSearch}
-                  type="text"
-                  className={`${bgColorMain} w-56 border border-gray-400 py-1 px-4 rounded-md`}
-                  placeholder="มหาวิทยาลัย"
-                  onChange={(e) => setWordSearch(e.target.value)}
+            <div
+              className={`hidden group-hover:block  ${bgColorMain2} shadow absolute top-[100%] right-0 z-10 w-56`}
+            >
+              <div
+                className="hover:bg-gray-300 relative px-4 py-2 cursor-pointer flex gap-5  items-center"
+                onClick={() => handleExportToCSV(showData)}
+              >
+                <Icon
+                  className={`cursor-pointer text-gray-400 `}
+                  path={mdiFileDocument}
+                  size={0.7}
                 />
+                <p className="">Download as CSV File</p>
               </div>
-
-              <div className="flex flex-col gap-1">
-                <label>เลือกช่วงเวลา</label>
-                <div className="relative col w-fit">
-                  <select
-                    className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
-                    style={{ appearance: "none" }}
-                    onChange={(e) => setTypePersonSearch(e.target.value)}
-                  >
-                    <option value="">ทั้งหมด</option>
-                    {years?.map((year, index) => (
-                      <option key={index} value={year}>
-                        ปี {year}
-                      </option>
-                    ))}
-                  </select>
-                  <Icon
-                    className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}
-                    path={mdiArrowDownDropCircle}
-                    size={0.5}
-                  />
-                </div>
-              </div>
-              <div className="flex items-end">
-                <button
-                  type="submit"
-                  className={` ${bgColorWhite} ${
-                    inputGrayColor === "bg-[#74c7c2]" || ""
-                      ? "bg-[#0d96f8]"
-                      : ""
-                  }  hover:cursor-pointer py-1 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-                >
-                  <Icon path={mdiMagnify} size={1} />
-                  <p>ค้นหา</p>
-                </button>
+              <div
+                className="hover:bg-gray-300 relative px-4 py-2 cursor-pointer flex gap-5 items-center"
+                onClick={() => handleExportExcel(showData)}
+              >
+                <Icon
+                  className={`cursor-pointer text-gray-400 `}
+                  path={mdiMicrosoftExcel}
+                  size={0.7}
+                />
+                <p className="">Download as Excel File</p>
               </div>
             </div>
-          </form>
+          </div>
+        </div>
+        <hr className={` mb-3 border-gray-500`} />
+      </div>
+      <form
+        onSubmit={(e) => handleSearch(e)}
+        className=" mb-7 flex justify-between flex-wrap gap-y-5 items-end"
+      >
+        <div className="flex gap-5 gap-y-3 flex-wrap">
+          <div className="flex flex-col gap-1">
+            <label>เลือกช่วงเวลา</label>
+            <div className="relative col w-fit">
+              <select
+                className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
+                style={{ appearance: "none" }}
+                onChange={(e) => setTypePersonSearch(e.target.value)}
+              >
+                <option value="">ทั้งหมด</option>
+                {years?.map((year, index) => (
+                  <option key={index} value={year}>
+                    ปี {year}
+                  </option>
+                ))}
+              </select>
+              <Icon
+                className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}
+                path={mdiArrowDownDropCircle}
+                size={0.5}
+              />
+            </div>
+          </div>
+          <div className="flex items-end">
+            <button
+              type="submit"
+              className={` ${bgColorWhite} ${
+                inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#0d96f8]" : ""
+              }  hover:cursor-pointer py-1 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
+            >
+              <Icon path={mdiMagnify} size={1} />
+              <p>ค้นหา</p>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      {content === "ตามมหาวิทยาลัย" ? (
+        <>
           {wordSearchFilter?.length > 0 && (
             <div className="mt-5 flex gap-2 flex-wrap">
               {wordSearchFilter?.map((word, index) => (
@@ -616,7 +616,7 @@ function ReportPage() {
                         }`
                       : "border border-white"
                   }
-                                                px-8 py-1 rounded-lg relative cursor-pointer`}
+                                      px-8 py-1 rounded-lg relative cursor-pointer`}
                   onClick={() => deleteWordSearch(index)}
                 >
                   {word}
@@ -632,69 +632,19 @@ function ReportPage() {
           {loaderTable ? (
             <div className="py-2">กำลังโหลดข้อมูล...</div>
           ) : studentData?.length > 1 ? (
-            <Paper
-              sx={{ width: "100%", overflow: "hidden", boxShadow: "none" }}
-            >
-              <TableContainer sx={{ maxHeight: 700 }}>
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                      {columns.map((column) => (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{ minWidth: column.minWidth }}
-                        >
-                          {column.label}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {resultRows
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
-                      .map((row, index) => {
-                        return (
-                          <TableRow
-                            hover
-                            role="checkbox"
-                            tabIndex={-1}
-                            key={index}
-                          >
-                            {columns.map((column) => {
-                              const value = row[column.id];
-                              return (
-                                <TableCell key={column.id} align={column.align}>
-                                  {column.format && typeof value === "number"
-                                    ? column.format(value)
-                                    : value}
-                                </TableCell>
-                              );
-                            })}
-                          </TableRow>
-                        );
-                      })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={resultRows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </Paper>
+            <ReportTable
+              columns={columns}
+              resultRows={resultRows}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              handleChangePage={handleChangePage}
+              handleChangeRowsPerPage={handleChangeRowsPerPage}
+            />
           ) : (
             <div>ไม่มีข้อมูลนักศึกษา</div>
           )}
         </>
-      ) : header === "ตามมหาวิทยาลัย" ? (
+      ) : content === "ตามมหาวิทยาลัย" ? (
         <UniversityData universitys={universityCheckYear} />
       ) : null}
     </div>
@@ -702,3 +652,14 @@ function ReportPage() {
 }
 
 export default ReportPage;
+
+// <div className="flex flex-col gap-1">
+// <label>คำค้นหา</label>
+// <input
+//   value={wordSearch}
+//   type="text"
+//   className={`${bgColorMain} w-56 border border-gray-400 py-1 px-4 rounded-md`}
+//   placeholder="มหาวิทยาลัย"
+//   onChange={(e) => setWordSearch(e.target.value)}
+// />
+// </div>
