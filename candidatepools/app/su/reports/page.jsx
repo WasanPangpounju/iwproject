@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
 import {
@@ -10,182 +9,85 @@ import {
   mdiMicrosoftExcel,
   mdiMagnify,
   mdiArrowDownDropCircle,
-  mdiPlus,
-  mdiContentSave,
-  mdiCloseThick,
 } from "@mdi/js";
-import UniversityData from "./components/UniversityData";
 
 //select datas
 import universitys from "@/app/data/universitys.json";
 import dataWorkType from "@/assets/dataWorkType";
 import dataDisabled from "@/assets/dataDisabled";
 
-//excel
-import * as ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
+//hooks
+import { useExcelExport } from "@/hooks/useExcelExport";
+import { exportToCSV } from "@/hooks/useCsvExport"; // หรือ "@/utils/csvExport"
 
 //component
 import ReportTable from "@/app/components/Table/ReportTable";
 import SelectChoice from "@/app/components/Form/SelectChoice";
 
+// รายงานลักษณะงานที่สนใจ
+const columnWork = [
+  { id: "number", label: "ลำดับ", minWidth: 50 },
+  { id: "work", label: "ลักษณะงานที่สนใจ", minWidth: 170 },
+  { id: "totalStudent", label: "จำนวนนักศึกษา", minWidth: 170 },
+  { id: "totalGraduation", label: "จำนวนบัณฑิต", minWidth: 170 },
+  { id: "total", label: "ทั้งหมด", minWidth: 170, align: "center" },
+];
+
+// รายงานตามประเภทบุคคล
 const columnTypePerson = [
-  {
-    id: "number",
-    label: "ลำดับ",
-    minWidth: 50,
-  },
-  {
-    id: "typePerson",
-    label: "ประเภทบุคคล",
-    minWidth: 170,
-  },
-  {
-    id: "total",
-    label: "ทั้งหมด",
-    minWidth: 170,
-    align: "center",
-  },
+  { id: "number", label: "ลำดับ", minWidth: 50 },
+  { id: "typePerson", label: "ประเภทบุคคล", minWidth: 170 },
+  { id: "total", label: "ทั้งหมด", minWidth: 170, align: "center" },
 ];
 
+// รายงานตามประเภทความพิการ
 const columnDisabled = [
-  {
-    id: "number",
-    label: "ลำดับ",
-    minWidth: 50,
-  },
-  {
-    id: "typeDisabled",
-    label: "ประเภทความพิการ",
-    minWidth: 170,
-  },
-  {
-    id: "totalStudent",
-    label: "จำนวนนักศึกษา",
-    minWidth: 170,
-  },
-  {
-    id: "totalGraduation",
-    label: "จำนวนนักศึกษา",
-    minWidth: 170,
-  },
-  {
-    id: "total",
-    label: "ทั้งหมด",
-    minWidth: 170,
-    align: "center",
-  },
+  { id: "number", label: "ลำดับ", minWidth: 50 },
+  { id: "disabledType", label: "ประเภทความพิการ", minWidth: 170 },
+  { id: "totalStudent", label: "จำนวนนักศึกษา", minWidth: 170 },
+  { id: "totalGraduation", label: "จำนวนบัณฑิต", minWidth: 170 },
+  { id: "total", label: "ทั้งหมด", minWidth: 170, align: "center" },
 ];
 
+// รายงานนักศึกษาตามสถาบันการศึกษา
 const columnStudents = [
-  {
-    id: "name",
-    label: "ลำดับ",
-    minWidth: 170,
-  },
-  {
-    id: "university",
-    label: "สถาบันการศึกษา",
-    minWidth: 170,
-  },
-  {
-    id: "level",
-    label: "จำนวนนักศึกษา",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "disabled",
-    label: "จำนวนบัณฑิตพิการ",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "details",
-    label: "ทั้งหมด",
-    minWidth: 170,
-    align: "center",
-  },
+  { id: "name", label: "ลำดับ", minWidth: 170 },
+  { id: "university", label: "สถาบันการศึกษา", minWidth: 170 },
+  { id: "level", label: "จำนวนนักศึกษา", minWidth: 170, align: "center" },
+  { id: "disabled", label: "จำนวนบัณฑิตพิการ", minWidth: 170, align: "center" },
+  { id: "details", label: "ทั้งหมด", minWidth: 170, align: "center" },
 ];
 
 function ReportPage() {
-  const [loader, setLoader] = useState(false);
-
-  const router = useRouter();
-  const { status, data: session } = useSession();
-  const [dataUser, setDataUser] = useState([]);
-
-  // Validate session and fetch user data
-  useEffect(() => {
-    if (status === "loading") {
-      return;
-    }
-    setLoader(false);
-
-    if (!session) {
-      router.replace("/");
-      return;
-    }
-
-    if (session?.user?.id) {
-      getUser(session.user.id);
-      getDataStudent();
-      getDataEducation();
-    }
-  }, [status, session, router]);
-
-  //get data from user
-  async function getUser(id) {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Error getting data from API");
-      }
-
-      const data = await res.json();
-      setDataUser(data.user || {});
-    } catch (err) {
-      console.error("Error fetching API", err);
-    } finally {
-      setLoader(false);
-    }
-  }
-
-  //Theme
-  const {
-    setFontSize,
-    setBgColor,
-    setBgColorNavbar,
-    setBgColorWhite,
-    setBgColorMain,
-    setBgColorMain2,
-    fontSize,
-    bgColorNavbar,
-    bgColor,
-    bgColorWhite,
-    bgColorMain,
-    bgColorMain2,
-    setLineBlack,
-    lineBlack,
-    setTextBlue,
-    textBlue,
-    setRegisterColor,
-    registerColor,
-    inputEditColor,
-    inputGrayColor,
-  } = useTheme();
-
-  //getDatastudent
   const [studentData, setStudentData] = useState([]);
   const [loaderTable, setLoaderTable] = useState(true);
-  async function getDataStudent() {
+  const [dataWorks, setDataWorks] = useState([]);
+  const [dataEducations, setDataEducations] = useState(null);
+  const [typePersonSearch, setTypePersonSearch] = useState("");
+  const [header, setHeader] = useState("แยกตามจำนวน");
+  const [content, setContent] = useState("ตามมหาวิทยาลัย");
+  const [contentType, setContentType] = useState("ทั้งหมด");
+  const [universityActive, setUniversityActive] =
+    useState("มหาวิทยาลัยทั้งหมด");
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const { data: session } = useSession();
+  const { exportExcel } = useExcelExport();
+
+  // Theme
+  const { bgColor, bgColorWhite, bgColorMain, bgColorMain2, inputGrayColor } =
+    useTheme();
+
+  // Lifecycle: Fetch initial data
+  useEffect(() => {
+    fetchStudentData();
+    fetchEducationData();
+    fetchWorkData();
+  }, []);
+
+  // Fetch: นักศึกษา
+  async function fetchStudentData() {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/students`,
@@ -196,21 +98,42 @@ function ReportPage() {
       );
 
       if (!res.ok) {
-        throw new Error("Error getting data from API");
+        throw new Error("Failed to fetch student data");
       }
 
       const data = await res.json();
       setStudentData(data.user || {});
-    } catch (err) {
-      console.error("Error fetching API", err);
+    } catch (error) {
+      console.error("Error fetching student data:", error);
     } finally {
       setLoaderTable(false);
     }
   }
 
-  //get Education
-  const [dataEducations, setDataEducations] = useState(null);
-  async function getDataEducation(id) {
+  // Fetch: ลักษณะงานที่สนใจ
+  async function fetchWorkData() {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/interestedwork`,
+        {
+          method: "GET",
+          cache: "no-store",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch work data");
+      }
+
+      const data = await res.json();
+      setDataWorks(data.interestedWork || {});
+    } catch (error) {
+      console.error("Error fetching work data:", error);
+    }
+  }
+
+  // Fetch: การศึกษา
+  async function fetchEducationData() {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`,
@@ -221,173 +144,108 @@ function ReportPage() {
       );
 
       if (!res.ok) {
-        throw new Error("Error getting data from API");
+        throw new Error("Failed to fetch education data");
       }
 
       const data = await res.json();
       setDataEducations(data.educations || {});
-    } catch (err) {
-      console.error("Error fetching API", err);
+    } catch (error) {
+      console.error("Error fetching education data:", error);
     }
   }
+
+  // ---------- Filtered Student Data ----------
+  const studentDataReal = studentData.filter((item) => {
+    const isValidType = ["นักศึกษาพิการ", "บัณฑิตพิการ"].includes(
+      item.typePerson
+    );
+    const matchUniversity =
+      universityActive === "มหาวิทยาลัยทั้งหมด" || // แสดงทั้งหมดถ้าเลือก "ทั้งหมด"
+      dataEducations.find(
+        (edu) =>
+          edu.uuid === item.uuid && edu.university?.includes(universityActive)
+      );
+
+    return isValidType && matchUniversity;
+  });
 
   //table
   function createData(name, university, level, disabled, details, uuid) {
     return { name, university, level, disabled, details, uuid };
   }
-
-  //type search
-  const [wordSearch, setWordSearch] = useState("");
-  const [typePersonSearch, setTypePersonSearch] = useState("");
-
-  //handle search filter
-  const [wordSearchFilter, setWordSearchFilter] = useState([]);
-
-  function handleSearch(e) {
-    e.preventDefault();
-
-    if (wordSearch) {
-      setWordSearchFilter(() => {
-        setWordSearch("");
-        return [wordSearch]; // แทนที่คำค้นหาใหม่
-      });
-    }
-  }
-  function deleteWordSearch(index) {
-    setWordSearchFilter((prev) => {
-      // ใช้ filter เพื่อลบคำที่ตรงกับ index
-      return prev.filter((_, i) => i !== index);
-    });
-  }
-
-  //setyear
-  const today = new Date();
-  const yearToday = today.getFullYear();
-  // สร้างลิสต์ปีจากปีปัจจุบันย้อนหลัง 100 ปี
+  // สร้างปีย้อนหลัง 10 ปีจากปีปัจจุบัน
+  const yearToday = new Date().getFullYear();
   const years = Array.from({ length: 10 }, (_, i) => yearToday - i);
 
-  let universityCheckYear = [];
+  // เก็บข้อมูลตามปีและรวมทั้งหมด
+  let universityByYear = [];
   let count = 0;
-  const rows = studentData?.map((std) => {
-    if (std?.role !== "user" || std?.uuid === session?.user?.id) {
-      return null;
-    }
 
-    const dateCreate = std?.createdAt ?? "";
-    const yearCreate = dateCreate.split("-")[0];
+  // รวมข้อมูลจาก studentData และ dataEducations
+  studentDataReal?.forEach((std) => {
+    if (std?.role !== "user" || std?.uuid === session?.user?.id) return;
+
+    const year = std?.createdAt?.split("-")[0];
     const education = dataEducations?.find((edu) => edu?.uuid === std?.uuid);
+    if (!education?.university) return;
 
-    if (!education?.university) return null;
+    const type = education?.typePerson;
+    if (!["นักศึกษาพิการ", "บัณฑิตพิการ"].includes(type)) return;
 
-    // ตรวจสอบว่ามี `yearCreate` หรือไม่ก่อนเพิ่มข้อมูล
-    let yearData = universityCheckYear.find((item) => item.year === yearCreate);
+    // ดึงหรือสร้างข้อมูลตามปี
+    const getYearData = (targetYear) => {
+      let yearGroup = universityByYear.find((item) => item.year === targetYear);
+      if (!yearGroup) {
+        yearGroup = { year: targetYear, data: [] };
+        universityByYear.push(yearGroup);
+      }
+      return yearGroup;
+    };
 
-    if (!yearData) {
-      yearData = {
-        year: yearCreate,
-        data: [],
-      };
-      universityCheckYear.push(yearData);
-    }
-
-    let allData = universityCheckYear.find((item) => item.year === "all");
-    if (!allData) {
-      allData = {
-        year: "all",
-        data: [],
-      };
-      universityCheckYear.push(allData);
-    }
+    const yearGroup = getYearData(year);
+    const allGroup = getYearData("all");
 
     education.university.forEach((uni) => {
-      const existingUniversity = yearData.data.find(
-        (item) => item.university === uni
-      );
-      if (existingUniversity) {
-        // เพิ่มจำนวนตาม typePerson
-        if (education?.typePerson === "นักศึกษาพิการ") {
-          existingUniversity.student += 1;
-        } else if (education?.typePerson === "บัณฑิตพิการ") {
-          existingUniversity.graduation += 1;
+      const updateGroup = (group) => {
+        const existing = group.data.find((item) => item.university === uni);
+        if (existing) {
+          if (type === "นักศึกษาพิการ") existing.student += 1;
+          else if (type === "บัณฑิตพิการ") existing.graduation += 1;
+        } else {
+          group.data.push({
+            university: uni,
+            student: type === "นักศึกษาพิการ" ? 1 : 0,
+            graduation: type === "บัณฑิตพิการ" ? 1 : 0,
+          });
         }
-      } else {
-        // เพิ่มข้อมูลใหม่ใน universityCheck
-        yearData.data.push({
-          university: uni,
-          student: education?.typePerson === "นักศึกษาพิการ" ? 1 : 0,
-          graduation: education?.typePerson === "บัณฑิตพิการ" ? 1 : 0,
-        });
-      }
-      // เพิ่มข้อมูลเข้าที่ year: "all" เพื่อรวมทุกอย่างไว้
-      const existingAllData = allData.data.find(
-        (item) => item.university === uni
-      );
-      if (existingAllData) {
-        if (education?.typePerson === "นักศึกษาพิการ") {
-          existingAllData.student += 1;
-        } else if (education?.typePerson === "บัณฑิตพิการ") {
-          existingAllData.graduation += 1;
-        }
-      } else {
-        allData.data.push({
-          university: uni,
-          student: education?.typePerson === "นักศึกษาพิการ" ? 1 : 0,
-          graduation: education?.typePerson === "บัณฑิตพิการ" ? 1 : 0,
-        });
-      }
+      };
+
+      updateGroup(yearGroup);
+      updateGroup(allGroup);
     });
-
-    return null;
   });
 
-  // **สร้าง rows จาก universityCheck**
-  let showData = [];
-  const setYearData = universityCheckYear.map((uni, index) => {
-    // ตรวจสอบว่ามีคำใน tempWordSearch ตรงกับ uni หรือไม่'
-    if (typePersonSearch) {
-      if (uni?.year.includes(typePersonSearch)) {
-        showData = uni?.data;
-      }
-    } else {
-      if (uni?.year.includes("all")) {
-        showData = uni?.data;
-      }
-    }
-  });
+  // เลือกข้อมูลจากปีที่ต้องการแสดง
+  const selectedYearGroup = universityByYear.find((group) =>
+    typePersonSearch ? group.year === typePersonSearch : group.year === "all"
+  );
 
-  const resultRowStudents = showData
-    .map((uni, index) => {
-      const tempWordSearch =
-        wordSearchFilter?.length === 0 ? [wordSearch] : wordSearchFilter;
-      const hasMatchUniversityFilter = tempWordSearch?.some((word) =>
-        uni?.university?.toLowerCase().includes(word.toLowerCase())
-      );
-      const tempWordUniversity = uni?.university
-        ?.toLowerCase()
-        .includes(wordSearch.toLowerCase());
+  const showData = selectedYearGroup?.data || [];
 
-      if (!wordSearch) {
-        if (!hasMatchUniversityFilter) {
-          return null;
-        }
-      } else if (!tempWordUniversity) {
-        return null;
-      }
-
+  // กรองข้อมูลตามคำค้นหา แล้วแปลงเป็น row
+  const rowStudents = showData
+    .map((uni) => {
       count++;
       return createData(
         `${count}`,
-        `${uni?.university}`,
-        `${uni?.student}`,
-        `${uni?.graduation}`,
-        `${uni?.student + uni?.graduation}`,
-        `s`
+        uni.university,
+        `${uni.student}`,
+        `${uni.graduation}`,
+        `${uni.student + uni.graduation}`,
+        ""
       );
     })
-    .filter((row) => row !== null);
-
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    .filter(Boolean);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -397,140 +255,7 @@ function ReportPage() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
-  //show detail
-  const [idDetail, setIdDetail] = useState("");
-
-  //show addUser
-  const [addUser, setAddUser] = useState(false);
-
-  //edit menu open
-  const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
-
-  const handleMenuOpen = () => {
-    setIsEditMenuOpen(true); // เปิดเมนู
-  };
-
-  const handleMenuClose = () => {
-    setIsEditMenuOpen(false); // ปิดเมนู
-  };
-
-  //resume menu open
-  const [isResumeMenuOpen, setIsResumeMenuOpen] = useState(false);
-
-  const handleResumeMenuOpen = () => {
-    setIsResumeMenuOpen(true); // เปิดเมนู
-  };
-
-  const handleResumeMenuClose = () => {
-    setIsResumeMenuOpen(false); // ปิดเมนู
-  };
-  //header
-  const [header, setHeader] = useState("แยกตามจำนวน");
-  const [content, setContent] = useState("ตามมหาวิทยาลัย");
-  const [contentType, setContentType] = useState("ทั้งหมด");
-  const [universityActive, setUniversityActive] =
-    useState("มหาวิทยาลัยทั้งหมด");
-
-  //excel
-  const handleExportExcel = async (dataUni) => {
-    let data = dataUni;
-    const uni = universityCheckYear?.find(
-      (item) => item?.year === typePersonSearch
-    );
-    if (typePersonSearch) {
-      if (uni) {
-        data = uni?.data;
-      }
-    }
-
-    const workbook = new ExcelJS.Workbook();
-    let worksheet;
-    if (typePersonSearch) {
-      worksheet = workbook.addWorksheet(`ข้อมูลนักศึกษาปี ${uni?.year}`);
-    } else {
-      worksheet = workbook.addWorksheet("ข้อมูลนักศึกษาทั้งหมด");
-    }
-
-    worksheet.columns = [
-      { header: "มหาวิทยาลัย", key: "university", width: 40 },
-      { header: "นักศึกษา", key: "student", width: 15 },
-      { header: "บัณฑิต", key: "graduation", width: 15 },
-      { header: "รวม", key: "all", width: 15 },
-    ];
-
-    // ปรับแต่ง Header ให้หนาและ Center
-    worksheet.getRow(1).font = { bold: true };
-    worksheet.getRow(1).alignment = { horizontal: "center" };
-
-    // เพิ่มข้อมูลลงใน worksheet
-    data.forEach((item) => {
-      worksheet.addRow([
-        item.university,
-        item.student,
-        item.graduation,
-        item.student + item.graduation,
-      ]);
-
-      const rowIndex = worksheet.lastRow.number;
-      worksheet.getRow(rowIndex).getCell(2).alignment = {
-        horizontal: "center",
-      };
-      worksheet.getRow(rowIndex).getCell(3).alignment = {
-        horizontal: "center",
-      };
-      worksheet.getRow(rowIndex).getCell(4).alignment = {
-        horizontal: "center",
-      };
-    });
-
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { type: "application/octet-stream" });
-    saveAs(blob, "university_data.xlsx");
-  };
-
-  //csv
-  const handleExportToCSV = (dataUni) => {
-    let data = dataUni;
-    const uni = universityCheckYear?.find(
-      (item) => item?.year === typePersonSearch
-    );
-    if (typePersonSearch) {
-      if (uni) {
-        data = uni?.data;
-      }
-    }
-    const rows = [];
-    // Header ของ CSV
-    rows.push(["มหาวิทยาลัย", "นักศึกษา", "บัณฑิต", "รวม"]);
-
-    // เพิ่มข้อมูลแต่ละ row ลงไป
-    data.forEach((item) => {
-      rows.push([
-        item.university,
-        item.student,
-        item.graduation,
-        item.student + item.graduation,
-      ]);
-    });
-
-    // แปลง rows เป็น CSV string
-    const csvContent = rows.map((e) => e.join(",")).join("\n");
-
-    // เพิ่ม BOM เพื่อให้ Excel รองรับ UTF-8 โดยตรง
-    const bom = "\uFEFF";
-    const blob = new Blob([bom + csvContent], {
-      type: "text/csv;charset=utf-8;",
-    });
-
-    // สร้างลิงก์ดาวน์โหลดไฟล์
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "university_data.csv";
-    link.click();
-  };
-
-  //choice
+  // ---------- Static Filter Options ----------
   const haederData = ["แยกตามจำนวน", "แยกตามประเภท"];
   const contentData = [
     "ตามมหาวิทยาลัย",
@@ -538,74 +263,133 @@ function ReportPage() {
     "ตามประเภทบุคคล",
     "ตามลักษณะงานที่สนใจ",
   ];
+
   const universityData = [
-    "ทั้งหมด",
+    "มหาวิทยาลัยทั้งหมด",
     ...universitys.map((item) => item.university),
   ];
-  const disabledData = ["ทั้งหมด", ...dataDisabled.map((item) => item)];
-  const workData = ["ทั้งหมด", ...dataWorkType.map((item) => item)];
+  const disabledData = ["ทั้งหมด", ...dataDisabled];
+  const workData = ["ทั้งหมด", ...dataWorkType];
 
-  const clearFilter = () => {
-    setContent("");
-    setContentType("");
-    setUniversityActive("ทั้งหมด");
-  };
+  // ---------- Summary by TypePerson ----------
+  const calculateTotalByType = (type) =>
+    showData.reduce(
+      (sum, item) =>
+        sum + (type === "นักศึกษา" ? item.student : item.graduation),
+      0
+    );
 
-  const studentDataReal = studentData.filter(
-    (item) =>
-      item.typePerson === "นักศึกษาพิการ" || item.typePerson === "บัณฑิตพิการ"
-  );
-  //row typePerson
   const rowTypePerson = [
     {
       number: 1,
       typePerson: "นักศึกษา",
-      total: showData.reduce((sum, item) => sum + item.student, 0),
+      total: calculateTotalByType("นักศึกษา"),
     },
-    {
-      number: 2,
-      typePerson: "บัณฑิต",
-      total: showData.reduce((sum, item) => sum + item.graduation, 0),
-    },
+    { number: 2, typePerson: "บัณฑิต", total: calculateTotalByType("บัณฑิต") },
   ];
 
-  //row disabled
-  const rowDisabled = dataDisabled.map((disabledType, index) => {
-    let totalStudent = 0;
-    let totalGraduation = 0;
+  // ---------- Summary by Disability ----------
+  const dataDisabledFilter =
+    contentType === "ทั้งหมด" && content === "ตามประเภทความพิการ"
+      ? dataDisabled
+      : dataDisabled.filter((item) => item === contentType);
 
-    studentDataReal.forEach((user) => {
-      if (user.typeDisabled?.includes(disabledType)) {
-        if (user.typePerson === "นักศึกษาพิการ") {
-          totalStudent += 1;
-        } else if (user.typePerson === "บัณฑิตพิการ") {
-          totalGraduation += 1;
+  const calculateDisabledStats = () =>
+    dataDisabledFilter.map((disabledType, index) => {
+      let totalStudent = 0;
+      let totalGraduation = 0;
+
+      studentDataReal.forEach((user) => {
+        if (user.typeDisabled?.includes(disabledType)) {
+          if (user.typePerson === "นักศึกษาพิการ") totalStudent++;
+          if (user.typePerson === "บัณฑิตพิการ") totalGraduation++;
         }
-      }
+      });
+
+      return {
+        number: index + 1,
+        disabledType,
+        totalStudent,
+        totalGraduation,
+        total: totalStudent + totalGraduation,
+      };
     });
 
-    // console.log("index: ", index+1)
-    // console.log("totalStudent: ", totalStudent)
-    // console.log("totalGraduation: ", totalGraduation)
+  const rowDisabled = calculateDisabledStats();
 
-    return {
-      number: index + 1,
-      typeDisabled: disabledType,
-      totalStudent,
-      totalGraduation,
-      total: totalStudent + totalGraduation,
-    };
-  });
+  // ---------- Summary by Work Type ----------
+  const dataWorkTypeFilter =
+    contentType === "ทั้งหมด" && content === "ตามลักษณะงานที่สนใจ"
+      ? dataWorkType
+      : dataWorkType.filter((item) => item === contentType);
 
+  const calculateWorkStats = () =>
+    dataWorkTypeFilter.map((work, index) => {
+      let totalStudent = 0;
+      let totalGraduation = 0;
+
+      studentDataReal.forEach((user) => {
+        const match = dataWorks.find((item) => item.uuid === user.uuid);
+        const hasWorkType = match?.interestedWork?.some((w) => w.type === work);
+
+        if (hasWorkType) {
+          if (user.typePerson === "นักศึกษาพิการ") totalStudent++;
+          if (user.typePerson === "บัณฑิตพิการ") totalGraduation++;
+        }
+      });
+
+      return {
+        number: index + 1,
+        work,
+        totalStudent,
+        totalGraduation,
+        total: totalStudent + totalGraduation,
+      };
+    });
+
+  const rowWorks = calculateWorkStats();
+
+  const tableConfig = {
+    ตามมหาวิทยาลัย: {
+      columns: columnStudents,
+      rows: rowStudents,
+    },
+    ตามประเภทความพิการ: {
+      columns: columnDisabled,
+      rows: rowDisabled,
+    },
+    ตามประเภทบุคคล: {
+      columns: columnTypePerson,
+      rows: rowTypePerson,
+    },
+    ตามลักษณะงานที่สนใจ: {
+      columns: columnWork,
+      rows: rowWorks,
+    },
+  };
+
+  const config = tableConfig[content];
+
+  // ---------- Clear Filters ----------
+  const handleHeaderChange = (value) => {
+    setHeader(value);
+    setContent("ตามมหาวิทยาลัย"); // clear child
+    setContentType("ทั้งหมด"); // clear grandchild
+  };
+
+  const handleContentChange = (value) => {
+    setContent(value);
+    setContentType("ทั้งหมด"); // clear grandchild
+  };
 
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
       <div className={`flex flex-col`}>
         <label>หัวข้อรายงาน</label>
         <div className="flex gap-5 mt-3">
-          <SelectChoice setValue={setHeader} data={haederData} />
+          <SelectChoice setValue={handleHeaderChange} data={haederData} />
           {header === "แยกตามจำนวน" && (
-            <SelectChoice setValue={setContent} data={contentData} />
+            <SelectChoice setValue={handleContentChange} data={contentData} />
           )}
           {content === "ตามประเภทความพิการ" ||
           content === "ตามลักษณะงานที่สนใจ" ? (
@@ -632,7 +416,13 @@ function ReportPage() {
             >
               <div
                 className="hover:bg-gray-300 relative px-4 py-2 cursor-pointer flex gap-5  items-center"
-                onClick={() => handleExportToCSV(showData)}
+                onClick={() =>
+                  exportToCSV({
+                    columns: config.columns, // ใช้ column ที่ใช้ในตารางได้เลย
+                    rows: config.rows, // หรือ rowStudents, rowDisabled ฯลฯ
+                    fileName: "report.csv",
+                  })
+                }
               >
                 <Icon
                   className={`cursor-pointer text-gray-400 `}
@@ -643,7 +433,14 @@ function ReportPage() {
               </div>
               <div
                 className="hover:bg-gray-300 relative px-4 py-2 cursor-pointer flex gap-5 items-center"
-                onClick={() => handleExportExcel(showData)}
+                onClick={() =>
+                  exportExcel({
+                    columns: config.columns,
+                    rows: config.rows,
+                    sheetName: "รายงาน",
+                    fileName: "report.xlsx",
+                  })
+                }
               >
                 <Icon
                   className={`cursor-pointer text-gray-400 `}
@@ -657,10 +454,7 @@ function ReportPage() {
         </div>
         <hr className={` mb-3 border-gray-500`} />
       </div>
-      <form
-        onSubmit={(e) => handleSearch(e)}
-        className=" mb-7 flex justify-between flex-wrap gap-y-5 items-end"
-      >
+      <form className=" mb-7 flex justify-between flex-wrap gap-y-5 items-end">
         <div className="flex gap-5 gap-y-3 flex-wrap">
           <div className="flex flex-col gap-1">
             <label>เลือกช่วงเวลา</label>
@@ -685,117 +479,42 @@ function ReportPage() {
             </div>
           </div>
           <div className="flex items-end">
-            <button
-              type="submit"
+            <div
               className={` ${bgColorWhite} ${
                 inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#0d96f8]" : ""
               }  hover:cursor-pointer py-1 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
             >
               <Icon path={mdiMagnify} size={1} />
               <p>ค้นหา</p>
-            </button>
+            </div>
           </div>
         </div>
       </form>
 
-      {content === "ตามมหาวิทยาลัย" ? (
-        <>
-          {wordSearchFilter?.length > 0 && (
-            <div className="mt-5 flex gap-2 flex-wrap">
-              {wordSearchFilter?.map((word, index) => (
-                <div
-                  key={index}
-                  className={`${bgColorWhite} ${
-                    inputGrayColor === "bg-[#74c7c2]" || ""
-                      ? `${
-                          index % 2 !== 0
-                            ? "bg-gray-400"
-                            : index % 2 === 0
-                            ? "bg-orange-400"
-                            : ""
-                        }`
-                      : "border border-white"
-                  }
-                                      px-8 py-1 rounded-lg relative cursor-pointer`}
-                  onClick={() => deleteWordSearch(index)}
-                >
-                  {word}
-                  <Icon
-                    className={` cursor-pointer text-white-400 absolute right-0 top-[8px] mx-3`}
-                    path={mdiCloseThick}
-                    size={0.5}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-          {loaderTable ? (
-            <div className="py-2">กำลังโหลดข้อมูล...</div>
-          ) : studentData?.length > 1 ? (
+      {config ? (
+        loaderTable ? (
+          <div className="py-2">กำลังโหลดข้อมูล...</div>
+        ) : studentData?.length > 1 ? (
+          header === "แยกตามจำนวน" ? (
             <ReportTable
-              columns={columnStudents}
-              resultRows={resultRowStudents}
+              columns={config.columns}
+              resultRows={config.rows}
               rowsPerPage={rowsPerPage}
               page={page}
               handleChangePage={handleChangePage}
               handleChangeRowsPerPage={handleChangeRowsPerPage}
             />
           ) : (
-            <div>ไม่มีข้อมูลนักศึกษา</div>
-          )}
-        </>
-      ) : content === "ตามมหาวิทยาลัย" ? (
-        <ReportTable
-          columns={columnStudents}
-          resultRows={resultRowStudents}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          handleChangePage={handleChangePage}
-          handleChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      ) : content === "ตามประเภทความพิการ" ? (
-        <ReportTable
-          columns={columnDisabled}
-          resultRows={rowDisabled}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          handleChangePage={handleChangePage}
-          handleChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      ) : content === "ตามประเภทบุคคล" ? (
-        <ReportTable
-          columns={columnTypePerson}
-          resultRows={rowTypePerson}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          handleChangePage={handleChangePage}
-          handleChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      ) : content === "ตามลักษณะงานที่สนใจ" ? (
-        <ReportTable
-          columns={columnStudents}
-          resultRows={resultRowStudents}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          handleChangePage={handleChangePage}
-          handleChangeRowsPerPage={handleChangeRowsPerPage}
-        />
+            <></>
+          )
+        ) : (
+          <>ไม่มีข้อมูล</>
+        )
       ) : (
-        <></>
+        <>ไม่มีข้อมูล</>
       )}
     </div>
   );
 }
 
 export default ReportPage;
-
-// <div className="flex flex-col gap-1">
-// <label>คำค้นหา</label>
-// <input
-//   value={wordSearch}
-//   type="text"
-//   className={`${bgColorMain} w-56 border border-gray-400 py-1 px-4 rounded-md`}
-//   placeholder="มหาวิทยาลัย"
-//   onChange={(e) => setWordSearch(e.target.value)}
-// />
-// </div>
