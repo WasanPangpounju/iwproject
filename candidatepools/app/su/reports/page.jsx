@@ -29,7 +29,55 @@ import { saveAs } from "file-saver";
 import ReportTable from "@/app/components/Table/ReportTable";
 import SelectChoice from "@/app/components/Form/SelectChoice";
 
-const columns = [
+const columnTypePerson = [
+  {
+    id: "number",
+    label: "ลำดับ",
+    minWidth: 50,
+  },
+  {
+    id: "typePerson",
+    label: "ประเภทบุคคล",
+    minWidth: 170,
+  },
+  {
+    id: "total",
+    label: "ทั้งหมด",
+    minWidth: 170,
+    align: "center",
+  },
+];
+
+const columnDisabled = [
+  {
+    id: "number",
+    label: "ลำดับ",
+    minWidth: 50,
+  },
+  {
+    id: "typeDisabled",
+    label: "ประเภทความพิการ",
+    minWidth: 170,
+  },
+  {
+    id: "totalStudent",
+    label: "จำนวนนักศึกษา",
+    minWidth: 170,
+  },
+  {
+    id: "totalGraduation",
+    label: "จำนวนนักศึกษา",
+    minWidth: 170,
+  },
+  {
+    id: "total",
+    label: "ทั้งหมด",
+    minWidth: 170,
+    align: "center",
+  },
+];
+
+const columnStudents = [
   {
     id: "name",
     label: "ลำดับ",
@@ -296,7 +344,6 @@ function ReportPage() {
   let showData = [];
   const setYearData = universityCheckYear.map((uni, index) => {
     // ตรวจสอบว่ามีคำใน tempWordSearch ตรงกับ uni หรือไม่'
-    let tempShowData = [];
     if (typePersonSearch) {
       if (uni?.year.includes(typePersonSearch)) {
         showData = uni?.data;
@@ -308,7 +355,7 @@ function ReportPage() {
     }
   });
 
-  const resultRows = showData
+  const resultRowStudents = showData
     .map((uni, index) => {
       const tempWordSearch =
         wordSearchFilter?.length === 0 ? [wordSearch] : wordSearchFilter;
@@ -498,6 +545,59 @@ function ReportPage() {
   const disabledData = ["ทั้งหมด", ...dataDisabled.map((item) => item)];
   const workData = ["ทั้งหมด", ...dataWorkType.map((item) => item)];
 
+  const clearFilter = () => {
+    setContent("");
+    setContentType("");
+    setUniversityActive("ทั้งหมด");
+  };
+
+  const studentDataReal = studentData.filter(
+    (item) =>
+      item.typePerson === "นักศึกษาพิการ" || item.typePerson === "บัณฑิตพิการ"
+  );
+  //row typePerson
+  const rowTypePerson = [
+    {
+      number: 1,
+      typePerson: "นักศึกษา",
+      total: showData.reduce((sum, item) => sum + item.student, 0),
+    },
+    {
+      number: 2,
+      typePerson: "บัณฑิต",
+      total: showData.reduce((sum, item) => sum + item.graduation, 0),
+    },
+  ];
+
+  //row disabled
+  const rowDisabled = dataDisabled.map((disabledType, index) => {
+    let totalStudent = 0;
+    let totalGraduation = 0;
+
+    studentDataReal.forEach((user) => {
+      if (user.typeDisabled?.includes(disabledType)) {
+        if (user.typePerson === "นักศึกษาพิการ") {
+          totalStudent += 1;
+        } else if (user.typePerson === "บัณฑิตพิการ") {
+          totalGraduation += 1;
+        }
+      }
+    });
+
+    // console.log("index: ", index+1)
+    // console.log("totalStudent: ", totalStudent)
+    // console.log("totalGraduation: ", totalGraduation)
+
+    return {
+      number: index + 1,
+      typeDisabled: disabledType,
+      totalStudent,
+      totalGraduation,
+      total: totalStudent + totalGraduation,
+    };
+  });
+
+
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
       <div className={`flex flex-col`}>
@@ -633,8 +733,8 @@ function ReportPage() {
             <div className="py-2">กำลังโหลดข้อมูล...</div>
           ) : studentData?.length > 1 ? (
             <ReportTable
-              columns={columns}
-              resultRows={resultRows}
+              columns={columnStudents}
+              resultRows={resultRowStudents}
               rowsPerPage={rowsPerPage}
               page={page}
               handleChangePage={handleChangePage}
@@ -645,8 +745,44 @@ function ReportPage() {
           )}
         </>
       ) : content === "ตามมหาวิทยาลัย" ? (
-        <UniversityData universitys={universityCheckYear} />
-      ) : null}
+        <ReportTable
+          columns={columnStudents}
+          resultRows={resultRowStudents}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      ) : content === "ตามประเภทความพิการ" ? (
+        <ReportTable
+          columns={columnDisabled}
+          resultRows={rowDisabled}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      ) : content === "ตามประเภทบุคคล" ? (
+        <ReportTable
+          columns={columnTypePerson}
+          resultRows={rowTypePerson}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      ) : content === "ตามลักษณะงานที่สนใจ" ? (
+        <ReportTable
+          columns={columnStudents}
+          resultRows={resultRowStudents}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
