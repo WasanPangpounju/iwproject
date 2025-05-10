@@ -9,8 +9,6 @@ import {
   mdiArrowDownDropCircle,
   mdiCloseCircle,
 } from "@mdi/js";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import Image from "next/image";
 import { uploadBytesResumable, ref, getDownloadURL } from "firebase/storage";
@@ -18,56 +16,26 @@ import { storage } from "@/app/firebaseConfig";
 import { PulseLoader } from "react-spinners";
 import { useTheme } from "@/app/ThemeContext";
 
+//stores
+import { useUserStore } from "@/stores/useUserStore";
+
+//component
+
+
 function EditPersonal() {
   const {
-    setFontSize,
-    setBgColor,
-    setBgColorNavbar,
-    setBgColorWhite,
-    setBgColorMain,
-    setBgColorMain2,
     fontSize,
     bgColorNavbar,
-    bgColor,
     bgColorWhite,
     bgColorMain,
     bgColorMain2,
-    setLineBlack,
-    lineBlack,
-    setTextBlue,
-    textBlue,
-    setRegisterColor,
-    registerColor,
     inputEditColor,
-    setInputGrayColor,
     inputGrayColor,
     inputTextColor,
   } = useTheme();
 
-  const [dataUser, setDataUser] = useState(null);
-  const [loader, setLoader] = useState(false);
+  const { dataUser, updateUser } = useUserStore();
   const [selectTypeDisabled, setSelectTypeDisabled] = useState("");
-  const router = useRouter();
-  const { status, data: session } = useSession();
-
-  // Validate session and fetch user data
-  useEffect(() => {
-    if (status === "loading") {
-      return;
-    }
-    setLoader(false);
-
-    if (!session) {
-      router.replace("/");
-      return;
-    }
-
-    if (session?.user?.id) {
-      getDataUser(session.user.id);
-    } else {
-      router.replace("/register");
-    }
-  }, [status, session, router]);
 
   //data value
   const [user, setUser] = useState(null);
@@ -102,10 +70,6 @@ function EditPersonal() {
   const [tel, setTel] = useState(null);
   const [telEmergency, setTelEmergency] = useState(null);
   const [relationship, setRelationship] = useState(null);
-
-  useEffect(() => {
-    setLoader(false);
-  }, []);
 
   // สร้าง Date object สำหรับวันที่ปัจจุบัน
   const today = new Date();
@@ -184,141 +148,118 @@ function EditPersonal() {
   useEffect(() => {
     getDataProvince();
   }, []);
-
-  //set default data in sesstion
-  const [getUser, setGetUser] = useState("");
-  const [getPassword, setGetPassword] = useState("");
-  const [getFirstName, setGetFirstName] = useState("");
-  const [getLastName, setGetLastName] = useState("");
-  const [getProfile, setGetProfile] = useState("");
-  const [getTypeDisabled, setGetTypeDisabled] = useState([]);
-  const [getDetailDisabled, setGetDetailDisabled] = useState("");
-  const [getUniversity, setGetUniversity] = useState("");
-  const [getEmail, setGetEmail] = useState("");
-  const [getPrefix, setGetPrefix] = useState("");
-  const [getNickname, setGetNickname] = useState("");
-  const [getSex, setGetSex] = useState("");
-  const [getDateBirthday, setGetDateBirthday] = useState("");
-  const [getMonthBirthday, setGetMonthBirthday] = useState("");
-  const [getYearBirthday, setGetYearBirthday] = useState("");
-  const [getNationality, setGetNationality] = useState("");
-  const [getReligion, setGetReligion] = useState("");
-  const [getIdCard, setGetIdCard] = useState("");
-  const [getIdCardDisabled, setGetIdCardDisabled] = useState("");
-  const [getAddressIdCard, setGetAddressIdCard] = useState("");
-  const [getAddressIdCardProvince, setGetAddressIdCardProvince] = useState("");
-  const [getAddressIdCardAmphor, setGetAddressIdCardAmphor] = useState("");
-  const [getAddressIdCardTambon, setGetAddressIdCardTambon] = useState("");
-  const [getAddressIdCardZipCode, setGetAddressIdCardZipCode] = useState("");
-  const [getAddress, setGetAddress] = useState("");
-  const [getAddressProvince, setGetAddressProvince] = useState("");
-  const [getAddressAmphor, setGetAddressAmphor] = useState("");
-  const [getAddressTambon, setGetAddressTambon] = useState("");
-  const [getAddressZipCode, setGetAddressZipCode] = useState("");
-  const [getTel, setGetTel] = useState("");
-  const [getTelEmergency, setGetTelEmergency] = useState("");
-  const [getRelationship, setGetRelationship] = useState("");
-
   useEffect(() => {
-    if (!dataUser) return;
+    if (!dataUser || dataProvince.length === 0) return;
 
-    setGetUser(dataUser.user || "");
-    setGetPassword(dataUser.password || "");
-    setGetFirstName(dataUser.firstName || "");
-    setGetLastName(dataUser.lastName || "");
-    setGetProfile(dataUser.profile || "");
-    setTypeDisabled(dataUser.typeDisabled || []);
-    setGetDetailDisabled(dataUser.detailDisabled || "");
-    setGetUniversity(dataUser.university || "");
-    setGetEmail(dataUser.email || "");
-    setGetPrefix(dataUser.prefix || "");
-    setGetNickname(dataUser.nickname || "");
-    setGetSex(dataUser.sex || "");
-    setGetDateBirthday(dataUser.dateBirthday || "");
-    setGetMonthBirthday(dataUser.monthBirthday || "");
-    setGetYearBirthday(dataUser.yearBirthday || "");
-    setGetNationality(dataUser.nationality || "");
-    setGetReligion(dataUser.religion || "");
-    setGetIdCard(dataUser.idCard || "");
-    setGetIdCardDisabled(dataUser.idCardDisabled || "");
-    setGetAddressIdCard(dataUser.addressIdCard || "");
-    setAddressIdCardProvince(dataUser.addressIdCardProvince || "");
-    setAddressIdCardAmphor(dataUser.addressIdCardAmphor || "");
-    setAddressIdCardTambon(dataUser.addressIdCardTambon || "");
-    setAddressIdCardZipCode(dataUser.addressIdCardZipCode || "");
-    setGetAddress(dataUser.address || "");
-    setAddressProvince(dataUser.addressProvince || "");
-    setAddressAmphor(dataUser.addressAmphor || "");
-    setAddressTambon(dataUser.addressTambon || "");
-    setAddressZipCode(dataUser.addressZipCode || "");
-    setGetTel(dataUser.tel || "");
-    setGetTelEmergency(dataUser.telEmergency || "");
-    setGetRelationship(dataUser.relationship || "");
+    const stringFields = [
+      "user",
+      "password",
+      "firstName",
+      "lastName",
+      "profile",
+      "detailDisabled",
+      "university",
+      "email",
+      "prefix",
+      "nickname",
+      "sex",
+      "dateBirthday",
+      "monthBirthday",
+      "yearBirthday",
+      "nationality",
+      "religion",
+      "idCard",
+      "idCardDisabled",
+      "addressIdCard",
+      "addressIdCardProvince",
+      "addressIdCardAmphor",
+      "addressIdCardTambon",
+      "addressIdCardZipCode",
+      "address",
+      "addressProvince",
+      "addressAmphor",
+      "addressTambon",
+      "addressZipCode",
+      "tel",
+      "telEmergency",
+      "relationship",
+    ];
 
-    setIDAddressIdCardProvince(
-      dataProvince.find((p) => p.name_th === dataUser.addressIdCardProvince)
-        ?.id || null
+    const stateSetters = {
+      user: setUser,
+      password: setPassword,
+      firstName: setFirstName,
+      lastName: setLastName,
+      profile: setProfile,
+      detailDisabled: setDetailDisabled,
+      university: setUniversity,
+      email: setEmail,
+      prefix: setPrefix,
+      nickname: setNickname,
+      sex: setSex,
+      dateBirthday: setDateBirthday,
+      monthBirthday: setMonthBirthday,
+      yearBirthday: setYearBirthday,
+      nationality: setNationality,
+      religion: setReligion,
+      idCard: setIdCard,
+      idCardDisabled: setIdCardDisabled,
+      addressIdCard: setAddressIdCard,
+      addressIdCardProvince: setAddressIdCardProvince,
+      addressIdCardAmphor: setAddressIdCardAmphor,
+      addressIdCardTambon: setAddressIdCardTambon,
+      addressIdCardZipCode: setAddressIdCardZipCode,
+      address: setAddress,
+      addressProvince: setAddressProvince,
+      addressAmphor: setAddressAmphor,
+      addressTambon: setAddressTambon,
+      addressZipCode: setAddressZipCode,
+      tel: setTel,
+      telEmergency: setTelEmergency,
+      relationship: setRelationship,
+    };
+
+    stringFields.forEach((key) => {
+      stateSetters[key](dataUser[key] ?? "");
+    });
+
+    setTypeDisabled(dataUser.typeDisabled ?? []);
+    setSelectTypeDisabled(
+      dataUser.typeDisabled?.length > 1
+        ? "พิการมากกว่า 1 ประเภท"
+        : "พิการ 1 ประเภท"
     );
-    setIDAddressIdCardAmphor(
-      dataProvince
-        .find((p) => p.name_th === dataUser.addressIdCardProvince)
-        ?.amphure.find((a) => a.name_th === dataUser.addressIdCardAmphor)?.id ||
-        null
-    );
-    setIDAddressIdCardTambon(
-      dataProvince
-        .find((p) => p.name_th === dataUser.addressIdCardProvince)
-        ?.amphure.find((a) => a.name_th === dataUser.addressIdCardAmphor)
-        ?.tambon.find((t) => t.name_th === dataUser.addressIdCardTambon)?.id ||
-        null
-    );
 
-    setIDAddressProvince(
-      dataProvince.find((p) => p.name_th === dataUser.addressProvince)?.id ||
-        null
+    // set address
+    const resolveLocation = (provinceName, amphorName, tambonName) => {
+      const province = dataProvince.find((p) => p.name_th === provinceName);
+      const amphor = province?.amphure.find((a) => a.name_th === amphorName);
+      const tambon = amphor?.tambon.find((t) => t.name_th === tambonName);
+      return {
+        provinceId: province?.id ?? null,
+        amphorId: amphor?.id ?? null,
+        tambonId: tambon?.id ?? null,
+      };
+    };
+
+    const idCardLocation = resolveLocation(
+      dataUser.addressIdCardProvince,
+      dataUser.addressIdCardAmphor,
+      dataUser.addressIdCardTambon
     );
-    setIDAddressAmphor(
-      dataProvince
-        .find((p) => p.name_th === dataUser.addressProvince)
-        ?.amphure.find((a) => a.name_th === dataUser.addressAmphor)?.id || null
+    setIDAddressIdCardProvince(idCardLocation.provinceId);
+    setIDAddressIdCardAmphor(idCardLocation.amphorId);
+    setIDAddressIdCardTambon(idCardLocation.tambonId);
+
+    const currentLocation = resolveLocation(
+      dataUser.addressProvince,
+      dataUser.addressAmphor,
+      dataUser.addressTambon
     );
-    setIDAddressTambon(
-      dataProvince
-        .find((p) => p.name_th === dataUser.addressProvince)
-        ?.amphure.find((a) => a.name_th === dataUser.addressAmphor)
-        ?.tambon.find((t) => t.name_th === dataUser.addressTambon)?.id || null
-    );
-
-    if (dataUser?.typeDisabled?.length > 1) {
-      setSelectTypeDisabled("พิการมากกว่า 1 ประเภท");
-    } else {
-      setSelectTypeDisabled("พิการ 1 ประเภท");
-    }
-  }, [dataUser]);
-
-  //get data from user
-  async function getDataUser(id) {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Error getting data from API");
-      }
-
-      const data = await res.json();
-      setDataUser(data.user || {});
-    } catch (err) {
-      console.error("Error fetching API", err);
-    } finally {
-      setLoader(false);
-    }
-  }
+    setIDAddressProvince(currentLocation.provinceId);
+    setIDAddressAmphor(currentLocation.amphorId);
+    setIDAddressTambon(currentLocation.tambonId);
+  }, [dataUser, dataProvince]);
 
   //checkbox in address add to array
   const handleCheckboxChange = (value) => {
@@ -342,8 +283,7 @@ function EditPersonal() {
   async function handleEditSubmit(e) {
     e.preventDefault();
 
-    setLoader(true);
-
+    // console.log("submit -----")
     // console.log("user:", user);
     // console.log("password:", password);
     // console.log("firstName:", firstName);
@@ -378,219 +318,151 @@ function EditPersonal() {
     // console.log("relationship:", relationship);
     // console.log("profile:", profile);
 
-    const tempUser = user ?? getUser;
-    const tempPassword = password ?? getPassword;
-    const tempFirstName = firstName ?? getFirstName;
-    const tempLastName = lastName ?? getLastName;
-    const tempUniversity = university ?? getUniversity;
-    const tempEmail = email ?? getEmail;
-    const tempPrefix = prefix ?? getPrefix;
-    const tempSex = sex ?? getSex;
-    const tempDateBirthday = dateBirthday ?? getDateBirthday;
-    const tempMonthBirthday = monthBirthday ?? getMonthBirthday;
-    const tempYearBirthday = yearBirthday ?? getYearBirthday;
-    const tempNationality = nationality ?? getNationality;
-    const tempReligion = religion ?? getReligion;
-    const tempIdCard = idCard ?? getIdCard;
-    const tempIdCardDisabled = idCardDisabled ?? getIdCardDisabled;
-    const tempAddressIdCard = addressIdCard ?? getAddressIdCard;
-    const tempAddressIdCardProvince =
-      addressIdCardProvince ?? getAddressIdCardProvince;
-    const tempAddressIdCardAmphor =
-      addressIdCardAmphor ?? getAddressIdCardAmphor;
-    const tempAddressIdCardTambon =
-      addressIdCardTambon ?? getAddressIdCardTambon;
-    const tempAddressIdCardZipCode =
-      addressIdCardZipCode ?? getAddressIdCardZipCode;
-    const tempAddress = address ?? getAddress;
-    const tempAddressProvince = addressProvince ?? getAddressProvince;
-    const tempAddressAmphor = addressAmphor ?? getAddressAmphor;
-    const tempAddressTambon = addressTambon ?? getAddressTambon;
-    const tempAddressZipCode = addressZipCode ?? getAddressZipCode;
-    const tempTel = tel ?? getTel;
-    const tempTelEmergency = telEmergency ?? getTelEmergency;
-    const tempRelationship = relationship ?? getRelationship;
-    const tempSelectTypeDisabled = selectTypeDisabled;
-    const tempProfile = profile ?? getProfile;
-    const tempTypeDisabled = typeDisabled ?? getTypeDisabled;
-    const tempDetailDisabled = detailDisabled ?? getDetailDisabled;
-    const tempNickname = nickname ?? getNickname;
+    const requiredFields = [
+      prefix,
+      firstName,
+      lastName,
+      email,
+      dateBirthday,
+      monthBirthday,
+      yearBirthday,
+      nationality,
+      idCard,
+      idCardDisabled,
+      addressIdCard,
+      addressIdCardProvince,
+      addressIdCardAmphor,
+      addressIdCardTambon,
+      addressIdCardZipCode,
+      address,
+      addressProvince,
+      addressAmphor,
+      addressTambon,
+      addressZipCode,
+      tel,
+    ];
 
-    if (
-      !tempFirstName ||
-      !tempLastName ||
-      !typeDisabled.length ||
-      !tempUniversity ||
-      !tempEmail ||
-      !tempPrefix ||
-      !tempSex ||
-      !tempDateBirthday ||
-      !tempMonthBirthday ||
-      !tempYearBirthday ||
-      !tempNationality ||
-      !tempReligion ||
-      !tempIdCard ||
-      !tempIdCardDisabled ||
-      !tempAddressIdCard ||
-      !tempAddressIdCardProvince ||
-      !tempAddressIdCardAmphor ||
-      !tempAddressIdCardTambon ||
-      !tempAddressIdCardZipCode ||
-      !tempAddress ||
-      !tempAddressProvince ||
-      !tempAddressAmphor ||
-      !tempAddressTambon ||
-      !tempAddressZipCode ||
-      !tempTel
-    ) {
+    const hasEmptyField =
+      Object.values(requiredFields).some((value) => !value) ||
+      !Array.isArray(typeDisabled) ||
+      typeDisabled.length === 0;
+
+    if (hasEmptyField) {
       setError("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-      setLoader(false);
       return;
     }
 
     // Validate name
-    if (tempFirstName.length < 2 || tempLastName.length < 2) {
+    if (firstName.length < 2 || lastName.length < 2) {
       setError("ใส่ชื่อนามสกุลที่ถูกต้อง");
-      setLoader(false);
       return;
     }
-    if (
-      tempFirstName.trim() !== tempFirstName ||
-      tempLastName.trim() !== tempLastName
-    ) {
+    if (firstName.trim() !== firstName || lastName.trim() !== lastName) {
       setError("ใส่ชื่อนามสกุลที่ถูกต้อง");
-      setLoader(false);
       return;
     }
     const invalidWhitespacePattern = /(?:^|\s)\s+|\s+(?=\s|$)/;
     if (
-      invalidWhitespacePattern.test(tempFirstName) ||
-      invalidWhitespacePattern.test(tempLastName)
+      invalidWhitespacePattern.test(firstName) ||
+      invalidWhitespacePattern.test(lastName)
     ) {
       setError("ใส่ชื่อนามสกุลที่ถูกต้อง");
-      setLoader(false);
       return;
     }
 
     // Validate nickname
-    if (tempNickname.length > 0) {
-      if (tempNickname.length < 2) {
+    if (nickname.length > 0) {
+      if (
+        nickname.length < 2 ||
+        nickname.trim() !== nickname ||
+        invalidWhitespacePattern.test(nickname)
+      ) {
         setError("ใส่ชื่อเล่นที่ถูกต้อง");
-        setLoader(false);
-        return;
-      }
-      if (tempNickname.trim() !== tempNickname) {
-        setError("ใส่ชื่อเล่นที่ถูกต้อง");
-        setLoader(false);
-        return;
-      }
-      if (invalidWhitespacePattern.test(tempNickname)) {
-        setError("ใส่ชื่อเล่นที่ถูกต้อง");
-        setLoader(false);
         return;
       }
     }
 
     // Validate date of birth
     if (
-      (tempMonthBirthday === "เมษายน" ||
-        tempMonthBirthday === "กันยายน" ||
-        tempMonthBirthday === "พฤศจิกายน") &&
-      Number(tempDateBirthday) > 30
+      ["เมษายน", "กันยายน", "พฤศจิกายน"].includes(monthBirthday) &&
+      Number(dateBirthday) > 30
     ) {
       setError("วันเกิดไม่ถูกต้อง");
-      setLoader(false);
       return;
     }
     if (
-      tempMonthBirthday === "กุมภาพันธ์" &&
-      Number(tempYearBirthday) % 4 === 0 &&
-      Number(tempDateBirthday) > 29
+      monthBirthday === "กุมภาพันธ์" &&
+      ((Number(yearBirthday) % 4 === 0 && Number(dateBirthday) > 29) ||
+        (Number(yearBirthday) % 4 !== 0 && Number(dateBirthday) > 28))
     ) {
       setError("วันเกิดไม่ถูกต้อง");
-      setLoader(false);
-      return;
-    } else if (
-      tempMonthBirthday === "กุมภาพันธ์" &&
-      Number(tempYearBirthday) % 4 !== 0 &&
-      Number(tempDateBirthday) > 28
-    ) {
-      setError("วันเกิดไม่ถูกต้อง");
-      setLoader(false);
       return;
     }
 
     // Validate idCard and idCardDisabled
-    if (tempIdCard.length !== 13 || !/^\d+$/.test(tempIdCard)) {
+    if (idCard.length !== 13 || !/^\d+$/.test(idCard)) {
       setErrorIdCard("เลขบัตรประจำตัวประชาชนให้ถูกต้อง");
       setError("เลขบัตรประจำตัวประชาชนให้ถูกต้อง");
-      setLoader(false);
       return;
     }
-    if (tempIdCardDisabled.length !== 13 || !/^\d+$/.test(tempIdCardDisabled)) {
+    if (idCardDisabled.length !== 13 || !/^\d+$/.test(idCardDisabled)) {
       setErrorIdCardDisabled("เลขบัตรประจำตัวเลขบัตรประจำตัวคนพิการให้ถูกต้อง");
       setError("เลขบัตรประจำตัวเลขบัตรประจำตัวคนพิการให้ถูกต้อง");
-      setLoader(false);
       return;
     }
 
     // Validate address
-    if (tempAddressIdCard.length < 2) {
-      setError("ระบุที่อยู่ที่ตามบัตรประชาชนที่ถูกต้อง");
-      setLoader(false);
+    if (addressIdCard.length < 2) {
+      setError("ระบุที่อยู่ตามบัตรประชาชนที่ถูกต้อง");
       return;
     }
-    if (tempAddress.length < 2) {
+    if (address.length < 2) {
       setError("ระบุที่อยู่ที่ปัจจุบันที่ถูกต้อง");
-      setLoader(false);
       return;
     }
 
-    // //validate prefix
-    // if(prefix){
-    //     setErrorPrefix(false);
-    // }
-
+    setError("");
+    // Prepare body
     const bodyData = {
-      user: tempUser,
-      password: tempPassword,
-      firstName: tempFirstName,
-      lastName: tempLastName,
-      profile: tempProfile,
-      typeDisabled: tempTypeDisabled,
-      detailDisabled: tempDetailDisabled,
-      university: tempUniversity,
-      email: tempEmail,
-      prefix: tempPrefix,
-      nickname: tempNickname,
-      sex: tempSex,
-      dateBirthday: tempDateBirthday,
-      monthBirthday: tempMonthBirthday,
-      yearBirthday: tempYearBirthday,
-      nationality: tempNationality,
-      religion: tempReligion,
-      idCard: tempIdCard,
-      idCardDisabled: tempIdCardDisabled,
-      addressIdCard: tempAddressIdCard,
-      addressIdCardProvince: tempAddressIdCardProvince,
-      addressIdCardAmphor: tempAddressIdCardAmphor,
-      addressIdCardTambon: tempAddressIdCardTambon,
-      addressIdCardZipCode: tempAddressIdCardZipCode,
-      address: tempAddress,
-      addressProvince: tempAddressProvince,
-      addressAmphor: tempAddressAmphor,
-      addressTambon: tempAddressTambon,
-      addressZipCode: tempAddressZipCode,
-      tel: tempTel,
-      telEmergency: tempTelEmergency,
-      relationship: tempRelationship,
+      user,
+      password,
+      firstName,
+      lastName,
+      profile,
+      typeDisabled,
+      detailDisabled,
+      university,
+      email,
+      prefix,
+      nickname,
+      sex,
+      dateBirthday,
+      monthBirthday,
+      yearBirthday,
+      nationality,
+      religion,
+      idCard,
+      idCardDisabled,
+      addressIdCard,
+      addressIdCardProvince,
+      addressIdCardAmphor,
+      addressIdCardTambon,
+      addressIdCardZipCode,
+      address,
+      addressProvince,
+      addressAmphor,
+      addressTambon,
+      addressZipCode,
+      tel,
+      telEmergency,
+      relationship,
       inputGrayColor,
     };
 
     try {
       if (
-        tempIdCard !== dataUser.idCard ||
-        tempIdCardDisabled !== dataUser.idCardDisabled
+        idCard !== dataUser.idCard ||
+        idCardDisabled !== dataUser.idCardDisabled
       ) {
         const resCheckID = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/checkId`,
@@ -604,44 +476,37 @@ function EditPersonal() {
         );
 
         if (!resCheckID.ok) {
-          setLoader(false);
-
           throw new Error("Error fetch api checkuser.");
         }
         const { idCard: idCardExists, idCardDisabled: idCardDisabledExists } =
           await resCheckID.json();
         if (
-          tempIdCard !== dataUser.idCard &&
-          tempIdCardDisabled !== dataUser.idCardDisabled
+          idCard !== dataUser.idCard &&
+          idCardDisabled !== dataUser.idCardDisabled
         ) {
           if (idCardExists && idCardDisabledExists) {
             setErrorIdCard("เลขบัตรประชาชนนี้มีการใช้งานแล้ว");
             setErrorIdCardDisabled("เลขบัตรประจำตัวคนพิการนี้มีการใช้งานแล้ว");
-            setLoader(false);
             return;
           }
           if (idCardExists) {
             setErrorIdCard("เลขบัตรประชาชนนี้มีการใช้งานแล้ว");
-            setLoader(false);
             return;
           }
           if (idCardDisabledExists) {
             setErrorIdCardDisabled("เลขบัตรประจำตัวคนพิการนี้มีการใช้งานแล้ว");
-            setLoader(false);
             return;
           }
         } else if (idCard !== dataUser.idCard) {
           if (idCardExists) {
             setErrorIdCard("เลขบัตรประชาชนนี้มีการใช้งานแล้ว");
             setErrorIdCardDisabled("");
-            setLoader(false);
             return;
           }
-        } else if (tempIdCardDisabled !== dataUser.idCardDisabled) {
+        } else if (idCardDisabled !== dataUser.idCardDisabled) {
           if (idCardDisabledExists) {
             setErrorIdCardDisabled("เลขบัตรประจำตัวคนพิการนี้มีการใช้งานแล้ว");
             setErrorIdCard("");
-            setLoader(false);
             return;
           }
         }
@@ -649,40 +514,26 @@ function EditPersonal() {
         setErrorIdCard("");
         setErrorIdCardDisabled("");
       }
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${session?.user?.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(bodyData),
-        }
-      );
+      const res = await updateUser(dataUser.uuid, bodyData);
 
       if (!res.ok) {
-        setLoader(false);
         Swal.fire({
           title: "เกิดข้อผิดพลาด",
           text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
           icon: "error",
           confirmButtonText: "ตกลง",
           confirmButtonColor: "#f27474",
-        }).then(() => {
-          window.location.reload();
         });
         return;
       }
-
-      setLoader(false);
       Swal.fire({
         title: "บันทึกข้อมูลสำเร็จ",
         icon: "success",
         confirmButtonText: "ตกลง",
         confirmButtonColor: "#0d96f8",
-      }).then(() => {
-        window.location.reload();
       });
+
+      setEditMode(false);
     } catch (err) {
       console.log(err);
     }
@@ -694,11 +545,10 @@ function EditPersonal() {
   function CheckAddressSameIDCard(e) {
     setSameAddress(e);
     if (!statusSameAddress) {
-      setAddress(addressIdCard || getAddressIdCard);
+      setAddress(addressIdCard);
       setIDAddressProvince(IDaddressIdCardProvince);
       setIDAddressAmphor(IDaddressIdCardAmphor);
       setIDAddressTambon(IDaddressIdCardTambon);
-
       setAddressProvince(addressIdCardProvince);
       setAddressAmphor(addressIdCardAmphor);
       setAddressTambon(addressIdCardTambon);
@@ -722,7 +572,7 @@ function EditPersonal() {
     if (file) {
       const storageRef = ref(
         storage,
-        `users/profile/${session?.user?.email}/${file.name}`
+        `users/profile/${dataUser.email}/${file.name}`
       );
       const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -795,7 +645,7 @@ function EditPersonal() {
               placeholder="กรอกชื่อผู้ใช้"
               style={{ appearance: "none" }}
               disabled={!editMode}
-              value={prefix || getPrefix || "0"}
+              value={prefix || "0"}
             >
               <option value="0">-</option>
               <option value="นาย">นาย</option>
@@ -828,7 +678,7 @@ function EditPersonal() {
             onChange={(e) => {
               setFirstName(e.target.value);
             }}
-            defaultValue={getFirstName || ""}
+            defaultValue={firstName || ""}
             readOnly={!editMode}
           />
         </div>
@@ -849,7 +699,7 @@ function EditPersonal() {
             onChange={(e) => {
               setLastName(e.target.value);
             }}
-            defaultValue={getLastName || ""}
+            defaultValue={lastName || ""}
             readOnly={!editMode}
           />
         </div>
@@ -865,19 +715,19 @@ function EditPersonal() {
             onChange={(e) => {
               setNickname(e.target.value);
             }}
-            defaultValue={getNickname || ""}
+            defaultValue={nickname || ""}
             placeholder="ระบุชื่อเล่น"
             readOnly={!editMode}
           />
         </div>
-        {(prefix !== "0" && prefix) || (getPrefix !== "0" && getPrefix) ? (
+        {prefix !== "0" && prefix ? (
           <div className="flex col flex-col">
             <label>เพศ</label>
             <p
               type="text"
               className={`mt-1 w-32 border ${inputEditColor} cursor-default border-gray-400 py-2 px-4 rounded-lg`}
             >
-              {sex || getSex}
+              {sex}
             </p>
           </div>
         ) : null}
@@ -899,7 +749,7 @@ function EditPersonal() {
                 } ${bgColorMain} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
                 style={{ appearance: "none" }}
                 disabled={!editMode}
-                value={yearBirthday || getYearBirthday || "0"}
+                value={yearBirthday || "0"}
               >
                 <option value="0">-</option>
                 {years.map((y, index) => (
@@ -926,7 +776,7 @@ function EditPersonal() {
                 } ${bgColorMain} w-36 border border-gray-400 py-2 px-4 rounded-lg`}
                 style={{ appearance: "none" }}
                 disabled={!editMode}
-                value={monthBirthday || getMonthBirthday || "0"}
+                value={monthBirthday || "0"}
               >
                 <option value="0">-</option>
                 {yearToday === Number(yearBirthday)
@@ -959,7 +809,7 @@ function EditPersonal() {
                 } ${bgColorMain} w-28 border border-gray-400 py-2 px-4 rounded-lg`}
                 style={{ appearance: "none" }}
                 disabled={!editMode}
-                value={dateBirthday || getDateBirthday || "0"}
+                value={dateBirthday || "0"}
               >
                 <option value="0">-</option>
                 {yearToday === Number(yearBirthday) &&
@@ -1007,28 +857,19 @@ function EditPersonal() {
             </div>
           </div>
         </div>
-        {(yearBirthday !== "0" &&
-          monthBirthday !== "0" &&
-          dateBirthday !== "0" &&
-          yearBirthday &&
-          monthBirthday &&
-          dateBirthday) ||
-        (getYearBirthday !== "0" &&
-          getMonthBirthday !== "0" &&
-          getDateBirthday !== "0" &&
-          getYearBirthday &&
-          getMonthBirthday &&
-          getDateBirthday) ? (
+        {yearBirthday !== "0" &&
+        monthBirthday !== "0" &&
+        dateBirthday !== "0" &&
+        yearBirthday &&
+        monthBirthday &&
+        dateBirthday ? (
           <div className="flex col flex-col">
             <label>อายุ</label>
             <p
               type="text"
               className={`mt-1 w-32 border ${inputEditColor} cursor-default border-gray-400 py-2 px-4 rounded-lg`}
             >
-              {yearBirthday
-                ? yearToday - yearBirthday
-                : yearToday - getYearBirthday}{" "}
-              ปี
+              {yearBirthday & (yearToday - yearBirthday)} ปี
             </p>
           </div>
         ) : null}
@@ -1049,7 +890,7 @@ function EditPersonal() {
               } ${bgColorMain} w-40 border border-gray-400 py-2 px-4 rounded-lg`}
               style={{ appearance: "none" }}
               disabled={!editMode}
-              value={nationality || getNationality || "0"}
+              value={nationality || "0"}
             >
               <option value="0">-</option>
               <option value="ไทย">ไทย</option>
@@ -1082,7 +923,7 @@ function EditPersonal() {
               } ${bgColorMain} w-40 border border-gray-400 py-2 px-4 rounded-lg`}
               style={{ appearance: "none" }}
               disabled={!editMode}
-              value={religion || getReligion || "0"}
+              value={religion || "0"}
             >
               <option value="0">-</option>
               <option value="พุทธ">พุทธ</option>
@@ -1119,7 +960,7 @@ function EditPersonal() {
             onChange={(e) => {
               setIdCard(e.target.value);
             }}
-            defaultValue={getIdCard || ""}
+            defaultValue={idCard || ""}
             placeholder="เลขบัตร 13 หลัก"
             readOnly={!editMode}
           />
@@ -1149,7 +990,7 @@ function EditPersonal() {
             onChange={(e) => {
               setIdCardDisabled(e.target.value);
             }}
-            defaultValue={getIdCardDisabled || ""}
+            defaultValue={idCardDisabled || ""}
             placeholder="เลขบัตร 13 หลัก"
             readOnly={!editMode}
           />
@@ -1177,7 +1018,7 @@ function EditPersonal() {
               onChange={(e) => {
                 setAddressIdCard(e.target.value);
               }}
-              defaultValue={getAddressIdCard || ""}
+              defaultValue={addressIdCard || ""}
               placeholder="บ้านเลขที่, หมู่บ้าน, หอพัก"
               readOnly={!editMode}
             />
@@ -1405,7 +1246,7 @@ function EditPersonal() {
                 placeholder="บ้านเลขที่, หมู่บ้าน, หอพัก"
                 readOnly={!editMode || statusSameAddress}
               >
-                {addressIdCard || getAddressIdCard}
+                {addressIdCard}
               </div>
             ) : (
               <input
@@ -1418,11 +1259,7 @@ function EditPersonal() {
                 onChange={(e) => {
                   setAddress(e.target.value);
                 }}
-                defaultValue={
-                  statusSameAddress
-                    ? addressIdCard || getAddressIdCard
-                    : address || getAddress
-                }
+                defaultValue={statusSameAddress ? addressIdCard : address}
                 placeholder="บ้านเลขที่, หมู่บ้าน, หอพัก"
                 readOnly={!editMode}
               />
@@ -1662,7 +1499,7 @@ function EditPersonal() {
             onChange={(e) => {
               setTel(e.target.value);
             }}
-            defaultValue={getTel || ""}
+            defaultValue={tel || ""}
             placeholder="หมายเลขโทรศัพท์ 10 หลัก"
             readOnly={!editMode}
           />
@@ -1682,7 +1519,7 @@ function EditPersonal() {
             onChange={(e) => {
               setTelEmergency(e.target.value);
             }}
-            defaultValue={getTelEmergency || ""}
+            defaultValue={telEmergency || ""}
             placeholder="หมายเลขโทรศัพท์ 10 หลัก"
             readOnly={!editMode}
           />
@@ -1699,7 +1536,7 @@ function EditPersonal() {
             onChange={(e) => {
               setRelationship(e.target.value);
             }}
-            defaultValue={getRelationship || ""}
+            defaultValue={relationship || ""}
             placeholder="บุคคลใกล้ชิด"
             readOnly={!editMode}
           />
@@ -1715,7 +1552,7 @@ function EditPersonal() {
             type="email"
             className={`
               ${inputEditColor} ${bgColorMain} cursor-default focus:outline-none mt-1 w-60 border border-gray-400 py-2 px-4 rounded-lg`}
-            value={getEmail}
+            value={email || ""}
             readOnly
           />
         </div>
@@ -1966,7 +1803,7 @@ function EditPersonal() {
               onChange={(e) => {
                 setDetailDisabled(e.target.value);
               }}
-              defaultValue={getDetailDisabled || ""}
+              defaultValue={detailDisabled || ""}
               placeholder="เพิ่มเติม (ถ้ามี)"
               readOnly={!editMode}
             />
@@ -1982,9 +1819,7 @@ function EditPersonal() {
               <Image
                 onClick={openFileDialog}
                 className="w-full h-full cursor-pointer"
-                src={
-                  profile || imageUrl || getProfile || "/image/main/user.png"
-                }
+                src={profile || imageUrl || "/image/main/user.png"}
                 height={1000}
                 width={1000}
                 alt="profile"
@@ -2030,7 +1865,6 @@ function EditPersonal() {
             <div
               onClick={() => {
                 setEditMode(false);
-                window.location.reload();
               }}
               className={`${bgColorNavbar} ${bgColorWhite} hover:cursor-pointer bg-[#F97201] py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
             >
