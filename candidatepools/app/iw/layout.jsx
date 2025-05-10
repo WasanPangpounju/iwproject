@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
       <HeaderLogo dataUser={dataUser} />
       <div className="flex">
         <NavbarMain status="main" />
-        <div className="w-10/12 px-7 py-5">{children}</div>
+        <div className="w-full px-7 py-5 max-w-[100rem]">{children}</div>
       </div>
     </div>
   );

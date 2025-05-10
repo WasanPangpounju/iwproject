@@ -3,12 +3,7 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import Icon from "@mdi/react";
-import {
-  mdiAccountEdit,
-  mdiContentSave,
-  mdiArrowDownDropCircle,
-  mdiCloseCircle,
-} from "@mdi/js";
+import { mdiAccountEdit, mdiContentSave, mdiCloseCircle } from "@mdi/js";
 import Swal from "sweetalert2";
 import Image from "next/image";
 import { uploadBytesResumable, ref, getDownloadURL } from "firebase/storage";
@@ -16,11 +11,21 @@ import { storage } from "@/app/firebaseConfig";
 import { PulseLoader } from "react-spinners";
 import { useTheme } from "@/app/ThemeContext";
 
+//assets
+import dataDisabled from "@/assets/dataDisabled";
+
 //stores
 import { useUserStore } from "@/stores/useUserStore";
 
 //component
-import SelectChoice from "@/app/components/Form/SelectFilter";
+import InputLabelForm from "@/app/components/Form/InputLabelForm";
+import InputForm from "@/app/components/Form/InputForm";
+import SelectLabelForm from "@/app/components/Form/SelectLabelForm";
+import SelectForm from "@/app/components/Form/SelectForm";
+import LabelForm from "@/app/components/Form/LabelForm";
+import TextError from "@/app/components/TextError";
+import ButtonBG1 from "@/app/components/Button/ButtonBG1";
+import ButtonBG2 from "@/app/components/Button/ButtonBG2";
 
 function EditPersonal() {
   const {
@@ -612,249 +617,93 @@ function EditPersonal() {
   //EditMode
   const [editMode, setEditMode] = useState(false);
 
+  //option select
+  const dateOptions = (() => {
+    if (yearToday === Number(yearBirthday) && monthNameToday === monthBirthday)
+      return filteredDate;
+    if (["เมษายน", "กันยายน", "มิถุนายน", "พฤศจิกายน"].includes(monthBirthday))
+      return filteredDate30;
+    if (monthBirthday === "กุมภาพันธ์") {
+      if (Number(yearBirthday) % 4 === 0) return filteredDate29;
+      else return filteredDate28;
+    }
+    return filteredDate31;
+  })().map((d) => ({ id: d, value: d }));
+
   return (
     <div className={`${bgColorMain2} rounded-lg p-5 pb-10`}>
       <form
         onSubmit={handleEditSubmit}
         className={`${fontSize} flex gap-x-10 gap-y-5 gap- flex-wrap`}
       >
-        <div className={`flex flex-col`}>
-          <label>
-            คำนำหน้า{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          <div className="relative col w-fit mt-1">
-            <select
-              onChange={(e) => {
-                setPrefix(e.target.value);
-                setSex(
-                  e.target.value === "0"
-                    ? ""
-                    : e.target.value === "นาย"
-                    ? "ชาย"
-                    : "หญิง"
-                );
-              }}
-              className={` ${
-                !editMode
-                  ? ` ${inputEditColor}  cursor-default `
-                  : `cursor-pointer`
-              } ${bgColorMain} w-32  border border-gray-400 py-2 px-4 rounded-lg`}
-              placeholder="กรอกชื่อผู้ใช้"
-              style={{ appearance: "none" }}
-              disabled={!editMode}
-              value={prefix || "0"}
-            >
-              <option value="0">-</option>
-              <option value="นาย">นาย</option>
-              <option value="นางสาว">นางสาว</option>
-              <option value="นาง">นาง</option>
-            </select>
-            <Icon
-              className={`${
-                !editMode ? "hidden" : ""
-              } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-              path={mdiArrowDownDropCircle}
-              size={0.8}
-            />
-          </div>
-        </div>
-        <div className="flex col flex-col">
-          <label>
-            ชื่อ{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          <input
-            type="text"
-            className={` ${
-              !editMode
-                ? `${inputEditColor} cursor-default focus:outline-none`
-                : ""
-            } ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-            onChange={(e) => {
-              setFirstName(e.target.value);
-            }}
-            defaultValue={firstName || ""}
-            readOnly={!editMode}
-          />
-        </div>
-        <div className="flex col flex-col">
-          <label>
-            นามสกุล{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          <input
-            type="text"
-            className={`${
-              !editMode
-                ? `${inputEditColor} cursor-default focus:outline-none`
-                : ""
-            } ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-            onChange={(e) => {
-              setLastName(e.target.value);
-            }}
-            defaultValue={lastName || ""}
-            readOnly={!editMode}
-          />
-        </div>
-        <div className="flex col flex-col">
-          <label>ชื่อเล่น </label>
-          <input
-            type="text"
-            className={`placeholder ${
-              !editMode
-                ? `${inputEditColor} cursor-default focus:outline-none`
-                : ""
-            } ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-            onChange={(e) => {
-              setNickname(e.target.value);
-            }}
-            defaultValue={nickname || ""}
-            placeholder="ระบุชื่อเล่น"
-            readOnly={!editMode}
-          />
-        </div>
+        <InputLabelForm
+          label={"ชื่อ"}
+          value={firstName}
+          setValue={setFirstName}
+          editMode={editMode}
+          isRequire
+          placeholder={"ชื่อจริง"}
+        />
+        <InputLabelForm
+          label={"นามสกุล"}
+          value={lastName}
+          setValue={setLastName}
+          editMode={editMode}
+          isRequire
+          placeholder={"นามสกุล"}
+        />
+        <InputLabelForm
+          label={"ชื่อเล่น"}
+          value={nickname}
+          setValue={setNickname}
+          editMode={editMode}
+          placeholder={"ชื่อเล่น"}
+        />
         {prefix !== "0" && prefix ? (
-          <div className="flex col flex-col">
-            <label>เพศ</label>
-            <p
-              type="text"
-              className={`mt-1 w-32 border ${inputEditColor} cursor-default border-gray-400 py-2 px-4 rounded-lg`}
-            >
-              {sex}
-            </p>
-          </div>
+          <InputLabelForm
+            label={"เพศ"}
+            value={sex}
+            editMode={editMode}
+            disabled
+            tailwind={"w-32"}
+            isRequire
+          />
         ) : null}
-        <div className=" flex flex-col ">
-          <label>
-            วันเกิด{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          <div className="flex gap-3 flex-wrap">
-            <div className="mt-1 relative col w-fit">
-              <select
-                onChange={(e) => setYearBirthday(e.target.value)}
-                className={`${
-                  !editMode
-                    ? `${inputEditColor} cursor-default`
-                    : "cursor-pointer"
-                } ${bgColorMain} w-32 border border-gray-400 py-2 px-4 rounded-lg`}
-                style={{ appearance: "none" }}
-                disabled={!editMode}
-                value={yearBirthday || "0"}
-              >
-                <option value="0">-</option>
-                {years.map((y, index) => (
-                  <option key={index} value={y}>
-                    {y}
-                  </option>
-                ))}
-              </select>
-              <Icon
-                className={`${
-                  !editMode ? "hidden" : ""
-                }  ${bgColorMain} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                path={mdiArrowDownDropCircle}
-                size={0.8}
-              />
-            </div>
-            <div className="mt-1 relative col w-fit">
-              <select
-                onChange={(e) => setMonthBirthday(e.target.value)}
-                className={`${
-                  !editMode
-                    ? `${inputEditColor} cursor-default`
-                    : "cursor-pointer"
-                } ${bgColorMain} w-36 border border-gray-400 py-2 px-4 rounded-lg`}
-                style={{ appearance: "none" }}
-                disabled={!editMode}
-                value={monthBirthday || "0"}
-              >
-                <option value="0">-</option>
-                {yearToday === Number(yearBirthday)
-                  ? filteredMonths.map((m, index) => (
-                      <option key={index} value={m}>
-                        {m}
-                      </option>
-                    ))
-                  : months.map((m, index) => (
-                      <option key={index} value={m}>
-                        {m}
-                      </option>
-                    ))}
-              </select>
-              <Icon
-                className={`${
-                  !editMode ? "hidden" : ""
-                }  ${bgColorMain} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                path={mdiArrowDownDropCircle}
-                size={0.8}
-              />
-            </div>
-            <div className="mt-1 relative col w-fit">
-              <select
-                onChange={(e) => setDateBirthday(e.target.value)}
-                className={`${
-                  !editMode
-                    ? `${inputEditColor} cursor-default`
-                    : "cursor-pointer"
-                } ${bgColorMain} w-28 border border-gray-400 py-2 px-4 rounded-lg`}
-                style={{ appearance: "none" }}
-                disabled={!editMode}
-                value={dateBirthday || "0"}
-              >
-                <option value="0">-</option>
-                {yearToday === Number(yearBirthday) &&
-                monthNameToday === monthBirthday
-                  ? filteredDate.map((m, index) => (
-                      <option key={index} value={m}>
-                        {m}
-                      </option>
-                    ))
-                  : monthBirthday === "เมษายน" ||
-                    monthBirthday === "กันยายน" ||
-                    monthBirthday === "มิถุนายน" ||
-                    monthBirthday === "พฤศจิกายน"
-                  ? filteredDate30.map((m, index) => (
-                      <option key={index} value={m}>
-                        {m}
-                      </option>
-                    ))
-                  : monthBirthday === "กุมภาพันธ์" &&
-                    Number(yearBirthday) % 4 === 0
-                  ? filteredDate29.map((m, index) => (
-                      <option key={index} value={m}>
-                        {m}
-                      </option>
-                    ))
-                  : monthBirthday === "กุมภาพันธ์"
-                  ? filteredDate28.map((m, index) => (
-                      <option key={index} value={m}>
-                        {m}
-                      </option>
-                    ))
-                  : filteredDate31.map((m, index) => (
-                      <option key={index} value={m}>
-                        {m}
-                      </option>
-                    ))}
-              </select>
-              <Icon
-                className={`${
-                  !editMode ? "hidden" : ""
-                } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                path={mdiArrowDownDropCircle}
-                size={0.8}
-              />
-            </div>
+        <div className=" flex flex-col gap-1">
+          <LabelForm label={"วันเกิด"} isRequire editMode={editMode} />
+          <div className="flex gap-3  flex-wrap">
+            <SelectForm
+              editMode={editMode}
+              setValue={setYearBirthday}
+              value={yearBirthday}
+              tailwind={"w-32"}
+              options={years.map((item) => {
+                return {
+                  id: item,
+                  value: item,
+                };
+              })}
+            />
+            <SelectForm
+              editMode={editMode}
+              setValue={setMonthBirthday}
+              value={monthBirthday}
+              tailwind={"w-36"}
+              options={(yearToday === Number(yearBirthday)
+                ? filteredMonths
+                : months
+              ).map((m) => ({
+                id: m,
+                value: m,
+              }))}
+            />
+            <SelectForm
+              editMode={editMode}
+              setValue={setDateBirthday}
+              value={dateBirthday}
+              tailwind={"w-28"}
+              options={dateOptions}
+            />
           </div>
         </div>
         {yearBirthday !== "0" &&
@@ -863,106 +712,57 @@ function EditPersonal() {
         yearBirthday &&
         monthBirthday &&
         dateBirthday ? (
-          <div className="flex col flex-col">
-            <label>อายุ</label>
-            <p
-              type="text"
-              className={`mt-1 w-32 border ${inputEditColor} cursor-default border-gray-400 py-2 px-4 rounded-lg`}
-            >
-              {yearBirthday & (yearToday - yearBirthday)} ปี
-            </p>
-          </div>
+          <InputLabelForm
+            label={`อายุ`}
+            value={`${yearToday - yearBirthday} ปี`}
+            editMode={editMode}
+            disabled
+            tailwind={"w-32"}
+            isRequire
+          />
         ) : null}
-        <div className=" flex flex-col">
-          <label>
-            สัญชาติ{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          <div className="relative col w-fit mt-1">
-            <select
-              onChange={(e) => setNationality(e.target.value)}
-              className={`${
-                !editMode
-                  ? `${inputEditColor} cursor-default`
-                  : `${bgColorMain} cursor-pointer`
-              } ${bgColorMain} w-40 border border-gray-400 py-2 px-4 rounded-lg`}
-              style={{ appearance: "none" }}
-              disabled={!editMode}
-              value={nationality || "0"}
-            >
-              <option value="0">-</option>
-              <option value="ไทย">ไทย</option>
-              <option value="อื่นๆ">อื่นๆ</option>
-            </select>
-            <Icon
-              className={`${
-                !editMode ? "hidden" : ""
-              } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-              path={mdiArrowDownDropCircle}
-              size={0.8}
-            />
-          </div>
-        </div>
-        <div className=" flex flex-col">
-          <label>
-            {" "}
-            ศาสนา{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          <div className="relative col w-fit mt-1">
-            <select
-              onChange={(e) => setReligion(e.target.value)}
-              className={`${
-                !editMode
-                  ? `${inputEditColor} cursor-default`
-                  : `${bgColorMain} cursor-pointer`
-              } ${bgColorMain} w-40 border border-gray-400 py-2 px-4 rounded-lg`}
-              style={{ appearance: "none" }}
-              disabled={!editMode}
-              value={religion || "0"}
-            >
-              <option value="0">-</option>
-              <option value="พุทธ">พุทธ</option>
-              <option value="คริสต์">คริสต์</option>
-              <option value="อิสลาม">อิสลาม</option>
-              <option value="อื่นๆ">อื่นๆ</option>
-            </select>
-            <Icon
-              className={`${
-                !editMode ? "hidden" : ""
-              } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-              path={mdiArrowDownDropCircle}
-              size={0.8}
-            />
-          </div>
-        </div>
-        <div className="flex col flex-col w-64">
-          <label>
-            เลขบัตรประจำตัวประชาชน{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          <input
-            type="text"
-            inputMode="numeric"
-            pattern="\d{13}"
-            maxLength={13}
-            className={` ${
-              !editMode
-                ? `${inputEditColor} cursor-default focus:outline-none`
-                : ""
-            } ${bgColorMain} mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
-            onChange={(e) => {
-              setIdCard(e.target.value);
-            }}
-            defaultValue={idCard || ""}
-            placeholder="เลขบัตร 13 หลัก"
-            readOnly={!editMode}
+        <SelectLabelForm
+          label={"สัญชาติ"}
+          isRequire
+          editMode={editMode}
+          setValue={setNationality}
+          value={nationality}
+          tailwind={"w-40"}
+          options={[
+            {
+              id: "ไทย",
+              value: "ไทย",
+            },
+            {
+              id: "อื่นๆ",
+              value: "อื่นๆ",
+            },
+          ]}
+        />
+        <SelectLabelForm
+          label={"ศาสนา"}
+          isRequire
+          editMode={editMode}
+          setValue={setReligion}
+          value={religion}
+          tailwind={"w-40"}
+          options={[
+            { id: "พุทธ", value: "พุทธ" },
+            { id: "คริสต์", value: "คริสต์" },
+            { id: "อิสลาม", value: "อิสลาม" },
+            { id: "อื่นๆ", value: "อื่นๆ" },
+          ]}
+        />
+        <div>
+          <InputLabelForm
+            label={`เลขบัตรประจำตัวประชาชน`}
+            value={idCard}
+            setValue={setIdCard}
+            editMode={editMode}
+            tailwind={"w-64"}
+            isRequire
+            styles={"idCard"}
+            placeholder={"เลขบัตร 13 หลัก"}
           />
           {errorIdCard && (
             <div className="text-xs text-red-500 w-full text-end mt-1 ">
@@ -970,265 +770,161 @@ function EditPersonal() {
             </div>
           )}
         </div>
-        <div className="flex col flex-col w-64">
-          <label>
-            เลขบัตรประจำตัวคนพิการ{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          <input
-            type="text"
-            inputMode="numeric"
-            pattern="\d{13}"
-            maxLength={13}
-            className={` ${
-              !editMode
-                ? `${inputEditColor} cursor-default focus:outline-none`
-                : ""
-            } ${bgColorMain} mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
-            onChange={(e) => {
-              setIdCardDisabled(e.target.value);
-            }}
-            defaultValue={idCardDisabled || ""}
-            placeholder="เลขบัตร 13 หลัก"
-            readOnly={!editMode}
+        <div>
+          <InputLabelForm
+            label={`เลขบัตรประจำตัวคนพิการ`}
+            value={idCardDisabled}
+            setValue={setIdCardDisabled}
+            editMode={editMode}
+            tailwind={"w-64"}
+            isRequire
+            styles={"idCard"}
+            placeholder={"เลขบัตร 13 หลัก"}
           />
           {errorIdCardDisabled && (
-            <div className="text-xs text-red-500 w-full text-end mt-1 text-ellipsis overflow-hidden whitespace-nowrap">
+            <div className="text-xs text-red-500 w-full text-end mt-1 ">
               {errorIdCardDisabled}
             </div>
           )}
         </div>
+
         <div className="flex gap-x-10 gap-y-5 flex-wrap w-full">
-          <div className="flex col flex-col">
-            <label>
-              ที่อยู่ตามบัตรประชาชน{" "}
-              <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                *
-              </span>
-            </label>
-            <input
-              type="text"
-              className={` ${
-                !editMode
-                  ? `${inputEditColor} cursor-default focus:outline-none`
-                  : ""
-              } ${bgColorMain} w-72 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
-              onChange={(e) => {
-                setAddressIdCard(e.target.value);
-              }}
-              defaultValue={addressIdCard || ""}
-              placeholder="บ้านเลขที่, หมู่บ้าน, หอพัก"
-              readOnly={!editMode}
-            />
-          </div>
-          <div className=" flex flex-col ">
-            <label>
-              จังหวัด{" "}
-              <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                *
-              </span>
-            </label>
-            <div className="relative col w-fit mt-1">
-              <select
-                onChange={(e) => {
-                  setIDAddressIdCardProvince(e.target.value);
-                  setIDAddressIdCardAmphor("");
-                  setIDAddressIdCardTambon("");
-                  setAddressIdCardAmphor("");
-                  setAddressIdCardTambon("");
-                  setAddressIdCardZipCode("");
-                  setAddressIdCardProvince(
-                    dataProvince.find((p) => p.id === parseInt(e.target.value))
-                      .name_th
-                  );
-                }}
-                className={`${
-                  !editMode
-                    ? `${inputEditColor} cursor-default`
-                    : `${bgColorMain} cursor-pointer`
-                } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
-                style={{ appearance: "none" }}
-                disabled={!editMode}
-                value={
-                  dataProvince.find(
-                    (p) => p.id === parseInt(IDaddressIdCardProvince)
-                  )?.id || "0"
-                }
-              >
-                <option value="0">-</option>
-                {dataProvince.map((d, index) => (
-                  <option key={index} value={d.id}>
-                    {d.name_th}
-                  </option>
-                ))}
-              </select>
-              <Icon
-                className={`${
-                  !editMode ? "hidden" : ""
-                } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                path={mdiArrowDownDropCircle}
-                size={0.8}
-              />
-            </div>
-          </div>
+          <InputLabelForm
+            label={`ที่อยู่ตามบัตรประชาชน`}
+            value={addressIdCard}
+            setValue={setAddressIdCard}
+            editMode={editMode}
+            tailwind={"w-72"}
+            isRequire
+            placeholder={"บ้านเลขที่, หมู่บ้าน, หอพัก"}
+          />
+          <SelectLabelForm
+            label={"จังหวัด"}
+            isRequire
+            editMode={editMode}
+            setValue={(e) => {
+              setIDAddressIdCardProvince(e);
+              setIDAddressIdCardAmphor("");
+              setIDAddressIdCardTambon("");
+              setAddressIdCardAmphor("");
+              setAddressIdCardTambon("");
+              setAddressIdCardZipCode("");
+              setAddressIdCardProvince(
+                dataProvince?.find((p) => p.id === parseInt(e))?.name_th
+              );
+            }}
+            value={
+              dataProvince.find(
+                (p) => p.id === parseInt(IDaddressIdCardProvince)
+              )?.id || "0"
+            }
+            tailwind={"w-48"}
+            options={
+              dataProvince?.map((d) => ({
+                id: d.id,
+                value: d.name_th,
+              })) || []
+            }
+          />
           {IDaddressIdCardProvince ? (
-            <div className=" flex flex-col">
-              <label>
-                อำเภอ{" "}
-                <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                  *
-                </span>
-              </label>
-              <div className="relative col w-fit mt-1">
-                <select
-                  onChange={(e) => {
-                    setIDAddressIdCardAmphor(e.target.value);
-                    setIDAddressIdCardTambon("");
-                    setAddressIdCardTambon("");
-                    setAddressIdCardZipCode("");
-                    setAddressIdCardAmphor(
-                      dataProvince
-                        .find((p) => p.id === parseInt(IDaddressIdCardProvince))
-                        .amphure.find((a) => a.id === parseInt(e.target.value))
-                        .name_th
-                    );
-                  }}
-                  className={`${
-                    !editMode
-                      ? `${inputEditColor} cursor-default`
-                      : `${bgColorMain} cursor-pointer`
-                  } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
-                  style={{ appearance: "none" }}
-                  disabled={!editMode}
-                  value={
-                    dataProvince
-                      .find((p) => p.id === parseInt(IDaddressIdCardProvince))
-                      .amphure.find(
-                        (a) => a.id === parseInt(IDaddressIdCardAmphor)
-                      )?.id || "0"
-                  }
-                >
-                  <option value="0">-</option>
-                  {dataProvince
-                    .find((p) => p.id === parseInt(IDaddressIdCardProvince))
-                    .amphure.map((d, index) => (
-                      <option key={index} value={d.id}>
-                        {d.name_th}
-                      </option>
-                    ))}
-                </select>
-                <Icon
-                  className={`${
-                    !editMode ? "hidden" : ""
-                  } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                  path={mdiArrowDownDropCircle}
-                  size={0.8}
-                />
-              </div>
-            </div>
+            <SelectLabelForm
+              label={"อำเภอ"}
+              isRequire
+              editMode={editMode}
+              setValue={(e) => {
+                setIDAddressIdCardAmphor(e);
+                setIDAddressIdCardTambon("");
+                setAddressIdCardTambon("");
+                setAddressIdCardZipCode("");
+
+                const province = dataProvince.find(
+                  (p) => p.id === parseInt(IDaddressIdCardProvince)
+                );
+                const amphur = province?.amphure.find(
+                  (a) => a.id === parseInt(e)
+                );
+                setAddressIdCardAmphor(amphur?.name_th || "");
+              }}
+              value={
+                dataProvince
+                  ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+                  ?.amphure.find(
+                    (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                  )?.id || "0"
+              }
+              tailwind={"w-48"}
+              options={
+                dataProvince
+                  ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+                  ?.amphure.map((d) => ({
+                    id: d.id,
+                    value: d.name_th,
+                  })) || []
+              }
+            />
           ) : null}
           {IDaddressIdCardProvince && IDaddressIdCardAmphor ? (
-            <div className=" flex flex-col">
-              <label>
-                ตำบล{" "}
-                <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                  *
-                </span>
-              </label>
-              <div className="relative col w-fit mt-1">
-                <select
-                  onChange={(e) => {
-                    setIDAddressIdCardTambon(e.target.value);
-                    setAddressIdCardTambon(
-                      dataProvince
-                        .find((p) => p.id === parseInt(IDaddressIdCardProvince))
-                        .amphure.find(
-                          (a) => a.id === parseInt(IDaddressIdCardAmphor)
-                        )
-                        .tambon.find((t) => t.id === parseInt(e.target.value))
-                        .name_th
-                    );
-                    setAddressIdCardZipCode(
-                      dataProvince
-                        .find((p) => p.id === parseInt(IDaddressIdCardProvince))
-                        .amphure.find(
-                          (a) => a.id === parseInt(IDaddressIdCardAmphor)
-                        )
-                        .tambon.find((t) => t.id === parseInt(e.target.value))
-                        .zip_code
-                    );
-                  }}
-                  className={`${
-                    !editMode
-                      ? `${inputEditColor} cursor-default`
-                      : `${bgColorMain} cursor-pointer`
-                  } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
-                  style={{ appearance: "none" }}
-                  disabled={!editMode}
-                  value={
-                    dataProvince
-                      .find((p) => p.id === parseInt(IDaddressIdCardProvince))
-                      .amphure.find(
-                        (a) => a.id === parseInt(IDaddressIdCardAmphor)
-                      )
-                      .tambon.find(
-                        (t) => t.id === parseInt(IDaddressIdCardTambon)
-                      )?.id || "0"
-                  }
-                >
-                  <option value="0">-</option>
-                  {dataProvince
-                    .find((p) => p.id === parseInt(IDaddressIdCardProvince))
-                    .amphure.find(
-                      (a) => a.id === parseInt(IDaddressIdCardAmphor)
-                    )
-                    .tambon.map((d, index) => (
-                      <option key={index} value={d.id}>
-                        {d.name_th}
-                      </option>
-                    ))}
-                </select>
-                <Icon
-                  className={`${
-                    !editMode ? "hidden" : ""
-                  } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                  path={mdiArrowDownDropCircle}
-                  size={0.8}
-                />
-              </div>
-            </div>
+            <SelectLabelForm
+              label={"ตำบล"}
+              isRequire
+              editMode={editMode}
+              setValue={(e) => {
+                setIDAddressIdCardTambon(e);
+
+                const tambon = dataProvince
+                  ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+                  ?.amphure.find(
+                    (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                  )
+                  ?.tambon.find((t) => t.id === parseInt(e));
+
+                setAddressIdCardTambon(tambon?.name_th || "");
+                setAddressIdCardZipCode(tambon?.zip_code || "");
+              }}
+              value={
+                dataProvince
+                  ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+                  ?.amphure.find(
+                    (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                  )
+                  ?.tambon.find((t) => t.id === parseInt(IDaddressIdCardTambon))
+                  ?.id || "0"
+              }
+              tailwind={"w-48"}
+              options={
+                dataProvince
+                  ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+                  ?.amphure.find(
+                    (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                  )
+                  ?.tambon.map((t) => ({
+                    id: t.id,
+                    value: t.name_th,
+                  })) || []
+              }
+            />
           ) : null}
           {IDaddressIdCardProvince &&
           IDaddressIdCardAmphor &&
           IDaddressIdCardTambon ? (
-            <div className=" flex flex-col ">
-              <label>
-                รหัสไปรษณีย์{" "}
-                <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                  *
-                </span>
-              </label>
-              <div className=" col w-fit mt-1">
-                <p
-                  className={`${inputEditColor}  focus:outline-none cursor-default w-36 ${bgColorMain}  border border-gray-400 py-2 px-4 rounded-lg`}
-                >
-                  {addressIdCardZipCode || "-"}
-                </p>
-              </div>
-            </div>
+            <InputLabelForm
+              label={"รหัสไปรษณีย์"}
+              value={addressIdCardZipCode}
+              disabled
+              editMode={editMode}
+              isRequire
+              tailwind={"w-36"}
+            />
           ) : null}
         </div>
         <div className="flex gap-x-10 gap-y-5 flex-wrap w-full">
-          <div className="flex col flex-col">
-            <div className="flex gap-x-2">
-              <label>
-                ที่อยู่ปัจจุบัน{" "}
-                <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                  *
-                </span>
-              </label>
+          <div className="flex col flex-col gap-1">
+            <div className="flex gap-x-2 ">
+              <LabelForm
+                label={"ที่อยู่ปัจจุบัน"}
+                isRequire
+                editMode={editMode}
+              />
               <div className={`${!editMode ? "hidden" : ""} flex gap-x-1`}>
                 <input
                   onChange={(e) => CheckAddressSameIDCard(e.target.checked)}
@@ -1239,582 +935,250 @@ function EditPersonal() {
                 <p>(ตามบัตรประชาชน)</p>
               </div>
             </div>
-            {statusSameAddress ? (
-              <div
-                type="text"
-                className={`  ${inputEditColor} cursor-default focus:outline-none ${bgColorMain} w-72 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
-                placeholder="บ้านเลขที่, หมู่บ้าน, หอพัก"
-                readOnly={!editMode || statusSameAddress}
-              >
-                {addressIdCard}
-              </div>
-            ) : (
-              <input
-                type="text"
-                className={` ${
-                  !editMode
-                    ? `${inputEditColor} cursor-default focus:outline-none`
-                    : ""
-                } ${bgColorMain} w-72 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
-                onChange={(e) => {
-                  setAddress(e.target.value);
-                }}
-                defaultValue={statusSameAddress ? addressIdCard : address}
-                placeholder="บ้านเลขที่, หมู่บ้าน, หอพัก"
-                readOnly={!editMode}
-              />
-            )}
-          </div>
-          <div className=" flex flex-col">
-            <label>
-              จังหวัด{" "}
-              <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                *
-              </span>
-            </label>
-            <div className="relative col w-fit mt-1">
-              <select
-                onChange={(e) => {
-                  setIDAddressProvince(e.target.value);
-                  setIDAddressAmphor("");
-                  setIDAddressTambon("");
-                  setAddressAmphor("");
-                  setAddressTambon("");
-                  setAddressZipCode("");
-                  setAddressProvince(
-                    dataProvince.find((p) => p.id === parseInt(e.target.value))
-                      .name_th
-                  );
-                }}
-                className={`${
-                  !editMode || statusSameAddress
-                    ? `${inputEditColor} cursor-default`
-                    : `${bgColorMain} cursor-pointer`
-                } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
-                style={{ appearance: "none" }}
-                disabled={!editMode || statusSameAddress}
-                value={
-                  statusSameAddress
-                    ? dataProvince.find(
-                        (p) => p.id === parseInt(IDaddressIdCardProvince)
-                      )?.id
-                    : dataProvince.find(
-                        (p) => p.id === parseInt(IDaddressProvince)
-                      )?.id || "0"
-                }
-              >
-                <option value="0">-</option>
-                {dataProvince.map((d, index) => (
-                  <option key={index} value={d.id}>
-                    {d.name_th}
-                  </option>
-                ))}
-              </select>
-              <Icon
-                className={`${
-                  !editMode ? "hidden" : ""
-                } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                path={mdiArrowDownDropCircle}
-                size={0.8}
-              />
-            </div>
-          </div>
-          {IDaddressProvince ? (
-            <div className=" flex flex-col">
-              <label>
-                อำเภอ{" "}
-                <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                  *
-                </span>
-              </label>
-              <div className="relative col w-fit mt-1">
-                <select
-                  onChange={(e) => {
-                    setIDAddressAmphor(e.target.value);
-                    setIDAddressTambon("");
-                    setAddressTambon("");
-                    setAddressZipCode("");
-                    setAddressAmphor(
-                      dataProvince
-                        .find((p) => p.id === parseInt(IDaddressProvince))
-                        .amphure.find((a) => a.id === parseInt(e.target.value))
-                        .name_th
-                    );
-                  }}
-                  className={`${
-                    !editMode || statusSameAddress
-                      ? `${inputEditColor} cursor-default`
-                      : "cursor-pointer"
-                  } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
-                  style={{ appearance: "none" }}
-                  disabled={!editMode || statusSameAddress}
-                  value={
-                    statusSameAddress
-                      ? dataProvince
-                          .find(
-                            (p) => p.id === parseInt(IDaddressIdCardProvince)
-                          )
-                          .amphure.find(
-                            (a) => a.id === parseInt(IDaddressIdCardAmphor)
-                          )?.id
-                      : dataProvince
-                          .find((p) => p.id === parseInt(IDaddressProvince))
-                          .amphure.find(
-                            (a) => a.id === parseInt(IDaddressAmphor)
-                          )?.id || "0"
-                  }
-                >
-                  <option value="0">-</option>
-                  {dataProvince
-                    .find((p) => p.id === parseInt(IDaddressProvince))
-                    .amphure.map((d, index) => (
-                      <option key={index} value={d.id}>
-                        {d.name_th}
-                      </option>
-                    ))}
-                </select>
-                <Icon
-                  className={`${
-                    !editMode ? "hidden" : ""
-                  } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                  path={mdiArrowDownDropCircle}
-                  size={0.8}
-                />
-              </div>
-            </div>
-          ) : null}
-          {IDaddressProvince && IDaddressAmphor ? (
-            <div className=" flex flex-col">
-              <label>
-                ตำบล{" "}
-                <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                  *
-                </span>
-              </label>
-              <div className="relative col w-fit mt-1">
-                <select
-                  onChange={(e) => {
-                    setIDAddressTambon(e.target.value);
-                    setAddressTambon(
-                      dataProvince
-                        .find((p) => p.id === parseInt(IDaddressProvince))
-                        .amphure.find((a) => a.id === parseInt(IDaddressAmphor))
-                        .tambon.find((t) => t.id === parseInt(e.target.value))
-                        .name_th
-                    );
-                    setAddressZipCode(
-                      dataProvince
-                        .find((p) => p.id === parseInt(IDaddressProvince))
-                        .amphure.find((a) => a.id === parseInt(IDaddressAmphor))
-                        .tambon.find((t) => t.id === parseInt(e.target.value))
-                        .zip_code
-                    );
-                  }}
-                  className={`${
-                    !editMode || statusSameAddress
-                      ? `${inputEditColor} cursor-default`
-                      : `${bgColorMain} cursor-pointer`
-                  } ${bgColorMain} w-48 border border-gray-400 py-2 px-4 rounded-lg`}
-                  style={{ appearance: "none" }}
-                  disabled={!editMode || statusSameAddress}
-                  value={
-                    statusSameAddress
-                      ? dataProvince
-                          .find(
-                            (p) => p.id === parseInt(IDaddressIdCardProvince)
-                          )
-                          .amphure.find(
-                            (a) => a.id === parseInt(IDaddressIdCardAmphor)
-                          )
-                          .tambon.find(
-                            (t) => t.id === parseInt(IDaddressIdCardTambon)
-                          )?.id
-                      : dataProvince
-                          .find((p) => p.id === parseInt(IDaddressProvince))
-                          .amphure.find(
-                            (a) => a.id === parseInt(IDaddressAmphor)
-                          )
-                          .tambon.find(
-                            (t) => t.id === parseInt(IDaddressTambon)
-                          )?.id || "0"
-                  }
-                >
-                  <option value="0">-</option>
-                  {dataProvince
-                    .find((p) => p.id === parseInt(IDaddressProvince))
-                    .amphure.find((a) => a.id === parseInt(IDaddressAmphor))
-                    .tambon.map((d, index) => (
-                      <option key={index} value={d.id}>
-                        {d.name_th}
-                      </option>
-                    ))}
-                </select>
-                <Icon
-                  className={`${
-                    !editMode ? "hidden" : ""
-                  } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                  path={mdiArrowDownDropCircle}
-                  size={0.8}
-                />
-              </div>
-            </div>
-          ) : null}
-          {IDaddressProvince && IDaddressAmphor && IDaddressTambon ? (
-            <div className=" flex flex-col ">
-              <label>
-                รหัสไปรษณีย์{" "}
-                <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                  *
-                </span>
-              </label>
-              <div className=" col w-fit mt-1">
-                <p
-                  className={`${inputEditColor} focus:outline-none cursor-default w-36 ${bgColorMain}   border border-gray-400 py-2 px-4 rounded-lg`}
-                >
-                  {statusSameAddress
-                    ? addressIdCardZipCode
-                    : addressZipCode || "-"}
-                </p>
-              </div>
-            </div>
-          ) : null}
-        </div>
-        <div className="flex col flex-col">
-          <label>
-            เบอร์ติดต่อ{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          <input
-            type="tel"
-            inputMode="numeric"
-            pattern="\d{10}"
-            maxLength={10}
-            className={` ${
-              !editMode
-                ? `${inputEditColor} cursor-default focus:outline-none`
-                : ""
-            } ${bgColorMain} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
-            onChange={(e) => {
-              setTel(e.target.value);
-            }}
-            defaultValue={tel || ""}
-            placeholder="หมายเลขโทรศัพท์ 10 หลัก"
-            readOnly={!editMode}
-          />
-        </div>
-        <div className="flex col flex-col">
-          <label>เบอร์ติดต่อฉุกเฉิน </label>
-          <input
-            type="tel"
-            inputMode="numeric"
-            pattern="\d{10}"
-            maxLength={10}
-            className={` ${
-              !editMode
-                ? `${inputEditColor} cursor-default focus:outline-none`
-                : ""
-            } ${bgColorMain} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
-            onChange={(e) => {
-              setTelEmergency(e.target.value);
-            }}
-            defaultValue={telEmergency || ""}
-            placeholder="หมายเลขโทรศัพท์ 10 หลัก"
-            readOnly={!editMode}
-          />
-        </div>
-        <div className="flex col flex-col">
-          <label>ความสัมพันธ์ </label>
-          <input
-            type="text"
-            className={` ${
-              !editMode
-                ? `${inputEditColor} cursor-default focus:outline-none`
-                : ""
-            } ${bgColorMain} w-60 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
-            onChange={(e) => {
-              setRelationship(e.target.value);
-            }}
-            defaultValue={relationship || ""}
-            placeholder="บุคคลใกล้ชิด"
-            readOnly={!editMode}
-          />
-        </div>
-        <div className="flex col flex-col">
-          <label>
-            อีเมล์{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          <input
-            type="email"
-            className={`
-              ${inputEditColor} ${bgColorMain} cursor-default focus:outline-none mt-1 w-60 border border-gray-400 py-2 px-4 rounded-lg`}
-            value={email || ""}
-            readOnly
-          />
-        </div>
-        <div className="flex gap-x-10 gap-y-5 flex-wrap">
-          <div className=" flex flex-col">
-            <label>
-              ประเภทความพิการ{" "}
-              <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                *
-              </span>
-            </label>
-            <div className="relative col w-fit mt-1">
-              <select
-                onChange={(e) => {
-                  setSelectTypeDisabled(e.target.value);
-                }}
-                className={`${
-                  !editMode
-                    ? `${inputEditColor} cursor-default`
-                    : `${bgColorMain} cursor-pointer`
-                } ${bgColorMain} w-64  border border-gray-400 py-2 px-4 rounded-lg`}
-                style={{ appearance: "none" }}
-                disabled={!editMode}
-                value={selectTypeDisabled || "0"}
-              >
-                <option value="0">-</option>
-                <option value="พิการ 1 ประเภท">พิการ 1 ประเภท</option>
-                <option value="พิการมากกว่า 1 ประเภท">
-                  พิการมากกว่า 1 ประเภท
-                </option>
-              </select>
-              <Icon
-                className={`${
-                  !editMode ? "hidden" : ""
-                } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                path={mdiArrowDownDropCircle}
-                size={0.8}
-              />
-            </div>
-          </div>
-          <div
-            style={{
-              display:
-                selectTypeDisabled === "พิการ 1 ประเภท" ? "block" : "none",
-            }}
-            className=" flex flex-col"
-          >
-            <label>
-              เลือกความพิการ{" "}
-              <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                *
-              </span>
-            </label>
-            <div className="relative col w-fit mt-1">
-              <select
-                onChange={(e) => setTypeDisabled([e.target.value])}
-                className={`${
-                  typeDisabled && !editMode
-                    ? `${inputEditColor} cursor-default`
-                    : `${bgColorMain} cursor-pointer`
-                } ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-64  border border-gray-400 py-2 px-4 rounded-lg`}
-                style={{ appearance: "none" }}
-                disabled={!editMode}
-                value={typeDisabled[0] || "0"}
-              >
-                <option value="0">-</option>
-                <option value="พิการทางการมองเห็น">พิการทางการมองเห็น</option>
-                <option value="พิการทางการได้ยินหรือสื่อความหมาย">
-                  พิการทางการได้ยินหรือสื่อความหมาย
-                </option>
-                <option value="พิการทางการเคลื่อนไหวหรือทางร่างกาย">
-                  พิการทางการเคลื่อนไหวหรือทางร่างกาย
-                </option>
-                <option value="พิการทางจิตใจหรือพฤติกรรม">
-                  พิการทางจิตใจหรือพฤติกรรม
-                </option>
-                <option value="พิการทางสติปัญญา">พิการทางสติปัญญา</option>
-                <option value="พิการทางการเรียนรู้">พิการทางการเรียนรู้</option>
-                <option value="พิการทางการออทิสติก">พิการทางการออทิสติก</option>
-              </select>
-            </div>
-          </div>
-          <div
-            className=" flex flex-col my-5"
-            style={{
-              display:
-                selectTypeDisabled === "พิการมากกว่า 1 ประเภท"
-                  ? "block"
-                  : "none",
-            }}
-          >
-            <div
-              className={`${
-                !typeDisabled.includes("พิการทางการมองเห็น") && !editMode
-                  ? "hidden"
-                  : ""
-              } ${bgColorMain} flex gap-x-3 mt-2`}
-            >
-              <input
-                type="checkbox"
-                className={`cursor-pointer w-10  border`}
-                onChange={() => handleCheckboxChange("พิการทางการมองเห็น")}
-                checked={typeDisabled.includes("พิการทางการมองเห็น")}
-                hidden={!editMode}
-              />
-              <p className="text-ellipsis overflow-hidden whitespace-nowrap">
-                <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
-                พิการทางการมองเห็น
-              </p>
-            </div>
-            <div
-              className={`${
-                !typeDisabled.includes("พิการทางการได้ยินหรือสื่อความหมาย") &&
-                !editMode
-                  ? "hidden"
-                  : ""
-              } flex gap-x-3 mt-2`}
-            >
-              <input
-                type="checkbox"
-                className="cursor-pointer w-10  border"
-                onChange={() =>
-                  handleCheckboxChange("พิการทางการได้ยินหรือสื่อความหมาย")
-                }
-                checked={typeDisabled.includes(
-                  "พิการทางการได้ยินหรือสื่อความหมาย"
-                )}
-                hidden={!editMode}
-              />
-              <p className="text-ellipsis overflow-hidden whitespace-nowrap">
-                <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
-                พิการทางการได้ยินหรือสื่อความหมาย
-              </p>
-            </div>
-            <div
-              className={`${
-                !typeDisabled.includes("พิการทางการเคลื่อนไหวหรือทางร่างกาย") &&
-                !editMode
-                  ? "hidden"
-                  : ""
-              } flex gap-x-3 mt-2`}
-            >
-              <input
-                type="checkbox"
-                className="cursor-pointer w-10  border"
-                onChange={() =>
-                  handleCheckboxChange("พิการทางการเคลื่อนไหวหรือทางร่างกาย")
-                }
-                checked={typeDisabled.includes(
-                  "พิการทางการเคลื่อนไหวหรือทางร่างกาย"
-                )}
-                hidden={!editMode}
-              />
-              <p className="text-ellipsis overflow-hidden whitespace-nowrap">
-                <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
-                พิการทางการเคลื่อนไหวหรือทางร่างกาย
-              </p>
-            </div>
-            <div
-              className={`${
-                !typeDisabled.includes("พิการทางจิตใจหรือพฤติกรรม") && !editMode
-                  ? "hidden"
-                  : ""
-              } ${bgColorMain} flex gap-x-3 mt-2`}
-            >
-              <input
-                type="checkbox"
-                className="cursor-pointer w-10  border"
-                onChange={() =>
-                  handleCheckboxChange("พิการทางจิตใจหรือพฤติกรรม")
-                }
-                checked={typeDisabled.includes("พิการทางจิตใจหรือพฤติกรรม")}
-                hidden={!editMode}
-              />
-              <p className="text-ellipsis overflow-hidden whitespace-nowrap">
-                <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
-                พิการทางจิตใจหรือพฤติกรรม
-              </p>
-            </div>
-            <div
-              className={`${
-                !typeDisabled.includes("พิการทางสติปัญญา") && !editMode
-                  ? "hidden"
-                  : ""
-              } ${bgColorMain} flex gap-x-3 mt-2`}
-            >
-              <input
-                type="checkbox"
-                className="cursor-pointer w-10  border"
-                onChange={() => handleCheckboxChange("พิการทางสติปัญญา")}
-                checked={typeDisabled.includes("พิการทางสติปัญญา")}
-                hidden={!editMode}
-              />
-              <p className="text-ellipsis overflow-hidden whitespace-nowrap">
-                <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
-                พิการทางสติปัญญา
-              </p>
-            </div>
-
-            <div
-              className={`${
-                !typeDisabled.includes("พิการทางการเรียนรู้") && !editMode
-                  ? "hidden"
-                  : ""
-              } ${bgColorMain} flex gap-x-3 mt-2`}
-            >
-              <input
-                type="checkbox"
-                className="cursor-pointer w-10  border"
-                onChange={() => handleCheckboxChange("พิการทางการเรียนรู้")}
-                checked={typeDisabled.includes("พิการทางการเรียนรู้")}
-                hidden={!editMode}
-              />
-              <p className="text-ellipsis overflow-hidden whitespace-nowrap">
-                <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
-                พิการทางการเรียนรู้
-              </p>
-            </div>
-            <div
-              className={`${
-                !typeDisabled.includes("พิการทางการออทิสติก") && !editMode
-                  ? "hidden"
-                  : ""
-              } ${bgColorMain} flex gap-x-3 mt-2`}
-            >
-              <input
-                type="checkbox"
-                className="cursor-pointer w-10  border"
-                onChange={() => handleCheckboxChange("พิการทางการออทิสติก")}
-                checked={typeDisabled.includes("พิการทางการออทิสติก")}
-                hidden={!editMode}
-              />
-              <p className="text-ellipsis overflow-hidden whitespace-nowrap">
-                <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
-                พิการทางการออทิสติก
-              </p>
-            </div>
-          </div>
-          <div className="flex col flex-col ">
-            <label>รายละเอียดเพิ่มเติม </label>
-            <input
-              type="text"
-              className={`${
-                !editMode
-                  ? `${inputEditColor} cursor-default focus:outline-none`
-                  : " "
-              } ${bgColorMain} border-gray-400 mt-1 w-60 border py-2 px-4 rounded-lg`}
-              onChange={(e) => {
-                setDetailDisabled(e.target.value);
-              }}
-              defaultValue={detailDisabled || ""}
-              placeholder="เพิ่มเติม (ถ้ามี)"
-              readOnly={!editMode}
+            <InputForm
+              editMode={editMode}
+              value={statusSameAddress ? addressIdCard : address}
+              setValue={setAddress}
+              isRequire
+              placeholder={"บ้านเลขที่, หมู่บ้าน, หอพัก"}
+              tailwind={"w-72"}
             />
           </div>
+          <SelectLabelForm
+            label={"จังหวัด"}
+            isRequire
+            editMode={editMode && !statusSameAddress}
+            setValue={(e) => {
+              setIDAddressProvince(e);
+              setIDAddressAmphor("");
+              setIDAddressTambon("");
+              setAddressAmphor("");
+              setAddressTambon("");
+              setAddressZipCode("");
+
+              const province = dataProvince.find((p) => p.id === parseInt(e));
+              setAddressProvince(province?.name_th || "");
+            }}
+            value={
+              statusSameAddress
+                ? dataProvince.find(
+                    (p) => p.id === parseInt(IDaddressIdCardProvince)
+                  )?.id || "0"
+                : dataProvince.find((p) => p.id === parseInt(IDaddressProvince))
+                    ?.id || "0"
+            }
+            tailwind={"w-48"}
+            options={
+              dataProvince.map((d) => ({
+                id: d.id,
+                value: d.name_th,
+              })) || []
+            }
+          />
+          {IDaddressProvince ? (
+            <SelectLabelForm
+              label={"อำเภอ"}
+              isRequire
+              editMode={editMode && !statusSameAddress}
+              setValue={(e) => {
+                setIDAddressAmphor(e);
+                setIDAddressTambon("");
+                setAddressTambon("");
+                setAddressZipCode("");
+
+                const amphor = dataProvince
+                  ?.find((p) => p.id === parseInt(IDaddressProvince))
+                  ?.amphure.find((a) => a.id === parseInt(e));
+
+                setAddressAmphor(amphor?.name_th || "");
+              }}
+              value={
+                statusSameAddress
+                  ? dataProvince
+                      ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+                      ?.amphure.find(
+                        (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                      )?.id || "0"
+                  : dataProvince
+                      ?.find((p) => p.id === parseInt(IDaddressProvince))
+                      ?.amphure.find((a) => a.id === parseInt(IDaddressAmphor))
+                      ?.id || "0"
+              }
+              tailwind={"w-48"}
+              options={(
+                dataProvince.find((p) => p.id === parseInt(IDaddressProvince))
+                  ?.amphure || []
+              ).map((d) => ({
+                id: d.id,
+                value: d.name_th,
+              }))}
+            />
+          ) : null}
+          {IDaddressProvince && IDaddressAmphor ? (
+            <SelectLabelForm
+              label={"ตำบล"}
+              isRequire
+              editMode={editMode && !statusSameAddress}
+              setValue={(e) => {
+                setIDAddressTambon(e);
+
+                const tambon = dataProvince
+                  ?.find((p) => p.id === parseInt(IDaddressProvince))
+                  ?.amphure.find((a) => a.id === parseInt(IDaddressAmphor))
+                  ?.tambon.find((t) => t.id === parseInt(e));
+
+                setAddressTambon(tambon?.name_th || "");
+                setAddressZipCode(tambon?.zip_code || "");
+              }}
+              value={
+                statusSameAddress
+                  ? dataProvince
+                      .find((p) => p.id === parseInt(IDaddressIdCardProvince))
+                      ?.amphure.find(
+                        (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                      )
+                      ?.tambon.find(
+                        (t) => t.id === parseInt(IDaddressIdCardTambon)
+                      )?.id
+                  : dataProvince
+                      .find((p) => p.id === parseInt(IDaddressProvince))
+                      ?.amphure.find((a) => a.id === parseInt(IDaddressAmphor))
+                      ?.tambon.find((t) => t.id === parseInt(IDaddressTambon))
+                      ?.id || "0"
+              }
+              tailwind={"w-48"}
+              options={(
+                dataProvince
+                  .find((p) => p.id === parseInt(IDaddressProvince))
+                  ?.amphure.find((a) => a.id === parseInt(IDaddressAmphor))
+                  ?.tambon || []
+              ).map((d) => ({
+                id: d.id,
+                value: d.name_th,
+              }))}
+            />
+          ) : null}
+          {IDaddressProvince && IDaddressAmphor && IDaddressTambon ? (
+            <InputLabelForm
+              label={"รหัสไปรษณีย์"}
+              isRequire
+              disabled
+              value={
+                statusSameAddress ? addressIdCardZipCode : addressZipCode || "-"
+              }
+              tailwind={"w-36"}
+              editMode={editMode}
+            />
+          ) : null}
+        </div>
+        <InputLabelForm
+          label={"เบอร์ติดต่อ"}
+          isRequire
+          value={tel}
+          setValue={setTel}
+          placeholder={"หมายเลขโทรศัพท์ 10 หลัก"}
+          tailwind={"w-60"}
+          styles={"tel"}
+          editMode={editMode}
+        />
+        <InputLabelForm
+          label={"เบอร์ติดต่อฉุกเฉิน"}
+          value={telEmergency}
+          setValue={setTelEmergency}
+          placeholder={"หมายเลขโทรศัพท์ 10 หลัก"}
+          tailwind={"w-60"}
+          styles={"tel"}
+          editMode={editMode}
+        />
+        <InputLabelForm
+          label={"ความสัมพันธ์"}
+          value={relationship}
+          setValue={setRelationship}
+          placeholder={"บุคคลใกล้ชิด"}
+          tailwind={"w-60"}
+          styles={"tel"}
+          editMode={editMode}
+        />
+
+        <InputLabelForm
+          disabled
+          isRequire
+          label={"อีเมล์"}
+          value={email}
+          setValue={setEmail}
+          tailwind={"w-60"}
+          styles={"tel"}
+          editMode={editMode}
+        />
+
+        <div className="flex gap-x-10 gap-y-5 flex-wrap">
+          <SelectLabelForm
+            label={"ประเภทความพิการ"}
+            isRequire
+            editMode={editMode}
+            setValue={(e) => setSelectTypeDisabled(e)}
+            value={selectTypeDisabled || "0"}
+            tailwind={"w-64"}
+            options={[
+              { id: "พิการ 1 ประเภท", value: "พิการ 1 ประเภท" },
+              { id: "พิการมากกว่า 1 ประเภท", value: "พิการมากกว่า 1 ประเภท" },
+            ]}
+          />
+          <SelectLabelForm
+            label="เลือกความพิการ"
+            isRequire
+            editMode={editMode}
+            setValue={(e) => setTypeDisabled([e])}
+            value={typeDisabled[0] || "0"}
+            tailwind={`w-64 ${
+              selectTypeDisabled === "พิการ 1 ประเภท" ? "block" : "hidden"
+            }`}
+            options={[
+              ...dataDisabled.map((item) => ({ id: item, value: item })),
+            ]}
+          />
+
+          <div
+            className={`flex flex-col my-5 ${
+              selectTypeDisabled === "พิการมากกว่า 1 ประเภท"
+                ? "block"
+                : "hidden"
+            }`}
+          >
+            {dataDisabled.map((type, idx) => (
+              <div
+                key={idx}
+                className={`${
+                  !typeDisabled.includes(type) && !editMode ? "hidden" : ""
+                } ${bgColorMain} flex gap-x-3 mt-2`}
+              >
+                <input
+                  type="checkbox"
+                  className="cursor-pointer w-10 border"
+                  onChange={() => handleCheckboxChange(type)}
+                  checked={typeDisabled.includes(type)}
+                  hidden={!editMode}
+                />
+                <p className="text-ellipsis overflow-hidden whitespace-nowrap">
+                  <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
+                  {type}
+                </p>
+              </div>
+            ))}
+          </div>
+          <InputLabelForm
+            label={"รายละเอียดเพิ่มเติม"}
+            value={detailDisabled}
+            setValue={setDetailDisabled}
+            tailwind={"w-60"}
+            styles={"tel"}
+            editMode={editMode}
+            placeholder={"รายละเอียด"}
+          />
         </div>
         <div className="w-full flex">
-          <div className="flex col flex-col ">
-            <label className={`${!editMode ? "hidden" : ""}`}>
-              อัปโหลดรูปโปรไฟล์
-            </label>
-
+          <div className="flex flex-col gap-1">
+            <LabelForm label={"อัปโหลดรูปโปรไฟล์"} editMode={editMode} />
             <div className="w-32 h-32 relative my-1">
               <Image
                 onClick={openFileDialog}
@@ -1826,7 +1190,7 @@ function EditPersonal() {
                 priority
               />
               {uploadProgress > 0 && uploadProgress < 100 && (
-                <div className="text-white absolute  border top-0 w-full flex flex-col justify-center items-center h-full bg-black opacity-40">
+                <div className="text-white absolute border top-0 w-full flex flex-col justify-center items-center h-full bg-black opacity-40">
                   <PulseLoader color="#F97201" size={10} />
                 </div>
               )}
@@ -1842,8 +1206,7 @@ function EditPersonal() {
                 ref={inputFileRef}
                 onChange={handleProfile}
                 type="file"
-                className=""
-                hidden
+                className="hidden"
               />
               <div
                 onClick={openFileDialog}
@@ -1859,36 +1222,30 @@ function EditPersonal() {
             </div>
           </div>
         </div>
-        {error ? <div className="text-red-500">* {error}</div> : null}
+        {error ? <TextError text={error} /> : null}
         {editMode ? (
           <div className="flex gap-10 w-full justify-center mt-5">
-            <div
-              onClick={() => {
-                setEditMode(false);
+            <ButtonBG1
+              text={"ยกเลิก"}
+              mdiIcon={mdiCloseCircle}
+              handleClick={() => setEditMode(false)}
+            />
+            <ButtonBG2
+              text={"บันทึก"}
+              mdiIcon={mdiContentSave}
+              btn
+              handleClick={() => {
+                console.log("Submit Form");
               }}
-              className={`${bgColorNavbar} ${bgColorWhite} hover:cursor-pointer bg-[#F97201] py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-            >
-              <Icon path={mdiCloseCircle} size={1} />
-              <p>ยกเลิก</p>
-            </div>
-            <button
-              type="submit"
-              // className="hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1"
-              className={`${inputTextColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`}
-            >
-              <Icon path={mdiContentSave} size={1} />
-              <p>บันทึก</p>
-            </button>
+            />
           </div>
         ) : (
-          <div className=" flex w-full justify-center mt-5">
-            <div
-              onClick={() => setEditMode(true)}
-              className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-            >
-              <Icon path={mdiAccountEdit} size={1} />
-              <p>แก้ไขข้อมูล</p>
-            </div>
+          <div className="flex justify-center w-full">
+            <ButtonBG1
+              text={"แก้ไขข้อมูล"}
+              mdiIcon={mdiAccountEdit}
+              handleClick={() => setEditMode(true)}
+            />
           </div>
         )}
       </form>
