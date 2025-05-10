@@ -22,7 +22,7 @@ import { exportToCSV } from "@/hooks/useCsvExport"; // หรือ "@/utils/csv
 
 //component
 import ReportTable from "@/app/components/Table/ReportTable";
-import SelectChoice from "@/app/components/Form/SelectChoice";
+import SelectFilter from "@/app/components/Form/SelectFilter";
 
 // รายงานลักษณะงานที่สนใจ
 const columnWork = [
@@ -387,13 +387,13 @@ function ReportPage() {
       <div className={`flex flex-col`}>
         <label>หัวข้อรายงาน</label>
         <div className="flex gap-5 mt-3">
-          <SelectChoice setValue={handleHeaderChange} data={haederData} />
+          <SelectFilter setValue={handleHeaderChange} data={haederData} />
           {header === "แยกตามจำนวน" && (
-            <SelectChoice setValue={handleContentChange} data={contentData} />
+            <SelectFilter setValue={handleContentChange} data={contentData} />
           )}
           {content === "ตามประเภทความพิการ" ||
           content === "ตามลักษณะงานที่สนใจ" ? (
-            <SelectChoice
+            <SelectFilter
               setValue={setContentType}
               data={content === "ตามประเภทความพิการ" ? disabledData : workData}
             />
@@ -401,7 +401,7 @@ function ReportPage() {
         </div>
 
         <div className="mt-5">
-          <SelectChoice setValue={setUniversityActive} data={universityData} />
+          <SelectFilter setValue={setUniversityActive} data={universityData} />
         </div>
       </div>
       <div className="mt-10 flex flex-col gap-1 font-bold">
