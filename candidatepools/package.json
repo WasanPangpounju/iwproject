@@ -18,6 +18,7 @@
     "@mui/material": "^5.16.11",
     "@mui/x-charts": "^7.23.2",
     "@react-pdf/renderer": "^4.1.4",
+    "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
     "chart.js": "^4.4.7",
     "chartjs-plugin-datalabels": "^2.2.0",
@@ -40,7 +41,8 @@
     "socket.io-client": "^4.8.1",
     "sweetalert2": "^11.12.4",
     "uuid": "^10.0.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zustand": "^5.0.4"
   },
   "devDependencies": {
     "postcss": "^8",

@@ -19,37 +19,6 @@ function HeaderLogo({title,dataUser}) {
         bgColorWhite,
         bgColorMain,
       } = useTheme();
-    // const { data: session } = useSession();
-    // const [dataUser, setDataUser] = useState(null);
-
-    // async function getUser(email) {
-    //     try {
-    //         const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${email}`, {
-    //             method: "GET",
-    //             cache: "no-store"
-    //         });
-
-    //         if (!res.ok) {
-    //             throw new Error("Error getting data from API");
-    //         }
-
-    //         const data = await res.json();
-    //         setDataUser(data.user || {});
-
-    //     } catch (err) {
-    //         console.error("Error fetching API", err);
-    //     }
-    // }
-    // useEffect(() => {
-    //     if (status === 'loading') {
-    //         return;
-    //     }
-
-    //     if (session?.user) {
-    //         getUser(session.user.email);
-    //     }
-    // }, [session])
-
 
     return (
         <nav className={`${bgColorMain} text-lg relative gap-1 flex justify-between border-b-8  border-[#75C7C2] `}>

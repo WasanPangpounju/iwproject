@@ -8,31 +8,16 @@ import { useRouter } from "next/navigation";
 
 //components
 import HeaderLogo from "../components/HeaderLogo";
-import NavbarSupervisor from "@/app/components/Menu/NavbarSupervisor"
+import NavbarSupervisor from "@/app/components/Menu/NavbarSupervisor";
 
 export default function RootLayout({ children }) {
-  const {
-    setFontSize,
-    setBgColor,
-    setBgColorNavbar,
-    setBgColorWhite,
-    setBgColorMain,
-    fontSize,
-    bgColorNavbar,
-    bgColor,
-    bgColorWhite,
-    bgColorMain,
-    bgColorMain2,
-    lineBlack,
-    textBlue,
-    registerColor,
-  } = useTheme();
+  const { fontSize, bgColor, bgColorMain } = useTheme();
 
   const router = useRouter();
   const { status, data: session } = useSession();
   const [dataUser, setDataUser] = useState(null);
   const [loader, setLoader] = useState(false);
-  
+
   // Validate session and fetch user data
   useEffect(() => {
     if (status === "loading") {
