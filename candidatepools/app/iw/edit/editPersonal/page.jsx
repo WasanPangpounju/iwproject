@@ -20,7 +20,7 @@ import { useTheme } from "@/app/ThemeContext";
 import { useUserStore } from "@/stores/useUserStore";
 
 //component
-
+import SelectChoice from "@/app/components/Form/SelectFilter";
 
 function EditPersonal() {
   const {
