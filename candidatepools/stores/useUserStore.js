@@ -2,9 +2,24 @@ import { create } from "zustand";
 import axios from "axios";
 
 export const useUserStore = create((set) => ({
-  dataUser: null,
+  dataUser: null, //my users
   loading: false,
 
+  getUserById: async (id) => { //for user id use some component
+    set({ loading: true });
+
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`
+      );
+      return res.data.user;
+    } catch (err) {
+      console.error("Error fetching user:", err);
+    } finally {
+      set({ loading: false });
+    }
+  },
+  
   getUser: async (id) => {
     const current = useUserStore.getState().dataUser;
     if (current) return;
@@ -15,7 +30,7 @@ export const useUserStore = create((set) => ({
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`
       );
-      console.log("fetch");
+
       set({ dataUser: res.data.user });
     } catch (err) {
       console.error("Error fetching user:", err);
@@ -25,20 +40,44 @@ export const useUserStore = create((set) => ({
     }
   },
 
-  updateUser: async (id, updatedData) => {
+  updateUserById: async (id, updatedData) => {
     set({ loading: true });
     try {
       const res = await axios.put(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
         updatedData
       );
-      set({ dataUser: res.data.user }); 
+      set({ dataUser: res.data.user });
       return { ok: true };
     } catch (err) {
       console.error("Error updating user:", err);
       return { ok: false };
     } finally {
       set({ loading: false });
+    }
+  },
+
+  checkIdExists: async (idCard, idCardDisabled) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/checkId`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ idCard, idCardDisabled }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Error checking ID");
+      }
+
+      return await res.json();
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
   },
 
