@@ -11,7 +11,6 @@ import {
   mdiDownload,
   mdiPencil,
   mdiAlertCircle,
-  mdiAccountEdit,
   mdiContentSave,
   mdiArrowDownDropCircle,
   mdiCloseCircle,
@@ -30,41 +29,29 @@ import { storage } from "@/app/firebaseConfig";
 
 import { useTheme } from "@/app/ThemeContext";
 
+//stores
+import { useUserStore } from "@/stores/useUserStore";
+import { useEducationStore } from "@/stores/useEducationStore";
+import ButtonBG1 from "@/app/components/Button/ButtonBG1";
+import ButtonBG2 from "@/app/components/Button/ButtonBG2";
+import TextError from "@/app/components/TextError";
+import SelectLabelForm from "@/app/components/Form/SelectLabelForm";
+import { dataTypePerson } from "@/assets/dataTypePerson";
+
 function editEducation() {
+  //store
+  const { dataUser } = useUserStore();
+  const { dataEducations, updateEducationById, updateFileName } =
+    useEducationStore();
+
   const router = useRouter();
   const { status, data: session } = useSession();
-  const [dataUser, setDataUser] = useState(null);
-  const [loader, setLoader] = useState(false);
 
   //Theme
-  const {
-    setFontSize,
-    setBgColor,
-    setBgColorNavbar,
-    setBgColorWhite,
-    setBgColorMain,
-    setBgColorMain2,
-    fontSize,
-    bgColorNavbar,
-    bgColor,
-    bgColorWhite,
-    bgColorMain,
-    bgColorMain2,
-    setLineBlack,
-    lineBlack,
-    setTextBlue,
-    textBlue,
-    setRegisterColor,
-    registerColor,
-    inputEditColor,
-    setInputGrayColor,
-    inputGrayColor,
-    inputTextColor,
-    textColorKey,
-  } = useTheme();
+  const { bgColor, bgColorMain, bgColorMain2, inputEditColor } = useTheme();
 
   //value data user
-  const [typePerson, setTypePerson] = useState("");
+  const [typePerson, setTypePerson] = useState(null);
   const [university, setUniversity] = useState([]);
   const [campus, setCampus] = useState([]);
   const [faculty, setFaculty] = useState([]);
@@ -76,31 +63,6 @@ function editEducation() {
 
   const [error, setError] = useState("");
   const [errorEducation, setErrorEducation] = useState("");
-
-  //get data Education
-  const [dataEducations, setDataEducations] = useState(null);
-  async function getEducation(id) {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${id}`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Error getting data from API");
-      }
-
-      const data = await res.json();
-      setDataEducations(data.educations || {});
-    } catch (err) {
-      console.error("Error fetching API", err);
-    } finally {
-      setLoader(false);
-    }
-  }
 
   //add array
   const handleFaculty = (e, index) => {
@@ -261,7 +223,7 @@ function editEducation() {
     if (dataEducations) {
       // set Default Educations
       setUniversity(dataEducations.university);
-      setTypePerson(dataEducations.typePerson);
+      setTypePerson(dataEducations.typePerson ?? "");
       setCampus(dataEducations.campus);
       setFaculty(dataEducations.faculty);
       setBranch(dataEducations.branch);
@@ -290,64 +252,6 @@ function editEducation() {
   // สร้างลิสต์ปีจากปีปัจจุบันย้อนหลัง 100 ปี
   const years = Array.from({ length: 101 }, (_, i) => yearToday - i);
 
-  // Validate session and fetch user data
-  useEffect(() => {
-    if (status === "loading") {
-      return;
-    }
-
-    if (!session) {
-      router.replace("/");
-      return;
-    }
-
-    if (session?.user?.id) {
-      getUser(session.user.id);
-      getEducation(session.user.id);
-    } else {
-      router.replace("/register");
-    }
-  }, [status, session, router]);
-  // Redirect to register if dataUser is empty or null
-  useEffect(() => {
-    if (dataUser === null) {
-      return;
-    }
-
-    if (!dataUser || Object.keys(dataUser).length === 0) {
-      router.replace("/register");
-    }
-  }, [dataUser, router, session]);
-
-  // Fetch user data from API
-  async function getUser(id) {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Error getting data from API");
-      }
-
-      const data = await res.json();
-      setDataUser(data.user || {});
-    } catch (err) {
-      console.error("Error fetching API", err);
-    } finally {
-      setLoader(false);
-    }
-  }
-
-  // Manage loader state
-  useEffect(() => {
-    document.body.classList.toggle("no_scroll", loader);
-  }, [loader]);
-
   //upload file
   const [file, setFiles] = useState([]); // อาร์เรย์ของไฟล์ที่อัปโหลด
   const [nameFile, setNameFiles] = useState([]); // อาร์เรย์ของชื่อไฟล์
@@ -369,7 +273,6 @@ function editEducation() {
   };
 
   const handleDocument = (event) => {
-    setLoader(true);
     const selectedFile = event.target.files[0]; // ไฟล์ที่เลือกจาก input
     if (selectedFile) {
       const fileExtension = selectedFile.name.split(".").pop(); // รับนามสกุลไฟล์
@@ -379,7 +282,7 @@ function editEducation() {
         fileExtension !== "doc"
       ) {
         setError("กรุณาอัปโหลดไฟล์ PDF หรือ Word เท่านั้น");
-        setLoader(false);
+
         return;
       }
 
@@ -396,7 +299,7 @@ function editEducation() {
 
       const storageRef = ref(
         storage,
-        `users/documents/${session?.user?.email}/${fileName}`
+        `users/documents/${dataUser?.email}/${fileName}`
       );
       const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
@@ -409,7 +312,6 @@ function editEducation() {
           setUploadProgress(progress); // แสดงความก้าวหน้าการอัปโหลด
         },
         (error) => {
-          setLoader(false);
           console.error("Error uploading file:", error);
         },
         () => {
@@ -423,10 +325,8 @@ function editEducation() {
               setUploadProgress(0);
               setInputNameFile("");
               inputFileRef.current.value = "";
-              setLoader(false);
             })
             .catch((error) => {
-              setLoader(false);
               console.error("Error getting download URL:", error);
             });
         }
@@ -503,7 +403,7 @@ function editEducation() {
     setError("");
 
     const bodyEducation = {
-      uuid: session?.user?.id,
+      uuid: dataUser.uuid,
       typePerson,
       university,
       campus,
@@ -520,19 +420,9 @@ function editEducation() {
     };
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(bodyEducation),
-        }
-      );
+      const res = await updateEducationById(bodyEducation);
 
       if (!res.ok) {
-        setLoader(false);
         Swal.fire({
           title: "เกิดข้อผิดพลาด",
           text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
@@ -540,23 +430,21 @@ function editEducation() {
           confirmButtonText: "ตกลง",
           confirmButtonColor: "#f27474",
         }).then(() => {
-          window.location.reload();
+          setEditMode(false);
         });
         return;
       }
 
-      setLoader(false);
       Swal.fire({
         title: "บันทึกข้อมูลสำเร็จ",
         icon: "success",
         confirmButtonText: "ตกลง",
         confirmButtonColor: "#0d96f8",
       }).then(() => {
-        window.location.reload();
+        setEditMode(false);
       });
     } catch (err) {
       console.log(err);
-      setLoader(false);
       setError("เกิดข้อผิดพลาดในการเชื่อมต่อ");
     }
   }
@@ -582,19 +470,7 @@ function editEducation() {
       if (!editMode) {
         try {
           // ส่งคำขอ PUT เพื่ออัปเดตชื่อไฟล์
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${id}/files`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                oldName: nameFile, // ส่งชื่อไฟล์เก่าไปด้วยเพื่อให้ API รู้ว่าต้องแก้ไขไฟล์ไหน
-                newName: newName, // ส่งชื่อไฟล์ใหม่
-              }),
-            }
-          );
+          const res = updateFileName(id, oldName, newName);
 
           if (res.ok) {
             Swal.fire({
@@ -714,38 +590,6 @@ function editEducation() {
     });
   }
 
-  function handleUniversity(uni, index) {
-    const input = uni;
-    setUniversity((prevUniversities) => {
-      const updatedUniversities = Array.isArray(prevUniversities)
-        ? [...prevUniversities]
-        : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
-      updatedUniversities[index] = input; // อัปเดตค่าใหม่
-      return updatedUniversities
-        .filter((uni) => uni !== "")
-        .concat(
-          Array(
-            updatedUniversities.length -
-              updatedUniversities.filter((uni) => uni !== "").length
-          ).fill("")
-        );
-    });
-    setInputUniversity((prevUniversities) => {
-      const updatedUniversities = Array.isArray(prevUniversities)
-        ? [...prevUniversities]
-        : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
-      updatedUniversities[index] = input; // อัปเดตค่าใหม่
-      return updatedUniversities
-        .filter((uni) => uni !== "")
-        .concat(
-          Array(
-            updatedUniversities.length -
-              updatedUniversities.filter((uni) => uni !== "").length
-          ).fill("")
-        );
-    });
-  }
-
   function SeletedOption(uni, index) {
     const input = uni;
     setUniversity((prevUniversities) => {
@@ -791,39 +635,21 @@ function editEducation() {
               {/* ประเภทบุคล */}
 
               {index === 0 && (
-                <div className="flex flex-col w-full">
-                  <label>
-                    ประเภทบุคคล{" "}
-                    <span
-                      className={`${!editMode ? "hidden" : ""} text-red-500`}
-                    >
-                      *
-                    </span>
-                  </label>
-                  <div className="relative col w-fit mt-1">
-                    <select
-                      onChange={(e) => setTypePerson(e.target.value)}
-                      className={`${
-                        !editMode
-                          ? `cursor-default ${inputEditColor}`
-                          : "cursor-pointer"
-                      } ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-2 px-4 rounded-lg`}
-                      style={{ appearance: "none" }}
-                      disabled={!editMode}
-                      value={typePerson || "-"}
-                    >
-                      <option value="0">-</option>
-                      <option value="นักศึกษาพิการ">นักศึกษาพิการ</option>
-                      <option value="บัณฑิตพิการ">บัณฑิตพิการ</option>
-                    </select>
-                    <Icon
-                      className={`${
-                        !editMode ? "hidden" : ""
-                      } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                      path={mdiArrowDownDropCircle}
-                      size={0.8}
-                    />
-                  </div>
+                <div className="w-full">
+                  <SelectLabelForm
+                    label={"ประเภทบุคคล"}
+                    isRequire
+                    editMode={editMode}
+                    value={typePerson}
+                    setValue={setTypePerson}
+                    tailwind={"w-40"}
+                    options={dataTypePerson.map((item) => {
+                      return {
+                        id: item,
+                        value: item,
+                      };
+                    })}
+                  />
                 </div>
               )}
               {index > 0 &&
@@ -1002,76 +828,6 @@ function editEducation() {
                     *
                   </span>
                 </label>
-                {/* <div className="relative col w-fit mt-1">
-                                <select
-                                    onChange={(e) => {
-                                        let newUniversities = Array.isArray(university) ? [...university] : []; // ตรวจสอบว่า educationLevel เป็น array
-                                        newUniversities[index] = e.target.value; // อัปเดตค่าตาม index
-                                        setUniversity(newUniversities); // ตั้งค่าใหม่
-                                    }}
-                                    className={`${!editMode ? `cursor-default ${inputEditColor}` : "cursor-pointer"} ${bgColorMain} whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                    style={{ appearance: 'none' }}
-                                    disabled={!editMode}
-                                    value={Array.isArray(inputUniversity) && inputUniversity[index] !== undefined ? inputUniversity[index] : Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
-                                >
-                                    <option value="0">-</option>
-                                    {universitys?.map((uni, index) => (
-                                        <option key={index} value={uni?.university}>{uni?.university}</option>
-                                    ))}
-                                </select>
-                                <Icon className={`${!editMode ? "hidden" : ""} cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`} path={mdiArrowDownDropCircle} size={.8} />
-                            </div> */}
-                {/* {editMode ? (
-                                <div className={`${bgColorMain} ${bgColor} mt-1 w-64 border px-3 border-gray-400 rounded-lg`}>
-                                    <Autocomplete
-                                        options={universitys}
-                                        value={university[index]}
-                                        getOptionLabel={(option) => option.university}
-                                        inputValue={university || ''}  // ควบคุมค่าที่ผู้ใช้งานป้อนใน input
-                                        onInputChange={(event, newInputValue) => {
-                                            setUniversity(newInputValue);  // อัปเดตค่าที่ผู้ใช้งานป้อนเอง
-                                        }}
-
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                placeholder="ระบุมหาวิทยาลัย"
-                                                sx={{
-                                                    height: '100%',
-                                                    width: '100%',
-                                                    '& .MuiOutlinedInput-root': {
-                                                        padding: 0,    // ปิด padding ภายใน input ของ Material-UI
-                                                        '& fieldset': {
-                                                            display: 'none'  // ซ่อน border ของ input
-                                                        }
-                                                    },
-                                                    '& .MuiInputBase-input': {
-                                                        color: textColorKey  // สีตัวอักษร (เทียบ Tailwind `text-gray-900`)
-                                                    }
-                                                }}
-                                            />
-                                        )}
-
-                                    />
-                                </div>
-                            ) : (
-                                <input
-                                    type="text"
-                                    className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                    onBlur={(e) => handleUniversity(e.target.value, index)}
-                                    defaultValue={Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
-                                    readOnly={!editMode}
-                                    placeholder="ระบุสถานศึกษา"
-                                />
-                            )} */}
-                {/* <input
-                                type="text"
-                                className={`${!editMode ? `cursor-default ${inputEditColor}` : ""} ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                                onBlur={(e) => handleUniversity(e.target.value, index)}
-                                defaultValue={Array.isArray(university) && university[index] !== undefined ? university[index] : ""}
-                                readOnly={!editMode}
-                                placeholder="ระบุสถานศึกษา"
-                            /> */}
                 <div className="relative">
                   <input
                     value={
@@ -1353,7 +1109,7 @@ function editEducation() {
                     <Icon
                       onClick={() =>
                         handleEditNameFile(
-                          session?.user?.id,
+                          dataUser?.uuid,
                           nameFile[index],
                           index
                         )
@@ -1390,47 +1146,32 @@ function editEducation() {
 
         {error && (
           <div className="w-full text-center">
-            <p className="text-red-500">* {error}</p>
+            <TextError text={error} />
           </div>
         )}
         {editMode ? (
           <div className="flex gap-10 w-full justify-center mt-5">
-            <div
-              onClick={() => {
-                setEditMode(false);
-                window.location.reload();
+            <ButtonBG1
+              text={"ยกเลิก"}
+              mdiIcon={mdiCloseCircle}
+              handleClick={() => setEditMode(false)}
+            />
+            <ButtonBG2
+              text={"บันทึก"}
+              mdiIcon={mdiContentSave}
+              handleClick={() => {
+                console.log("Submit Form");
               }}
-              className={`
-                    ${bgColorNavbar} 
-                    ${bgColorWhite} 
-                    hover:cursor-pointer 
-                    bg-[#F97201]  
-                    py-2 px-6 
-                    rounded-2xl 
-                    flex justify-center items-center gap-1 
-                    border border-white
-                  `}
-            >
-              <Icon path={mdiCloseCircle} size={1} />
-              <p>ยกเลิก</p>
-            </div>
-            <button
-              type="submit"
-              className={`${inputTextColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`}
-            >
-              <Icon path={mdiContentSave} size={1} />
-              <p>บันทึก</p>
-            </button>
+              btn
+            />
           </div>
         ) : (
           <div className=" flex w-full justify-center mt-10">
-            <div
-              onClick={() => setEditMode(true)}
-              className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-            >
-              <Icon path={mdiPencil} size={0.8} />
-              <p>แก้ไข</p>
-            </div>
+            <ButtonBG1
+              text={"แก้ไข"}
+              mdiIcon={mdiPencil}
+              handleClick={() => setEditMode(true)}
+            />
           </div>
         )}
       </form>

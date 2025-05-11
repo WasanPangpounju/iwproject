@@ -1,11 +1,12 @@
 import { create } from "zustand";
 import axios from "axios";
 
-export const useUserStore = create((set) => ({
+export const useUserStore = create((set, get) => ({
   dataUser: null, //my users
   loading: false,
 
-  getUserById: async (id) => { //for user id use some component
+  getUserById: async (id) => {
+    //for user id use some component
     set({ loading: true });
 
     try {
@@ -19,7 +20,7 @@ export const useUserStore = create((set) => ({
       set({ loading: false });
     }
   },
-  
+
   getUser: async (id) => {
     const current = useUserStore.getState().dataUser;
     if (current) return;
@@ -47,8 +48,14 @@ export const useUserStore = create((set) => ({
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
         updatedData
       );
-      set({ dataUser: res.data.user });
-      return { ok: true };
+
+      // ถ้าอัปเดต user ที่ล็อกอินอยู่
+      const currentUser = get().dataUser;
+      if (currentUser && currentUser.uuid === id) {
+        set({ dataUser: res.data.user });
+      }
+
+      return { ok: true, user: res.data.user };
     } catch (err) {
       console.error("Error updating user:", err);
       return { ok: false };
@@ -56,7 +63,6 @@ export const useUserStore = create((set) => ({
       set({ loading: false });
     }
   },
-
   checkIdExists: async (idCard, idCardDisabled) => {
     try {
       const res = await fetch(

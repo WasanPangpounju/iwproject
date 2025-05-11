@@ -1,74 +1,33 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import { useTheme } from "../ThemeContext";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 //components
 import HeaderLogo from "../components/HeaderLogo";
 import NavbarSupervisor from "@/app/components/Menu/NavbarSupervisor";
 
+//stores
+import { useUserStore } from "@/stores/useUserStore";
+
 export default function RootLayout({ children }) {
-  const { fontSize, bgColor, bgColorMain } = useTheme();
-
-  const router = useRouter();
-  const { status, data: session } = useSession();
-  const [dataUser, setDataUser] = useState(null);
-  const [loader, setLoader] = useState(false);
-
-  // Validate session and fetch user data
-  useEffect(() => {
-    if (status === "loading") {
-      return;
-    }
-
-    if (!session) {
-      router.replace("/");
-      return;
-    }
-
-    if (session?.user?.id) {
-      getUser(session.user.id);
-    } else {
-      router.replace("/agreement");
-    }
-  }, [status, session, router]);
-  // Redirect to register if dataUser is empty or null
-  useEffect(() => {
-    if (dataUser === null) {
-      return;
-    }
-
-    if (!dataUser || Object.keys(dataUser).length === 0) {
-      router.replace("/agreement");
-    }
-  }, [dataUser, router, session]);
-
-  // Fetch user data from API
-  async function getUser(id) {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Error getting data from API");
+  const {
+      fontSize,
+      bgColor,
+      bgColorMain,
+    } = useTheme();
+  
+    const { data: session } = useSession();
+    const { getUser, dataUser } = useUserStore();
+  
+    useEffect(() => {
+      const id = session?.user?.id
+      if (id) {
+        getUser(id);
       }
-
-      const data = await res.json();
-      setDataUser(data.user || {});
-    } catch (err) {
-      console.error("Error fetching API", err);
-    } finally {
-      setLoader(false);
-    }
-  }
+    }, [session]);
 
   return (
     <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
