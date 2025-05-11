@@ -10,8 +10,9 @@ import { useRouter } from "next/navigation";
 import HeaderLogo from "../components/HeaderLogo";
 import NavbarMain from "../components/Menu/NavbarMain";
 
-//api
+//stores
 import { useUserStore } from "@/stores/useUserStore";
+import { useEducationStore } from "@/stores/useEducationStore";
 
 export default function RootLayout({ children }) {
   const {
@@ -22,11 +23,13 @@ export default function RootLayout({ children }) {
 
   const { data: session } = useSession();
   const { getUser, dataUser } = useUserStore();
+  const { getEducationById } = useEducationStore();
 
   useEffect(() => {
     const id = session?.user?.id
     if (id) {
       getUser(id);
+      getEducationById(id)
     }
   }, [session]);
 

@@ -4,8 +4,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { mdiAccountEdit, mdiContentSave, mdiCloseCircle } from "@mdi/js";
 import Image from "next/image";
-import { storage } from "@/app/firebaseConfig";
-import { PulseLoader } from "react-spinners";
+
 import { useTheme } from "@/app/ThemeContext";
 
 //assets
@@ -22,9 +21,9 @@ import ButtonBG1 from "@/app/components/Button/ButtonBG1";
 import ButtonBG2 from "@/app/components/Button/ButtonBG2";
 
 //hooks
-import { useFirebaseUpload } from "@/hooks/useFirebaseUpload";
 import { usePersonalForm } from "@/hooks/usePersonalForm";
 import { useProvince } from "@/hooks/useProvince";
+import UploadFile from "./UploadFile";
 
 function PersonalForm({ dataUser }) {
   //data value
@@ -67,14 +66,7 @@ function PersonalForm({ dataUser }) {
   const { fontSize, bgColorMain, bgColorMain2, inputGrayColor } = useTheme();
   const { handleEditSubmit, error, errorIdCard, errorIdCardDisabled } =
     usePersonalForm(dataUser, setEditMode);
-  const {
-    inputRef,
-    uploadProgress,
-    downloadURL,
-    isUploading,
-    openFileDialog,
-    uploadFile,
-  } = useFirebaseUpload(storage, "uploads");
+
   const { dataProvince } = useProvince();
 
   // สร้าง Date object สำหรับวันที่ปัจจุบัน
@@ -251,13 +243,6 @@ function PersonalForm({ dataUser }) {
       }
     });
   };
-
-  //upload profille
-  useEffect(() => {
-    if (downloadURL) {
-      setProfile(downloadURL); // ตั้งค่ารูปโปรไฟล์เมื่ออัปโหลดเสร็จ
-    }
-  }, [downloadURL]);
 
   // Check address same address IDCard
   const [statusSameAddress, setSameAddress] = useState(false);
@@ -880,46 +865,19 @@ function PersonalForm({ dataUser }) {
           <LabelForm label={"อัปโหลดรูปโปรไฟล์"} editMode={editMode} />
           <div className="w-32 h-32 relative my-1">
             <Image
-              onClick={openFileDialog}
               className="w-full h-full cursor-pointer"
-              src={profile || downloadURL || "/image/main/user.png"}
+              src={profile || "/image/main/user.png"}
               height={1000}
               width={1000}
               alt="profile"
               priority
             />
-            {isUploading && uploadProgress > 0 && uploadProgress < 100 && (
-              <div className="text-white absolute border top-0 w-full flex flex-col justify-center items-center h-full bg-black opacity-40">
-                <PulseLoader color="#F97201" size={10} />
-              </div>
-            )}
           </div>
-
-          <div
-            className={`${
-              !editMode ? "hidden" : ""
-            } ${bgColorMain} mt-1 flex items-center`}
-          >
-            <input
-              type="file"
-              ref={inputRef}
-              className="hidden"
-              onChange={(e) => uploadFile(e.target.files[0], dataUser.uuid)}
-            />
-
-            <div
-              onClick={openFileDialog}
-              className="border rounded-lg py-2 px-4 text-center bg-gray-300 cursor-pointer"
-            >
-              Choose File
-            </div>
-
-            {isUploading && (
-              <div className="mx-3">
-                <p>{Math.round(uploadProgress)}%</p>
-              </div>
-            )}
-          </div>
+          <UploadFile
+            editMode={editMode}
+            uuid={dataUser?.uuid}
+            setValue={(url) => setProfile(url)} // หรือ setValue(url) ตามที่คุณใช้
+          />
         </div>
       </div>
       {error ? <TextError text={error} /> : null}
