@@ -114,34 +114,7 @@ export default function Home() {
         } finally {
           setLoader(false);
         }
-      } else {
-
-        // if (loginMod === "admin") {
-        //   // setLoader(false);
-        //   // Swal.fire({
-        //   //   title: "เข้าสู่ระบบสำเร็จ",
-        //   //   icon: "success",
-        //   //   confirmButtonText: "ตกลง",
-        //   // })
-        //   // .then((result) => {
-        //   //   if (result.isConfirmed) {
-        //   //     router.replace("/admin");
-        //   //   }
-        //   // });
-        // } else {
-        //   setLoader(false);
-        //   Swal.fire({
-        //     title: "เข้าสู่ระบบสำเร็จ",
-        //     icon: "success",
-        //     confirmButtonText: "ตกลง",
-        //   }).then((result) => {
-        //     if (result.isConfirmed) {
-        //       router.replace("/main");
-        //     }
-        //   });
-        // }
-
-      }
+      } 
     } catch (err) {
       setLoader(false);
       Swal.fire({
