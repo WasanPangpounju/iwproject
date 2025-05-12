@@ -12,7 +12,7 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/
 import { storage } from '@/app/firebaseConfig';
 import { saveAs } from 'file-saver';
 
-function StudentHistoryWork({ dataUser, id, setLoader }) {
+function StudentHistoryWork({ dataUser, id }) {
 
     useEffect(() => {
 
@@ -193,14 +193,14 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
     };
 
     const handleProfileDocument = (event, index) => {
-        setLoader(true);
+       
         const selectedFile = event.target.files[0]; // ไฟล์ที่เลือกจาก input
         if (selectedFile) {
 
             const fileExtension = selectedFile.name.split('.').pop(); // รับนามสกุลไฟล์
             if (fileExtension !== 'pdf' && fileExtension !== 'docx') {
                 setError('กรุณาอัปโหลดไฟล์ PDF, Word เท่านั้น');
-                setLoader(false);
+                
                 return;
             }
 
@@ -220,7 +220,7 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
                     setProjectUploadProgress(progress); // แสดงความก้าวหน้าการอัปโหลด
                 },
                 (error) => {
-                    setLoader(false);
+                    
                     console.error('Error uploading file:', error);
                 },
                 () => {
@@ -243,10 +243,10 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
                             // รีเซ็ตค่าต่าง ๆ หลังจากอัปโหลดสำเร็จ
                             setProjectUploadProgress(0);
                             projectFileInputRef.current.value = '';
-                            setLoader(false);
+                            
                         })
                         .catch((error) => {
-                            setLoader(false);
+                            
                             console.error('Error getting download URL:', error);
                         });
                 }
@@ -473,14 +473,14 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
     };
 
     const handleInternshipDocument = (event, index) => {
-        setLoader(true);
+       
         const selectedFile = event.target.files[0]; // ไฟล์ที่เลือกจาก input
         if (selectedFile) {
 
             const fileExtension = selectedFile.name.split('.').pop(); // รับนามสกุลไฟล์
             if (fileExtension !== 'pdf' && fileExtension !== 'docx') {
                 setError('กรุณาอัปโหลดไฟล์ PDF, Word เท่านั้น');
-                setLoader(false);
+                
                 return;
             }
 
@@ -500,7 +500,7 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
                     setInternshipUploadProgress(progress); // แสดงความก้าวหน้าการอัปโหลด
                 },
                 (error) => {
-                    setLoader(false);
+                    
                     console.error('Error uploading file:', error);
                 },
                 () => {
@@ -523,10 +523,10 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
                             // รีเซ็ตค่าต่าง ๆ หลังจากอัปโหลดสำเร็จ
                             setInternshipUploadProgress(0);
                             internFileInputRef.current.value = '';
-                            setLoader(false);
+                            
                         })
                         .catch((error) => {
-                            setLoader(false);
+                            
                             console.error('Error getting download URL:', error);
                         });
                 }
@@ -734,14 +734,14 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
     };
 
     const handleWorkDocument = (event, index) => {
-        setLoader(true);
+       
         const selectedFile = event.target.files[0];
         if (selectedFile) {
 
             const fileExtension = selectedFile.name.split('.').pop();
             if (fileExtension !== 'pdf' && fileExtension !== 'docx' && fileExtension !== "doc") {
                 setError('กรุณาอัปโหลดไฟล์ PDF, Word เท่านั้น');
-                setLoader(false);
+                
                 return;
             }
 
@@ -758,7 +758,7 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
                     setWorkFileUploadProgress(progress);
                 },
                 (error) => {
-                    setLoader(false);
+                    
                     console.error('Error uploading file:', error);
                 },
                 () => {
@@ -778,10 +778,10 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
                             });
                             setWorkFileUploadProgress(0);
                             workFileInputRef.current.value = '';
-                            setLoader(false);
+                            
                         })
                         .catch((error) => {
-                            setLoader(false);
+                            
                             console.error('Error getting download URL:', error);
                         });
                 }
@@ -829,7 +829,7 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
     async function handleSubmit(e, fieldProjects, fieldInternship, fieldWorks) {
         e.preventDefault();
 
-        setLoader(true);
+       
 
         const mergedProjectName = mergeArrayValues(projectName, getProjectName);
         const mergedProjectDetail = mergeArrayValues(projectDetail, getProjectDetail);
@@ -862,7 +862,7 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
 
         if (isInvalidDateRange) {
             setError("ระบุปีการฝึกงานไม่ถูกต้อง");
-            setLoader(false);
+            
             return; // หยุดการทำงานถ้ามีช่วงวันที่ไม่ถูกต้อง
         }
         const isInvalidDateRangeWork = mergedDateStartWork.find((dateStart, i) => {
@@ -872,7 +872,7 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
 
         if (isInvalidDateRangeWork) {
             setError("ระบุปีการทำงานไม่ถูกต้อง");
-            setLoader(false);
+            
             return; // หยุดการทำงานถ้ามีช่วงวันที่ไม่ถูกต้อง
         }
 
@@ -891,7 +891,7 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
             mergedProjectDetail[fieldProjects]
         if (hasAnyProjectField && !isProjectFieldComplete) {
             setError("กรุณาระบุข้อมูล โครงงาน / ผลงาน ให้ครบทุกช่อง");
-            setLoader(false);
+            
             return;
         }
 
@@ -912,7 +912,7 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
         // ตรวจสอบข้อมูลการฝึกงาน
         if (hasAnyInternshipField && !isInternshipFieldComplete) {
             setError("กรุณาระบุข้อมูล การฝึกงาน ให้ครบทุกช่อง");
-            setLoader(false);
+            
             return;
         }
 
@@ -933,7 +933,7 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
 
         if (hasAnyWorkField && !isWorkFieldComplete) {
             setError("กรุณาระบุข้อมูล การทำงาน ให้ครบทุกช่อง");
-            setLoader(false);
+            
             return;
         }
 
@@ -941,7 +941,7 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
         // หากไม่มีข้อมูลเลยในทุกส่วน
         if (!hasAnyField) {
             setError("ไม่มีข้อมูลที่บันทึก");
-            setLoader(false);
+            
             return;
         }
         // ถ้าผ่านทุกเงื่อนไขให้เคลียร์ error
@@ -1048,7 +1048,7 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
                 }).then(() => {
                     getHistoryWork(id);
                 });
-                setLoader(false);
+                
                 return;
             }
         } catch (error) {
@@ -1062,7 +1062,7 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
             }).then(() => {
                 getHistoryWork(id);
             });
-            setLoader(false);
+            
         }
     }
 
@@ -1159,7 +1159,7 @@ function StudentHistoryWork({ dataUser, id, setLoader }) {
         } catch (err) {
             console.error("Error fetching API", err);
         } finally {
-            setLoader(false);
+            
         }
     }
 

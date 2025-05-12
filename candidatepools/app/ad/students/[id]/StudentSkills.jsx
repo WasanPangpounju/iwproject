@@ -12,7 +12,7 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/
 import { storage } from '@/app/firebaseConfig';
 import { saveAs } from 'file-saver';
 
-function StudentSkills({ dataUser, id, setLoader }) {
+function StudentSkills({ dataUser, id }) {
 
     //Theme
     const {
@@ -273,14 +273,14 @@ function StudentSkills({ dataUser, id, setLoader }) {
     };
 
     const handleTrainDocument = (event, index) => {
-        setLoader(true);
+   
         const selectedFile = event.target.files[0]; // ไฟล์ที่เลือกจาก input
         if (selectedFile) {
 
             const fileExtension = selectedFile.name.split('.').pop(); // รับนามสกุลไฟล์
             if (fileExtension !== 'pdf' && fileExtension !== 'docx' && fileExtension !== "doc") {
                 setError('กรุณาอัปโหลดไฟล์ PDF, Word เท่านั้น');
-                setLoader(false);
+                
                 return;
             }
 
@@ -300,7 +300,7 @@ function StudentSkills({ dataUser, id, setLoader }) {
                     setTrainUploadProgress(progress); // แสดงความก้าวหน้าการอัปโหลด
                 },
                 (error) => {
-                    setLoader(false);
+                    
                     console.error('Error uploading file:', error);
                 },
                 () => {
@@ -323,10 +323,10 @@ function StudentSkills({ dataUser, id, setLoader }) {
                             // รีเซ็ตค่าต่าง ๆ หลังจากอัปโหลดสำเร็จ
                             setTrainUploadProgress(0);
                             trainFileInputRef.current.value = '';
-                            setLoader(false);
+
                         })
                         .catch((error) => {
-                            setLoader(false);
+
                             console.error('Error getting download URL:', error);
                         });
                 }
@@ -373,7 +373,7 @@ function StudentSkills({ dataUser, id, setLoader }) {
     async function handleSubmit(e, fieldSkills, fieldTrains) {
         e.preventDefault();
 
-        setLoader(true);
+   
 
         const mergedSkillType = mergeArrayValues(skillType, getSkillType);
         const mergedSkillName = mergeArrayValues(skillName, getSkillName);
@@ -400,7 +400,7 @@ function StudentSkills({ dataUser, id, setLoader }) {
 
         if (hasAnySkillField && !isSkillFieldComplete) {
             setError("กรุณาระบุข้อมูล ความสามารถ ให้ครบทุกช่อง");
-            setLoader(false);
+            
             return;
         }
 
@@ -415,7 +415,7 @@ function StudentSkills({ dataUser, id, setLoader }) {
         // ตรวจสอบข้อมูลการฝึกงาน
         if (hasAnyTrainField && !isTrainFieldComplete) {
             setError("กรุณาระบุข้อมูล การอบรม ให้ครบทุกช่อง");
-            setLoader(false);
+            
             return;
         }
 
@@ -423,7 +423,7 @@ function StudentSkills({ dataUser, id, setLoader }) {
         // หากไม่มีข้อมูลเลยในทุกส่วน
         if (!hasAnyField) {
             setError("ไม่มีข้อมูลที่บันทึก");
-            setLoader(false);
+            
             return;
         }
 
@@ -472,7 +472,6 @@ function StudentSkills({ dataUser, id, setLoader }) {
                     confirmButtonText: "ตกลง",
                     confirmButtonColor: "#0d96f8",
                 }).then(() => {
-                    setLoader(false)
                     setEditMode(false)
                 });
             } else {
@@ -486,7 +485,7 @@ function StudentSkills({ dataUser, id, setLoader }) {
                 }).then(() => {
                     setEditMode(false)
                 });
-                setLoader(false);
+                
                 return;
             }
         } catch (error) {
@@ -500,7 +499,7 @@ function StudentSkills({ dataUser, id, setLoader }) {
             }).then(() => {
                 setEditMode(false)
             });
-            setLoader(false);
+            
         }
     }
 
@@ -546,7 +545,7 @@ function StudentSkills({ dataUser, id, setLoader }) {
         } catch (err) {
             console.error("Error fetching API", err);
         } finally {
-            setLoader(false);
+            
         }
     }
 

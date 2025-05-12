@@ -15,7 +15,7 @@ import { storage } from '@/app/firebaseConfig';
 import { useTheme } from "@/app/ThemeContext";
 
 
-function StudentEducation({ dataUser, id, setLoader }) {
+function StudentEducation({ dataUser, id }) {
 
     //Theme
     const {
@@ -82,9 +82,7 @@ function StudentEducation({ dataUser, id, setLoader }) {
 
         } catch (err) {
             console.error("Error fetching API", err);
-        } finally {
-            setLoader(false);
-        }
+        } 
     }
 
     //add array
@@ -258,14 +256,13 @@ function StudentEducation({ dataUser, id, setLoader }) {
     };
 
     const handleDocument = (event) => {
-        setLoader(true);
         const selectedFile = event.target.files[0]; // ไฟล์ที่เลือกจาก input
         if (selectedFile) {
 
             const fileExtension = selectedFile.name.split('.').pop(); // รับนามสกุลไฟล์
             if (fileExtension !== 'pdf' && fileExtension !== "docx" && fileExtension !== "doc") {
                 setError('กรุณาอัปโหลดไฟล์ PDF หรือ Word เท่านั้น');
-                setLoader(false);
+                
                 return;
             }
 
@@ -290,7 +287,7 @@ function StudentEducation({ dataUser, id, setLoader }) {
                     setUploadProgress(progress); // แสดงความก้าวหน้าการอัปโหลด
                 },
                 (error) => {
-                    setLoader(false);
+                    
                     console.error('Error uploading file:', error);
                 },
                 () => {
@@ -304,10 +301,10 @@ function StudentEducation({ dataUser, id, setLoader }) {
                             setUploadProgress(0);
                             setInputNameFile('');
                             inputFileRef.current.value = '';
-                            setLoader(false);
+                            
                         })
                         .catch((error) => {
-                            setLoader(false);
+                            
                             console.error('Error getting download URL:', error);
                         });
                 }
@@ -318,7 +315,6 @@ function StudentEducation({ dataUser, id, setLoader }) {
     async function handleSubmit(e, n) {
         e.preventDefault();
 
-        setLoader(true);
 
         n -= 1; // ลดค่า n เพื่อใช้ index ที่ถูกต้อง
 
@@ -340,14 +336,14 @@ function StudentEducation({ dataUser, id, setLoader }) {
         // ตรวจสอบว่า uploadProgress มีค่าหรือไม่
         if (uploadProgress !== 0) {
             setError("เอกสารกำลังอัพโหลด");
-            setLoader(false);
+            
             return;
         }
 
         // ตรวจสอบ typePerson
         if (typePerson === "0" || !typePerson) {
             setError("ระบุข้อมูลให้ครบทุกช่อง");
-            setLoader(false);
+            
             return;
         }
 
@@ -367,7 +363,7 @@ function StudentEducation({ dataUser, id, setLoader }) {
             !grade[n]
         ) {
             setError("ระบุข้อมูลให้ครบทุกช่อง");
-            setLoader(false);
+            
             return;
         }
 
@@ -375,7 +371,7 @@ function StudentEducation({ dataUser, id, setLoader }) {
         if (typePerson === "นักศึกษาพิการ") {
             if (!level[0]) {
                 setError("ระบุข้อมูลให้ครบทุกช่อง");
-                setLoader(false);
+                
                 return;
             }
         }
@@ -383,7 +379,7 @@ function StudentEducation({ dataUser, id, setLoader }) {
         else if (typePerson === "บัณฑิตพิการ") {
             if (!yearGraduation || n >= yearGraduation.length || !yearGraduation[n]) {
                 setError("ระบุข้อมูลให้ครบทุกช่อง");
-                setLoader(false);
+                
                 return;
             }
         }
@@ -417,7 +413,7 @@ function StudentEducation({ dataUser, id, setLoader }) {
             });
 
             if (!res.ok) {
-                setLoader(false);
+                
                 Swal.fire({
                     title: "เกิดข้อผิดพลาด",
                     text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
@@ -430,7 +426,7 @@ function StudentEducation({ dataUser, id, setLoader }) {
                 return;
             }
 
-            setLoader(false);
+            
             Swal.fire({
                 title: "บันทึกข้อมูลสำเร็จ",
                 icon: "success",
@@ -442,7 +438,7 @@ function StudentEducation({ dataUser, id, setLoader }) {
 
         } catch (err) {
             console.log(err);
-            setLoader(false);
+            
             setError("เกิดข้อผิดพลาดในการเชื่อมต่อ");
         }
     }

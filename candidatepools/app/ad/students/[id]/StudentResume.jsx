@@ -37,7 +37,7 @@ function StudentResume({ dataUser, id, setLoader }) {
     return (
         <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
             {statusResume > 0 ? (
-                <Resume type={statusResume} dataUser={dataUser} id={id} setLoader={setLoader} setStatusResume={setStatusResume} />
+                <Resume type={statusResume} dataUser={dataUser} id={id} setStatusResume={setStatusResume} />
             ) : (
                 <>
                     <p>สร้างเรซูเม่</p>
