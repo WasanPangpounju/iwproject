@@ -8,8 +8,6 @@ import Icon from '@mdi/react'
 import { mdiFileDocument, mdiMicrosoftExcel, mdiMagnify, mdiArrowDownDropCircle, mdiPlus, mdiContentSave, mdiCloseThick } from '@mdi/js'
 import dataWorkType from '@/assets/dataWorkType'
 import Link from 'next/link'
-import EditUser from '@/app/su/usermanagement/components/EditUser'
-import AddUser from '@/app/su/usermanagement/components/AddUser'
 import UniversityData from './components/UniversityData'
 
 //table

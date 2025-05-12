@@ -14,8 +14,6 @@ import {
   mdiContentSave,
   mdiCloseThick,
 } from "@mdi/js";
-import EditUser from "@/app/su/usermanagement/components/EditUser";
-import AddUser from "@/app/su/usermanagement/components/AddUser";
 import useProvinceData from "@/app/components/province";
 
 //table
@@ -316,11 +314,6 @@ function AdminManagement() {
             <Icon className="" path={mdiArrowLeftCircle} size={1} />
             <p>ย้อนกลับ</p>
           </div>
-          <AddUser
-            setAddUser={setAddUser}
-            dataUser={dataUser}
-            setLoader={setLoader}
-          />
         </div>
       ) : !idDetail ? (
         <>
@@ -529,12 +522,6 @@ function AdminManagement() {
             <Icon className="" path={mdiArrowLeftCircle} size={1} />
             <p>ย้อนกลับ</p>
           </div>
-          <EditUser
-            id={idDetail}
-            setIdDetail={setIdDetail}
-            setLoader={setLoader}
-            page="admin"
-          />
         </div>
       )}
     </div>

@@ -23,7 +23,7 @@ export const useUserStore = create((set, get) => ({
 
   getUser: async (id) => {
     const current = useUserStore.getState().dataUser;
-    if (current) return;
+    if (current && current.uuid === id) return;
 
     set({ loading: true });
 

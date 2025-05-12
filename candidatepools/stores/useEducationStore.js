@@ -5,7 +5,10 @@ export const useEducationStore = create((set, get) => ({
   dataEducations: null, //my users
   loading: false,
 
-  getEducationById: async (id) => {
+  getEducation: async (id) => {
+    const current = useEducationStore.getState().dataEducations;
+    if (current && current.uuid === id) return;
+
     set({ loading: true });
 
     try {
@@ -14,6 +17,22 @@ export const useEducationStore = create((set, get) => ({
       );
 
       set({ dataEducations: res.data.educations });
+    } catch (err) {
+      console.error("Error fetching educations:", err);
+      set({ dataEducations: null });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  getEducationById: async (id) => {
+    set({ loading: true });
+
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${id}`
+      );
+
       return res.data.educations;
     } catch (err) {
       console.error("Error fetching user:", err);

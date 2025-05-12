@@ -11,7 +11,7 @@ import dataWorkType from '@/assets/dataWorkType'
 import useProvinceData from "@/app/components/province"
 import Swal from 'sweetalert2'
 
-function StudentInterestedWork({ dataUser, id, setLoader }) {
+function StudentInterestedWork({ dataUser, id }) {
 
     const {
         setFontSize,
@@ -215,7 +215,7 @@ function StudentInterestedWork({ dataUser, id, setLoader }) {
     async function handleSubmit(e, fieldWorks) {
         e.preventDefault();
 
-        setLoader(true);
+       
 
         const mergedWorkType = mergeArrayValues(workType, getWorkType);
         const mergedWorkDetail = mergeArrayValues(workDetail, getWorkDetail);
@@ -242,19 +242,19 @@ function StudentInterestedWork({ dataUser, id, setLoader }) {
 
         if (hasAnyWorkField && !isWorkFieldComplete) {
             setError("กรุณาระบุข้อมูลให้ครบทุกช่อง");
-            setLoader(false);
+          
             return;
         }
 
         for (let i = 0; i <= mergedWorkProvince1?.length; i++) {
             if (mergedWorkProvince1[i] === "0") {
                 setError("กรุณาระบุข้อมูลให้ถูกต้อง");
-                setLoader(false);
+              
                 return;
             }
             if (mergedWorkProvince3[i] && mergedWorkProvince3[i] !== "0" && (mergedWorkProvince2[i] === "0" || !mergedWorkProvince2[i])) {
                 setError("กรุณาระบุข้อมูลให้ถูกต้อง");
-                setLoader(false);
+              
                 return;
             }
         }
@@ -262,7 +262,7 @@ function StudentInterestedWork({ dataUser, id, setLoader }) {
         // หากไม่มีข้อมูลเลยในทุกส่วน
         if (!hasAnyWorkField) {
             setError("ไม่มีข้อมูลที่บันทึก");
-            setLoader(false);
+          
             return;
         }
 
@@ -315,7 +315,7 @@ function StudentInterestedWork({ dataUser, id, setLoader }) {
                 }).then(() => {
                     getDataWorks(id)
                 });
-                setLoader(false);
+              
                 return;
             }
         } catch (error) {
@@ -329,7 +329,7 @@ function StudentInterestedWork({ dataUser, id, setLoader }) {
             }).then(() => {
                 getDataWorks(id)
             });
-            setLoader(false);
+          
         }
     }
 
@@ -377,7 +377,7 @@ function StudentInterestedWork({ dataUser, id, setLoader }) {
         } catch (err) {
             console.error("Error fetching API", err);
         } finally {
-            setLoader(false);
+          
         }
     }
 

@@ -23,13 +23,13 @@ export default function RootLayout({ children }) {
 
   const { data: session } = useSession();
   const { getUser, dataUser } = useUserStore();
-  const { getEducationById } = useEducationStore();
+  const { getEducation } = useEducationStore();
 
   useEffect(() => {
     const id = session?.user?.id
     if (id) {
       getUser(id);
-      getEducationById(id)
+      getEducation(id)
     }
   }, [session]);
 

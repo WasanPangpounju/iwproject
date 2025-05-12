@@ -17,7 +17,6 @@ import {
 import dataWorkType from "@/assets/dataWorkType";
 import Link from "next/link";
 import EditCompany from "./component/EditCompany";
-import AddUser from "@/app/su/usermanagement/components/AddUser";
 import useProvinceData from "@/app/components/province";
 import AddCompany from "./component/AddCompany";
 

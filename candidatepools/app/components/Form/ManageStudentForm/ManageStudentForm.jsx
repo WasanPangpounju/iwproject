@@ -1,0 +1,259 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import { useTheme } from "@/app/ThemeContext";
+import Icon from "@mdi/react";
+import { mdiCloseCircle, mdiArrowLeftCircle } from "@mdi/js";
+import Swal from "sweetalert2";
+import Link from "next/link";
+
+import { useParams } from "next/navigation";
+import { usePathname } from "next/navigation";
+
+//stores
+import { useUserStore } from "@/stores/useUserStore";
+
+function ManageStudentForm({ children, rootPath }) {
+  //Theme
+  const { bgColorWhite, inputGrayColor } = useTheme();
+
+  //stores
+  const { getUserById } = useUserStore();
+
+  //params
+  const { id } = useParams();
+
+  const [dataUser, setDataUser] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const user = await getUserById(id);
+      setDataUser(user);
+    }
+    if (id) {
+      fetchData();
+    }
+  }, [getUserById, id]);
+
+  //set age
+  const today = new Date();
+  const yearToday = today.getFullYear();
+
+  //set path active
+  const rootPathId = `${rootPath}/${id}`;
+  const pathName = usePathname();
+  const selectNav = pathName.split(`/${id}/`)[1]?.split("/")[0] ?? "";
+
+  //delete account
+  async function deletedUser(id, idCard, name) {
+    Swal.fire({
+      title: `คุณต้องการลบบัญชี \n"${name}" ?`,
+      text: `ใส่เลขบัตรประชาชน "${idCard}" ของบัญชีเพื่อยืนยัน`,
+      input: "text",
+      inputAttributes: {
+        autocapitalize: "off",
+      },
+      showCancelButton: true,
+      cancelButtonText: "ยกเลิก",
+      confirmButtonText: "ยืนยัน",
+      confirmButtonColor: "#f27474",
+      showLoaderOnConfirm: true,
+      preConfirm: async (input) => {
+        try {
+          if (input !== idCard) {
+            throw new Error("ID Card ไม่ถูกต้อง.");
+          }
+          return { status: "success", message: "ID Card matches." };
+        } catch (error) {
+          Swal.showValidationMessage(`
+                      ${error.message}
+                    `);
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
+            {
+              method: "DELETE",
+              cache: "no-store",
+            }
+          );
+
+          if (!res.ok) {
+            throw new Error("Error getting data from API");
+          }
+
+          let timerInterval;
+          Swal.fire({
+            title: "กำลังลบข้อมูลบัญชี",
+            html: "<b></b> milliseconds.",
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading();
+              const timer = Swal.getPopup().querySelector("b");
+              timerInterval = setInterval(() => {
+                timer.textContent = `${Swal.getTimerLeft()}`;
+              }, 100);
+            },
+            willClose: () => {
+              clearInterval(timerInterval);
+            },
+          }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log("I was closed by the timer");
+              window.location.reload();
+            }
+          });
+        } catch (err) {
+          console.error("Error fetching API", err);
+          Swal.fire({
+            title: "เกิดข้อผิดพลาด",
+            text: "ไม่สามารถลบบัญชีได้",
+            icon: "error",
+          });
+        }
+      }
+    });
+  }
+  return (
+    <>
+      <Link
+        href={`${rootPath}`}
+        className="cursor-pointer flex gap-2 items-center "
+      >
+        <Icon className="" path={mdiArrowLeftCircle} size={1} />
+        <p>ย้อนกลับ</p>
+      </Link>
+      <div>
+        {dataUser ? (
+          <div className="flex gap-10 mt-5 relative">
+            <div>
+              <Image
+                priority
+                alt="icon"
+                className="w-28 h-28"
+                src={dataUser.profile || "/image/main/user.png"}
+                height={1000}
+                width={1000}
+              />
+            </div>
+            <div className="flex flex-col gap-2 justify-center">
+              <p>
+                {dataUser?.prefix || ""} {dataUser?.firstName}{" "}
+                {dataUser?.lastName}{" "}
+              </p>
+              <p>ชื่อเล่น: {dataUser?.nickname || "ไม่มีข้อมูล"}</p>
+              <p>
+                อายุ:{" "}
+                {dataUser?.yearBirthday
+                  ? `${yearToday - dataUser?.yearBirthday} ปี`
+                  : "ไม่มีข้อมูล"}{" "}
+              </p>
+            </div>
+            <div className="absolute right-0 top-0">
+              <Icon
+                onClick={() =>
+                  deletedUser(
+                    dataUser?._id,
+                    dataUser?.idCard,
+                    dataUser?.firstName
+                  )
+                }
+                className={` cursor-pointer text-red-400 mx-2`}
+                path={mdiCloseCircle}
+                size={0.8}
+              />
+            </div>
+          </div>
+        ) : (
+          <div>กำลังโหลดข้อมูล...</div>
+        )}
+        <div>
+          <nav className="flex gap-2 mt-5">
+            <Link
+              href={`${rootPathId}`}
+              className={`${
+                selectNav === ""
+                  ? inputGrayColor === "bg-[#74c7c2]" || ""
+                    ? `bg-[#0d96f8] ${bgColorWhite}`
+                    : ""
+                  : ""
+              }  cursor-pointer px-4 py-2 rounded-md`}
+            >
+              ข้อมูลส่วนบุลคล
+            </Link>
+            <Link
+              href={`${rootPathId}/education`}
+              className={`${
+                selectNav === "education"
+                  ? inputGrayColor === "bg-[#74c7c2]" || ""
+                    ? `bg-[#0d96f8] ${bgColorWhite}`
+                    : ""
+                  : ""
+              } cursor-pointer px-4 py-2 rounded-md`}
+            >
+              ประวัติการศึกษา
+            </Link>
+            <Link
+              href={`${rootPathId}/historywork`}
+              className={`${
+                selectNav === "historywork"
+                  ? inputGrayColor === "bg-[#74c7c2]" || ""
+                    ? `bg-[#0d96f8] ${bgColorWhite}`
+                    : ""
+                  : ""
+              } cursor-pointer px-4 py-2 rounded-md`}
+            >
+              ประวัติการฝึกงาน/ทำงาน
+            </Link>
+            <Link
+              href={`${rootPathId}/skills`}
+              className={`${
+                selectNav === "skills"
+                  ? inputGrayColor === "bg-[#74c7c2]" || ""
+                    ? `bg-[#0d96f8] ${bgColorWhite}`
+                    : ""
+                  : ""
+              } cursor-pointer px-4 py-2 rounded-md`}
+            >
+              ความสามารถ/การอบรม
+            </Link>
+            <Link
+              href={`${rootPathId}/interestedwork`}
+              className={`${
+                selectNav === "interestedwork"
+                  ? inputGrayColor === "bg-[#74c7c2]" || ""
+                    ? `bg-[#0d96f8] ${bgColorWhite}`
+                    : ""
+                  : ""
+              } cursor-pointer px-4 py-2 rounded-md`}
+            >
+              ลักษณะงานที่สนใจ
+            </Link>
+            <Link
+              href={`${rootPathId}/resume`}
+              className={`${
+                selectNav === "resume"
+                  ? inputGrayColor === "bg-[#74c7c2]" || ""
+                    ? `bg-[#0d96f8] ${bgColorWhite}`
+                    : ""
+                  : ""
+              } cursor-pointer px-4 py-2 rounded-md`}
+            >
+              เรซูเม่
+            </Link>
+          </nav>
+        </div>
+        <hr className="border-gray-500 mt-1" />
+        {children}
+      </div>
+    </>
+  );
+}
+
+export default ManageStudentForm;
