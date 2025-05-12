@@ -696,7 +696,6 @@ function SupervisorPage() {
         </div>
         <StudentDetail
           id={idDetail}
-          setIdDetail={setIdDetail}
           setLoader={setLoader}
         />
       </div>

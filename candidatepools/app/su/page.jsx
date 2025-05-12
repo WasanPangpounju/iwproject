@@ -19,33 +19,14 @@ import PieChart from "@/app/su/components/ChartDisabled";
 function SupervisorPage() {
   //Theme
   const {
-    setFontSize,
-    setBgColor,
-    setBgColorNavbar,
-    setBgColorWhite,
-    setBgColorMain,
-    setBgColorMain2,
-    fontSize,
-    bgColorNavbar,
     bgColor,
-    bgColorWhite,
-    bgColorMain,
     bgColorMain2,
-    setLineBlack,
-    lineBlack,
-    setTextBlue,
-    textBlue,
-    setRegisterColor,
-    registerColor,
-    inputEditColor,
-    inputGrayColor,
   } = useTheme();
 
   const [loader, setLoader] = useState(false);
 
   const router = useRouter();
   const { status, data: session } = useSession();
-  const [dataUser, setDataUser] = useState([]);
 
   // Validate session and fetch user data
   useEffect(() => {
@@ -55,36 +36,11 @@ function SupervisorPage() {
     setLoader(false);
 
     if (session?.user?.id) {
-      getUser(session.user.id);
       getDataAllUser();
       getDataEducations();
     } 
 
   }, [status, session, router]);
-
-  //get data from user
-  async function getUser(id) {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Error getting data from API");
-      }
-
-      const data = await res.json();
-      setDataUser(data.user || {});
-    } catch (err) {
-      console.error("Error fetching API", err);
-    } finally {
-      setLoader(false);
-    }
-  }
 
   //get allUser
   const [users, setUsers] = useState([]);

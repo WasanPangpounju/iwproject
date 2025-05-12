@@ -6,28 +6,11 @@ import { useTheme } from "../ThemeContext";
 
 function MainPage() {
   const {
-    setFontSize,
     fontHeadSize,
-    setFontHeadSize,
-    setBgColor,
-    setBgColorNavbar,
-    setBgColorWhite,
-    setBgColorMain,
-    setBgColorMain2,
     fontSize,
-    bgColorNavbar,
     bgColor,
-    bgColorWhite,
-    bgColorMain,
     bgColorMain2,
-    setLineBlack,
-    lineBlack,
-    setTextBlue,
-    textBlue,
-    setRegisterColor,
-    registerColor,
   } = useTheme();
-
 
   return (
     <>
