@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 
 import { useTheme } from "../ThemeContext";
 import { useSession } from "next-auth/react";
@@ -12,22 +12,16 @@ import NavbarSupervisor from "@/app/components/Menu/NavbarSupervisor";
 //stores
 import { useUserStore } from "@/stores/useUserStore";
 
+//hooks 
+import { useFetchUserData } from "@/hooks/useFetchUserData";
+
 export default function RootLayout({ children }) {
-  const {
-      fontSize,
-      bgColor,
-      bgColorMain,
-    } = useTheme();
-  
-    const { data: session } = useSession();
-    const { getUser, dataUser } = useUserStore();
-  
-    useEffect(() => {
-      const id = session?.user?.id
-      if (id) {
-        getUser(id);
-      }
-    }, [session]);
+   const { fontSize, bgColor, bgColorMain } = useTheme();
+   const { data: session } = useSession();
+   const id = session?.user?.id;
+ 
+   useFetchUserData(id);
+   const { dataUser } = useUserStore();
 
   return (
     <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>

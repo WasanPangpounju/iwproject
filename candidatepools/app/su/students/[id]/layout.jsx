@@ -1,19 +1,39 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "@/app/ThemeContext";
+import { UserDataByIdContext } from "@/contexts/UserDataByIdContext";
 
 //components
 import ManageStudentForm from "@/app/components/Form/ManageStudentForm/ManageStudentForm";
 
+//hooks
+import { fetchUserDataById } from "@/hooks/useFetchUserDataById";
+import { useParams } from "next/navigation";
+
 export default function RootLayout({ children }) {
   const { bgColorMain2, bgColor } = useTheme();
+  const [data, setUserData] = useState(null);
+  const { id } = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchUserDataById(id);
+      setUserData(data);
+    };
+
+    fetchData();
+  }, [id]);
+
+  if (!data) return <div>กำลังโหลด...</div>;
 
   return (
-    <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
-      <ManageStudentForm rootPath={"/su/students"}>
-        {children}
-      </ManageStudentForm>
-    </div>
+    <UserDataByIdContext.Provider value={data}>
+      <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
+        <ManageStudentForm rootPath={"/su/students"}>
+          {children}
+        </ManageStudentForm>
+      </div>
+    </UserDataByIdContext.Provider>
   );
 }

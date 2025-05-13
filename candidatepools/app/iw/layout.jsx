@@ -12,26 +12,15 @@ import NavbarMain from "../components/Menu/NavbarMain";
 
 //stores
 import { useUserStore } from "@/stores/useUserStore";
-import { useEducationStore } from "@/stores/useEducationStore";
 
+import { useFetchUserData } from "@/hooks/useFetchUserData";
 export default function RootLayout({ children }) {
-  const {
-    fontSize,
-    bgColor,
-    bgColorMain,
-  } = useTheme();
-
+  const { fontSize, bgColor, bgColorMain } = useTheme();
   const { data: session } = useSession();
-  const { getUser, dataUser } = useUserStore();
-  const { getEducation } = useEducationStore();
+  const id = session?.user?.id;
 
-  useEffect(() => {
-    const id = session?.user?.id
-    if (id) {
-      getUser(id);
-      getEducation(id)
-    }
-  }, [session]);
+  useFetchUserData(id);
+  const { dataUser } = useUserStore();
 
   return (
     <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
