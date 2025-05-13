@@ -1,0 +1,70 @@
+import { create } from "zustand";
+import axios from "axios";
+
+export const useSkillStore = create((set, get) => ({
+  dataSkills: null,
+  loading: false,
+
+  getDataSkills: async (id) => {
+    const current = useSkillStore.getState().dataSkills;
+    if (current && current.uuid === id) return;
+
+    set({ loading: true });
+
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/skill/${id}`
+      );
+
+      set({ dataSkills: res.data.skills });
+    } catch (err) {
+      console.error("Error fetching skills:", err);
+      set({ dataSkills: null });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  getSkillById: async (id) => {
+    set({ loading: true });
+
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/skill/${id}`
+      );
+
+      return res.data.skills;
+    } catch (err) {
+      console.error("Error fetching skill by ID:", err);
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  updateSkillById: async (updatedData) => {
+    set({ loading: true });
+
+    const id = updatedData.uuid;
+
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/skill`,
+        updatedData
+      );
+
+      const current = get().dataSkills;
+      if (current && current.uuid === id) {
+        set({ dataSkills: res.data.skills });
+      }
+
+      return { ok: true };
+    } catch (err) {
+      console.error("Error updating skills:", err);
+      return { ok: false, error: err };
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  clearSkills: () => set({ dataSkills: null }),
+}));
