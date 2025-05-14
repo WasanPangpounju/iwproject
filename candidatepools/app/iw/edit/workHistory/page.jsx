@@ -12,7 +12,7 @@ function page() {
   const { dataUser } = useUserStore();
   const { dataHistoryWork } = useHistoryWorkStore();
   return (
-    <div>
+    <div className="rounded-lg p-5">
       <HistoryWorkForm id={dataUser?.uuid} dataHistoryWork={dataHistoryWork} />
     </div>
   );

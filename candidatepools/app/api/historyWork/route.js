@@ -22,7 +22,7 @@ export async function POST(req) {
             { upsert: true, new: true } // สร้างใหม่ถ้าไม่พบข้อมูล (upsert) และคืนค่าเอกสารที่อัปเดตแล้ว
         );
 
-        return NextResponse.json({ message: "Education data created/updated successfully", data: result }, { status: 200 });
+        return NextResponse.json({ message: "Education data created/updated successfully", historyWork: result }, { status: 200 });
     } catch (error) {
         console.error("Error creating/updating education data:", error);
         return NextResponse.json({ message: "Error creating/updating education data" }, { status: 500 });
