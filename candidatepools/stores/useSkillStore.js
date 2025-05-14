@@ -3,6 +3,7 @@ import axios from "axios";
 
 export const useSkillStore = create((set, get) => ({
   dataSkills: null,
+  dataSkillById: null,
   loading: false,
 
   getDataSkills: async (id) => {
@@ -33,6 +34,7 @@ export const useSkillStore = create((set, get) => ({
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/skill/${id}`
       );
 
+      set({ dataSkillById: res.data.skills });
       return res.data.skills;
     } catch (err) {
       console.error("Error fetching skill by ID:", err);
@@ -55,6 +57,8 @@ export const useSkillStore = create((set, get) => ({
       const current = get().dataSkills;
       if (current && current.uuid === id) {
         set({ dataSkills: res.data.skills });
+      } else {
+        set({ dataSkillById: res.data.skills });
       }
 
       return { ok: true };
@@ -67,4 +71,5 @@ export const useSkillStore = create((set, get) => ({
   },
 
   clearSkills: () => set({ dataSkills: null }),
+  clearSkillById: () => set({ dataSkillById: null }),
 }));

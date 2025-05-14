@@ -19,7 +19,7 @@ function editEducation() {
 
   return (
     <div className={`mt-5 ${bgColorMain2} ${bgColor} rounded-lg p-5`}>
-      <InterestedWorkForm dataUser={dataUser} dataWorks={dataWorks} />
+      <InterestedWorkForm id={dataUser?.uuid} dataWorks={dataWorks} />
     </div>
   );
 }

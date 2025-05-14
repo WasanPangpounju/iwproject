@@ -3,6 +3,7 @@ import axios from "axios";
 
 export const useEducationStore = create((set, get) => ({
   dataEducations: null, //my users
+  dataEducationById: null, //my users
   loading: false,
 
   getEducation: async (id) => {
@@ -33,6 +34,7 @@ export const useEducationStore = create((set, get) => ({
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${id}`
       );
 
+      set({ dataEducationById: res.data.educations });
       return res.data.educations;
     } catch (err) {
       console.error("Error fetching user:", err);
@@ -53,8 +55,9 @@ export const useEducationStore = create((set, get) => ({
 
       const current = get().dataEducations;
       if (current && current.uuid === id) {
-        console.log("res: ", res)
         set({ dataEducations: res.data.educations });
+      } else {
+        set({ dataEducationById: res.data.educations });
       }
 
       return { ok: true };
@@ -106,5 +109,6 @@ export const useEducationStore = create((set, get) => ({
     }
   },
 
-  clearUser: () => set({ dataEducations: null }),
+  clearEducations: () => set({ dataEducations: null }),
+  clearEducationById: () => set({ dataEducationById: null }),
 }));

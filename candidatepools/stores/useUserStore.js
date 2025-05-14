@@ -3,6 +3,7 @@ import axios from "axios";
 
 export const useUserStore = create((set, get) => ({
   dataUser: null, //my users
+  dataUserById: null, //my users
   loading: false,
 
   getUserById: async (id) => {
@@ -13,6 +14,8 @@ export const useUserStore = create((set, get) => ({
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`
       );
+      
+      set({ dataUserById: res.data.user });
       return res.data.user;
     } catch (err) {
       console.error("Error fetching user:", err);
@@ -53,6 +56,8 @@ export const useUserStore = create((set, get) => ({
       const currentUser = get().dataUser;
       if (currentUser && currentUser.uuid === id) {
         set({ dataUser: res.data.user });
+      } else {
+        set({ dataUserById: res.data.user });
       }
 
       return { ok: true, user: res.data.user };
@@ -88,4 +93,5 @@ export const useUserStore = create((set, get) => ({
   },
 
   clearUser: () => set({ dataUser: null }),
+  clearUserById: () => set({ dataUserById: null }),
 }));

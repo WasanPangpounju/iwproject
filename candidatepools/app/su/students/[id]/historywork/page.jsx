@@ -5,14 +5,17 @@ import React from 'react'
 //component
 import HistoryWorkForm from '@/app/components/Form/HistoryWorkForm';
 
-//context
-import { useUserDataById } from '@/contexts/UserDataByIdContext'
+//stores
+import { useHistoryWorkStore } from '@/stores/useHistoryWorkStore';
+import { useUserStore } from '@/stores/useUserStore';
 
 function page() {
-  const { dataUser, dataHistoryWork } = useUserDataById();
+  const { dataHistoryWorkById } = useHistoryWorkStore();
+  const { dataUserById } = useUserStore();
+  
   return (
     <div className="mt-5">
-      <HistoryWorkForm dataHistoryWork={dataHistoryWork} id={dataUser?.uuid}/>
+      <HistoryWorkForm dataHistoryWork={dataHistoryWorkById} id={dataUserById?.uuid}/>
     </div>
   )
 }

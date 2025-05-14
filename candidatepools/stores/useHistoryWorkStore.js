@@ -3,6 +3,7 @@ import axios from "axios";
 
 export const useHistoryWorkStore = create((set, get) => ({
   dataHistoryWork: null, //my users
+  dataHistoryWorkById: null, //my users
   loading: false,
 
   getDataHistoryWork: async (id) => {
@@ -33,6 +34,7 @@ export const useHistoryWorkStore = create((set, get) => ({
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/historyWork/${id}`
       );
 
+      set({ dataHistoryWorkById: res.data.historyWork });
       return res.data.historyWork;
     } catch (err) {
       console.error("Error fetching historyWork by ID:", err);
@@ -55,6 +57,8 @@ export const useHistoryWorkStore = create((set, get) => ({
       const current = get().dataHistoryWork;
       if (current && current.uuid === id) {
         set({ dataHistoryWork: res.data.historyWork });
+      } else {
+        set({ dataHistoryWorkById: res.data.historyWork });
       }
 
       return { ok: true };
@@ -67,4 +71,5 @@ export const useHistoryWorkStore = create((set, get) => ({
   },
 
   clearHistoryWork: () => set({ dataHistoryWork: null }),
+  clearHistoryWorkById: () => set({ dataHistoryWorkById: null }),
 }));
