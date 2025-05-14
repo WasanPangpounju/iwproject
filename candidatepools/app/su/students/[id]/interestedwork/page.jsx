@@ -5,15 +5,16 @@ import React from "react";
 //component
 import InterestedWorkForm from "@/app/components/Form/InterestedWorkForm";
 
-//context
-import { useUserDataById } from "@/contexts/UserDataByIdContext";
-
+//stores
+import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
+import { useUserStore } from "@/stores/useUserStore";
 function page() {
-  const { dataUser, dataWorks } = useUserDataById();
+  const { dataUserById } = useUserStore();
+  const { dataWorkById } = useInterestedWorkStore();
 
   return (
     <div className={`mt-5 `}>
-      <InterestedWorkForm dataWorks={dataWorks} id={dataUser?.uuid} />
+      <InterestedWorkForm dataWorks={dataWorkById} id={dataUserById?.uuid} />
     </div>
   );
 }

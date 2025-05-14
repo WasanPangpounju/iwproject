@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 //stores
 import { useUserStore } from "@/stores/useUserStore";
 import { useEducationStore } from "@/stores/useEducationStore";
@@ -5,27 +7,33 @@ import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
 import { useSkillStore } from "@/stores/useSkillStore";
 import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
 
-export const fetchUserDataById = async (id) => {
-  const { getUserById } = useUserStore.getState();
-  const { getEducationById } = useEducationStore.getState();
-  const { getHistoryWorkById } = useHistoryWorkStore.getState();
-  const { getSkillById } = useSkillStore.getState();
-  const { getInterestedWorkById } = useInterestedWorkStore.getState();
+export const useFetchUserDataById = (id) => {
+  const { getUserById } = useUserStore();
+  const { getEducationById } = useEducationStore();
+  const { getHistoryWorkById } = useHistoryWorkStore();
+  const { getSkillById } = useSkillStore();
+  const { getInterestedWorkById } = useInterestedWorkStore();
 
-  const [dataUser, dataEducation, dataHistoryWork, dataSkills, dataWorks] =
-    await Promise.all([
-      getUserById(id),
-      getEducationById(id),
-      getHistoryWorkById(id),
-      getSkillById(id),
-      getInterestedWorkById(id),
-    ]);
+  useEffect(() => {
+    if (!id) return;
 
-  return {
-    dataUser,
-    dataEducation,
-    dataHistoryWork,
-    dataSkills,
-    dataWorks,
-  };
+    const fetchAll = async () => {
+      await Promise.all([
+        getUserById(id),
+        getEducationById(id),
+        getHistoryWorkById(id),
+        getSkillById(id),
+        getInterestedWorkById(id),
+      ]);
+    };
+
+    fetchAll();
+  }, [
+    id,
+    getUserById,
+    getEducationById,
+    getHistoryWorkById,
+    getSkillById,
+    getInterestedWorkById,
+  ]);
 };

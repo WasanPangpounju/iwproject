@@ -5,14 +5,17 @@ import React from "react";
 //component
 import SkillForm from "@/app/components/Form/SkillForm";
 
-//context
-import { useUserDataById } from "@/contexts/UserDataByIdContext";
+//hooks
+import { useUserStore } from "@/stores/useUserStore";
+import { useSkillStore } from "@/stores/useSkillStore";
 
 function page() {
-  const { dataUser, dataSkills } = useUserDataById();
+  const { dataSkillById } = useSkillStore();
+  const { dataUserById } = useUserStore();
+
   return (
     <div className="mt-5">
-      <SkillForm dataSkills={dataSkills} id={dataUser?.uuid} />
+      <SkillForm dataSkills={dataSkillById} id={dataUserById?.uuid} />
     </div>
   );
 }

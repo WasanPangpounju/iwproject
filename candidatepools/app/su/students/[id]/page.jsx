@@ -5,15 +5,16 @@ import React from "react";
 // component
 import PersonalForm from "@/app/components/Form/PersonalForm";
 
-//context
-import { useUserDataById } from "@/contexts/UserDataByIdContext";
+//hooks
+import { useUserStore } from "@/stores/useUserStore";
+
 
 function Page() {
-  const { dataUser } = useUserDataById();
+  const { dataUserById } = useUserStore();
 
   return (
     <div className="mt-5">
-      <PersonalForm dataUser={dataUser} />
+      <PersonalForm dataUser={dataUserById} />
     </div>
   );
 }

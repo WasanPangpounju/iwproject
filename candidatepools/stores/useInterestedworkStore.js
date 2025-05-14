@@ -3,6 +3,7 @@ import axios from "axios";
 
 export const useInterestedWorkStore = create((set, get) => ({
   dataWorks: null,
+  dataWorkById: null,
   loading: false,
 
   getDataInterestedWork: async (id) => {
@@ -33,6 +34,7 @@ export const useInterestedWorkStore = create((set, get) => ({
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/interestedwork/${id}`
       );
 
+      set({ dataWorkById: res.data.interestedWork });
       return res.data.interestedWork;
     } catch (err) {
       console.error("Error fetching interestedwork by ID:", err);
@@ -55,6 +57,8 @@ export const useInterestedWorkStore = create((set, get) => ({
       const current = get().dataWorks;
       if (current && current.uuid === id) {
         set({ dataWorks: res.data.interestedWork });
+      } else {
+        set({ dataWorkById: res.data.interestedWork });
       }
 
       return { ok: true };
@@ -67,4 +71,5 @@ export const useInterestedWorkStore = create((set, get) => ({
   },
 
   clearInterestedWork: () => set({ dataWorks: null }),
+  clearInterestedWorkById: () => set({ dataWorkById: null }),
 }));

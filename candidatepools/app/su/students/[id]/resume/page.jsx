@@ -5,20 +5,26 @@ import React from "react";
 //component
 import ResumeComponent from "@/app/components/Resume/ResumeComponent";
 
-//context
-import { useUserDataById } from "@/contexts/UserDataByIdContext";
+//stores
+import { useUserStore } from "@/stores/useUserStore";
+import { useEducationStore } from "@/stores/useEducationStore";
+import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
+import { useSkillStore } from "@/stores/useSkillStore";
 
 function page() {
-  const { dataUser, dataHistoryWork, dataSkills, dataEducation } =
-    useUserDataById();
+
+  const { dataUserById } = useUserStore();
+  const { dataEducationById } = useEducationStore();
+  const { dataHistoryWorkById } = useHistoryWorkStore();
+  const { dataSkillById } = useSkillStore();
 
   return (
     <div className="mt-5">
       <ResumeComponent
-        dataUser={dataUser}
-        dataEducations={dataEducation}
-        dataHistoryWork={dataHistoryWork}
-        dataSkills={dataSkills}
+        dataUser={dataUserById}
+        dataEducations={dataEducationById}
+        dataHistoryWork={dataHistoryWorkById}
+        dataSkills={dataSkillById}
       />
     </div>
   );

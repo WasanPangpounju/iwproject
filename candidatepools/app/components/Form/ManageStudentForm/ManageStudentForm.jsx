@@ -19,22 +19,10 @@ function ManageStudentForm({ children, rootPath }) {
   const { bgColorWhite, inputGrayColor } = useTheme();
 
   //stores
-  const { getUserById } = useUserStore();
+  const { dataUserById } = useUserStore();
 
   //params
   const { id } = useParams();
-
-  const [dataUser, setDataUser] = useState([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const user = await getUserById(id);
-      setDataUser(user);
-    }
-    if (id) {
-      fetchData();
-    }
-  }, [getUserById, id]);
 
   //set age
   const today = new Date();
@@ -130,28 +118,28 @@ function ManageStudentForm({ children, rootPath }) {
         <p>ย้อนกลับ</p>
       </Link>
       <div>
-        {dataUser ? (
+        {dataUserById ? (
           <div className="flex gap-10 mt-5 relative">
             <div>
               <Image
                 priority
                 alt="icon"
                 className="w-28 h-28"
-                src={dataUser.profile || "/image/main/user.png"}
+                src={dataUserById.profile || "/image/main/user.png"}
                 height={1000}
                 width={1000}
               />
             </div>
             <div className="flex flex-col gap-2 justify-center">
               <p>
-                {dataUser?.prefix || ""} {dataUser?.firstName}{" "}
-                {dataUser?.lastName}{" "}
+                {dataUserById?.prefix || ""} {dataUserById?.firstName}{" "}
+                {dataUserById?.lastName}{" "}
               </p>
-              <p>ชื่อเล่น: {dataUser?.nickname || "ไม่มีข้อมูล"}</p>
+              <p>ชื่อเล่น: {dataUserById?.nickname || "ไม่มีข้อมูล"}</p>
               <p>
                 อายุ:{" "}
-                {dataUser?.yearBirthday
-                  ? `${yearToday - dataUser?.yearBirthday} ปี`
+                {dataUserById?.yearBirthday
+                  ? `${yearToday - dataUserById?.yearBirthday} ปี`
                   : "ไม่มีข้อมูล"}{" "}
               </p>
             </div>
@@ -159,9 +147,9 @@ function ManageStudentForm({ children, rootPath }) {
               <Icon
                 onClick={() =>
                   deletedUser(
-                    dataUser?._id,
-                    dataUser?.idCard,
-                    dataUser?.firstName
+                    dataUserById?._id,
+                    dataUserById?.idCard,
+                    dataUserById?.firstName
                   )
                 }
                 className={` cursor-pointer text-red-400 mx-2`}
