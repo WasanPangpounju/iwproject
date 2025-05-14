@@ -16,6 +16,7 @@ export default function RootLayout({ children }) {
   const [data, setUserData] = useState(null);
   const { id } = useParams();
 
+  //15/05/68 ติดปัญหาเรื่องต้องรีเฟรชข้อมูลถึงอัปเดท
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchUserDataById(id);

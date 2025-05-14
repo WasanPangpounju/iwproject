@@ -24,8 +24,14 @@ import {
 import { storage } from "@/app/firebaseConfig";
 import { saveAs } from "file-saver";
 
+//stores
+import { useSkillStore } from "@/stores/useSkillStore";
+
 function SkillForm({ dataSkills, id }) {
   const [error, setError] = useState("");
+
+  //store
+  const { updateSkillById } = useSkillStore()
 
   //Theme
   const {
@@ -460,18 +466,7 @@ function SkillForm({ dataSkills, id }) {
 
     try {
       // ส่งข้อมูลไปยัง API ด้วย fetch
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/skill`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      const result = await response.json();
+      const response = await updateSkillById(data)
 
       if (response.ok) {
         Swal.fire({
@@ -483,7 +478,7 @@ function SkillForm({ dataSkills, id }) {
           setEditMode(false);
         });
       } else {
-        console.error("Failed to submit data:", result.message);
+        console.error("Failed to submit data");
         Swal.fire({
           title: "เกิดข้อผิดพลาด",
           text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
@@ -586,7 +581,7 @@ function SkillForm({ dataSkills, id }) {
   return (
     <form
       onSubmit={(e) => handleSubmit(e, skills.length, trains.length)}
-      className={`${bgColorMain2} ${bgColor} rounded-lg p-5 flex flex-col gap-16`}
+      className={`${bgColorMain2} ${bgColor} flex flex-col gap-16`}
     >
       <div>
         <p className="mb-2">ความสามารถ</p>

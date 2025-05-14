@@ -8,11 +8,12 @@ import { useUserStore } from "@/stores/useUserStore";
 
 //component
 import SkillForm from "@/app/components/Form/SkillForm";
+
 function page() {
   const { dataUser } = useUserStore();
   const { dataSkills } = useSkillStore();
   return (
-    <div>
+    <div className="rounded-lg p-5">
       <SkillForm id={dataUser?.uuid} dataSkills={dataSkills} />
     </div>
   );

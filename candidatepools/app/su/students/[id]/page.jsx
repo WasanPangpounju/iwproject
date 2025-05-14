@@ -13,7 +13,7 @@ function Page() {
 
   return (
     <div className="mt-5">
-      {dataUser && <PersonalForm dataUser={dataUser} />}
+      <PersonalForm dataUser={dataUser} />
     </div>
   );
 }

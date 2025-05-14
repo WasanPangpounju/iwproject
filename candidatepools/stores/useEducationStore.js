@@ -53,6 +53,7 @@ export const useEducationStore = create((set, get) => ({
 
       const current = get().dataEducations;
       if (current && current.uuid === id) {
+        console.log("res: ", res)
         set({ dataEducations: res.data.educations });
       }
 

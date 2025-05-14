@@ -1291,7 +1291,7 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
       onSubmit={(e) =>
         handleSubmit(e, projects.length, internships.length, works.length)
       }
-      className={`${bgColorMain2} ${bgColor} ${fontSize} rounded-lg p-5 flex flex-col gap-16`}
+      className={`${bgColorMain2} ${bgColor} ${fontSize} flex flex-col gap-16`}
     >
       <div>
         <p className="mb-2">โครงงาน / ผลงาน</p>

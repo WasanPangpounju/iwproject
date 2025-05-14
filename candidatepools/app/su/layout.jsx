@@ -12,16 +12,16 @@ import NavbarSupervisor from "@/app/components/Menu/NavbarSupervisor";
 //stores
 import { useUserStore } from "@/stores/useUserStore";
 
-//hooks 
+//hooks
 import { useFetchUserData } from "@/hooks/useFetchUserData";
 
 export default function RootLayout({ children }) {
-   const { fontSize, bgColor, bgColorMain } = useTheme();
-   const { data: session } = useSession();
-   const id = session?.user?.id;
- 
-   useFetchUserData(id);
-   const { dataUser } = useUserStore();
+  const { fontSize, bgColor, bgColorMain } = useTheme();
+  const { data: session } = useSession();
+  const id = session?.user?.id;
+
+  useFetchUserData(id);
+  const { dataUser } = useUserStore();
 
   return (
     <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
