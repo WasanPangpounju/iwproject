@@ -14,7 +14,6 @@ export default function RootLayout({ children }) {
   const { bgColorMain2, bgColor } = useTheme();
   const { id } = useParams();
 
-  //15/05/68 เปลี่ยนจากเก็บข้อมูลใน context ไปใช้ zustand เก็บแทนแต่ยังไมเคลียร์ data ตอนที่ไม่ได้เข้ามาทำให้เกิดข้อมูลเก่าโชว์แวบนึง
   useFetchUserDataById(id); 
 
   return (

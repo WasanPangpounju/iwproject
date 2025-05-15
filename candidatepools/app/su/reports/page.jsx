@@ -24,6 +24,13 @@ import { exportToCSV } from "@/hooks/useCsvExport"; // หรือ "@/utils/csv
 import ReportTable from "@/app/components/Table/ReportTable";
 import SelectFilter from "@/app/components/Form/SelectFilter";
 
+//enum
+import {
+  REPORT_CONTENT_TYPE,
+  REPORT_HEADER_TYPE,
+  REPORT_TYPE_ALL,
+} from "@/const/enum";
+
 // รายงานลักษณะงานที่สนใจ
 const columnWork = [
   { id: "number", label: "ลำดับ", minWidth: 50 },
@@ -58,17 +65,28 @@ const columnStudents = [
   { id: "details", label: "ทั้งหมด", minWidth: 170, align: "center" },
 ];
 
+// รายงานนักศึกษาตามประเภท
+const columnStudentCatagory = [
+  { id: "id", label: "ลำดับ", minWidth: 170 },
+  { id: "name", label: "ชื่อ-สกุล", minWidth: 170 },
+  { id: "university", label: "สถาบันการศึกษา", minWidth: 170, align: "center" },
+  { id: "typePerson", label: "ประเภทบุคคล", minWidth: 170, align: "center" },
+  { id: "level", label: "ระดับชั้น", minWidth: 170, align: "center" },
+  { id: "disabled", label: "ความพิการ", minWidth: 170, align: "center" },
+];
+
 function ReportPage() {
   const [studentData, setStudentData] = useState([]);
   const [loaderTable, setLoaderTable] = useState(true);
   const [dataWorks, setDataWorks] = useState([]);
   const [dataEducations, setDataEducations] = useState(null);
   const [typePersonSearch, setTypePersonSearch] = useState("");
-  const [header, setHeader] = useState("แยกตามจำนวน");
-  const [content, setContent] = useState("ตามมหาวิทยาลัย");
-  const [contentType, setContentType] = useState("ทั้งหมด");
-  const [universityActive, setUniversityActive] =
-    useState("มหาวิทยาลัยทั้งหมด");
+  const [header, setHeader] = useState(REPORT_TYPE_ALL.HEADER_ALL);
+  const [content, setContent] = useState(REPORT_TYPE_ALL.SELECT_TYPE);
+  const [contentType, setContentType] = useState(REPORT_TYPE_ALL.ALL);
+  const [universityActive, setUniversityActive] = useState(
+    REPORT_TYPE_ALL.UNIVERSITY
+  );
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -160,7 +178,7 @@ function ReportPage() {
       item.typePerson
     );
     const matchUniversity =
-      universityActive === "มหาวิทยาลัยทั้งหมด" || // แสดงทั้งหมดถ้าเลือก "ทั้งหมด"
+      universityActive === REPORT_TYPE_ALL.UNIVERSITY || // แสดงทั้งหมดถ้าเลือก "ทั้งหมด"
       dataEducations.find(
         (edu) =>
           edu.uuid === item.uuid && edu.university?.includes(universityActive)
@@ -247,6 +265,21 @@ function ReportPage() {
     })
     .filter(Boolean);
 
+  // กรองข้อมูลตาม student to catagoty
+  const rowStudentsCatagory = studentDataReal
+    .map((uni, index) => {
+      const education = dataEducations.find((item) => item.uuid === uni.uuid);
+      return {
+        id: index + 1,
+        name: `${uni.firstName} ${uni.lastName}` || "-",
+        university: `${uni.university}` || "-",
+        typePerson: uni.typePerson || "-",
+        level: education.educationLevel.join(", ") || "-",
+        disabled: uni.typeDisabled.join(", ") || "-",
+      };
+    })
+    .filter(Boolean);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -256,20 +289,23 @@ function ReportPage() {
     setPage(0);
   };
   // ---------- Static Filter Options ----------
-  const haederData = ["แยกตามจำนวน", "แยกตามประเภท"];
+  const haederData = [
+    REPORT_TYPE_ALL.HEADER_ALL,
+    REPORT_HEADER_TYPE.COUNT,
+    REPORT_HEADER_TYPE.CATEGORY,
+  ];
+
   const contentData = [
-    "ตามมหาวิทยาลัย",
-    "ตามประเภทความพิการ",
-    "ตามประเภทบุคคล",
-    "ตามลักษณะงานที่สนใจ",
+    REPORT_TYPE_ALL.SELECT_TYPE,
+    ...Object.values(REPORT_CONTENT_TYPE),
   ];
 
   const universityData = [
-    "มหาวิทยาลัยทั้งหมด",
+    REPORT_TYPE_ALL.UNIVERSITY,
     ...universitys.map((item) => item.university),
   ];
-  const disabledData = ["ทั้งหมด", ...dataDisabled];
-  const workData = ["ทั้งหมด", ...dataWorkType];
+  const disabledData = [REPORT_TYPE_ALL.ALL, ...dataDisabled];
+  const workData = [REPORT_TYPE_ALL.ALL, ...dataWorkType];
 
   // ---------- Summary by TypePerson ----------
   const calculateTotalByType = (type) =>
@@ -290,7 +326,8 @@ function ReportPage() {
 
   // ---------- Summary by Disability ----------
   const dataDisabledFilter =
-    contentType === "ทั้งหมด" && content === "ตามประเภทความพิการ"
+    contentType === REPORT_TYPE_ALL.ALL &&
+    content === REPORT_CONTENT_TYPE.DISABLED
       ? dataDisabled
       : dataDisabled.filter((item) => item === contentType);
 
@@ -319,7 +356,8 @@ function ReportPage() {
 
   // ---------- Summary by Work Type ----------
   const dataWorkTypeFilter =
-    contentType === "ทั้งหมด" && content === "ตามลักษณะงานที่สนใจ"
+    contentType === REPORT_TYPE_ALL.ALL &&
+    content === REPORT_CONTENT_TYPE.INTERESTED_WORK
       ? dataWorkType
       : dataWorkType.filter((item) => item === contentType);
 
@@ -350,36 +388,61 @@ function ReportPage() {
   const rowWorks = calculateWorkStats();
 
   const tableConfig = {
-    ตามมหาวิทยาลัย: {
-      columns: columnStudents,
-      rows: rowStudents,
+    แยกตามจำนวน: {
+      ตามมหาวิทยาลัย: {
+        columns: columnStudents,
+        rows: rowStudents,
+      },
+      ตามประเภทความพิการ: {
+        columns: columnDisabled,
+        rows: rowDisabled,
+      },
+      ตามประเภทบุคคล: {
+        columns: columnTypePerson,
+        rows: rowTypePerson,
+      },
+      ตามลักษณะงานที่สนใจ: {
+        columns: columnWork,
+        rows: rowWorks,
+      },
     },
-    ตามประเภทความพิการ: {
-      columns: columnDisabled,
-      rows: rowDisabled,
-    },
-    ตามประเภทบุคคล: {
-      columns: columnTypePerson,
-      rows: rowTypePerson,
-    },
-    ตามลักษณะงานที่สนใจ: {
-      columns: columnWork,
-      rows: rowWorks,
+    แยกตามประเภท: {
+      ตามมหาวิทยาลัย: {
+        columns: columnStudentCatagory,
+        rows: rowStudentsCatagory,
+      },
+      ตามประเภทความพิการ: {
+        columns: columnStudentCatagory,
+        rows: rowStudentsCatagory,
+      },
+      ตามประเภทบุคคล: {
+        columns: columnStudentCatagory,
+        rows: rowStudentsCatagory,
+      },
+      ตามลักษณะงานที่สนใจ: {
+        columns: columnStudentCatagory,
+        rows: rowStudentsCatagory,
+      },
     },
   };
 
-  const config = tableConfig[content];
+  const config = tableConfig[header]?.[content] || {
+    columns: [],
+    rows: [],
+  };
 
   // ---------- Clear Filters ----------
   const handleHeaderChange = (value) => {
     setHeader(value);
-    setContent("ตามมหาวิทยาลัย"); // clear child
-    setContentType("ทั้งหมด"); // clear grandchild
+    // setContent(REPORT_TYPE_ALL.SELECT_TYPE); // clear child
+    // setContentType(REPORT_TYPE_ALL.ALL); // clear grandchild
+    setPage(0);
   };
 
   const handleContentChange = (value) => {
     setContent(value);
-    setContentType("ทั้งหมด"); // clear grandchild
+    setContentType(REPORT_TYPE_ALL.ALL); // clear grandchild
+    setPage(0);
   };
 
   return (
@@ -388,14 +451,18 @@ function ReportPage() {
         <label>หัวข้อรายงาน</label>
         <div className="flex gap-5 mt-3">
           <SelectFilter setValue={handleHeaderChange} data={haederData} />
-          {header === "แยกตามจำนวน" && (
+          {header !== REPORT_TYPE_ALL.HEADER_ALL && (
             <SelectFilter setValue={handleContentChange} data={contentData} />
           )}
-          {content === "ตามประเภทความพิการ" ||
-          content === "ตามลักษณะงานที่สนใจ" ? (
+          {content === REPORT_CONTENT_TYPE.DISABLED ||
+          content === REPORT_CONTENT_TYPE.INTERESTED_WORK ? (
             <SelectFilter
               setValue={setContentType}
-              data={content === "ตามประเภทความพิการ" ? disabledData : workData}
+              data={
+                content === REPORT_CONTENT_TYPE.DISABLED
+                  ? disabledData
+                  : workData
+              }
             />
           ) : null}
         </div>
@@ -495,7 +562,7 @@ function ReportPage() {
         loaderTable ? (
           <div className="py-2">กำลังโหลดข้อมูล...</div>
         ) : studentData?.length > 1 ? (
-          header === "แยกตามจำนวน" ? (
+          header !== REPORT_TYPE_ALL.HEADER_ALL ? (
             <ReportTable
               columns={config.columns}
               resultRows={config.rows}
@@ -508,10 +575,10 @@ function ReportPage() {
             <></>
           )
         ) : (
-          <>ไม่มีข้อมูล</>
+          <></>
         )
       ) : (
-        <>ไม่มีข้อมูล</>
+        <></>
       )}
     </div>
   );

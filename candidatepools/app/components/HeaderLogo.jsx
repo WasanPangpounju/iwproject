@@ -39,11 +39,11 @@ function HeaderLogo({title,dataUser}) {
             <div>
                 
             </div>
-            <div className=" flex py-4 px-5">
+            <div className=" flex py-2 px-5">
                 
-                <Image priority alt="icon" className='w-auto h-14' src="/image/main/iw.png" height={1000} width={1000} />
-                <Image priority alt="icon" className='w-auto h-14' src="/image/main/eee.png" height={1000} width={1000} />
-                <Image priority alt="icon" className='w-auto h-14' src="/image/main/sss.png" height={1000} width={1000} />
+                <Image priority alt="icon" className='w-auto h-20' src="/image/logo.png" height={1000} width={1000} />
+                {/* <Image priority alt="icon" className='w-auto h-14' src="/image/main/eee.png" height={1000} width={1000} />
+                <Image priority alt="icon" className='w-auto h-14' src="/image/main/sss.png" height={1000} width={1000} /> */}
                 <div className="-z-10 bg-orange-200 w-10 h-14 rounded-tl-full absolute bottom-0 right-0"></div>
             </div>
         </nav>
