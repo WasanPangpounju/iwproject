@@ -4,6 +4,7 @@ import axios from "axios";
 export const useEducationStore = create((set, get) => ({
   dataEducations: null, //my users
   dataEducationById: null, //my users
+  dataEducationAll: null, //my users
   loading: false,
 
   getEducation: async (id) => {
@@ -21,6 +22,23 @@ export const useEducationStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching educations:", err);
       set({ dataEducations: null });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+   getEducationAll: async () => {
+    set({ loading: true });
+
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`
+      );
+
+      set({ dataEducationAll: res.data.educations });
+    } catch (err) {
+      console.error("Error fetching educations:", err);
+      set({ dataEducationAll: null });
     } finally {
       set({ loading: false });
     }
@@ -110,5 +128,6 @@ export const useEducationStore = create((set, get) => ({
   },
 
   clearEducations: () => set({ dataEducations: null }),
+  clearEducationAll: () => set({ dataEducationAll: null }),
   clearEducationById: () => set({ dataEducationById: null }),
 }));

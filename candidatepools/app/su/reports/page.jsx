@@ -12,7 +12,6 @@ import {
 } from "@mdi/js";
 
 //select datas
-import universitys from "@/app/data/universitys.json";
 import dataWorkType from "@/assets/dataWorkType";
 import dataDisabled from "@/assets/dataDisabled";
 
@@ -23,6 +22,7 @@ import { exportToCSV } from "@/hooks/useCsvExport"; // หรือ "@/utils/csv
 //component
 import ReportTable from "@/app/components/Table/ReportTable";
 import SelectFilter from "@/app/components/Form/SelectFilter";
+import InputUniversityAutoComplete from "@/app/components/Form/InputUniversityAutoComplete";
 
 //enum
 import {
@@ -30,6 +30,13 @@ import {
   REPORT_HEADER_TYPE,
   REPORT_TYPE_ALL,
 } from "@/const/enum";
+
+//store
+import { useUserStore } from "@/stores/useUserStore";
+import { useEducationStore } from "@/stores/useEducationStore";
+import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
+import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
+import { dataStatus } from "@/assets/dataStatus";
 
 // รายงานลักษณะงานที่สนใจ
 const columnWork = [
@@ -57,12 +64,17 @@ const columnDisabled = [
 ];
 
 // รายงานนักศึกษาตามสถาบันการศึกษา
-const columnStudents = [
+const columnCountUni = [
   { id: "name", label: "ลำดับ", minWidth: 170 },
   { id: "university", label: "สถาบันการศึกษา", minWidth: 170 },
-  { id: "level", label: "จำนวนนักศึกษา", minWidth: 170, align: "center" },
-  { id: "disabled", label: "จำนวนบัณฑิตพิการ", minWidth: 170, align: "center" },
-  { id: "details", label: "ทั้งหมด", minWidth: 170, align: "center" },
+  { id: "student", label: "จำนวนนักศึกษา", minWidth: 170, align: "center" },
+  {
+    id: "graduation",
+    label: "จำนวนบัณฑิตพิการ",
+    minWidth: 170,
+    align: "center",
+  },
+  { id: "total", label: "ทั้งหมด", minWidth: 170, align: "center" },
 ];
 
 // รายงานนักศึกษาตามประเภท
@@ -76,209 +88,136 @@ const columnStudentCatagory = [
 ];
 
 function ReportPage() {
-  const [studentData, setStudentData] = useState([]);
-  const [loaderTable, setLoaderTable] = useState(true);
-  const [dataWorks, setDataWorks] = useState([]);
-  const [dataEducations, setDataEducations] = useState(null);
-  const [typePersonSearch, setTypePersonSearch] = useState("");
+  //store
+  const { dataStudents } = useUserStore();
+  const { dataEducationAll } = useEducationStore();
+  const { dataWorkAll } = useInterestedWorkStore();
+  const { dataHistoryWorkAll } = useHistoryWorkStore();
+
+  // Theme
+  const { bgColor, bgColorWhite, bgColorMain, bgColorMain2, inputGrayColor } =
+    useTheme();
+
+  const [dataState, setDataState] = useState();
   const [header, setHeader] = useState(REPORT_TYPE_ALL.HEADER_ALL);
   const [content, setContent] = useState(REPORT_TYPE_ALL.SELECT_TYPE);
   const [contentType, setContentType] = useState(REPORT_TYPE_ALL.ALL);
-  const [universityActive, setUniversityActive] = useState(
-    REPORT_TYPE_ALL.UNIVERSITY
-  );
+  const [yearActive, setYearActive] = useState(REPORT_TYPE_ALL.ALL);
+  const [universityActive, setUniversityActive] = useState("");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const { data: session } = useSession();
   const { exportExcel } = useExcelExport();
 
-  // Theme
-  const { bgColor, bgColorWhite, bgColorMain, bgColorMain2, inputGrayColor } =
-    useTheme();
-
-  // Lifecycle: Fetch initial data
+  //setDataState
   useEffect(() => {
-    fetchStudentData();
-    fetchEducationData();
-    fetchWorkData();
-  }, []);
-
-  // Fetch: นักศึกษา
-  async function fetchStudentData() {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/students`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch student data");
-      }
-
-      const data = await res.json();
-      setStudentData(data.user || {});
-    } catch (error) {
-      console.error("Error fetching student data:", error);
-    } finally {
-      setLoaderTable(false);
+    if (dataStudents || dataEducationAll || dataWorkAll || dataHistoryWorkAll) {
+      setDataState({
+        dataStudents,
+        dataEducationAll,
+        dataWorkAll,
+        dataHistoryWorkAll,
+      });
     }
-  }
+  }, [dataStudents, dataEducationAll, dataWorkAll, dataHistoryWorkAll]);
 
-  // Fetch: ลักษณะงานที่สนใจ
-  async function fetchWorkData() {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/interestedwork`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
+  //filter
+  useEffect(() => {
+    if (
+      !dataStudents ||
+      !dataEducationAll ||
+      !dataWorkAll ||
+      !dataHistoryWorkAll
+    )
+      return;
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch work data");
-      }
-
-      const data = await res.json();
-      setDataWorks(data.interestedWork || {});
-    } catch (error) {
-      console.error("Error fetching work data:", error);
-    }
-  }
-
-  // Fetch: การศึกษา
-  async function fetchEducationData() {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch education data");
-      }
-
-      const data = await res.json();
-      setDataEducations(data.educations || {});
-    } catch (error) {
-      console.error("Error fetching education data:", error);
-    }
-  }
-
-  // ---------- Filtered Student Data ----------
-  const studentDataReal = studentData.filter((item) => {
-    const isValidType = ["นักศึกษาพิการ", "บัณฑิตพิการ"].includes(
-      item.typePerson
+    // สร้าง Map สำหรับการเข้าถึงข้อมูลรวดเร็ว
+    const educationMap = new Map(
+      dataEducationAll.map((item) => [item.uuid, item])
     );
-    const matchUniversity =
-      universityActive === REPORT_TYPE_ALL.UNIVERSITY || // แสดงทั้งหมดถ้าเลือก "ทั้งหมด"
-      dataEducations.find(
-        (edu) =>
-          edu.uuid === item.uuid && edu.university?.includes(universityActive)
-      );
+    const workMap = new Map(dataWorkAll.map((item) => [item.uuid, item]));
+    const historyMap = new Map(
+      dataHistoryWorkAll.map((item) => [item.uuid, item])
+    );
 
-    return isValidType && matchUniversity;
-  });
+    let filteredStudents = [...dataStudents];
 
-  //table
-  function createData(name, university, level, disabled, details, uuid) {
-    return { name, university, level, disabled, details, uuid };
-  }
-  // สร้างปีย้อนหลัง 10 ปีจากปีปัจจุบัน
+    if (yearActive && yearActive !== REPORT_TYPE_ALL.ALL) {
+      filteredStudents = filteredStudents.filter((student) => {
+        const year = new Date(student.createdAt).getFullYear().toString();
+        return year === yearActive;
+      });
+    }
+    if (universityActive) {
+      filteredStudents = filteredStudents.filter((student) => {
+        const edu = educationMap.get(student.uuid);
+        return edu?.university?.some((uniName) =>
+          uniName.toLowerCase().includes(universityActive.toLowerCase())
+        );
+      });
+    }
+
+    if (contentType !== REPORT_TYPE_ALL.ALL) {
+      if (content === REPORT_CONTENT_TYPE.DISABLED) {
+        filteredStudents = filteredStudents.filter((student) =>
+          student?.typeDisabled?.some((type) => type === contentType)
+        );
+      }
+
+      if (content === REPORT_CONTENT_TYPE.INTERESTED_WORK) {
+        filteredStudents = filteredStudents.filter((student) => {
+          const work = workMap.get(student.uuid);
+          return work?.interestedWork?.some(
+            (interest) => interest.type === contentType
+          );
+        });
+      }
+
+      if (content === REPORT_CONTENT_TYPE.STATUS) {
+        filteredStudents = filteredStudents.filter((student) => {
+          const history = historyMap.get(student.uuid);
+          return history?.statusNow === contentType;
+        });
+      }
+    }
+
+    // 3. ให้ dataEducationAll, dataWorkAll, dataHistoryWorkAll สอดคล้องกับ filteredStudents
+    const filteredUUIDs = new Set(filteredStudents.map((s) => s.uuid));
+
+    const filteredEducation = dataEducationAll.filter((edu) =>
+      filteredUUIDs.has(edu.uuid)
+    );
+    const filteredWork = dataWorkAll.filter((work) =>
+      filteredUUIDs.has(work.uuid)
+    );
+    const filteredHistory = dataHistoryWorkAll.filter((hist) =>
+      filteredUUIDs.has(hist.uuid)
+    );
+
+    // 4. Set state
+    setDataState({
+      dataStudents: filteredStudents,
+      dataEducationAll: filteredEducation,
+      dataWorkAll: filteredWork,
+      dataHistoryWorkAll: filteredHistory,
+    });
+  }, [
+    universityActive,
+    contentType,
+    content,
+    yearActive,
+    dataStudents,
+    dataEducationAll,
+    dataWorkAll,
+    dataHistoryWorkAll,
+  ]);
+
+  console.log("dataState: ", dataState);
+
+  // set year 10 later
   const yearToday = new Date().getFullYear();
   const years = Array.from({ length: 10 }, (_, i) => yearToday - i);
-
-  // เก็บข้อมูลตามปีและรวมทั้งหมด
-  let universityByYear = [];
-  let count = 0;
-
-  // รวมข้อมูลจาก studentData และ dataEducations
-  studentDataReal?.forEach((std) => {
-    if (std?.role !== "user" || std?.uuid === session?.user?.id) return;
-
-    const year = std?.createdAt?.split("-")[0];
-    const education = dataEducations?.find((edu) => edu?.uuid === std?.uuid);
-    if (!education?.university) return;
-
-    const type = education?.typePerson;
-    if (!["นักศึกษาพิการ", "บัณฑิตพิการ"].includes(type)) return;
-
-    // ดึงหรือสร้างข้อมูลตามปี
-    const getYearData = (targetYear) => {
-      let yearGroup = universityByYear.find((item) => item.year === targetYear);
-      if (!yearGroup) {
-        yearGroup = { year: targetYear, data: [] };
-        universityByYear.push(yearGroup);
-      }
-      return yearGroup;
-    };
-
-    const yearGroup = getYearData(year);
-    const allGroup = getYearData("all");
-
-    education.university.forEach((uni) => {
-      const updateGroup = (group) => {
-        const existing = group.data.find((item) => item.university === uni);
-        if (existing) {
-          if (type === "นักศึกษาพิการ") existing.student += 1;
-          else if (type === "บัณฑิตพิการ") existing.graduation += 1;
-        } else {
-          group.data.push({
-            university: uni,
-            student: type === "นักศึกษาพิการ" ? 1 : 0,
-            graduation: type === "บัณฑิตพิการ" ? 1 : 0,
-          });
-        }
-      };
-
-      updateGroup(yearGroup);
-      updateGroup(allGroup);
-    });
-  });
-
-  // เลือกข้อมูลจากปีที่ต้องการแสดง
-  const selectedYearGroup = universityByYear.find((group) =>
-    typePersonSearch ? group.year === typePersonSearch : group.year === "all"
-  );
-
-  const showData = selectedYearGroup?.data || [];
-
-  // กรองข้อมูลตามคำค้นหา แล้วแปลงเป็น row
-  const rowStudents = showData
-    .map((uni) => {
-      count++;
-      return createData(
-        `${count}`,
-        uni.university,
-        `${uni.student}`,
-        `${uni.graduation}`,
-        `${uni.student + uni.graduation}`,
-        ""
-      );
-    })
-    .filter(Boolean);
-
-  // กรองข้อมูลตาม student to catagoty
-  const rowStudentsCatagory = studentDataReal
-    .map((uni, index) => {
-      const education = dataEducations.find((item) => item.uuid === uni.uuid);
-      return {
-        id: index + 1,
-        name: `${uni.firstName} ${uni.lastName}` || "-",
-        university: `${uni.university}` || "-",
-        typePerson: uni.typePerson || "-",
-        level: education.educationLevel.join(", ") || "-",
-        disabled: uni.typeDisabled.join(", ") || "-",
-      };
-    })
-    .filter(Boolean);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -300,128 +239,87 @@ function ReportPage() {
     ...Object.values(REPORT_CONTENT_TYPE),
   ];
 
-  const universityData = [
-    REPORT_TYPE_ALL.UNIVERSITY,
-    ...universitys.map((item) => item.university),
-  ];
+  const yearData = [REPORT_TYPE_ALL.ALL, ...years];
   const disabledData = [REPORT_TYPE_ALL.ALL, ...dataDisabled];
   const workData = [REPORT_TYPE_ALL.ALL, ...dataWorkType];
+  const statusData = [REPORT_TYPE_ALL.ALL, ...dataStatus];
 
-  // ---------- Summary by TypePerson ----------
-  const calculateTotalByType = (type) =>
-    showData.reduce(
-      (sum, item) =>
-        sum + (type === "นักศึกษา" ? item.student : item.graduation),
-      0
-    );
+  const rowCountUni = (() => {
+    const resultMap = new Map();
 
-  const rowTypePerson = [
-    {
-      number: 1,
-      typePerson: "นักศึกษา",
-      total: calculateTotalByType("นักศึกษา"),
-    },
-    { number: 2, typePerson: "บัณฑิต", total: calculateTotalByType("บัณฑิต") },
-  ];
+    dataState?.dataEducationAll?.forEach((edu) => {
+      const university = edu.university?.[0];
+      const type = edu.typePerson;
 
-  // ---------- Summary by Disability ----------
-  const dataDisabledFilter =
-    contentType === REPORT_TYPE_ALL.ALL &&
-    content === REPORT_CONTENT_TYPE.DISABLED
-      ? dataDisabled
-      : dataDisabled.filter((item) => item === contentType);
+      if (!university || !type) return;
 
-  const calculateDisabledStats = () =>
-    dataDisabledFilter.map((disabledType, index) => {
-      let totalStudent = 0;
-      let totalGraduation = 0;
+      if (!resultMap.has(university)) {
+        resultMap.set(university, {
+          university,
+          student: 0,
+          graduation: 0,
+        });
+      }
 
-      studentDataReal.forEach((user) => {
-        if (user.typeDisabled?.includes(disabledType)) {
-          if (user.typePerson === "นักศึกษาพิการ") totalStudent++;
-          if (user.typePerson === "บัณฑิตพิการ") totalGraduation++;
-        }
-      });
+      const entry = resultMap.get(university);
 
-      return {
-        number: index + 1,
-        disabledType,
-        totalStudent,
-        totalGraduation,
-        total: totalStudent + totalGraduation,
-      };
+      if (type === "นักศึกษาพิการ") {
+        entry.student += 1;
+      } else if (type === "บัณฑิตพิการ") {
+        entry.graduation += 1;
+      }
+
+      resultMap.set(university, entry);
     });
 
-  const rowDisabled = calculateDisabledStats();
+    // แปลงเป็น array พร้อมลำดับ
+    const result = Array.from(resultMap.values()).map((entry, index) => ({
+      name: (index + 1).toString(),
+      university: entry.university,
+      student: entry.student,
+      graduation: entry.graduation,
+      total: entry.student + entry.graduation,
+    }));
 
-  // ---------- Summary by Work Type ----------
-  const dataWorkTypeFilter =
-    contentType === REPORT_TYPE_ALL.ALL &&
-    content === REPORT_CONTENT_TYPE.INTERESTED_WORK
-      ? dataWorkType
-      : dataWorkType.filter((item) => item === contentType);
+    return result;
+  })();
 
-  const calculateWorkStats = () =>
-    dataWorkTypeFilter.map((work, index) => {
-      let totalStudent = 0;
-      let totalGraduation = 0;
-
-      studentDataReal.forEach((user) => {
-        const match = dataWorks.find((item) => item.uuid === user.uuid);
-        const hasWorkType = match?.interestedWork?.some((w) => w.type === work);
-
-        if (hasWorkType) {
-          if (user.typePerson === "นักศึกษาพิการ") totalStudent++;
-          if (user.typePerson === "บัณฑิตพิการ") totalGraduation++;
-        }
-      });
-
-      return {
-        number: index + 1,
-        work,
-        totalStudent,
-        totalGraduation,
-        total: totalStudent + totalGraduation,
-      };
-    });
-
-  const rowWorks = calculateWorkStats();
-
+  console.log("rowCountUni: ", rowCountUni);
   const tableConfig = {
     แยกตามจำนวน: {
       ตามมหาวิทยาลัย: {
-        columns: columnStudents,
-        rows: rowStudents,
+        columns: columnCountUni,
+        rows: rowCountUni,
       },
       ตามประเภทความพิการ: {
         columns: columnDisabled,
-        rows: rowDisabled,
+        rows: rowCountUni,
       },
       ตามประเภทบุคคล: {
         columns: columnTypePerson,
-        rows: rowTypePerson,
+        rows: rowCountUni,
       },
       ตามลักษณะงานที่สนใจ: {
         columns: columnWork,
-        rows: rowWorks,
+        rows: rowCountUni,
       },
     },
     แยกตามประเภท: {
       ตามมหาวิทยาลัย: {
         columns: columnStudentCatagory,
-        rows: rowStudentsCatagory,
+        rows: rowCountUni,
       },
       ตามประเภทความพิการ: {
         columns: columnStudentCatagory,
-        rows: rowStudentsCatagory,
+        rows: rowCountUni,
       },
       ตามประเภทบุคคล: {
         columns: columnStudentCatagory,
-        rows: rowStudentsCatagory,
+        rows: rowCountUni,
       },
       ตามลักษณะงานที่สนใจ: {
         columns: columnStudentCatagory,
-        rows: rowStudentsCatagory,
+        rows: rowCountUni,
       },
     },
   };
@@ -436,6 +334,16 @@ function ReportPage() {
     setHeader(value);
     // setContent(REPORT_TYPE_ALL.SELECT_TYPE); // clear child
     // setContentType(REPORT_TYPE_ALL.ALL); // clear grandchild
+    setPage(0);
+  };
+
+  const handleChangeUniSearch = (value) => {
+    setUniversityActive(value);
+    setPage(0);
+  };
+
+  const handleChangeYear = (value) => {
+    setYearActive(value);
     setPage(0);
   };
 
@@ -455,20 +363,28 @@ function ReportPage() {
             <SelectFilter setValue={handleContentChange} data={contentData} />
           )}
           {content === REPORT_CONTENT_TYPE.DISABLED ||
-          content === REPORT_CONTENT_TYPE.INTERESTED_WORK ? (
+          content === REPORT_CONTENT_TYPE.INTERESTED_WORK ||
+          content === REPORT_CONTENT_TYPE.STATUS ? (
             <SelectFilter
               setValue={setContentType}
               data={
                 content === REPORT_CONTENT_TYPE.DISABLED
                   ? disabledData
-                  : workData
+                  : content === REPORT_CONTENT_TYPE.INTERESTED_WORK
+                  ? workData
+                  : statusData
               }
             />
           ) : null}
         </div>
 
         <div className="mt-5">
-          <SelectFilter setValue={setUniversityActive} data={universityData} />
+          <InputUniversityAutoComplete
+            value={universityActive}
+            onChange={handleChangeUniSearch}
+            placeholder="ค้นหาจากชื่อมหาวิทยาลัย"
+            tailwind={`w-96`}
+          />
         </div>
       </div>
       <div className="mt-10 flex flex-col gap-1 font-bold">
@@ -525,25 +441,11 @@ function ReportPage() {
         <div className="flex gap-5 gap-y-3 flex-wrap">
           <div className="flex flex-col gap-1">
             <label>เลือกช่วงเวลา</label>
-            <div className="relative col w-fit">
-              <select
-                className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
-                style={{ appearance: "none" }}
-                onChange={(e) => setTypePersonSearch(e.target.value)}
-              >
-                <option value="">ทั้งหมด</option>
-                {years?.map((year, index) => (
-                  <option key={index} value={year}>
-                    ปี {year}
-                  </option>
-                ))}
-              </select>
-              <Icon
-                className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}
-                path={mdiArrowDownDropCircle}
-                size={0.5}
-              />
-            </div>
+            <SelectFilter
+              setValue={handleChangeYear}
+              data={yearData}
+              tailwind="w-40"
+            />
           </div>
           <div className="flex items-end">
             <div
@@ -557,29 +459,17 @@ function ReportPage() {
           </div>
         </div>
       </form>
+      {content !== REPORT_TYPE_ALL.SELECT_TYPE ? (
+        <ReportTable
+          columns={config.columns}
+          resultRows={config.rows}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      ) : null}
 
-      {config ? (
-        loaderTable ? (
-          <div className="py-2">กำลังโหลดข้อมูล...</div>
-        ) : studentData?.length > 1 ? (
-          header !== REPORT_TYPE_ALL.HEADER_ALL ? (
-            <ReportTable
-              columns={config.columns}
-              resultRows={config.rows}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              handleChangePage={handleChangePage}
-              handleChangeRowsPerPage={handleChangeRowsPerPage}
-            />
-          ) : (
-            <></>
-          )
-        ) : (
-          <></>
-        )
-      ) : (
-        <></>
-      )}
     </div>
   );
 }

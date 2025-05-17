@@ -4,6 +4,7 @@ import axios from "axios";
 export const useInterestedWorkStore = create((set, get) => ({
   dataWorks: null,
   dataWorkById: null,
+  dataWorkAll: null,
   loading: false,
 
   getDataInterestedWork: async (id) => {
@@ -21,6 +22,23 @@ export const useInterestedWorkStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching interestedWork:", err);
       set({ dataWorks: null });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  getDataInterestedWorkAll: async () => {
+    set({ loading: true });
+
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/interestedwork`
+      );
+
+      set({ dataWorkAll: res.data.interestedWork });
+    } catch (err) {
+      console.error("Error fetching interestedWork:", err);
+      set({ dataWorkAll: null });
     } finally {
       set({ loading: false });
     }
@@ -71,5 +89,6 @@ export const useInterestedWorkStore = create((set, get) => ({
   },
 
   clearInterestedWork: () => set({ dataWorks: null }),
+  clearInterestedWorkAll: () => set({ dataWorkAll: null }),
   clearInterestedWorkById: () => set({ dataWorkById: null }),
 }));

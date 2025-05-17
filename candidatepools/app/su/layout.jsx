@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 import { useTheme } from "../ThemeContext";
 import { useSession } from "next-auth/react";
@@ -15,10 +15,21 @@ import { useUserStore } from "@/stores/useUserStore";
 //hooks
 import { useFetchUserData } from "@/hooks/useFetchUserData";
 
+//utils
+import { fetchAllUserData, clearAllUserData } from "@/utils/fetchUsersByRole";
+
 export default function RootLayout({ children }) {
   const { fontSize, bgColor, bgColorMain } = useTheme();
   const { data: session } = useSession();
   const id = session?.user?.id;
+
+  useEffect(() => {
+    fetchAllUserData();
+
+    return () => {
+      clearAllUserData();
+    };
+  }, []);
 
   useFetchUserData(id);
   const { dataUser } = useUserStore();
