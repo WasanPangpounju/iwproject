@@ -24,8 +24,10 @@ import ButtonBG2 from "@/app/components/Button/ButtonBG2";
 import { usePersonalForm } from "@/hooks/usePersonalForm";
 import { useProvince } from "@/hooks/useProvince";
 import UploadFile from "./UploadFile";
+import InputUniversityAutoComplete from "./InputUniversityAutoComplete";
+import { ROLE } from "@/const/enum";
 
-function PersonalForm({ dataUser }) {
+function PersonalForm({ dataUser, isStudent = true, isCreate = false }) {
   //data value
   const [user, setUser] = useState(null);
   const [password, setPassword] = useState(null);
@@ -60,10 +62,12 @@ function PersonalForm({ dataUser }) {
   const [telEmergency, setTelEmergency] = useState(null);
   const [relationship, setRelationship] = useState(null);
   const [selectTypeDisabled, setSelectTypeDisabled] = useState("");
-  const [editMode, setEditMode] = useState(false);
+  const [positon, setPosition] = useState(null);
+  const [role, setRole] = useState(null);
+  const [editMode, setEditMode] = useState(isCreate);
 
   //hooks
-  const { fontSize, bgColorMain, bgColorMain2, inputGrayColor } = useTheme();
+  const { fontSize, bgColorMain, inputGrayColor } = useTheme();
   const { handleEditSubmit, error, errorIdCard, errorIdCardDisabled } =
     usePersonalForm(dataUser, setEditMode);
 
@@ -306,6 +310,8 @@ function PersonalForm({ dataUser }) {
     tel,
     telEmergency,
     relationship,
+    positon,
+    role,
     inputGrayColor,
   };
 
@@ -470,23 +476,25 @@ function PersonalForm({ dataUser }) {
           </div>
         )}
       </div>
-      <div>
-        <InputLabelForm
-          label={`เลขบัตรประจำตัวคนพิการ`}
-          value={idCardDisabled}
-          setValue={setIdCardDisabled}
-          editMode={editMode}
-          tailwind={"w-64"}
-          isRequire
-          styles={"idCard"}
-          placeholder={"เลขบัตร 13 หลัก"}
-        />
-        {errorIdCardDisabled && (
-          <div className="text-xs text-red-500 w-full text-end mt-1 ">
-            {errorIdCardDisabled}
-          </div>
-        )}
-      </div>
+      {isStudent && (
+        <div>
+          <InputLabelForm
+            label={`เลขบัตรประจำตัวคนพิการ`}
+            value={idCardDisabled}
+            setValue={setIdCardDisabled}
+            editMode={editMode}
+            tailwind={"w-64"}
+            isRequire
+            styles={"idCard"}
+            placeholder={"เลขบัตร 13 หลัก"}
+          />
+          {errorIdCardDisabled && (
+            <div className="text-xs text-red-500 w-full text-end mt-1 ">
+              {errorIdCardDisabled}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="flex gap-x-10 gap-y-5 flex-wrap w-full">
         <InputLabelForm
@@ -782,112 +790,186 @@ function PersonalForm({ dataUser }) {
         styles={"tel"}
         editMode={editMode}
       />
+      {isStudent && (
+        <InputLabelForm
+          label={"ความสัมพันธ์"}
+          value={relationship}
+          setValue={setRelationship}
+          placeholder={"บุคคลใกล้ชิด"}
+          tailwind={"w-60"}
+          editMode={editMode}
+        />
+      )}
       <InputLabelForm
-        label={"ความสัมพันธ์"}
-        value={relationship}
-        setValue={setRelationship}
-        placeholder={"บุคคลใกล้ชิด"}
-        tailwind={"w-60"}
-        editMode={editMode}
-      />
-
-      <InputLabelForm
-        disabled
+        disabled={isStudent}
         isRequire
         label={"อีเมล์"}
         value={email}
         setValue={setEmail}
         tailwind={"w-60"}
         editMode={editMode}
+        placeholder={"กรอกที่อยู่อีเมล์"}
       />
-
-      <div className="flex gap-x-10 gap-y-5 flex-wrap">
-        <SelectLabelForm
-          label={"ประเภทความพิการ"}
-          isRequire
-          editMode={editMode}
-          setValue={(e) => setSelectTypeDisabled(e)}
-          value={selectTypeDisabled || "0"}
-          tailwind={"w-64"}
-          options={[
-            { id: "พิการ 1 ประเภท", value: "พิการ 1 ประเภท" },
-            { id: "พิการมากกว่า 1 ประเภท", value: "พิการมากกว่า 1 ประเภท" },
-          ]}
-        />
-        <SelectLabelForm
-          label="เลือกความพิการ"
-          isRequire
-          editMode={editMode}
-          setValue={(e) => setTypeDisabled([e])}
-          value={typeDisabled[0] || "0"}
-          tailwind={`w-64 ${
-            selectTypeDisabled === "พิการ 1 ประเภท" ? "block" : "hidden"
-          }`}
-          options={[...dataDisabled.map((item) => ({ id: item, value: item }))]}
-        />
-
-        <div
-          className={`flex flex-col my-5 ${
-            selectTypeDisabled === "พิการมากกว่า 1 ประเภท" ? "block" : "hidden"
-          }`}
-        >
-          {dataDisabled.map((type, idx) => (
-            <div
-              key={idx}
-              className={`${
-                !typeDisabled.includes(type) && !editMode ? "hidden" : ""
-              } ${bgColorMain} flex gap-x-3 mt-2`}
-            >
-              <input
-                type="checkbox"
-                className="cursor-pointer w-10 border"
-                onChange={() => handleCheckboxChange(type)}
-                checked={typeDisabled.includes(type)}
-                hidden={!editMode}
-              />
-              <p className="text-ellipsis overflow-hidden whitespace-nowrap">
-                <span className={`${editMode ? "hidden" : ""}`}>-</span> {type}
-              </p>
-            </div>
-          ))}
-        </div>
-        <InputLabelForm
-          label={"รายละเอียดเพิ่มเติม"}
-          value={detailDisabled}
-          setValue={setDetailDisabled}
-          tailwind={"w-60"}
-          editMode={editMode}
-          placeholder={"รายละเอียด"}
-        />
-      </div>
-      <div className="w-full flex">
-        <div className="flex flex-col gap-1">
-          <LabelForm label={"อัปโหลดรูปโปรไฟล์"} editMode={editMode} />
-          <div className="w-32 h-32 relative my-1">
-            <Image
-              className="w-full h-full cursor-pointer"
-              src={profile || "/image/main/user.png"}
-              height={1000}
-              width={1000}
-              alt="profile"
-              priority
+      {!isStudent && (
+        <>
+          <InputLabelForm
+            label={"ตำแหน่ง"}
+            value={positon}
+            setValue={setPosition}
+            tailwind={"w-60"}
+            editMode={editMode}
+            placeholder={"ตำแหน่ง"}
+          />
+          <div>
+            <LabelForm label="มหาวิทยาลัย" isRequire editMode={editMode} />
+            <InputUniversityAutoComplete
+              value={university}
+              onChange={setUniversity}
+              tailwind={"py-2 w-60"}
+              editMode={editMode}
             />
           </div>
-          <UploadFile
+          <InputLabelForm
+            isRequire
+            label={"Username"}
+            value={user}
+            setValue={setUser}
+            tailwind={"w-60"}
             editMode={editMode}
-            uuid={dataUser?.uuid}
-            setValue={(url) => setProfile(url)} // หรือ setValue(url) ตามที่คุณใช้
+            placeholder={"กรอกชื่อผู้ใช้"}
           />
-        </div>
-      </div>
-      {error ? <TextError text={error} /> : null}
+          <InputLabelForm
+            isRequire
+            label={"Password"}
+            value={password}
+            setValue={setPassword}
+            tailwind={"w-60"}
+            editMode={editMode}
+            placeholder={"กรอกรหัสผ่าน"}
+            styles={"password"}
+          />
+          <SelectLabelForm
+            label={"ประเภทผู้ใช้งาน"}
+            value={role}
+            setValue={setRole}
+            isRequire
+            editMode={editMode}
+            options={[
+              {
+                id: ROLE.USER,
+                value: ROLE.USER,
+              },
+              {
+                id: ROLE.ADMIN,
+                value: ROLE.ADMIN,
+              },
+              {
+                id: ROLE.SUPERVISOR,
+                value: ROLE.SUPERVISOR,
+              },
+            ]}
+            tailwind={"w-40"}
+          />
+        </>
+      )}
+      {isStudent && (
+        <>
+          <div className="flex gap-x-10 gap-y-5 flex-wrap">
+            <SelectLabelForm
+              label={"ประเภทความพิการ"}
+              isRequire
+              editMode={editMode}
+              setValue={(e) => setSelectTypeDisabled(e)}
+              value={selectTypeDisabled || "0"}
+              tailwind={"w-64"}
+              options={[
+                { id: "พิการ 1 ประเภท", value: "พิการ 1 ประเภท" },
+                { id: "พิการมากกว่า 1 ประเภท", value: "พิการมากกว่า 1 ประเภท" },
+              ]}
+            />
+            <SelectLabelForm
+              label="เลือกความพิการ"
+              isRequire
+              editMode={editMode}
+              setValue={(e) => setTypeDisabled([e])}
+              value={typeDisabled[0] || "0"}
+              tailwind={`w-64 ${
+                selectTypeDisabled === "พิการ 1 ประเภท" ? "block" : "hidden"
+              }`}
+              options={[
+                ...dataDisabled.map((item) => ({ id: item, value: item })),
+              ]}
+            />
+
+            <div
+              className={`flex flex-col my-5 ${
+                selectTypeDisabled === "พิการมากกว่า 1 ประเภท"
+                  ? "block"
+                  : "hidden"
+              }`}
+            >
+              {dataDisabled.map((type, idx) => (
+                <div
+                  key={idx}
+                  className={`${
+                    !typeDisabled.includes(type) && !editMode ? "hidden" : ""
+                  } ${bgColorMain} flex gap-x-3 mt-2`}
+                >
+                  <input
+                    type="checkbox"
+                    className="cursor-pointer w-10 border"
+                    onChange={() => handleCheckboxChange(type)}
+                    checked={typeDisabled.includes(type)}
+                    hidden={!editMode}
+                  />
+                  <p className="text-ellipsis overflow-hidden whitespace-nowrap">
+                    <span className={`${editMode ? "hidden" : ""}`}>-</span>{" "}
+                    {type}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <InputLabelForm
+              label={"รายละเอียดเพิ่มเติม"}
+              value={detailDisabled}
+              setValue={setDetailDisabled}
+              tailwind={"w-60"}
+              editMode={editMode}
+              placeholder={"รายละเอียด"}
+            />
+          </div>
+          <div className="w-full flex">
+            <div className="flex flex-col gap-1">
+              <LabelForm label={"อัปโหลดรูปโปรไฟล์"} editMode={editMode} />
+              <div className="w-32 h-32 relative my-1">
+                <Image
+                  className="w-full h-full cursor-pointer"
+                  src={profile || "/image/main/user.png"}
+                  height={1000}
+                  width={1000}
+                  alt="profile"
+                  priority
+                />
+              </div>
+              <UploadFile
+                editMode={editMode}
+                uuid={dataUser?.uuid}
+                setValue={(url) => setProfile(url)} // หรือ setValue(url) ตามที่คุณใช้
+              />
+            </div>
+          </div>
+        </>
+      )}
+      <div className="w-full text-center">{error ? <TextError text={error} /> : null}</div>
       {editMode ? (
         <div className="flex gap-10 w-full justify-center mt-5">
-          <ButtonBG1
-            text={"ยกเลิก"}
-            mdiIcon={mdiCloseCircle}
-            handleClick={() => setEditMode(false)}
-          />
+          {!isCreate && (
+            <ButtonBG1
+              text={"ยกเลิก"}
+              mdiIcon={mdiCloseCircle}
+              handleClick={() => setEditMode(false)}
+            />
+          )}
           <ButtonBG2
             text={"บันทึก"}
             mdiIcon={mdiContentSave}

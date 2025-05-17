@@ -4,12 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
-import {
-  mdiFileDocument,
-  mdiMicrosoftExcel,
-  mdiMagnify,
-  mdiArrowDownDropCircle,
-} from "@mdi/js";
+import { mdiFileDocument, mdiMicrosoftExcel, mdiMagnify } from "@mdi/js";
 
 //select datas
 import dataWorkType from "@/assets/dataWorkType";
@@ -29,6 +24,7 @@ import {
   REPORT_CONTENT_TYPE,
   REPORT_HEADER_TYPE,
   REPORT_TYPE_ALL,
+  TYPE_PERSON,
 } from "@/const/enum";
 
 //store
@@ -77,6 +73,19 @@ const columnCountUni = [
   { id: "total", label: "ทั้งหมด", minWidth: 170, align: "center" },
 ];
 
+const columnCountStatus = [
+  { id: "no", label: "ลำดับ", minWidth: 170 },
+  { id: "status", label: "สถานะ", minWidth: 170 },
+  { id: "student", label: "จำนวนนักศึกษา", minWidth: 170, align: "center" },
+  {
+    id: "graduation",
+    label: "จำนวนบัณฑิตพิการ",
+    minWidth: 170,
+    align: "center",
+  },
+  { id: "total", label: "ทั้งหมด", minWidth: 170, align: "center" },
+];
+
 // รายงานนักศึกษาตามประเภท
 const columnStudentCatagory = [
   { id: "id", label: "ลำดับ", minWidth: 170 },
@@ -107,7 +116,6 @@ function ReportPage() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const { data: session } = useSession();
   const { exportExcel } = useExcelExport();
 
   //setDataState
@@ -214,6 +222,7 @@ function ReportPage() {
   ]);
 
   console.log("dataState: ", dataState);
+  if (!dataState) return null;
 
   // set year 10 later
   const yearToday = new Date().getFullYear();
@@ -244,6 +253,8 @@ function ReportPage() {
   const workData = [REPORT_TYPE_ALL.ALL, ...dataWorkType];
   const statusData = [REPORT_TYPE_ALL.ALL, ...dataStatus];
 
+  //set rows
+  //student rows
   const rowCountUni = (() => {
     const resultMap = new Map();
 
@@ -263,9 +274,9 @@ function ReportPage() {
 
       const entry = resultMap.get(university);
 
-      if (type === "นักศึกษาพิการ") {
+      if (type === TYPE_PERSON.STUDENT) {
         entry.student += 1;
-      } else if (type === "บัณฑิตพิการ") {
+      } else if (type === TYPE_PERSON.GRADUATION) {
         entry.graduation += 1;
       }
 
@@ -284,7 +295,149 @@ function ReportPage() {
     return result;
   })();
 
-  console.log("rowCountUni: ", rowCountUni);
+  //student rows
+  const rowCatagoryStudents = () => {
+    return dataState?.dataStudents?.map((std, index) => {
+      const education = dataState.dataEducationAll.find(
+        (edu) => edu.uuid === std.uuid
+      );
+
+      return {
+        id: index + 1,
+        name: `${std.firstName} ${std.lastName}`,
+        university: education?.university?.join(", ") || "-",
+        typePerson: std.typePerson,
+        level: education?.educationLevel?.join(", ") || "-",
+        disabled: std?.typeDisabled?.join(", ") || "-",
+      };
+    });
+  };
+
+  // disabled rows
+  const rowCountDisabled = dataDisabled
+    .map((item, index) => {
+      // item คือประเภทความพิการ เช่น "พิการทางการเห็น"
+      let totalStudent = 0;
+      let totalGraduation = 0;
+
+      dataState?.dataStudents?.forEach((std) => {
+        const hasThisDisability = std?.typeDisabled?.includes(item);
+        if (!hasThisDisability) return;
+
+        if (std.typePerson === TYPE_PERSON.STUDENT) {
+          totalStudent += 1;
+        } else if (std.typePerson === TYPE_PERSON.GRADUATION) {
+          totalGraduation += 1;
+        }
+      });
+
+      return {
+        number: index + 1,
+        disabledType: item,
+        totalStudent,
+        totalGraduation,
+        total: totalStudent + totalGraduation,
+      };
+    })
+    .filter((row) =>
+      contentType === REPORT_TYPE_ALL.ALL
+        ? true
+        : row.disabledType === contentType
+    );
+
+  //typePerson rows
+  const rowCountTypePerson = (() => {
+    let totalStudent = 0;
+    let totalGraduation = 0;
+
+    dataState?.dataStudents?.forEach((item) => {
+      if (item.typePerson === TYPE_PERSON.STUDENT) {
+        totalStudent += 1;
+      } else if (item.typePerson === TYPE_PERSON.GRADUATION) {
+        totalGraduation += 1;
+      }
+    });
+    return [
+      {
+        number: 1,
+        typePerson: TYPE_PERSON.STUDENT,
+        total: totalStudent,
+      },
+      {
+        number: 2,
+        typePerson: TYPE_PERSON.GRADUATION,
+        total: totalGraduation,
+      },
+    ];
+  })();
+
+  //work rows
+  const rowCountWork = dataWorkType
+    .map((item, index) => {
+      let totalStudent = 0;
+      let totalGraduation = 0;
+
+      dataState?.dataWorkAll?.forEach((work) => {
+        const isInterested = work?.interestedWork?.some(
+          (interest) => interest.type === item
+        );
+        if (!isInterested) return;
+
+        const edu = dataState?.dataEducationAll?.find(
+          (e) => e.uuid === work.uuid
+        );
+        if (!edu?.typePerson) return;
+
+        if (edu.typePerson === TYPE_PERSON.STUDENT) {
+          totalStudent += 1;
+        } else if (edu.typePerson === TYPE_PERSON.GRADUATION) {
+          totalGraduation += 1;
+        }
+      });
+      return {
+        number: index + 1,
+        work: item,
+        totalStudent,
+        totalGraduation,
+        total: totalStudent + totalGraduation,
+      };
+    })
+    .filter((row) =>
+      contentType === REPORT_TYPE_ALL.ALL ? true : row.work === contentType
+    );
+
+  //status rows
+  const rowCountStatus = dataStatus
+    .map((item, index) => {
+      let totalStudent = 0;
+      let totalGraduation = 0;
+
+      dataState?.dataStudents?.forEach((std) => {
+        const work = dataState?.dataHistoryWorkAll.find(
+          (his) => his.uuid === std.uuid // แก้ตรงนี้
+        );
+
+        if (!work || work.statusNow !== item) return;
+
+        if (std.typePerson === "นักศึกษาพิการ") {
+          totalStudent += 1;
+        } else if (std.typePerson === "บัณฑิตพิการ") {
+          totalGraduation += 1;
+        }
+      });
+
+      return {
+        no: index + 1,
+        status: item,
+        student: totalStudent,
+        graduation: totalGraduation,
+        total: totalStudent + totalGraduation,
+      };
+    })
+    .filter((row) =>
+      contentType === REPORT_TYPE_ALL.ALL ? true : row.status === contentType
+    );
+
   const tableConfig = {
     แยกตามจำนวน: {
       ตามมหาวิทยาลัย: {
@@ -293,21 +446,25 @@ function ReportPage() {
       },
       ตามประเภทความพิการ: {
         columns: columnDisabled,
-        rows: rowCountUni,
+        rows: rowCountDisabled,
       },
       ตามประเภทบุคคล: {
         columns: columnTypePerson,
-        rows: rowCountUni,
+        rows: rowCountTypePerson,
       },
       ตามลักษณะงานที่สนใจ: {
         columns: columnWork,
-        rows: rowCountUni,
+        rows: rowCountWork,
+      },
+      ตามสถานะ: {
+        columns: columnCountStatus,
+        rows: rowCountStatus,
       },
     },
     แยกตามประเภท: {
       ตามมหาวิทยาลัย: {
         columns: columnStudentCatagory,
-        rows: rowCountUni,
+        rows: rowCatagoryStudents(),
       },
       ตามประเภทความพิการ: {
         columns: columnStudentCatagory,
@@ -332,8 +489,11 @@ function ReportPage() {
   // ---------- Clear Filters ----------
   const handleHeaderChange = (value) => {
     setHeader(value);
-    // setContent(REPORT_TYPE_ALL.SELECT_TYPE); // clear child
-    // setContentType(REPORT_TYPE_ALL.ALL); // clear grandchild
+    setPage(0);
+  };
+
+  const handleContentType = (value) => {
+    setContentType(value);
     setPage(0);
   };
 
@@ -366,7 +526,7 @@ function ReportPage() {
           content === REPORT_CONTENT_TYPE.INTERESTED_WORK ||
           content === REPORT_CONTENT_TYPE.STATUS ? (
             <SelectFilter
-              setValue={setContentType}
+              setValue={handleContentType}
               data={
                 content === REPORT_CONTENT_TYPE.DISABLED
                   ? disabledData
@@ -389,7 +549,7 @@ function ReportPage() {
       </div>
       <div className="mt-10 flex flex-col gap-1 font-bold">
         <div className="flex justify-between items-end">
-          <p>รายงานจำนวนนักศึกษาทั้งหมด จำแนกตามมหาวิทยาลัย</p>
+          <p>รายงานจำนวนทั้งหมด</p>
           <div className="relative group">
             <div className={`bg-gray-300 px-4 py-2  cursor-pointer`}>
               Download Dataset
@@ -469,7 +629,6 @@ function ReportPage() {
           handleChangeRowsPerPage={handleChangeRowsPerPage}
         />
       ) : null}
-
     </div>
   );
 }

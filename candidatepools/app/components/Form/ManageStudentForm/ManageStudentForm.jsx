@@ -14,6 +14,9 @@ import { usePathname } from "next/navigation";
 //stores
 import { useUserStore } from "@/stores/useUserStore";
 
+//component
+import BackButton from "@/app/components/Button/BackButton";
+
 function ManageStudentForm({ children, rootPath }) {
   //Theme
   const { bgColorWhite, inputGrayColor } = useTheme();
@@ -110,13 +113,7 @@ function ManageStudentForm({ children, rootPath }) {
   }
   return (
     <>
-      <Link
-        href={`${rootPath}`}
-        className="cursor-pointer flex gap-2 items-center "
-      >
-        <Icon className="" path={mdiArrowLeftCircle} size={1} />
-        <p>ย้อนกลับ</p>
-      </Link>
+      <BackButton path={rootPath} />
       <div>
         {dataUserById ? (
           <div className="flex gap-10 mt-5 relative">

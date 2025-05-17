@@ -11,7 +11,6 @@ import {
   mdiMagnify,
   mdiArrowDownDropCircle,
   mdiPlus,
-  mdiContentSave,
   mdiCloseThick,
 } from "@mdi/js";
 
@@ -24,6 +23,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import Link from "next/link";
 
 const columns = [
   {
@@ -317,244 +317,202 @@ function UserManagement() {
 
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
-      {addUser ? (
-        <div>
-          <div
-            className="cursor-pointer flex gap-2 items-center "
-            onClick={() => {
-              setAddUser(false);
-              setWordSearch("");
-              setTypePersonSearch("");
-            }}
-          >
-            <Icon className="" path={mdiArrowLeftCircle} size={1} />
-            <p>ย้อนกลับ</p>
-          </div>
-        </div>
-      ) : !idDetail ? (
-        <>
-          <p>ค้นหา</p>
-          <form
-            onSubmit={(e) => handleSearch(e)}
-            className="mt-5 flex justify-between flex-wrap gap-y-5 items-end"
-          >
-            <div className="flex gap-5 gap-y-3 flex-wrap">
-              <div className="flex flex-col gap-1">
-                <label>คำค้นหา</label>
-                <input
-                  value={wordSearch}
-                  type="text"
-                  className={`${bgColorMain} w-56 border border-gray-400 py-1 px-4 rounded-md`}
-                  placeholder="ขื่อ-สกุล, มหาวิทยาลัย"
-                  onChange={(e) => setWordSearch(e.target.value)}
+      <>
+        <p>ค้นหา</p>
+        <form
+          onSubmit={(e) => handleSearch(e)}
+          className="mt-5 flex justify-between flex-wrap gap-y-5 items-end"
+        >
+          <div className="flex gap-5 gap-y-3 flex-wrap">
+            <div className="flex flex-col gap-1">
+              <label>คำค้นหา</label>
+              <input
+                value={wordSearch}
+                type="text"
+                className={`${bgColorMain} w-56 border border-gray-400 py-1 px-4 rounded-md`}
+                placeholder="ขื่อ-สกุล, มหาวิทยาลัย"
+                onChange={(e) => setWordSearch(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label>ประเภทผู้ใช้งาน</label>
+              <div className="relative col w-fit">
+                <select
+                  className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
+                  style={{ appearance: "none" }}
+                  onChange={(e) => setTypePersonSearch(e.target.value)}
+                >
+                  <option value="">ทั้งหมด</option>
+                  <option value="user">user</option>
+                  <option value="admin">super user</option>
+                  <option value="supervisor">admin</option>
+                </select>
+                <Icon
+                  className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}
+                  path={mdiArrowDownDropCircle}
+                  size={0.5}
                 />
               </div>
-
-              <div className="flex flex-col gap-1">
-                <label>ประเภทผู้ใช้งาน</label>
-                <div className="relative col w-fit">
-                  <select
-                    className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
-                    style={{ appearance: "none" }}
-                    onChange={(e) => setTypePersonSearch(e.target.value)}
-                  >
-                    <option value="">ทั้งหมด</option>
-                    <option value="user">user</option>
-                    <option value="admin">super user</option>
-                    <option value="supervisor">admin</option>
-                  </select>
-                  <Icon
-                    className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}
-                    path={mdiArrowDownDropCircle}
-                    size={0.5}
-                  />
-                </div>
-              </div>
-              <div className="flex items-end">
-                <button
-                  type="submit"
-                  className={` ${bgColorWhite} ${
-                    inputGrayColor === "bg-[#74c7c2]" || ""
-                      ? "bg-[#0d96f8]"
-                      : ""
-                  }  hover:cursor-pointer py-1 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-                >
-                  <Icon path={mdiMagnify} size={1} />
-                  <p>ค้นหา</p>
-                </button>
-              </div>
             </div>
-            {session?.user?.id && (
-              <div className="flex items-end">
-                <button
-                  type="submit"
-                  className={` ${bgColorWhite} ${
-                    inputGrayColor === "bg-[#74c7c2]" || ""
-                      ? "bg-[#74d886]"
-                      : ""
-                  }  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-                  onClick={() => setAddUser(true)}
-                >
-                  <Icon path={mdiPlus} size={0.7} />
-                  <p>เพิ่มผู้ใช้งาน</p>
-                </button>
-              </div>
-            )}
-          </form>
-          {wordSearchFilter?.length > 0 && (
-            <div className="mt-5 flex gap-2 flex-wrap">
-              {wordSearchFilter?.map((word, index) => (
-                <div
-                  key={index}
-                  className={`${bgColorWhite} ${
-                    inputGrayColor === "bg-[#74c7c2]" || ""
-                      ? `${
-                          index % 2 !== 0
-                            ? "bg-gray-400"
-                            : index % 2 === 0
-                            ? "bg-orange-400"
-                            : ""
-                        }`
-                      : "border border-white"
-                  }
-                                px-8 py-1 rounded-lg relative cursor-pointer`}
-                  onClick={() => deleteWordSearch(index)}
-                >
-                  {word}
-                  <Icon
-                    className={` cursor-pointer text-white-400 absolute right-0 top-[8px] mx-3`}
-                    path={mdiCloseThick}
-                    size={0.5}
-                  />
-                </div>
-              ))}
+            <div className="flex items-end">
+              <button
+                type="submit"
+                className={` ${bgColorWhite} ${
+                  inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#0d96f8]" : ""
+                }  hover:cursor-pointer py-1 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
+              >
+                <Icon path={mdiMagnify} size={1} />
+                <p>ค้นหา</p>
+              </button>
             </div>
-          )}
-          <hr
-            className={`${
-              wordSearchFilter?.length > 0 ? "mt-2" : "mt-10"
-            } mb-3 border-gray-500`}
-          />
-          {loaderTable ? (
-            <div className="py-2">กำลังโหลดข้อมูล...</div>
-          ) : studentData?.length > 1 ? (
-            <Paper
-              sx={{ width: "100%", overflow: "hidden", boxShadow: "none" }}
-            >
-              <TableContainer sx={{ maxHeight: 700 }}>
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                      {columns.map((column) => (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{ minWidth: column.minWidth }}
-                        >
-                          {column.label}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows
-                      .sort((a, b) => {
-                        // แทน 'columnToSort' ด้วยชื่อฟิลด์ที่ต้องการเรียง
-                        const columnToSort = "name"; // เช่น เรียงตามชื่อ
-                        if (a[columnToSort] < b[columnToSort]) return 1; // เรียงจากมากไปน้อย
-                        if (a[columnToSort] > b[columnToSort]) return -1;
-                        return 0; // กรณีที่เท่ากัน
-                      })
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
-                      .map((row, index) => {
-                        const student = studentData.find(
-                          (std) => std?.uuid === row.uuid
-                        );
-                        if (student) {
-                          return (
-                            <TableRow
-                              hover
-                              role="checkbox"
-                              tabIndex={-1}
-                              key={index}
-                            >
-                              {columns.map((column) => {
-                                if (column.id === "details") {
-                                  return (
-                                    <TableCell
-                                      key={column.id}
-                                      align={column.align}
-                                    >
-                                      <div
-                                        onClick={() =>
-                                          setIdDetail(student?.uuid)
-                                        }
-                                        className="cursor-pointer text-center flex justify-center"
-                                      >
-                                        <Icon
-                                          className={`cursor-pointer text-black`}
-                                          path={mdiAlertCircle}
-                                          size={1}
-                                        />
-                                      </div>
-                                    </TableCell>
-                                  );
-                                } else {
-                                  const value = row[column.id];
-                                  return (
-                                    <TableCell
-                                      key={column.id}
-                                      align={column.align}
-                                    >
-                                      {column.format &&
-                                      typeof value === "number"
-                                        ? column.format(value)
-                                        : value}
-                                    </TableCell>
-                                  );
-                                }
-                              })}
-                            </TableRow>
-                          );
-                        }
-                        return null;
-                      })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </Paper>
-          ) : (
-            <div>ไม่มีข้อมูลนักศึกษา</div>
-          )}
-        </>
-      ) : (
-        <div>
-          <div
-            className="cursor-pointer flex gap-2 items-center "
-            onClick={() => {
-              setIdDetail(null);
-              setWordSearch("");
-              setTypePersonSearch("");
-            }}
-          >
-            <Icon className="" path={mdiArrowLeftCircle} size={1} />
-            <p>ย้อนกลับ</p>
           </div>
-         
-        </div>
-      )}
+          {session?.user?.id && (
+            <div className="flex items-end">
+              <Link
+              href={"add"}
+                type="submit"
+                className={` ${bgColorWhite} ${
+                  inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#74d886]" : ""
+                }  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
+                onClick={() => setAddUser(true)}
+              >
+                <Icon path={mdiPlus} size={0.7} />
+                <p>เพิ่มผู้ใช้งาน</p>
+              </Link>
+            </div>
+          )}
+        </form>
+        {wordSearchFilter?.length > 0 && (
+          <div className="mt-5 flex gap-2 flex-wrap">
+            {wordSearchFilter?.map((word, index) => (
+              <div
+                key={index}
+                className={`${bgColorWhite} ${
+                  inputGrayColor === "bg-[#74c7c2]" || ""
+                    ? `${
+                        index % 2 !== 0
+                          ? "bg-gray-400"
+                          : index % 2 === 0
+                          ? "bg-orange-400"
+                          : ""
+                      }`
+                    : "border border-white"
+                }
+                                px-8 py-1 rounded-lg relative cursor-pointer`}
+                onClick={() => deleteWordSearch(index)}
+              >
+                {word}
+                <Icon
+                  className={` cursor-pointer text-white-400 absolute right-0 top-[8px] mx-3`}
+                  path={mdiCloseThick}
+                  size={0.5}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+        <hr
+          className={`${
+            wordSearchFilter?.length > 0 ? "mt-2" : "mt-10"
+          } mb-3 border-gray-500`}
+        />
+        {loaderTable ? (
+          <div className="py-2">กำลังโหลดข้อมูล...</div>
+        ) : studentData?.length > 1 ? (
+          <Paper sx={{ width: "100%", overflow: "hidden", boxShadow: "none" }}>
+            <TableContainer sx={{ maxHeight: 700 }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    {columns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth }}
+                      >
+                        {column.label}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rows
+                    .sort((a, b) => {
+                      // แทน 'columnToSort' ด้วยชื่อฟิลด์ที่ต้องการเรียง
+                      const columnToSort = "name"; // เช่น เรียงตามชื่อ
+                      if (a[columnToSort] < b[columnToSort]) return 1; // เรียงจากมากไปน้อย
+                      if (a[columnToSort] > b[columnToSort]) return -1;
+                      return 0; // กรณีที่เท่ากัน
+                    })
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      const student = studentData.find(
+                        (std) => std?.uuid === row.uuid
+                      );
+                      if (student) {
+                        return (
+                          <TableRow
+                            hover
+                            role="checkbox"
+                            tabIndex={-1}
+                            key={index}
+                          >
+                            {columns.map((column) => {
+                              if (column.id === "details") {
+                                return (
+                                  <TableCell
+                                    key={column.id}
+                                    align={column.align}
+                                  >
+                                    <div
+                                      onClick={() => setIdDetail(student?.uuid)}
+                                      className="cursor-pointer text-center flex justify-center"
+                                    >
+                                      <Icon
+                                        className={`cursor-pointer text-black`}
+                                        path={mdiAlertCircle}
+                                        size={1}
+                                      />
+                                    </div>
+                                  </TableCell>
+                                );
+                              } else {
+                                const value = row[column.id];
+                                return (
+                                  <TableCell
+                                    key={column.id}
+                                    align={column.align}
+                                  >
+                                    {column.format && typeof value === "number"
+                                      ? column.format(value)
+                                      : value}
+                                  </TableCell>
+                                );
+                              }
+                            })}
+                          </TableRow>
+                        );
+                      }
+                      return null;
+                    })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Paper>
+        ) : (
+          <div>ไม่มีข้อมูลนักศึกษา</div>
+        )}
+      </>
     </div>
   );
 }
