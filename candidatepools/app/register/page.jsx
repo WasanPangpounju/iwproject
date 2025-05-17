@@ -307,7 +307,6 @@ function Register({ statusAgreement }) {
         setOptionUniversity([]);
     }
 
-    console.log(university)
     return (
         <div className={`${bgColorMain} ${bgColor}`}>
             <HeaderLogo />

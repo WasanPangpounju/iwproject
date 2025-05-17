@@ -3,7 +3,7 @@ import Icon from "@mdi/react";
 import { mdiArrowDownDropCircle } from "@mdi/js";
 import { useTheme } from "@/app/ThemeContext";
 
-function SelectFilter({ setValue, data }) {
+function SelectFilter({ setValue, data, tailwind='w-64' }) {
   //Theme
   const { bgColorMain } = useTheme();
   return (
@@ -12,7 +12,7 @@ function SelectFilter({ setValue, data }) {
         onChange={(e) => {
           setValue(e.target.value);
         }}
-        className={`cursor-pointer ${bgColorMain} w-64  border border-gray-400 py-1 px-4 rounded-lg`}
+        className={`cursor-pointer ${bgColorMain} ${tailwind}  border border-gray-400 py-1 px-4 rounded-lg`}
         style={{ appearance: "none" }}
       >
         {data.map((item, index) => (

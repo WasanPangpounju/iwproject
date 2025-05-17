@@ -2,8 +2,11 @@ import { create } from "zustand";
 import axios from "axios";
 
 export const useUserStore = create((set, get) => ({
-  dataUser: null, //my users
-  dataUserById: null, //my users
+  dataUser: null,
+  dataStudents: null,
+  dataAdmin: null,
+  dataUserAll: null,
+  dataUserById: null,
   loading: false,
 
   getUserById: async (id) => {
@@ -14,7 +17,7 @@ export const useUserStore = create((set, get) => ({
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`
       );
-      
+
       set({ dataUserById: res.data.user });
       return res.data.user;
     } catch (err) {
@@ -39,6 +42,38 @@ export const useUserStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching user:", err);
       set({ dataUser: null });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  getUserAll: async () => {
+    set({ loading: true });
+
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/students`
+      );
+
+      const users = res.data.user || [];
+
+      // แยกตาม role
+      const dataStudents = users.filter((user) => user.role === "user");
+      const dataAdmin = users.filter((user) => user.role === "admin");
+      const dataUserAll = users; // รวมทั้งหมด
+
+      set({
+        dataStudents,
+        dataAdmin,
+        dataUserAll,
+      });
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      set({
+        dataStudents: [],
+        dataAdmin: [],
+        dataUserAll: [],
+      });
     } finally {
       set({ loading: false });
     }
@@ -92,6 +127,12 @@ export const useUserStore = create((set, get) => ({
     }
   },
 
+  clearUserAll: () =>
+    set({
+      dataUserAll: null,
+      dataStudents: null,
+      dataAdmin: null,
+    }),
   clearUser: () => set({ dataUser: null }),
   clearUserById: () => set({ dataUserById: null }),
 }));

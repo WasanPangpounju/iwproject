@@ -2,8 +2,9 @@ import { create } from "zustand";
 import axios from "axios";
 
 export const useHistoryWorkStore = create((set, get) => ({
-  dataHistoryWork: null, //my users
-  dataHistoryWorkById: null, //my users
+  dataHistoryWork: null, 
+  dataHistoryWorkById: null, 
+  dataHistoryWorkAll: null, 
   loading: false,
 
   getDataHistoryWork: async (id) => {
@@ -21,6 +22,23 @@ export const useHistoryWorkStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching historyWork:", err);
       set({ dataHistoryWork: null });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  getDataHistoryWorkAll: async () => {
+    set({ loading: true });
+
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/historyWork`
+      );
+
+      set({ dataHistoryWorkAll: res.data.data });
+    } catch (err) {
+      console.error("Error fetching historyWork:", err);
+      set({ dataHistoryWorkAll: null });
     } finally {
       set({ loading: false });
     }
@@ -71,5 +89,6 @@ export const useHistoryWorkStore = create((set, get) => ({
   },
 
   clearHistoryWork: () => set({ dataHistoryWork: null }),
+  clearHistoryWorkAll: () => set({ dataHistoryWorkAll: null }),
   clearHistoryWorkById: () => set({ dataHistoryWorkById: null }),
 }));

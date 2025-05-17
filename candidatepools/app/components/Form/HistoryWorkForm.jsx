@@ -26,8 +26,9 @@ import { saveAs } from "file-saver";
 
 //stores
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
+import { dataStatus } from "@/assets/dataStatus";
 
-function HistoryWorkForm({ id ,dataHistoryWork}) {
+function HistoryWorkForm({ id, dataHistoryWork }) {
   //hooks
   const { updateHistoryWorkById } = useHistoryWorkStore();
   const [error, setError] = useState("");
@@ -190,13 +191,12 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
   };
 
   const handleProfileDocument = (event, index) => {
-    
     const selectedFile = event.target.files[0]; // ไฟล์ที่เลือกจาก input
     if (selectedFile) {
       const fileExtension = selectedFile.name.split(".").pop(); // รับนามสกุลไฟล์
       if (fileExtension !== "pdf" && fileExtension !== "docx") {
         setError("กรุณาอัปโหลดไฟล์ PDF, Word เท่านั้น");
-        
+
         return;
       }
 
@@ -221,7 +221,6 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
           setProjectUploadProgress(progress); // แสดงความก้าวหน้าการอัปโหลด
         },
         (error) => {
-          
           console.error("Error uploading file:", error);
         },
         () => {
@@ -244,10 +243,8 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
               // รีเซ็ตค่าต่าง ๆ หลังจากอัปโหลดสำเร็จ
               setProjectUploadProgress(0);
               projectFileInputRef.current.value = "";
-              
             })
             .catch((error) => {
-              
               console.error("Error getting download URL:", error);
             });
         }
@@ -493,13 +490,12 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
   };
 
   const handleInternshipDocument = (event, index) => {
-    
     const selectedFile = event.target.files[0]; // ไฟล์ที่เลือกจาก input
     if (selectedFile) {
       const fileExtension = selectedFile.name.split(".").pop(); // รับนามสกุลไฟล์
       if (fileExtension !== "pdf" && fileExtension !== "docx") {
         setError("กรุณาอัปโหลดไฟล์ PDF, Word เท่านั้น");
-        
+
         return;
       }
 
@@ -524,7 +520,6 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
           setInternshipUploadProgress(progress); // แสดงความก้าวหน้าการอัปโหลด
         },
         (error) => {
-          
           console.error("Error uploading file:", error);
         },
         () => {
@@ -547,10 +542,8 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
               // รีเซ็ตค่าต่าง ๆ หลังจากอัปโหลดสำเร็จ
               setInternshipUploadProgress(0);
               internFileInputRef.current.value = "";
-              
             })
             .catch((error) => {
-              
               console.error("Error getting download URL:", error);
             });
         }
@@ -761,7 +754,6 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
   };
 
   const handleWorkDocument = (event, index) => {
-    
     const selectedFile = event.target.files[0];
     if (selectedFile) {
       const fileExtension = selectedFile.name.split(".").pop();
@@ -771,17 +763,14 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
         fileExtension !== "doc"
       ) {
         setError("กรุณาอัปโหลดไฟล์ PDF, Word เท่านั้น");
-        
+
         return;
       }
 
       const fileSizeMB = (selectedFile.size / (1024 * 1024)).toFixed(2);
       const fileName = selectedFile.name.split(".").slice(0, -1).join(".");
 
-      const storageRef = ref(
-        storage,
-        `users/documents/work/${id}/${fileName}`
-      );
+      const storageRef = ref(storage, `users/documents/work/${id}/${fileName}`);
       const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
       uploadTask.on(
@@ -793,7 +782,6 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
           setWorkFileUploadProgress(progress);
         },
         (error) => {
-          
           console.error("Error uploading file:", error);
         },
         () => {
@@ -813,10 +801,8 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
               });
               setWorkFileUploadProgress(0);
               workFileInputRef.current.value = "";
-              
             })
             .catch((error) => {
-              
               console.error("Error getting download URL:", error);
             });
         }
@@ -863,8 +849,6 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
   //submit
   async function handleSubmit(e, fieldProjects, fieldInternship, fieldWorks) {
     e.preventDefault();
-
-    
 
     const mergedProjectName = mergeArrayValues(projectName, getProjectName);
     const mergedProjectDetail = mergeArrayValues(
@@ -931,7 +915,7 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
 
     if (isInvalidDateRange) {
       setError("ระบุปีการฝึกงานไม่ถูกต้อง");
-      
+
       return; // หยุดการทำงานถ้ามีช่วงวันที่ไม่ถูกต้อง
     }
     const isInvalidDateRangeWork = mergedDateStartWork.find((dateStart, i) => {
@@ -941,7 +925,7 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
 
     if (isInvalidDateRangeWork) {
       setError("ระบุปีการทำงานไม่ถูกต้อง");
-      
+
       return; // หยุดการทำงานถ้ามีช่วงวันที่ไม่ถูกต้อง
     }
 
@@ -958,7 +942,7 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
       mergedProjectName[fieldProjects] && mergedProjectDetail[fieldProjects];
     if (hasAnyProjectField && !isProjectFieldComplete) {
       setError("กรุณาระบุข้อมูล โครงงาน / ผลงาน ให้ครบทุกช่อง");
-      
+
       return;
     }
 
@@ -979,7 +963,7 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
     // ตรวจสอบข้อมูลการฝึกงาน
     if (hasAnyInternshipField && !isInternshipFieldComplete) {
       setError("กรุณาระบุข้อมูล การฝึกงาน ให้ครบทุกช่อง");
-      
+
       return;
     }
 
@@ -999,7 +983,7 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
 
     if (hasAnyWorkField && !isWorkFieldComplete) {
       setError("กรุณาระบุข้อมูล การทำงาน ให้ครบทุกช่อง");
-      
+
       return;
     }
 
@@ -1008,7 +992,7 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
     // หากไม่มีข้อมูลเลยในทุกส่วน
     if (!hasAnyField) {
       setError("ไม่มีข้อมูลที่บันทึก");
-      
+
       return;
     }
     // ถ้าผ่านทุกเงื่อนไขให้เคลียร์ error
@@ -1092,7 +1076,7 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
           confirmButtonText: "ตกลง",
           confirmButtonColor: "#0d96f8",
         }).then(() => {
-          setEditMode(false)
+          setEditMode(false);
         });
       } else {
         console.error("Failed to submit data:", result.message);
@@ -1103,9 +1087,9 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
           confirmButtonText: "ตกลง",
           confirmButtonColor: "#f27474",
         }).then(() => {
-           setEditMode(false)
+          setEditMode(false);
         });
-        
+
         return;
       }
     } catch (error) {
@@ -1117,9 +1101,8 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
         confirmButtonText: "ตกลง",
         confirmButtonColor: "#f27474",
       }).then(() => {
-        setEditMode(false)
+        setEditMode(false);
       });
-      
     }
   }
 
@@ -2054,10 +2037,11 @@ function HistoryWorkForm({ id ,dataHistoryWork}) {
               disabled={!editMode}
             >
               <option value="0">เลือกสถานะ</option>
-              <option value="กำลังศึกษา">กำลังศึกษา</option>
-              <option value="ทำงาน">ทำงาน</option>
-              <option value="ว่างงาน">ว่างงาน</option>
-              <option value="อยากเปลี่ยนงาน">อยากเปลี่ยนงาน</option>
+              {dataStatus.map((item, index) => (
+                <option key={index} value={item}>
+                  {item}
+                </option>
+              ))}
             </select>
             <Icon
               className={`cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
