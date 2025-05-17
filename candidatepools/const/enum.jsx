@@ -17,3 +17,14 @@ export const REPORT_TYPE_ALL = {
   UNIVERSITY: "มหาวิทยาลัยทั้งหมด",
   SELECT_TYPE: "เลือกประเภท"
 }
+
+export const TYPE_PERSON = {
+  STUDENT: "นักศึกษาพิการ",
+  GRADUATION: "บัณฑิตพิการ",
+}
+
+export const ROLE = {
+  USER: "user",
+  ADMIN: "admin",
+  SUPERVISOR: "supervisor"
+}

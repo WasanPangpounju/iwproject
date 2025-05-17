@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import universitys from "@/app/data/universitys.json";
 
-function InputUniversityAutoComplete({ value, onChange, placeholder="กรอกชื่อมหาวิทยาลับ", tailwind }) {
+function InputUniversityAutoComplete({
+  value,
+  onChange,
+  placeholder = "กรอกชื่อมหาวิทยาลับ",
+  tailwind,
+  editMode = true,
+}) {
   const [optionUniversity, setOptionUniversity] = useState([]);
   const [isFocusUni, setIsFocusUni] = useState(false);
 
@@ -22,7 +28,8 @@ function InputUniversityAutoComplete({ value, onChange, placeholder="กรอ�
   return (
     <div className={`relative ${tailwind} `}>
       <input
-        value={value}
+        disabled={!editMode}
+        value={value || ""}
         onChange={(e) => handleUniversity(e.target.value)}
         onFocus={() => setIsFocusUni(true)}
         onBlur={(e) => {
@@ -34,7 +41,7 @@ function InputUniversityAutoComplete({ value, onChange, placeholder="กรอ�
           }
         }}
         type="text"
-        className={`${tailwind}  border border-gray-400 px-4 py-1 rounded-lg`}
+        className={`${tailwind} ${!editMode && "bg-gray-200"} border border-gray-400 px-4 py-1 rounded-lg`}
         placeholder={placeholder}
       />
       {isFocusUni && optionUniversity.length > 0 && (

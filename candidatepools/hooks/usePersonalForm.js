@@ -46,6 +46,8 @@ export function usePersonalForm(dataUser, setEditMode) {
       tel,
       telEmergency,
       relationship,
+      positon,
+      role,
       inputGrayColor,
     } = formState;
 
