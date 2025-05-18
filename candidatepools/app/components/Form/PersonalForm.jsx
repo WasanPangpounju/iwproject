@@ -21,7 +21,8 @@ import ButtonBG1 from "@/app/components/Button/ButtonBG1";
 import ButtonBG2 from "@/app/components/Button/ButtonBG2";
 
 //hooks
-import { usePersonalForm } from "@/hooks/usePersonalForm";
+import { useStudentForm } from "@/hooks/useStudentForm";
+import { useUserForm } from "@/hooks/useUserForm";
 import { useProvince } from "@/hooks/useProvince";
 import UploadFile from "./UploadFile";
 import InputUniversityAutoComplete from "./InputUniversityAutoComplete";
@@ -62,15 +63,26 @@ function PersonalForm({ dataUser, isStudent = true, isCreate = false }) {
   const [telEmergency, setTelEmergency] = useState(null);
   const [relationship, setRelationship] = useState(null);
   const [selectTypeDisabled, setSelectTypeDisabled] = useState("");
-  const [positon, setPosition] = useState(null);
+  const [position, setPosition] = useState(null);
   const [role, setRole] = useState(null);
   const [editMode, setEditMode] = useState(isCreate);
 
   //hooks
   const { fontSize, bgColorMain, inputGrayColor } = useTheme();
-  const { handleEditSubmit, error, errorIdCard, errorIdCardDisabled } =
-    usePersonalForm(dataUser, setEditMode);
 
+  const studentForm = useStudentForm(dataUser, setEditMode);
+  const userForm = useUserForm(dataUser, setEditMode);
+
+  const handleForm = isStudent
+    ? studentForm.handleStudentForm
+    : userForm.handleUserForm;
+  const error = isStudent ? studentForm.error : userForm.error;
+  const errorIdCard = isStudent
+    ? studentForm.errorIdCard
+    : userForm.errorIdCard;
+  const errorIdCardDisabled = isStudent
+    ? studentForm.errorIdCardDisabled
+    : null;
   const { dataProvince } = useProvince();
 
   // สร้าง Date object สำหรับวันที่ปัจจุบัน
@@ -157,6 +169,8 @@ function PersonalForm({ dataUser, isStudent = true, isCreate = false }) {
       "tel",
       "telEmergency",
       "relationship",
+      "position",
+      "role",
     ];
 
     const stateSetters = {
@@ -191,6 +205,8 @@ function PersonalForm({ dataUser, isStudent = true, isCreate = false }) {
       tel: setTel,
       telEmergency: setTelEmergency,
       relationship: setRelationship,
+      position: setPosition,
+      role: setRole,
     };
 
     stringFields.forEach((key) => {
@@ -310,14 +326,15 @@ function PersonalForm({ dataUser, isStudent = true, isCreate = false }) {
     tel,
     telEmergency,
     relationship,
-    positon,
+    position,
     role,
     inputGrayColor,
   };
 
+  // console.log("bodyData: ", bodyData);
   return (
     <form
-      onSubmit={(e) => handleEditSubmit(e, bodyData)}
+      onSubmit={(e) => handleForm(e, bodyData)}
       className={`${fontSize} flex gap-x-10 gap-y-5 gap- flex-wrap`}
     >
       <SelectLabelForm
@@ -814,7 +831,7 @@ function PersonalForm({ dataUser, isStudent = true, isCreate = false }) {
         <>
           <InputLabelForm
             label={"ตำแหน่ง"}
-            value={positon}
+            value={position}
             setValue={setPosition}
             tailwind={"w-60"}
             editMode={editMode}
@@ -861,11 +878,11 @@ function PersonalForm({ dataUser, isStudent = true, isCreate = false }) {
               },
               {
                 id: ROLE.ADMIN,
-                value: ROLE.ADMIN,
+                value: ROLE.SUPERUSER,
               },
               {
                 id: ROLE.SUPERVISOR,
-                value: ROLE.SUPERVISOR,
+                value: ROLE.ADMIN,
               },
             ]}
             tailwind={"w-40"}
@@ -960,7 +977,9 @@ function PersonalForm({ dataUser, isStudent = true, isCreate = false }) {
           </div>
         </>
       )}
-      <div className="w-full text-center">{error ? <TextError text={error} /> : null}</div>
+      <div className="w-full text-center">
+        {error ? <TextError text={error} /> : null}
+      </div>
       {editMode ? (
         <div className="flex gap-10 w-full justify-center mt-5">
           {!isCreate && (

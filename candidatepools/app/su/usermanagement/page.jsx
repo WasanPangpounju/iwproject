@@ -465,8 +465,8 @@ function UserManagement() {
                                     key={column.id}
                                     align={column.align}
                                   >
-                                    <div
-                                      onClick={() => setIdDetail(student?.uuid)}
+                                    <Link
+                                      href={student?.uuid}
                                       className="cursor-pointer text-center flex justify-center"
                                     >
                                       <Icon
@@ -474,7 +474,7 @@ function UserManagement() {
                                         path={mdiAlertCircle}
                                         size={1}
                                       />
-                                    </div>
+                                    </Link>
                                   </TableCell>
                                 );
                               } else {

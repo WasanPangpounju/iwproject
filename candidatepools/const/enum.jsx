@@ -26,5 +26,6 @@ export const TYPE_PERSON = {
 export const ROLE = {
   USER: "user",
   ADMIN: "admin",
-  SUPERVISOR: "supervisor"
+  SUPERVISOR: "supervisor",
+  SUPERUSER: "super user"
 }
