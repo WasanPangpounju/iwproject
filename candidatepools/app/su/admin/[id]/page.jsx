@@ -11,6 +11,7 @@ import { useUserStore } from "@/stores/useUserStore";
 // components
 import PersonalForm from "@/app/components/Form/PersonalForm";
 import BackButton from "@/app/components/Button/BackButton";
+import ManageForm from "@/app/components/Form/ManageStudentForm/ManageForm";
 
 function Page() {
   const { bgColorMain2, bgColor } = useTheme();
@@ -23,7 +24,7 @@ function Page() {
     }
 
     return () => {
-      clearUserById(); 
+      clearUserById();
     };
   }, [id, getUserById, clearUserById]);
 
@@ -32,10 +33,11 @@ function Page() {
 
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
-      <BackButton path={"/su/admin"} />
-      <div className="mt-5">
-        <PersonalForm dataUser={dataUserById} isStudent={false} />
-      </div>
+      <ManageForm rootPath={"/su/admin"} isUser={true}>
+        <div className="mt-5">
+          <PersonalForm dataUser={dataUserById} isStudent={false} />
+        </div>
+      </ManageForm>
     </div>
   );
 }
