@@ -103,6 +103,23 @@ export const useUserStore = create((set, get) => ({
       set({ loading: false });
     }
   },
+
+  createUser: async (bodyData) => {
+    set({ loading: true });
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user`,
+        bodyData
+      );
+      return { ok: true };
+    } catch (err) {
+      console.error("Error updating user:", err);
+      return { ok: false };
+    } finally {
+      set({ loading: false });
+    }
+  },
+
   checkIdExists: async (idCard, idCardDisabled) => {
     try {
       const res = await fetch(
@@ -124,6 +141,24 @@ export const useUserStore = create((set, get) => ({
     } catch (err) {
       console.error(err);
       throw err;
+    }
+  },
+
+  checkUserExists: async ({ user, email }) => {
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/checkUser`,
+        {
+          user,
+          email,
+        }
+      );
+
+      const { user: userExists, email: emailExists } = res.data;
+      return { userExists, emailExists };
+    } catch (error) {
+      console.error("Error checking user:", error);
+      throw new Error("Error fetch api checkUser");
     }
   },
 

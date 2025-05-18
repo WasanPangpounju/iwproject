@@ -12,29 +12,35 @@ export default function useRoleRedirect() {
   useEffect(() => {
     if (status === 'loading') return;
 
-    const role = session?.user?.role;
+    // กำหนดเฉพาะ protected route prefix ที่ต้องเช็ค login เท่านั้น
+    const protectedRoutes = ['/ad', '/su', '/iw']; // ตัวอย่างที่คุณให้มา
 
-    // กำหนดเส้นทางหลักของแต่ละ role
-    const roleRoutes = {
-      admin: '/ad',
-      supervisor: '/su',
-      user: '/iw',
-    };
+    // ตรวจสอบว่า path ปัจจุบันเป็น protected route หรือไม่
+    const isProtectedRoute = protectedRoutes.some((routePrefix) =>
+      pathname === routePrefix || pathname.startsWith(routePrefix + '/')
+    );
 
-    // ถ้าไม่ได้ login → redirect ไปหน้า login
-    if (!session && pathname !== '/') {
-      router.replace('/');
+    // ถ้ายังไม่ login แล้วพยายามเข้าหน้า protected route → redirect ไป login หรือหน้า '/'
+    if (!session && isProtectedRoute) {
+      router.replace('/');  // หรือ '/login' ถ้าคุณมีหน้า login แยกต่างหาก
       return;
     }
 
-    // ถ้า login แล้ว แต่ยังอยู่หน้า login หรือหน้าอื่นที่ไม่ใช่หน้าหลักของ role → ให้ redirect
-    if (
-      session &&
-      role &&
-      roleRoutes[role] &&
-      !pathname.startsWith(roleRoutes[role])
-    ) {
-      router.replace(roleRoutes[role]);
+    // ถ้า login แล้ว และอยู่ใน protected route ที่ไม่ตรงกับ role → redirect ไปหน้า role ของตัวเอง
+    if (session) {
+      const role = session.user.role;
+      const roleRoutes = {
+        admin: '/ad',
+        supervisor: '/su',
+        user: '/iw',
+      };
+
+      if (
+        roleRoutes[role] &&
+        !pathname.startsWith(roleRoutes[role])
+      ) {
+        router.replace(roleRoutes[role]);
+      }
     }
 
   }, [session, status, pathname, router]);

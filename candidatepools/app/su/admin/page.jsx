@@ -25,6 +25,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import Link from "next/link";
 
 const columns = [
   {
@@ -301,21 +302,7 @@ function AdminManagement() {
 
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
-      {addUser ? (
-        <div>
-          <div
-            className="cursor-pointer flex gap-2 items-center "
-            onClick={() => {
-              setAddUser(false);
-              setWordSearch("");
-              setAddressProvince("");
-            }}
-          >
-            <Icon className="" path={mdiArrowLeftCircle} size={1} />
-            <p>ย้อนกลับ</p>
-          </div>
-        </div>
-      ) : !idDetail ? (
+
         <>
           <p>ค้นหา</p>
           <form
@@ -458,10 +445,8 @@ function AdminManagement() {
                                       key={column.id}
                                       align={column.align}
                                     >
-                                      <div
-                                        onClick={() =>
-                                          setIdDetail(student?.uuid)
-                                        }
+                                      <Link
+                                        href={student?.uuid}
                                         className="cursor-pointer text-center flex justify-center"
                                       >
                                         <Icon
@@ -469,7 +454,7 @@ function AdminManagement() {
                                           path={mdiAlertCircle}
                                           size={1}
                                         />
-                                      </div>
+                                      </Link>
                                     </TableCell>
                                   );
                                 } else {
@@ -509,21 +494,7 @@ function AdminManagement() {
             <div>ไม่มีข้อมูลนักศึกษา</div>
           )}
         </>
-      ) : (
-        <div>
-          <div
-            className="cursor-pointer flex gap-2 items-center "
-            onClick={() => {
-              setIdDetail(null);
-              setWordSearch("");
-              setAddressProvince("");
-            }}
-          >
-            <Icon className="" path={mdiArrowLeftCircle} size={1} />
-            <p>ย้อนกลับ</p>
-          </div>
-        </div>
-      )}
+     
     </div>
   );
 }
