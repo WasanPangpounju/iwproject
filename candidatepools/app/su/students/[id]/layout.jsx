@@ -4,11 +4,12 @@ import React, { useEffect } from "react";
 import { useTheme } from "@/app/ThemeContext";
 
 //components
-import ManageStudentForm from "@/app/components/Form/ManageStudentForm/ManageStudentForm";
+import ManageStudentForm from "@/app/components/Form/ManageStudentForm/ManageForm";
 
 //hooks
 import { useFetchUserDataById } from "@/hooks/useFetchUserDataById";
 import { useParams } from "next/navigation";
+import ManageForm from "@/app/components/Form/ManageStudentForm/ManageForm";
 
 export default function RootLayout({ children }) {
   const { bgColorMain2, bgColor } = useTheme();
@@ -18,9 +19,9 @@ export default function RootLayout({ children }) {
 
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
-      <ManageStudentForm rootPath={"/su/students"}>
+      <ManageForm rootPath={"/su/students"}>
         {children}
-      </ManageStudentForm>
+      </ManageForm>
     </div>
   );
 }

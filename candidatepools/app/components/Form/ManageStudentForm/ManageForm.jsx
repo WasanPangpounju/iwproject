@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
-import { mdiCloseCircle, mdiArrowLeftCircle } from "@mdi/js";
+import { mdiCloseCircle } from "@mdi/js";
 import Swal from "sweetalert2";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { useParams } from "next/navigation";
 import { usePathname } from "next/navigation";
@@ -17,7 +18,7 @@ import { useUserStore } from "@/stores/useUserStore";
 //component
 import BackButton from "@/app/components/Button/BackButton";
 
-function ManageStudentForm({ children, rootPath }) {
+function ManageForm({ children, rootPath, isUser = false }) {
   //Theme
   const { bgColorWhite, inputGrayColor } = useTheme();
 
@@ -32,6 +33,7 @@ function ManageStudentForm({ children, rootPath }) {
   const yearToday = today.getFullYear();
 
   //set path active
+  const router = useRouter();
   const rootPathId = `${rootPath}/${id}`;
   const pathName = usePathname();
   const selectNav = pathName.split(`/${id}/`)[1]?.split("/")[0] ?? "";
@@ -97,7 +99,7 @@ function ManageStudentForm({ children, rootPath }) {
           }).then((result) => {
             if (result.dismiss === Swal.DismissReason.timer) {
               console.log("I was closed by the timer");
-              window.location.reload();
+              router.push(rootPath)
             }
           });
         } catch (err) {
@@ -172,66 +174,70 @@ function ManageStudentForm({ children, rootPath }) {
             >
               ข้อมูลส่วนบุลคล
             </Link>
-            <Link
-              href={`${rootPathId}/education`}
-              className={`${
-                selectNav === "education"
-                  ? inputGrayColor === "bg-[#74c7c2]" || ""
-                    ? `bg-[#0d96f8] ${bgColorWhite}`
-                    : ""
-                  : ""
-              } cursor-pointer px-4 py-2 rounded-md`}
-            >
-              ประวัติการศึกษา
-            </Link>
-            <Link
-              href={`${rootPathId}/historywork`}
-              className={`${
-                selectNav === "historywork"
-                  ? inputGrayColor === "bg-[#74c7c2]" || ""
-                    ? `bg-[#0d96f8] ${bgColorWhite}`
-                    : ""
-                  : ""
-              } cursor-pointer px-4 py-2 rounded-md`}
-            >
-              ประวัติการฝึกงาน/ทำงาน
-            </Link>
-            <Link
-              href={`${rootPathId}/skills`}
-              className={`${
-                selectNav === "skills"
-                  ? inputGrayColor === "bg-[#74c7c2]" || ""
-                    ? `bg-[#0d96f8] ${bgColorWhite}`
-                    : ""
-                  : ""
-              } cursor-pointer px-4 py-2 rounded-md`}
-            >
-              ความสามารถ/การอบรม
-            </Link>
-            <Link
-              href={`${rootPathId}/interestedwork`}
-              className={`${
-                selectNav === "interestedwork"
-                  ? inputGrayColor === "bg-[#74c7c2]" || ""
-                    ? `bg-[#0d96f8] ${bgColorWhite}`
-                    : ""
-                  : ""
-              } cursor-pointer px-4 py-2 rounded-md`}
-            >
-              ลักษณะงานที่สนใจ
-            </Link>
-            <Link
-              href={`${rootPathId}/resume`}
-              className={`${
-                selectNav === "resume"
-                  ? inputGrayColor === "bg-[#74c7c2]" || ""
-                    ? `bg-[#0d96f8] ${bgColorWhite}`
-                    : ""
-                  : ""
-              } cursor-pointer px-4 py-2 rounded-md`}
-            >
-              เรซูเม่
-            </Link>
+            {!isUser && (
+              <>
+                <Link
+                  href={`${rootPathId}/education`}
+                  className={`${
+                    selectNav === "education"
+                      ? inputGrayColor === "bg-[#74c7c2]" || ""
+                        ? `bg-[#0d96f8] ${bgColorWhite}`
+                        : ""
+                      : ""
+                  } cursor-pointer px-4 py-2 rounded-md`}
+                >
+                  ประวัติการศึกษา
+                </Link>
+                <Link
+                  href={`${rootPathId}/historywork`}
+                  className={`${
+                    selectNav === "historywork"
+                      ? inputGrayColor === "bg-[#74c7c2]" || ""
+                        ? `bg-[#0d96f8] ${bgColorWhite}`
+                        : ""
+                      : ""
+                  } cursor-pointer px-4 py-2 rounded-md`}
+                >
+                  ประวัติการฝึกงาน/ทำงาน
+                </Link>
+                <Link
+                  href={`${rootPathId}/skills`}
+                  className={`${
+                    selectNav === "skills"
+                      ? inputGrayColor === "bg-[#74c7c2]" || ""
+                        ? `bg-[#0d96f8] ${bgColorWhite}`
+                        : ""
+                      : ""
+                  } cursor-pointer px-4 py-2 rounded-md`}
+                >
+                  ความสามารถ/การอบรม
+                </Link>
+                <Link
+                  href={`${rootPathId}/interestedwork`}
+                  className={`${
+                    selectNav === "interestedwork"
+                      ? inputGrayColor === "bg-[#74c7c2]" || ""
+                        ? `bg-[#0d96f8] ${bgColorWhite}`
+                        : ""
+                      : ""
+                  } cursor-pointer px-4 py-2 rounded-md`}
+                >
+                  ลักษณะงานที่สนใจ
+                </Link>
+                <Link
+                  href={`${rootPathId}/resume`}
+                  className={`${
+                    selectNav === "resume"
+                      ? inputGrayColor === "bg-[#74c7c2]" || ""
+                        ? `bg-[#0d96f8] ${bgColorWhite}`
+                        : ""
+                      : ""
+                  } cursor-pointer px-4 py-2 rounded-md`}
+                >
+                  เรซูเม่
+                </Link>
+              </>
+            )}
           </nav>
         </div>
         <hr className="border-gray-500 mt-1" />
@@ -241,4 +247,4 @@ function ManageStudentForm({ children, rootPath }) {
   );
 }
 
-export default ManageStudentForm;
+export default ManageForm;
