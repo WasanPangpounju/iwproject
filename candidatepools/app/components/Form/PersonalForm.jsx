@@ -27,6 +27,7 @@ import { useProvince } from "@/hooks/useProvince";
 import UploadFile from "./UploadFile";
 import InputUniversityAutoComplete from "./InputUniversityAutoComplete";
 import { ROLE } from "@/const/enum";
+import ButtonGroup from "./ButtonGroup/ButtonGroup";
 
 function PersonalForm({ dataUser, isStudent = true, isCreate = false }) {
   //data value
@@ -980,7 +981,7 @@ function PersonalForm({ dataUser, isStudent = true, isCreate = false }) {
       <div className="w-full text-center">
         {error ? <TextError text={error} /> : null}
       </div>
-      {editMode ? (
+      {/* {editMode ? (
         <div className="flex gap-10 w-full justify-center mt-5">
           {!isCreate && (
             <ButtonBG1
@@ -1006,7 +1007,13 @@ function PersonalForm({ dataUser, isStudent = true, isCreate = false }) {
             handleClick={() => setEditMode(true)}
           />
         </div>
-      )}
+      )} */}
+      <ButtonGroup
+        editMode={editMode}
+        setEditMode={setEditMode}
+        isCreate={isCreate}
+        tailwind="mt-5"
+      />
     </form>
   );
 }

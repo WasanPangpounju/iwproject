@@ -27,6 +27,32 @@ export const useUserStore = create((set, get) => ({
     }
   },
 
+  deleteUserById: async (id) => {
+    set({ loading: true, error: null });
+    try {
+      const res = await axios.delete(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`
+      );
+
+      if (res.status === 200) {
+        return { ok: true, message: res.data.message };
+      } else {
+        return {
+          ok: false,
+          message: res.data.error || "Failed to delete user",
+        };
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      return {
+        ok: false,
+        message: error.response?.data?.error || "Server error",
+      };
+    } finally {
+      set({ loading: false });
+    }
+  },
+  
   getUser: async (id) => {
     const current = useUserStore.getState().dataUser;
     if (current && current.uuid === id) return;

@@ -30,7 +30,6 @@ function Resume({
   dataUser,
   dataHistoryWork,
 }) {
-
   const { bgColorNavbar, bgColorWhite, inputGrayColor, inputTextColor } =
     useTheme();
 
@@ -225,14 +224,14 @@ function Resume({
     let errorStatus = false;
 
     try {
-      const resDataUser = await updateUserById(id, bodyDataUser)
+      const resDataUser = await updateUserById(id, bodyDataUser);
       if (!resDataUser.ok) {
         errorStatus = true;
       }
 
       if (dataSkills && dataSkills?.skills?.length > 0) {
         console.log("skill");
-        const resSkill = await updateSkillById(bodySkill)
+        const resSkill = await updateSkillById(bodySkill);
         if (!resSkill.ok) {
           errorStatus = true;
         }
@@ -240,7 +239,7 @@ function Resume({
 
       if (dataEducations && dataEducations?.grade?.length > 0) {
         console.log("education");
-        const resEducation = await updateEducationById(bodyEducation)
+        const resEducation = await updateEducationById(bodyEducation);
         if (!resEducation) {
           errorStatus = true;
         }
@@ -252,7 +251,7 @@ function Resume({
           dataHistoryWork?.workExperience?.length > 0)
       ) {
         console.log("work");
-        const resHistoryWork = await updateHistoryWorkById(bodyHistoryWork)
+        const resHistoryWork = await updateHistoryWorkById(bodyHistoryWork);
         if (!resHistoryWork.ok) {
           errorStatus = true;
         }
@@ -275,7 +274,7 @@ function Resume({
         confirmButtonText: "ตกลง",
         confirmButtonColor: "#0d96f8",
       }).then(() => {
-        setEditMode(false)
+        setEditMode(false);
       });
     } catch (err) {
       console.log(err);
@@ -328,9 +327,9 @@ function Resume({
                               {d || " - "}
                             </p>
                           ))}
-                        </div>
+                        </div> 
                         <div className="flex flex-wrap gap-1">
-                          <p>ที่อยู่: </p>
+                          <p>ที่อยู่: {dataUser.address || ""}</p>
                           <p>ตำบล{dataUser.addressTambon || " - "}</p>
                           <p>อำเภอ{dataUser.addressAmphor || " - "}</p>
                           <p>จังหวัด{dataUser.addressProvince || " - "}</p>
@@ -866,7 +865,7 @@ function Resume({
                           ))}
                         </div>
                         <div className="flex flex-wrap gap-1">
-                          <p>ที่อยู่: </p>
+                          <p>ที่อยู่: {dataUser.address || ""}</p>
                           <p>ตำบล{dataUser.addressTambon || " - "}</p>
                           <p>อำเภอ{dataUser.addressAmphor || " - "}</p>
                           <p>จังหวัด{dataUser.addressProvince || " - "}</p>
@@ -1354,7 +1353,7 @@ function Resume({
                         ))}
                       </div>
                       <div className="flex flex-wrap gap-1">
-                        <p>ที่อยู่: </p>
+                        <p>ที่อยู่: {dataUser.address || ""}</p>
                         <p>ตำบล{dataUser.addressTambon || " - "}</p>
                         <p>อำเภอ{dataUser.addressAmphor || " - "}</p>
                         <p>จังหวัด{dataUser.addressProvince || " - "}</p>

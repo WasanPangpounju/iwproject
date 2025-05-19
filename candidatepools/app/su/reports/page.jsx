@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
 import { mdiFileDocument, mdiMicrosoftExcel, mdiMagnify } from "@mdi/js";
@@ -32,6 +31,7 @@ import { useUserStore } from "@/stores/useUserStore";
 import { useEducationStore } from "@/stores/useEducationStore";
 import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
+
 import { dataStatus } from "@/assets/dataStatus";
 
 // รายงานลักษณะงานที่สนใจ
@@ -221,7 +221,6 @@ function ReportPage() {
     dataHistoryWorkAll,
   ]);
 
-  console.log("dataState: ", dataState);
   if (!dataState) return null;
 
   // set year 10 later
@@ -298,7 +297,7 @@ function ReportPage() {
   //student rows
   const rowCatagoryStudents = () => {
     return dataState?.dataStudents?.map((std, index) => {
-      const education = dataState.dataEducationAll.find(
+      const education = dataState?.dataEducationAll?.find(
         (edu) => edu.uuid === std.uuid
       );
 
@@ -439,6 +438,12 @@ function ReportPage() {
     );
 
   const tableConfig = {
+    หัวข้อทั้งหมด: {
+      เลือกประเภท: {
+        columns: columnCountUni,
+        rows: rowCountUni,
+      },
+    },
     แยกตามจำนวน: {
       ตามมหาวิทยาลัย: {
         columns: columnCountUni,
@@ -489,6 +494,7 @@ function ReportPage() {
   // ---------- Clear Filters ----------
   const handleHeaderChange = (value) => {
     setHeader(value);
+    setContent(REPORT_TYPE_ALL.SELECT_TYPE);
     setPage(0);
   };
 
@@ -619,7 +625,7 @@ function ReportPage() {
           </div>
         </div>
       </form>
-      {content !== REPORT_TYPE_ALL.SELECT_TYPE ? (
+      {config && dataState?.dataStudents?.length > 0 ? (
         <ReportTable
           columns={config.columns}
           resultRows={config.rows}

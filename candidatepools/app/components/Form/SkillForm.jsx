@@ -26,12 +26,13 @@ import { saveAs } from "file-saver";
 
 //stores
 import { useSkillStore } from "@/stores/useSkillStore";
+import ButtonGroup from "./ButtonGroup/ButtonGroup";
 
 function SkillForm({ dataSkills, id }) {
   const [error, setError] = useState("");
 
   //store
-  const { updateSkillById } = useSkillStore()
+  const { updateSkillById } = useSkillStore();
 
   //Theme
   const {
@@ -466,7 +467,7 @@ function SkillForm({ dataSkills, id }) {
 
     try {
       // ส่งข้อมูลไปยัง API ด้วย fetch
-      const response = await updateSkillById(data)
+      const response = await updateSkillById(data);
 
       if (response.ok) {
         Swal.fire({
@@ -866,48 +867,11 @@ function SkillForm({ dataSkills, id }) {
             <p className="text-red-500">* {error}</p>
           </div>
         )}
-        {editMode ? (
-          <div className="flex gap-10 w-full justify-center mt-5">
-            <div
-              onClick={() => {
-                setEditMode(false);
-              }}
-              // className='hover:cursor-pointer bg-[#F97201] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
-              className={`
-                        ${bgColorNavbar} 
-                        ${bgColorWhite} 
-                        hover:cursor-pointer 
-                        bg-[#F97201]  
-                        py-2 px-6 
-                        rounded-2xl 
-                        flex justify-center items-center gap-1 
-                        border border-white
-                      `}
-            >
-              <Icon path={mdiCloseCircle} size={1} />
-              <p>ยกเลิก</p>
-            </div>
-            <button
-              type="submit"
-              // className='hover:cursor-pointer bg-[#75C7C2] text-white py-2 px-6 rounded-2xl flex justify-center items-center gap-1'
-              className={`${inputTextColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`}
-            >
-              <Icon path={mdiContentSave} size={1} />
-              <p>บันทึก</p>
-            </button>
-          </div>
-        ) : (
-          <div className=" flex w-full justify-center mt-10">
-            <div
-              onClick={() => setEditMode(true)}
-              // className='hover:cursor-pointer bg-[#ffb74c] text-white py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
-              className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-            >
-              <Icon path={mdiPencil} size={0.8} />
-              <p>แก้ไข</p>
-            </div>
-          </div>
-        )}
+        <ButtonGroup
+          editMode={editMode}
+          setEditMode={setEditMode}
+          tailwind="mt-5"
+        />
       </div>
     </form>
   );

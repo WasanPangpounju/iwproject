@@ -23,7 +23,7 @@ function ManageForm({ children, rootPath, isUser = false }) {
   const { bgColorWhite, inputGrayColor } = useTheme();
 
   //stores
-  const { dataUserById } = useUserStore();
+  const { dataUserById, deleteUserById } = useUserStore();
 
   //params
   const { id } = useParams();
@@ -68,13 +68,7 @@ function ManageForm({ children, rootPath, isUser = false }) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
-            {
-              method: "DELETE",
-              cache: "no-store",
-            }
-          );
+          const res = await deleteUserById(id);
 
           if (!res.ok) {
             throw new Error("Error getting data from API");
@@ -99,7 +93,7 @@ function ManageForm({ children, rootPath, isUser = false }) {
           }).then((result) => {
             if (result.dismiss === Swal.DismissReason.timer) {
               console.log("I was closed by the timer");
-              router.push(rootPath)
+              router.push(rootPath);
             }
           });
         } catch (err) {
@@ -146,7 +140,7 @@ function ManageForm({ children, rootPath, isUser = false }) {
               <Icon
                 onClick={() =>
                   deletedUser(
-                    dataUserById?._id,
+                    dataUserById?.uuid,
                     dataUserById?.idCard,
                     dataUserById?.firstName
                   )
