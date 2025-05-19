@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
 import {
-  mdiArrowLeftCircle,
   mdiAlertCircle,
   mdiMagnify,
   mdiArrowDownDropCircle,
@@ -24,6 +22,10 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Link from "next/link";
+
+//store
+import { useUserStore } from "@/stores/useUserStore";
+import { useEducationStore } from "@/stores/useEducationStore";
 
 const columns = [
   {
@@ -55,151 +57,21 @@ const columns = [
 ];
 
 function UserManagement() {
-  const [loader, setLoader] = useState(false);
+  //store
+  const { dataUserAll } = useUserStore();
+  const { dataEducationAll } = useEducationStore();
 
-  const router = useRouter();
-  const { status, data: session } = useSession();
-  const [dataUser, setDataUser] = useState([]);
+  const { data: session } = useSession();
 
-  // Validate session and fetch user data
-  useEffect(() => {
-    if (status === "loading") {
-      return;
-    }
-    setLoader(false);
-
-    if (!session) {
-      router.replace("/");
-      return;
-    }
-
-    if (session?.user?.id) {
-      getUser(session.user.id);
-      getDataStudent();
-      getDataEducation();
-      getDataWorks();
-    }
-  }, [status, session, router]);
-
-  //get data from user
-  async function getUser(id) {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Error getting data from API");
-      }
-
-      const data = await res.json();
-      setDataUser(data.user || {});
-    } catch (err) {
-      console.error("Error fetching API", err);
-    } finally {
-      setLoader(false);
-    }
-  }
 
   //Theme
   const {
-    setFontSize,
-    setBgColor,
-    setBgColorNavbar,
-    setBgColorWhite,
-    setBgColorMain,
-    setBgColorMain2,
-    fontSize,
-    bgColorNavbar,
     bgColor,
     bgColorWhite,
     bgColorMain,
     bgColorMain2,
-    setLineBlack,
-    lineBlack,
-    setTextBlue,
-    textBlue,
-    setRegisterColor,
-    registerColor,
-    inputEditColor,
     inputGrayColor,
   } = useTheme();
-
-  //getDatastudent
-  const [studentData, setStudentData] = useState([]);
-  const [loaderTable, setLoaderTable] = useState(true);
-  async function getDataStudent() {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/students`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Error getting data from API");
-      }
-
-      const data = await res.json();
-      setStudentData(data.user || {});
-    } catch (err) {
-      console.error("Error fetching API", err);
-    } finally {
-      setLoaderTable(false);
-    }
-  }
-
-  //get Education
-  const [dataEducations, setDataEducations] = useState(null);
-  async function getDataEducation(id) {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Error getting data from API");
-      }
-
-      const data = await res.json();
-      setDataEducations(data.educations || {});
-    } catch (err) {
-      console.error("Error fetching API", err);
-    }
-  }
-
-  //getData work
-  const [dataWorks, setDataWorks] = useState([]);
-  async function getDataWorks() {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/interestedwork`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Error getting data from API");
-      }
-
-      const data = await res.json();
-      setDataWorks(data.interestedWork || {});
-    } catch (err) {
-      console.error("Error fetching API", err);
-    }
-  }
 
   //table
   function createData(name, university, level, disabled, details, uuid) {
@@ -230,7 +102,7 @@ function UserManagement() {
     });
   }
 
-  const rows = studentData
+  const rows = dataUserAll
     ?.map((std, index) => {
       if (std?.uuid === session?.user?.id) {
         return null;
@@ -239,7 +111,9 @@ function UserManagement() {
       const tempWordSearch =
         wordSearchFilter?.length === 0 ? [wordSearch] : wordSearchFilter;
 
-      const education = dataEducations?.find((edu) => edu?.uuid === std?.uuid);
+      const education = dataEducationAll?.find(
+        (edu) => edu?.uuid === std?.uuid
+      );
       const name = `${std?.firstName} ${std?.lastName}`;
 
       const hasMatchUniversityFilter = education?.university?.find((uni) =>
@@ -309,12 +183,6 @@ function UserManagement() {
     setPage(0);
   };
 
-  //show detail
-  const [idDetail, setIdDetail] = useState("");
-
-  //show addUser
-  const [addUser, setAddUser] = useState(false);
-
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
       <>
@@ -370,12 +238,11 @@ function UserManagement() {
           {session?.user?.id && (
             <div className="flex items-end">
               <Link
-              href={"add"}
+                href={"add"}
                 type="submit"
                 className={` ${bgColorWhite} ${
                   inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#74d886]" : ""
                 }  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-                onClick={() => setAddUser(true)}
               >
                 <Icon path={mdiPlus} size={0.7} />
                 <p>เพิ่มผู้ใช้งาน</p>
@@ -417,9 +284,7 @@ function UserManagement() {
             wordSearchFilter?.length > 0 ? "mt-2" : "mt-10"
           } mb-3 border-gray-500`}
         />
-        {loaderTable ? (
-          <div className="py-2">กำลังโหลดข้อมูล...</div>
-        ) : studentData?.length > 1 ? (
+        {dataUserAll?.length > 0 && (
           <Paper sx={{ width: "100%", overflow: "hidden", boxShadow: "none" }}>
             <TableContainer sx={{ maxHeight: 700 }}>
               <Table stickyHeader aria-label="sticky table">
@@ -447,7 +312,7 @@ function UserManagement() {
                     })
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
-                      const student = studentData.find(
+                      const student = dataUserAll.find(
                         (std) => std?.uuid === row.uuid
                       );
                       if (student) {
@@ -509,8 +374,6 @@ function UserManagement() {
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Paper>
-        ) : (
-          <div>ไม่มีข้อมูลนักศึกษา</div>
         )}
       </>
     </div>

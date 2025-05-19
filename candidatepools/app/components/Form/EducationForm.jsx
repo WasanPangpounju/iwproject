@@ -35,11 +35,11 @@ import ButtonBG2 from "@/app/components/Button/ButtonBG2";
 import TextError from "@/app/components/TextError";
 import SelectLabelForm from "@/app/components/Form/SelectLabelForm";
 import { dataTypePerson } from "@/assets/dataTypePerson";
+import ButtonGroup from "./ButtonGroup/ButtonGroup";
 
 function EducationForm({ dataEducations, dataUser }) {
   //store
-  const { updateEducationById, updateFileName } =
-    useEducationStore();
+  const { updateEducationById, updateFileName } = useEducationStore();
 
   //Theme
   const { bgColor, bgColorMain, inputEditColor } = useTheme();
@@ -1134,31 +1134,11 @@ function EducationForm({ dataEducations, dataUser }) {
           <TextError text={error} />
         </div>
       )}
-      {editMode ? (
-        <div className="flex gap-10 w-full justify-center mt-5">
-          <ButtonBG1
-            text={"ยกเลิก"}
-            mdiIcon={mdiCloseCircle}
-            handleClick={() => setEditMode(false)}
-          />
-          <ButtonBG2
-            text={"บันทึก"}
-            mdiIcon={mdiContentSave}
-            handleClick={() => {
-              console.log("Submit Form");
-            }}
-            btn
-          />
-        </div>
-      ) : (
-        <div className=" flex w-full justify-center mt-10">
-          <ButtonBG1
-            text={"แก้ไข"}
-            mdiIcon={mdiPencil}
-            handleClick={() => setEditMode(true)}
-          />
-        </div>
-      )}
+      <ButtonGroup
+        editMode={editMode}
+        setEditMode={setEditMode}
+        tailwind="mt-5"
+      />
     </form>
   );
 }

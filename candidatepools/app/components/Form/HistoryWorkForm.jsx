@@ -27,6 +27,7 @@ import { saveAs } from "file-saver";
 //stores
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
 import { dataStatus } from "@/assets/dataStatus";
+import ButtonGroup from "./ButtonGroup/ButtonGroup";
 
 function HistoryWorkForm({ id, dataHistoryWork }) {
   //hooks
@@ -2057,47 +2058,11 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
             <p className="text-red-500">* {error}</p>
           </div>
         )}
-        {editMode ? (
-          <div className="flex gap-10 w-full justify-center mt-5">
-            <div
-              onClick={() => {
-                setEditMode(false);
-              }}
-              //  className={`${bgColorNavbar} ${bgColorWhite} hover:cursor-pointer bg-[#F97201]  py-2 px-6  rounded-2xl flex justify-center items-center gap-1`}
-              className={`
-                        ${bgColorNavbar} 
-                        ${bgColorWhite} 
-                        hover:cursor-pointer 
-                        bg-[#F97201]  
-                        py-2 px-6 
-                        rounded-2xl 
-                        flex justify-center items-center gap-1 
-                        border border-white
-                      `}
-            >
-              <Icon path={mdiCloseCircle} size={1} />
-              <p>ยกเลิก</p>
-            </div>
-            <button
-              type="submit"
-              className={`${inputTextColor} ${inputGrayColor} hover:cursor-pointer py-2 px-6 rounded-2xl flex justify-center items-center gap-1 border border-white`}
-            >
-              <Icon path={mdiContentSave} size={1} />
-              <p>บันทึก</p>
-            </button>
-          </div>
-        ) : (
-          <div className=" flex w-full justify-center mt-10">
-            <div
-              onClick={() => setEditMode(true)}
-              // className='hover:cursor-pointer bg-[#ffb74c]  py-2 px-6  rounded-2xl flex justify-center items-center gap-1'
-              className={` ${bgColorNavbar} ${bgColorWhite}  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-            >
-              <Icon path={mdiPencil} size={0.8} />
-              <p>แก้ไข</p>
-            </div>
-          </div>
-        )}
+        <ButtonGroup
+          editMode={editMode}
+          setEditMode={setEditMode}
+          tailwind="mt-5"
+        />
       </div>
     </form>
   );

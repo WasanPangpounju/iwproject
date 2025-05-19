@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
 import { mdiSend, mdiShieldAccount, mdiMagnify } from "@mdi/js";
@@ -56,27 +54,21 @@ function ChatPage() {
 
   async function getUserChat(id) {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
+      const res = await getUserById(id)
 
-      if (!res.ok) {
+      if (!res) {
         throw new Error("Error getting data from API");
       }
 
-      const data = await res.json();
+      const data = res;
       // ตรวจสอบว่า data.user ไม่เป็น null และเป็น object
-      if (data?.user && typeof data.user === "object") {
-        setDataChats((prev) => [...prev, data.user]); // เพิ่ม object เข้าไปในอาร์เรย์
-        setFilteredUsers((prev) => [...prev, data.user]);
+      if (data && typeof data === "object") {
+        setDataChats((prev) => [...prev, data]); // เพิ่ม object เข้าไปในอาร์เรย์
+        setFilteredUsers((prev) => [...prev, data]);
       } else {
         console.error(
           "Expected 'data.user' to be a valid object but got:",
-          data?.user
+          data
         );
       }
     } catch (err) {

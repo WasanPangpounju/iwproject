@@ -69,9 +69,9 @@ export const useChatStore = create((set) => ({
     }
   },
 
-  // อัปเดตสถานะการอ่าน
-  updateStatusRead: async (userId, statusRead, statusReadAdmin) => {
+  updateStatusReadAdmin: async ({ userId, statusRead, statusReadAdmin }) => {
     set({ loading: true, error: null });
+
     try {
       const res = await axios.put(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages/${userId}`,
@@ -80,9 +80,11 @@ export const useChatStore = create((set) => ({
           statusReadAdmin,
         }
       );
+
       return { ok: true, data: res.data.data };
     } catch (error) {
       console.error("Error updating read status:", error);
+      set({ error });
       return { ok: false, error };
     } finally {
       set({ loading: false });
