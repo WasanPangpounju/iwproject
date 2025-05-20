@@ -26,8 +26,8 @@ export default function RootLayout({ children }) {
         <body className={`${(bgColorMain, bgColorWhite)}`}>
           <AuthProvider>
             <ClientRedirector />
-            <ToastContainer />
             <Header />
+            <ToastContainer />
             <div>{children}</div>
           </AuthProvider>
         </body>

@@ -10,6 +10,7 @@ import { useUserStore } from "@/stores/useUserStore";
 import { useEducationStore } from "@/stores/useEducationStore";
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
 import { useSkillStore } from "@/stores/useSkillStore";
+import { useResumeStore } from "@/stores/useResumeStore";
 
 function page() {
 
@@ -17,6 +18,7 @@ function page() {
   const { dataEducationById } = useEducationStore();
   const { dataHistoryWorkById } = useHistoryWorkStore();
   const { dataSkillById } = useSkillStore();
+  const { resumeFiles } = useResumeStore();
 
   return (
     <div className="mt-5">
@@ -25,6 +27,7 @@ function page() {
         dataEducations={dataEducationById}
         dataHistoryWork={dataHistoryWorkById}
         dataSkills={dataSkillById}
+        resumeFiles={resumeFiles}
       />
     </div>
   );
