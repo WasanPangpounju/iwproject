@@ -160,16 +160,8 @@ function ChatPage() {
 
   async function handleUpdateStatusRead(id) {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ statusReadAdmin: false }),
-        }
-      );
+      const res = await updateStatusRead({userId: id, statusReadAdmin: false})
+   
       if (res.ok) {
         const data = await res.json(); // รับข้อมูลที่ได้จาก API
         if (chats?.some((u) => u?.uuid === id)) {
