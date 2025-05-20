@@ -28,6 +28,7 @@ import { saveAs } from "file-saver";
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
 import { dataStatus } from "@/assets/dataStatus";
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
+import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
 
 function HistoryWorkForm({ id, dataHistoryWork }) {
   //hooks
@@ -1270,6 +1271,24 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
   const [statusNow, setStatusNow] = useState("");
   const [getStatusNow, setGetStatusNow] = useState("");
 
+  //for progressbar
+  const fieldProgress = [
+    projectName,
+    projectDetail,
+    dateStartInternship,
+    dateEndInternship,
+    dateStartMonthInternship,
+    dateEndMonthInternship,
+    placeInternship,
+    positionInternship,
+    dateStartWork,
+    dateEndWork,
+    dateStartMonthWork,
+    dateEndMonthWork,
+    placeWork,
+    positionWork,
+    statusNow,
+  ];
   return (
     <form
       onSubmit={(e) =>
@@ -2058,6 +2077,8 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
             <p className="text-red-500">* {error}</p>
           </div>
         )}
+        {editMode && <ProgressBarForm fields={fieldProgress} />}
+
         <ButtonGroup
           editMode={editMode}
           setEditMode={setEditMode}

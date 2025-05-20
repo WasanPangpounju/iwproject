@@ -14,6 +14,8 @@ import NavbarMain from "../components/Menu/NavbarMain";
 import { useUserStore } from "@/stores/useUserStore";
 
 import { useFetchUserData } from "@/hooks/useFetchUserData";
+import { ToastContainer } from "react-toastify";
+
 export default function RootLayout({ children }) {
   const { fontSize, bgColor, bgColorMain } = useTheme();
   const { data: session } = useSession();

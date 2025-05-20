@@ -30,12 +30,14 @@ import { useTheme } from "@/app/ThemeContext";
 //stores
 import { useEducationStore } from "@/stores/useEducationStore";
 
-import ButtonBG1 from "@/app/components/Button/ButtonBG1";
-import ButtonBG2 from "@/app/components/Button/ButtonBG2";
 import TextError from "@/app/components/TextError";
 import SelectLabelForm from "@/app/components/Form/SelectLabelForm";
 import { dataTypePerson } from "@/assets/dataTypePerson";
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
+import { toast } from "react-toastify";
+import { downloadFileFromFirebase } from "@/utils/firebaseDownload";
+import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
+import { TYPE_PERSON } from "@/const/enum";
 
 function EducationForm({ dataEducations, dataUser }) {
   //store
@@ -531,24 +533,12 @@ function EducationForm({ dataEducations, dataUser }) {
     }
   }
 
-  const handleDownloadFile = async (filePath, nameFile) => {
-    const storage = getStorage();
-    const fileRef = ref(storage, filePath);
-
+  //download file
+  const handleDownloadFile = async (fileUrl, fileName) => {
     try {
-      // ดึง URL ของไฟล์
-      const downloadURL = await getDownloadURL(fileRef);
-
-      // ใช้ fetch เพื่อดาวน์โหลดไฟล์
-      const response = await fetch(downloadURL);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const blob = await response.blob(); // แปลงเป็น Blob
-      saveAs(blob, nameFile); // ใช้ file-saver เพื่อดาวน์โหลดไฟล์
-    } catch (error) {
-      console.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์:", error);
+      await downloadFileFromFirebase(fileUrl, fileName);
+    } catch (err) {
+      toast.error("ดาวน์โหลดไม่สำเร็จ");
     }
   };
 
@@ -617,6 +607,17 @@ function EducationForm({ dataEducations, dataUser }) {
     setOptionUniversity([]);
   }
 
+  //for progressbar
+  const fieldProgress = [
+    ...(typePerson === TYPE_PERSON.STUDENT ? [level] : [yearGraduation]),
+    university,
+    typePerson,
+    educationLevel,
+    campus,
+    faculty,
+    grade,
+    branch,
+  ];
   return (
     <form
       onSubmit={(e) => handleSubmit(e, fields.length)}
@@ -868,8 +869,7 @@ function EducationForm({ dataEducations, dataUser }) {
             </div>
             {/* วิทยาเขต */}
             {index === 0 &&
-              typePerson === "นักศึกษาพิการ" &&
-              ((campus?.length > 1 && campus[index]) || editMode ? (
+              (editMode ? (
                 <div className="flex col flex-col">
                   <label>วิทยาเขต</label>
                   <input
@@ -1134,6 +1134,9 @@ function EducationForm({ dataEducations, dataUser }) {
           <TextError text={error} />
         </div>
       )}
+      <div className="mt-4 w-full">
+        {editMode && <ProgressBarForm fields={fieldProgress} />}
+      </div>
       <ButtonGroup
         editMode={editMode}
         setEditMode={setEditMode}

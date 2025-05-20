@@ -27,6 +27,7 @@ import { saveAs } from "file-saver";
 //stores
 import { useSkillStore } from "@/stores/useSkillStore";
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
+import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
 
 function SkillForm({ dataSkills, id }) {
   const [error, setError] = useState("");
@@ -579,6 +580,14 @@ function SkillForm({ dataSkills, id }) {
     }
   }
 
+  //for progressbar
+  const fieldProgress = [
+    skillType,
+    skillDetail,
+    skillName,
+    trainName,
+    trainDetail,
+  ];
   return (
     <form
       onSubmit={(e) => handleSubmit(e, skills.length, trains.length)}
@@ -860,7 +869,7 @@ function SkillForm({ dataSkills, id }) {
           </div>
         )}
       </div>
-
+      {editMode && <ProgressBarForm fields={fieldProgress} />}
       <div>
         {error && (
           <div className="w-full text-center">

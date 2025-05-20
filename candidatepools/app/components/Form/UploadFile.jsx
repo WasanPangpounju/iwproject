@@ -5,7 +5,15 @@ import { storage } from "@/app/firebaseConfig";
 import { useTheme } from "@/app/ThemeContext";
 import { useFirebaseUpload } from "@/hooks/useFirebaseUpload";
 
-function UploadFile({ setValue, editMode, uuid }) {
+function UploadFile({
+  editMode,
+  uuid,
+  setValue,
+  setNameFile,
+  setSizeFile,
+  setTypeFile,
+  isDisabled,
+}) {
   const { bgColorMain, inputEditColor } = useTheme();
 
   const {
@@ -18,8 +26,37 @@ function UploadFile({ setValue, editMode, uuid }) {
   } = useFirebaseUpload(storage, "uploads");
 
   useEffect(() => {
-    if (downloadURL) {
+    if (downloadURL && inputRef.current?.files?.[0]) {
+      const file = inputRef.current.files[0];
+
+      const readableSize = (bytes) => {
+        const kb = bytes / 1024;
+        return kb > 1024
+          ? (kb / 1024).toFixed(2) + " MB"
+          : kb.toFixed(2) + " KB";
+      };
+
+      const getReadableType = (mime) => {
+        if (mime === "application/pdf") return "PDF";
+        if (
+          mime === "application/msword" ||
+          mime ===
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
+          return "Word";
+        if (
+          mime ===
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+          return "Excel";
+        if (mime.startsWith("image/")) return "Image";
+        return mime;
+      };
+
       setValue(downloadURL);
+      setNameFile?.(file.name);
+      setSizeFile?.(readableSize(file.size));
+      setTypeFile?.(getReadableType(file.type));
     }
   }, [downloadURL]);
 
@@ -37,7 +74,9 @@ function UploadFile({ setValue, editMode, uuid }) {
       />
 
       <div
-        onClick={openFileDialog}
+        onClick={() => {
+          if (isDisabled) openFileDialog();
+        }}
         className={`border rounded-lg py-2 px-8 text-center ${inputEditColor}`}
       >
         Choose File

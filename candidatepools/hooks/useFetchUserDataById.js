@@ -6,6 +6,7 @@ import { useEducationStore } from "@/stores/useEducationStore";
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
 import { useSkillStore } from "@/stores/useSkillStore";
 import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
+import { useResumeStore } from "@/stores/useResumeStore";
 
 // ✅ ฟังก์ชันล้างข้อมูลทั้งหมด
 const clearUserDataById = () => {
@@ -14,6 +15,7 @@ const clearUserDataById = () => {
   useHistoryWorkStore.getState().clearHistoryWorkById();
   useSkillStore.getState().clearSkillById();
   useInterestedWorkStore.getState().clearInterestedWorkById();
+  useResumeStore.getState().clearResumeFiles();
 };
 
 export const useFetchUserDataById = (id) => {
@@ -22,6 +24,7 @@ export const useFetchUserDataById = (id) => {
   const { getHistoryWorkById } = useHistoryWorkStore();
   const { getSkillById } = useSkillStore();
   const { getInterestedWorkById } = useInterestedWorkStore();
+  const { fetchResumeFiles } = useResumeStore();
 
   useEffect(() => {
     if (!id) return;
@@ -33,6 +36,7 @@ export const useFetchUserDataById = (id) => {
         getHistoryWorkById(id),
         getSkillById(id),
         getInterestedWorkById(id),
+        fetchResumeFiles(id)
       ]);
     };
 
