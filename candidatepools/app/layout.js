@@ -9,6 +9,8 @@ import "@fontsource/ibm-plex-sans-thai";
 import { AuthProvider } from "./Provider";
 import { useState } from "react"; // Import useState
 
+import { ToastContainer } from "react-toastify";
+
 //component
 import ClientRedirector from "@/app/components/Redirector/ClientRedirector";
 
@@ -18,13 +20,13 @@ export default function RootLayout({ children }) {
   const [bgColorWhite, setBgColorWhite] = useState("text-white");
   const [bgColorMain, setBgColorMain] = useState("bg-white");
 
-
   return (
     <html lang="en">
       <ThemeProvider>
         <body className={`${(bgColorMain, bgColorWhite)}`}>
           <AuthProvider>
             <ClientRedirector />
+            <ToastContainer />
             <Header />
             <div>{children}</div>
           </AuthProvider>
