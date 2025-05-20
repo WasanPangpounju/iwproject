@@ -8,18 +8,25 @@ import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import Swal from "sweetalert2";
 import Loader from "./components/Loader";
 import Footer from "./components/Footer";
-import RootLayout from "./layout";
 import React from "react";
 
-//hooks
-import useRoleRedirect from '@/hooks/useRoleRedirect'
+//stores
+import { useCredentialStore } from "@/stores/useCredentialStore";
 
-// export default function Home(bgColorNavbar,bgColorMain) {
-// export default function Home({ bgColorMain='bg-white', bgColorNavbar,bgColor }) {
+//hooks
+import useRoleRedirect from "@/hooks/useRoleRedirect";
+
+//SweetAlert2
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
+
 export default function Home() {
+  //store
+  const { forgotPassword } = useCredentialStore();
   const {
     setFontSize,
     setBgColor,
@@ -38,7 +45,7 @@ export default function Home() {
   } = useTheme();
 
   useRoleRedirect();
-  
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -114,7 +121,7 @@ export default function Home() {
         } finally {
           setLoader(false);
         }
-      } 
+      }
     } catch (err) {
       setLoader(false);
       Swal.fire({
@@ -127,6 +134,43 @@ export default function Home() {
     }
   }
 
+  //forgot Password
+  const handleForgotPassword = async () => {
+    const { value: email } = await MySwal.fire({
+      title: "ลืมรหัสผ่าน",
+      input: "email",
+      inputLabel: "กรอกอีเมลที่ลงทะเบียนไว้",
+      inputPlaceholder: "yourname@example.com",
+      confirmButtonText: "ส่งลิงก์รีเซ็ตรหัสผ่าน",
+      showCancelButton: true,
+      confirmButtonColor: "#F97201",
+      cancelButtonColor: "#ccc",
+    });
+
+    if (email) {
+      try {
+        const res = await forgotPassword(email);
+
+        if (!res.ok) throw new Error(`ส่งอีเมลไม่สำเร็จ ${res.statusText}`);
+
+        MySwal.fire({
+          title: "ส่งลิงก์แล้ว",
+          text: "โปรดตรวจในจดหมายขยะของคุณ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+          confirmButtonColor: "#0d96f8",
+        });
+      } catch (err) {
+        MySwal.fire({
+          title: "เกิดข้อผิดพลาด",
+          text: err.message,
+          icon: "error",
+          confirmButtonText: "ตกลง",
+          confirmButtonColor: "#f27474",
+        });
+      }
+    }
+  };
   return (
     <div className={`${bgColorMain} ${bgColor}`}>
       <HeaderLogo />
@@ -144,24 +188,26 @@ export default function Home() {
             <div
               onClick={() => {
                 setLoginMod("user");
-                setEmail('');
-                setPassword('');
-                setError('');
+                setEmail("");
+                setPassword("");
+                setError("");
               }}
-              className={`${loginMod === "user" ? "bg-[#F97201]" : "bg-[#75C7C2]"
-                } ${fontSize} hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
+              className={`${
+                loginMod === "user" ? "bg-[#F97201]" : "bg-[#75C7C2]"
+              } ${fontSize} hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
             >
               นักศึกษาพิการ
             </div>
             <div
               onClick={() => {
                 setLoginMod("admin");
-                setEmail('');
-                setPassword('');
-                setError('');
+                setEmail("");
+                setPassword("");
+                setError("");
               }}
-              className={`${loginMod === "admin" ? "bg-[#F97201]" : "bg-[#75C7C2]"
-                } ${fontSize} hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
+              className={`${
+                loginMod === "admin" ? "bg-[#F97201]" : "bg-[#75C7C2]"
+              } ${fontSize} hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
             >
               ผู้ดูแลระบบ
             </div>
@@ -206,25 +252,25 @@ export default function Home() {
             {error ? (
               <div className="self-start mt-3 text-red-500">*{error}</div>
             ) : null}
-            {loginMod === 'user' ? (
+            {loginMod === "user" ? (
               <div className="self-end mt-4">
-                <Link
+                <div
                   // className="text-blue-500 hover:cursor-pointer hover:underline"
                   className={`${textBlue} ${fontSize} hover:cursor-pointer hover:underline`}
-                  href="#"
+                  onClick={handleForgotPassword}
                 >
                   ลืมรหัสผ่าน ?
-                </Link>
+                </div>
               </div>
             ) : (
               <div className="self-end mt-4">
-                <Link
+                <div
                   // className="text-blue-500 hover:cursor-pointer hover:underline"
                   className={`${textBlue} ${fontSize} hover:cursor-pointer hover:underline`}
-                  href="#"
+                  onClick={handleForgotPassword}
                 >
                   ลืมรหัสผ่านสำหรับผู้ดูแล ?
-                </Link>
+                </div>
               </div>
             )}
             <div className="mt-10">
@@ -235,7 +281,7 @@ export default function Home() {
                 เข้าสู่ระบบ
               </button>
             </div>
-            {loginMod === 'user' && (
+            {loginMod === "user" && (
               <>
                 <p className={`mt-4 ${fontSize}`}>
                   ยังไม่ได้เป็นสมาชิก?
@@ -251,7 +297,9 @@ export default function Home() {
                 <div className="mt-5 flex  justify-center flex-col items-center">
                   <hr className={`${lineBlack} border  w-64`} />
                   {/* <p className="bg-white p-1 absolute">หรือ</p> */}
-                  <p className={`${bgColorMain2} ${fontSize} p-1 absolute`}>หรือ</p>
+                  <p className={`${bgColorMain2} ${fontSize} p-1 absolute`}>
+                    หรือ
+                  </p>
                 </div>
                 <div
                   className={`${fontSize} mt-8 text-gray-400 flex flex-col gap-3`}
