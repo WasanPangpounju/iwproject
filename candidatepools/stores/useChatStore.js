@@ -69,7 +69,7 @@ export const useChatStore = create((set) => ({
     }
   },
 
-  updateStatusReadAdmin: async ({ userId, statusRead, statusReadAdmin }) => {
+  updateStatusRead: async ({ userId, statusRead, statusReadAdmin }) => {
     set({ loading: true, error: null });
 
     try {

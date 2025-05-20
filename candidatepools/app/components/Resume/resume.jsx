@@ -327,7 +327,7 @@ function Resume({
                               {d || " - "}
                             </p>
                           ))}
-                        </div> 
+                        </div>
                         <div className="flex flex-wrap gap-1">
                           <p>ที่อยู่: {dataUser.address || ""}</p>
                           <p>ตำบล{dataUser.addressTambon || " - "}</p>
