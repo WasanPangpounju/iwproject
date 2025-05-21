@@ -8,8 +8,6 @@ import {
   mdiCloseCircle,
   mdiDownload,
   mdiArrowDownDropCircle,
-  mdiPencil,
-  mdiContentSave,
   mdiDelete,
 } from "@mdi/js";
 import Swal from "sweetalert2";
@@ -29,24 +27,16 @@ import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
 import { dataStatus } from "@/assets/dataStatus";
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
 import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
+import { toast } from "react-toastify";
 
-function HistoryWorkForm({ id, dataHistoryWork }) {
+function HistoryWorkForm({ id, dataHistoryWork, handleStep }) {
   //hooks
   const { updateHistoryWorkById } = useHistoryWorkStore();
   const [error, setError] = useState("");
 
   //Theme
-  const {
-    fontSize,
-    bgColorNavbar,
-    bgColor,
-    bgColorWhite,
-    bgColorMain,
-    bgColorMain2,
-    inputEditColor,
-    inputGrayColor,
-    inputTextColor,
-  } = useTheme();
+  const { fontSize, bgColor, bgColorMain, bgColorMain2, inputEditColor } =
+    useTheme();
 
   //add data
   const [projectName, setProjectName] = useState([]);
@@ -98,10 +88,8 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
 
   const handleAddProject = () => {
     if (
-      (!projectName[projects.length - 1] ||
-        !projectDetail[projects.length - 1]) &&
-      (!getProjectName[projects.length - 1] ||
-        !getProjectDetail[projects.length - 1])
+      !projectName[projects.length - 1] ||
+      !projectDetail[projects.length - 1]
     ) {
       setErrorField("กรุณากรอกข้อความให้ครบก่อนเพิ่มข้อมูลใหม่");
       return;
@@ -140,18 +128,6 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
 
         const newTempProjectFile = projectFile.filter((_, i) => i !== index);
         setProjectFile(newTempProjectFile);
-
-        // ลบข้อมูลจาก getProjectName, getProjectDetail, และ getProjectFile
-        const newGetProjectName = getProjectName.filter((_, i) => i !== temp);
-        setGetProjectName(newGetProjectName);
-
-        const newGetProjectDetail = getProjectDetail.filter(
-          (_, i) => i !== temp
-        );
-        setGetProjectDetail(newGetProjectDetail);
-
-        const newGetProjectFile = getProjectFile.filter((_, i) => i !== temp);
-        setGetProjectFile(newGetProjectFile);
       }
     });
   };
@@ -168,15 +144,14 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
       cancelButtonText: "ไม่",
     });
 
-    const mergedProjectFile = mergeArrayObjects(projectFile, getProjectFile);
+    const mergedProjectFile = projectFile;
 
     if (result.isConfirmed) {
       const updatedTrainFiles = [...mergedProjectFile];
       updatedTrainFiles[index] = undefined; // ตั้งค่าตำแหน่งที่ต้องการเป็น undefined แทนการลบ
 
       setProjectFile(updatedTrainFiles);
-      setGetProjectFile(updatedTrainFiles);
-      Swal.fire("ลบไฟล์สำเร็จ", `${name} ถูกลบเรียบร้อยแล้ว`, "success");
+      toast.success("ลบไฟล์สำเร็จ ", `${name} ถูกลบเรียบร้อยแล้ว`);
     }
   }
 
@@ -383,18 +358,12 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
   const handleAddInterships = () => {
     // ตรวจสอบให้แน่ใจว่ามีการกรอกข้อมูล internship ครบถ้วนก่อนที่จะเพิ่มข้อมูลใหม่
     if (
-      (!dateStartInternship[internships.length - 1] ||
-        !dateEndInternship[internships.length - 1] ||
-        !dateEndMonthInternship[internships.length - 1] ||
-        !dateStartMonthInternship[internships.length - 1] ||
-        !placeInternship[internships.length - 1] ||
-        !positionInternship[internships.length - 1]) &&
-      (!getDateStartInternship[internships.length - 1] ||
-        !getDateEndInternship[internships.length - 1] ||
-        !getDateEndMonthInternship[internships.length - 1] ||
-        !getDateEndMonthInternship[internships.length - 1] ||
-        !getPlaceInternship[internships.length - 1] ||
-        !getPositionInternship[internships.length - 1])
+      !dateStartInternship[internships.length - 1] ||
+      !dateEndInternship[internships.length - 1] ||
+      !dateEndMonthInternship[internships.length - 1] ||
+      !dateStartMonthInternship[internships.length - 1] ||
+      !placeInternship[internships.length - 1] ||
+      !positionInternship[internships.length - 1]
     ) {
       setErrorFieldInterships("กรุณากรอกข้อความให้ครบก่อนเพิ่มข้อมูลใหม่");
       return;
@@ -437,19 +406,6 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
         setPlaceInternship((prev) => prev.filter((_, i) => i !== temp));
         setPositionInternship((prev) => prev.filter((_, i) => i !== temp));
         setInternshipFile((prev) => prev.filter((_, i) => i !== temp));
-
-        // ลบข้อมูลจาก getDateStartInternship, getDateEndInternship, getPlaceInternship, getPositionInternship, และ getInternshipFile
-        setGetDateStartInternship((prev) => prev.filter((_, i) => i !== temp));
-        setGetDateEndInternship((prev) => prev.filter((_, i) => i !== temp));
-        setGetDateStartMonthInternship((prev) =>
-          prev.filter((_, i) => i !== temp)
-        );
-        setGetDateEndMonthInternship((prev) =>
-          prev.filter((_, i) => i !== temp)
-        );
-        setGetPlaceInternship((prev) => prev.filter((_, i) => i !== temp));
-        setGetPositionInternship((prev) => prev.filter((_, i) => i !== temp));
-        setGetInternshipFile((prev) => prev.filter((_, i) => i !== temp));
       }
     });
   };
@@ -466,15 +422,14 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
       cancelButtonText: "ไม่",
     });
 
-    const mergedFile = mergeArrayObjects(internshipFile, getInternshipFile);
+    const mergedFile = internshipFile;
 
     if (result.isConfirmed) {
       const updatedTrainFiles = [...mergedFile];
       updatedTrainFiles[index] = undefined; // ตั้งค่าตำแหน่งที่ต้องการเป็น undefined แทนการลบ
 
       setInternshipFile(updatedTrainFiles);
-      setGetInternshipFile(updatedTrainFiles);
-      Swal.fire("ลบไฟล์สำเร็จ", `${name} ถูกลบเรียบร้อยแล้ว`, "success");
+      toast.success("ลบไฟล์สำเร็จ ", `${name} ถูกลบเรียบร้อยแล้ว`);
     }
   }
 
@@ -662,14 +617,10 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
   const handleAddWork = () => {
     // ตรวจสอบให้แน่ใจว่ามีการกรอกข้อมูล work ครบถ้วนก่อนที่จะเพิ่มข้อมูลใหม่
     if (
-      (!dateStartWork[works.length - 1] ||
-        !dateEndWork[works.length - 1] ||
-        !placeWork[works.length - 1] ||
-        !positionWork[works.length - 1]) &&
-      (!getDateStartWork[works.length - 1] ||
-        !getDateEndWork[works.length - 1] ||
-        !getPlaceWork[works.length - 1] ||
-        !getPositionWork[works.length - 1])
+      !dateStartWork[works.length - 1] ||
+      !dateEndWork[works.length - 1] ||
+      !placeWork[works.length - 1] ||
+      !positionWork[works.length - 1]
     ) {
       setErrorFieldWorks("กรุณากรอกข้อความให้ครบก่อนเพิ่มข้อมูลใหม่");
       return;
@@ -710,13 +661,6 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
         setPlaceWork((prev) => prev.filter((_, i) => i !== temp));
         setPositionWork((prev) => prev.filter((_, i) => i !== temp));
         setWorkFile((prev) => prev.filter((_, i) => i !== temp));
-
-        // ลบข้อมูลจาก getDateStartWork, getDateEndWork, getPlaceWork, getPositionWork, และ getWorkFile
-        setGetDateStartWork((prev) => prev.filter((_, i) => i !== temp));
-        setGetDateEndWork((prev) => prev.filter((_, i) => i !== temp));
-        setGetPlaceWork((prev) => prev.filter((_, i) => i !== temp));
-        setGetPositionWork((prev) => prev.filter((_, i) => i !== temp));
-        setGetWorkFile((prev) => prev.filter((_, i) => i !== temp));
       }
     });
   };
@@ -733,15 +677,14 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
       cancelButtonText: "ไม่",
     });
 
-    const mergedFile = mergeArrayObjects(workFile, getWorkFile);
+    const mergedFile = workFile;
 
     if (result.isConfirmed) {
       const updatedTrainFiles = [...mergedFile];
       updatedTrainFiles[index] = undefined; // ตั้งค่าตำแหน่งที่ต้องการเป็น undefined แทนการลบ
 
       setWorkFile(updatedTrainFiles);
-      setGetWorkFile(updatedTrainFiles);
-      Swal.fire("ลบไฟล์สำเร็จ", `${name} ถูกลบเรียบร้อยแล้ว`, "success");
+      toast.success("ลบไฟล์สำเร็จ ", `${name} ถูกลบเรียบร้อยแล้ว`);
     }
   }
 
@@ -852,60 +795,28 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
   async function handleSubmit(e, fieldProjects, fieldInternship, fieldWorks) {
     e.preventDefault();
 
-    const mergedProjectName = mergeArrayValues(projectName, getProjectName);
-    const mergedProjectDetail = mergeArrayValues(
-      projectDetail,
-      getProjectDetail
-    );
-    const mergedProjectFile = mergeArrayObjects(projectFile, getProjectFile);
+    const mergedProjectName = projectName;
+    const mergedProjectDetail = projectDetail;
+    const mergedProjectFile = projectFile;
+    const mergedDateStartInternship = dateStartInternship;
 
-    const mergedDateStartInternship = mergeArrayValues(
-      dateStartInternship,
-      getDateStartInternship
-    );
-    const mergedDateEndInternship = mergeArrayValues(
-      dateEndInternship,
-      getDateEndInternship
-    );
-    const mergedDateStartMonthInternship = mergeArrayValues(
-      dateStartMonthInternship,
-      getDateStartMonthInternship
-    );
-    const mergedDateEndMonthInternship = mergeArrayValues(
-      dateEndMonthInternship,
-      getDateEndMonthInternship
-    );
-    const mergedPlaceInternship = mergeArrayValues(
-      placeInternship,
-      getPlaceInternship
-    );
-    const mergedPositionInternship = mergeArrayValues(
-      positionInternship,
-      getPositionInternship
-    );
-    const mergedInternshipFile = mergeArrayObjects(
-      internshipFile,
-      getInternshipFile
-    );
+    const mergedDateEndInternship = dateEndInternship;
 
-    const mergedDateStartWork = mergeArrayValues(
-      dateStartWork,
-      getDateStartWork
-    );
-    const mergedDateEndWork = mergeArrayValues(dateEndWork, getDateEndWork);
-    const mergedDateStartMonthWork = mergeArrayValues(
-      dateStartMonthWork,
-      getDateStartMonthWork
-    );
-    const mergedDateEndMonthWork = mergeArrayValues(
-      dateEndMonthWork,
-      getDateEndMonthWork
-    );
-    const mergedPlaceWork = mergeArrayValues(placeWork, getPlaceWork);
-    const mergedPositionWork = mergeArrayValues(positionWork, getPositionWork);
-    const mergedWorkFile = mergeArrayObjects(workFile, getWorkFile);
+    const mergedDateStartMonthInternship = dateStartMonthInternship;
+    const mergedDateEndMonthInternship = dateEndMonthInternship;
+    const mergedPlaceInternship = placeInternship;
+    const mergedPositionInternship = positionInternship;
+    const mergedInternshipFile = internshipFile;
 
-    const tempStatusNow = statusNow || getStatusNow;
+    const mergedDateStartWork = dateStartWork;
+    const mergedDateEndWork = dateEndWork;
+    const mergedDateStartMonthWork = dateStartMonthWork;
+    const mergedDateEndMonthWork = dateEndMonthWork;
+    const mergedPlaceWork = placeWork;
+    const mergedPositionWork = positionWork;
+    const mergedWorkFile = workFile;
+
+    const tempStatusNow = statusNow;
 
     //check date
     const isInvalidDateRange = mergedDateStartInternship.find(
@@ -1072,152 +983,92 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
       const response = await updateHistoryWorkById(data);
 
       if (response.ok) {
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          confirmButtonText: "ตกลง",
-          confirmButtonColor: "#0d96f8",
-        }).then(() => {
-          setEditMode(false);
-        });
+        toast.success("บันทึกข้อมูลสำเร็จ");
+        setEditMode(false);
+        if (handleStep) {
+          handleStep();
+        }
       } else {
         console.error("Failed to submit data:", result.message);
-        Swal.fire({
-          title: "เกิดข้อผิดพลาด",
-          text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-          icon: "error",
-          confirmButtonText: "ตกลง",
-          confirmButtonColor: "#f27474",
-        }).then(() => {
-          setEditMode(false);
-        });
-
+        toast.error("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง");
+        setEditMode(false);
         return;
       }
     } catch (error) {
       console.error("Error submitting data:", error);
-      Swal.fire({
-        title: "เกิดข้อผิดพลาด",
-        text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-        icon: "error",
-        confirmButtonText: "ตกลง",
-        confirmButtonColor: "#f27474",
-      }).then(() => {
-        setEditMode(false);
-      });
+      toast.error("เกิดข้อผิดพลาด ", error);
+      setEditMode(false);
+      return;
     }
   }
-
-  //get Default value
-  const [getProjectName, setGetProjectName] = useState([]);
-  const [getProjectDetail, setGetProjectDetail] = useState([]);
-  const [getProjectFile, setGetProjectFile] = useState([
-    {
-      fileName: "",
-      fileType: "",
-      fileUrl: "",
-      fileSize: "",
-    },
-  ]);
-  const [getDateStartInternship, setGetDateStartInternship] = useState([]);
-  const [getDateEndInternship, setGetDateEndInternship] = useState([]);
-  const [getDateStartMonthInternship, setGetDateStartMonthInternship] =
-    useState([]);
-  const [getDateEndMonthInternship, setGetDateEndMonthInternship] = useState(
-    []
-  );
-  const [getPlaceInternship, setGetPlaceInternship] = useState([]);
-  const [getPositionInternship, setGetPositionInternship] = useState([]);
-  const [getInternshipFile, setGetInternshipFile] = useState([
-    {
-      fileName: "",
-      fileType: "",
-      fileUrl: "",
-      fileSize: "",
-    },
-  ]);
-  const [getDateStartWork, setGetDateStartWork] = useState([]);
-  const [getDateEndWork, setGetDateEndWork] = useState([]);
-  const [getDateStartMonthWork, setGetDateStartMonthWork] = useState([]);
-  const [getDateEndMonthWork, setGetDateEndMonthWork] = useState([]);
-  const [getPlaceWork, setGetPlaceWork] = useState([]);
-  const [getPositionWork, setGetPositionWork] = useState([]);
-  const [getWorkFile, setGetWorkFile] = useState([
-    {
-      fileName: "",
-      fileType: "",
-      fileUrl: "",
-      fileSize: "",
-    },
-  ]);
 
   useEffect(() => {
     // ถ้าไม่มีข้อมูลใน dataHistoryWork ให้หยุดการทำงานของ useEffect
     if (!dataHistoryWork) return;
 
     // ตั้งค่าตัวแปรต่าง ๆ จากข้อมูลใน dataHistoryWork
-    setGetProjectName(
+    setProjectName(
       dataHistoryWork.projects?.map((project) => project.name) || []
     );
-    setGetProjectDetail(
+    setProjectDetail(
       dataHistoryWork.projects?.map((project) => project.detail) || []
     );
-    setGetProjectFile(
+    setProjectFile(
       dataHistoryWork.projects?.flatMap((project) => project.files) || []
     );
 
-    setGetDateStartInternship(
+    setDateStartInternship(
       dataHistoryWork.internships?.map((internship) => internship.dateStart) ||
         []
     );
-    setGetDateEndInternship(
+    setDateEndInternship(
       dataHistoryWork.internships?.map((internship) => internship.dateEnd) || []
     );
-    setGetDateStartMonthInternship(
+    setDateStartMonthInternship(
       dataHistoryWork.internships?.map(
         (internship) => internship.dateStartMonth
       ) || []
     );
-    setGetDateEndMonthInternship(
+    setDateEndMonthInternship(
       dataHistoryWork.internships?.map(
         (internship) => internship.dateEndMonth
       ) || []
     );
-    setGetPlaceInternship(
+    setPlaceInternship(
       dataHistoryWork.internships?.map((internship) => internship.place) || []
     );
-    setGetPositionInternship(
+    setPositionInternship(
       dataHistoryWork.internships?.map((internship) => internship.position) ||
         []
     );
-    setGetInternshipFile(
+    setInternshipFile(
       dataHistoryWork.internships?.flatMap((internship) => internship.files) ||
         []
     );
 
-    setGetDateStartWork(
+    setDateStartWork(
       dataHistoryWork.workExperience?.map((work) => work.dateStart) || []
     );
-    setGetDateEndWork(
+    setDateEndWork(
       dataHistoryWork.workExperience?.map((work) => work.dateEnd) || []
     );
-    setGetDateStartMonthWork(
+    setDateStartMonthWork(
       dataHistoryWork.workExperience?.map((work) => work.dateStartMonth) || []
     );
-    setGetDateEndMonthWork(
+    setDateEndMonthWork(
       dataHistoryWork.workExperience?.map((work) => work.dateEndMonth) || []
     );
-    setGetPlaceWork(
+    setPlaceWork(
       dataHistoryWork.workExperience?.map((work) => work.place) || []
     );
-    setGetPositionWork(
+    setPositionWork(
       dataHistoryWork.workExperience?.map((work) => work.position) || []
     );
-    setGetWorkFile(
+    setWorkFile(
       dataHistoryWork.workExperience?.flatMap((work) => work.files) || []
     );
 
-    setGetStatusNow(dataHistoryWork?.statusNow || "0");
+    setStatusNow(dataHistoryWork?.statusNow || "0");
 
     //set ฟิลด์เริ่มต้น
     if (
@@ -1273,20 +1124,20 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
 
   //for progressbar
   const fieldProgress = [
-    projectName,
-    projectDetail,
-    dateStartInternship,
-    dateEndInternship,
-    dateStartMonthInternship,
-    dateEndMonthInternship,
-    placeInternship,
-    positionInternship,
-    dateStartWork,
-    dateEndWork,
-    dateStartMonthWork,
-    dateEndMonthWork,
-    placeWork,
-    positionWork,
+    projectName[0],
+    projectDetail[0],
+    dateStartInternship[0],
+    dateEndInternship[0],
+    dateStartMonthInternship[0],
+    dateEndMonthInternship[0],
+    placeInternship[0],
+    positionInternship[0],
+    dateStartWork[0],
+    dateEndWork[0],
+    dateStartMonthWork[0],
+    dateEndMonthWork[0],
+    placeWork[0],
+    positionWork[0],
     statusNow,
   ];
   return (
@@ -1331,7 +1182,7 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                   }  ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                   readOnly={!editMode}
                   placeholder="ระบุชื่อโครงงานหรือผลงาน"
-                  defaultValue={getProjectName[index] || ""}
+                  defaultValue={projectName[index] || ""}
                   onBlur={(e) => handleProjectName(e.target.value, index)}
                 />
               </div>
@@ -1349,52 +1200,36 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                   } ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                   readOnly={!editMode}
                   placeholder="รายละเอียดเพิ่มเติม"
-                  defaultValue={getProjectDetail[index] || ""}
+                  defaultValue={projectDetail[index] || ""}
                   onBlur={(e) => handleProjectDetail(e.target.value, index)}
                 />
               </div>
               <div className={` ${bgColorMain} flex flex-col gap-1`}>
-                {projectFile[index]?.fileUrl ||
-                getProjectFile[index]?.fileUrl ||
-                editMode ? (
+                {projectFile[index]?.fileUrl || editMode ? (
                   <label>เอกสารประกอบ</label>
                 ) : null}
 
                 {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
-                {(projectFile[index] && projectFile[index]?.fileUrl !== "") ||
-                (getProjectFile[index] &&
-                  getProjectFile[index]?.fileUrl !== "") ? (
+                {projectFile[index] && projectFile[index]?.fileUrl !== "" ? (
                   <div className={`mt-1 w-fit py-2 flex gap-8`}>
                     <div
-                      onClick={() =>
-                        openFile(
-                          projectFile[index]?.fileUrl ||
-                            getProjectFile[index].fileUrl
-                        )
-                      }
+                      onClick={() => openFile(projectFile[index]?.fileUrl)}
                       className="cursor-pointer"
                     >
                       <p>
-                        {projectFile[index]?.fileName ||
-                          getProjectFile[index]?.fileName}
-                        .
-                        {projectFile[index]?.fileType ||
-                          getProjectFile[index].fileType}
+                        {projectFile[index]?.fileName}.
+                        {projectFile[index]?.fileType}
                       </p>
                     </div>
                     <p className="text-gray-500">
-                      {projectFile[index]?.fileSize ||
-                        getProjectFile[index]?.fileSize}{" "}
-                      MB
+                      {projectFile[index]?.fileSize} MB
                     </p>
                     <div className="cursor-pointer flex gap-2">
                       <Icon
                         onClick={() =>
                           handleDownloadFile(
-                            projectFile[index]?.fileUrl ||
-                              getProjectFile[index].fileUrl,
-                            projectFile[index]?.fileName ||
-                              getProjectFile[index].fileName
+                            projectFile[index]?.fileUrl,
+                            projectFile[index]?.fileName
                           )
                         }
                         className={` text-black`}
@@ -1405,8 +1240,7 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                         <Icon
                           onClick={() =>
                             handleDeleteFileProject(
-                              projectFile[index]?.fileName ||
-                                getProjectFile[index]?.fileName,
+                              projectFile[index]?.fileName,
                               index
                             )
                           }
@@ -1491,14 +1325,10 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                       onChange={(e) =>
                         handleDateStartInternship(e.target.value, index)
                       }
-                      value={
-                        dateStartInternship[index] ||
-                        getDateStartInternship[index] ||
-                        ""
-                      }
+                      value={dateStartInternship[index] || ""}
                       disabled={!editMode}
                     >
-                      <option value="0">ปี</option>
+                      <option value="">ปี</option>
                       {years.map((year, index) => (
                         <option key={index} value={year}>
                           {year}
@@ -1520,14 +1350,10 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                       onChange={(e) =>
                         handleDateStartMonthInternship(e.target.value, index)
                       }
-                      value={
-                        dateStartMonthInternship[index] ||
-                        getDateStartMonthInternship[index] ||
-                        ""
-                      }
+                      value={dateStartMonthInternship[index] || ""}
                       disabled={!editMode}
                     >
-                      <option value="0">เดือน</option>
+                      <option value="">เดือน</option>
                       {thaiMonths.map((thaiMonths, index) => (
                         <option key={index} value={thaiMonths}>
                           {thaiMonths}
@@ -1559,14 +1385,10 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                       onChange={(e) =>
                         handleDateEndInternship(e.target.value, index)
                       }
-                      value={
-                        dateEndInternship[index] ||
-                        getDateEndInternship[index] ||
-                        ""
-                      }
+                      value={dateEndInternship[index] || ""}
                       disabled={!editMode}
                     >
-                      <option value="0">-</option>
+                      <option value="">-</option>
                       <option value="ปัจจุบัน">ปัจจุบัน</option>
                       {years.map((year, index) => (
                         <option key={index} value={year}>
@@ -1589,14 +1411,10 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                       onChange={(e) =>
                         handleDateEndMonthInternship(e.target.value, index)
                       }
-                      value={
-                        dateEndMonthInternship[index] ||
-                        getDateEndMonthInternship[index] ||
-                        ""
-                      }
+                      value={dateEndMonthInternship[index] || ""}
                       disabled={!editMode}
                     >
-                      <option value="0">เดือน</option>
+                      <option value="">เดือน</option>
                       <option value="ปัจจุบัน">ปัจจุบัน</option>
                       {thaiMonths.map((thaiMonths, index) => (
                         <option key={index} value={thaiMonths}>
@@ -1626,7 +1444,7 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                   } ${bgColorMain} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
                   placeholder="ระบุสถานฝึกงาน"
                   onBlur={(e) => handlePlaceInternship(e.target.value, index)}
-                  defaultValue={getPlaceInternship[index] || ""}
+                  defaultValue={placeInternship[index] || ""}
                   readOnly={!editMode}
                 />
               </div>
@@ -1646,54 +1464,38 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                   onBlur={(e) =>
                     handlePositionInternship(e.target.value, index)
                   }
-                  defaultValue={getPositionInternship[index] || ""}
+                  defaultValue={positionInternship[index] || ""}
                   readOnly={!editMode}
                 />
               </div>
               <div className={` ${bgColorMain} flex flex-col gap-1`}>
-                {internshipFile[index]?.fileUrl ||
-                getInternshipFile[index]?.fileUrl ||
-                editMode ? (
+                {internshipFile[index]?.fileUrl || editMode ? (
                   <label>เอกสารประกอบ</label>
                 ) : null}
 
                 {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
-                {(internshipFile[index] &&
-                  internshipFile[index]?.fileUrl !== "") ||
-                (getInternshipFile[index] &&
-                  getInternshipFile[index]?.fileUrl !== "") ? (
+                {internshipFile[index] &&
+                internshipFile[index]?.fileUrl !== "" ? (
                   <div className={`mt-1 w-fit py-2 flex gap-8`}>
                     <div
-                      onClick={() =>
-                        openFile(
-                          internshipFile[index]?.fileUrl ||
-                            getInternshipFile[index].fileUrl
-                        )
-                      }
+                      onClick={() => openFile(internshipFile[index]?.fileUrl)}
                       className="cursor-pointer"
                     >
                       <p>
-                        {internshipFile[index]?.fileName ||
-                          getInternshipFile[index]?.fileName}
-                        .
-                        {internshipFile[index]?.fileType ||
-                          getInternshipFile[index].fileType}
+                        {internshipFile[index]?.fileName}.
+                        {internshipFile[index]?.fileType}
                       </p>
                     </div>
                     <p className="text-gray-500">
-                      {internshipFile[index]?.fileSize ||
-                        getInternshipFile[index]?.fileSize}{" "}
-                      MB
+                      {internshipFile[index]?.fileSize} MB
                     </p>
                     <div className="cursor-pointer flex gap-2">
                       {/* <Icon className={` text-black`} path={mdiDelete} size={1} /> */}
                       <Icon
                         onClick={() =>
                           handleDownloadFile(
-                            internshipFile[index]?.fileUrl ||
-                              getInternshipFile[index].fileUrl,
-                            internshipFile[index]?.fileName ||
-                              getInternshipFile[index].fileName
+                            internshipFile[index]?.fileUrl,
+                            internshipFile[index]?.fileName
                           )
                         }
                         className={` text-black`}
@@ -1704,8 +1506,7 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                         <Icon
                           onClick={() =>
                             handleDeleteFileInternship(
-                              internshipFile[index]?.fileName ||
-                                getInternshipFile[index]?.fileName,
+                              internshipFile[index]?.fileName,
                               index
                             )
                           }
@@ -1792,12 +1593,10 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                       onChange={(e) =>
                         handleDateStartWork(e.target.value, index)
                       }
-                      value={
-                        dateStartWork[index] || getDateStartWork[index] || ""
-                      }
+                      value={dateStartWork[index] || ""}
                       disabled={!editMode}
                     >
-                      <option value="0">-</option>
+                      <option value="">-</option>
                       {years.map((year, index) => (
                         <option key={index} value={year}>
                           {year}
@@ -1819,14 +1618,10 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                       onChange={(e) =>
                         handleDateStartMonthWork(e.target.value, index)
                       }
-                      value={
-                        dateStartMonthWork[index] ||
-                        getDateStartMonthWork[index] ||
-                        ""
-                      }
+                      value={dateStartMonthWork[index] || ""}
                       disabled={!editMode}
                     >
-                      <option value="0">เดือน</option>
+                      <option value="">เดือน</option>
                       {thaiMonths.map((thaiMonths, index) => (
                         <option key={index} value={thaiMonths}>
                           {thaiMonths}
@@ -1856,10 +1651,10 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                       } ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-36 border border-gray-400 py-2 px-4 rounded-lg`}
                       style={{ appearance: "none" }}
                       onChange={(e) => handleDateEndWork(e.target.value, index)}
-                      value={dateEndWork[index] || getDateEndWork[index] || ""}
+                      value={dateEndWork[index] || ""}
                       disabled={!editMode}
                     >
-                      <option value="0">-</option>
+                      <option value="">-</option>
                       <option value="ปัจจุบัน">ปัจจุบัน</option>
                       {years.map((year, index) => (
                         <option key={index} value={year}>
@@ -1882,14 +1677,10 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                       onChange={(e) =>
                         handleDateEndMonthWork(e.target.value, index)
                       }
-                      value={
-                        dateEndMonthWork[index] ||
-                        getDateEndMonthWork[index] ||
-                        ""
-                      }
+                      value={dateEndMonthWork[index] || ""}
                       disabled={!editMode}
                     >
-                      <option value="0">เดือน</option>
+                      <option value="">เดือน</option>
                       <option value="ปัจจุบัน">ปัจจุบัน</option>
                       {thaiMonths.map((thaiMonths, index) => (
                         <option key={index} value={thaiMonths}>
@@ -1919,7 +1710,7 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                   } ${bgColorMain} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
                   placeholder="ระบุสถานที่ทำงาน"
                   onBlur={(e) => handlePlaceWork(e.target.value, index)}
-                  defaultValue={getPlaceWork[index] || ""}
+                  defaultValue={placeWork[index] || ""}
                   readOnly={!editMode}
                 />
               </div>
@@ -1937,50 +1728,35 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                   } ${bgColorMain} mt-1 w-80 border border-gray-400 py-2 px-4 rounded-lg`}
                   placeholder="ระบุตำแหน่งงาน"
                   onBlur={(e) => handlePositionWork(e.target.value, index)}
-                  defaultValue={getPositionWork[index] || ""}
+                  defaultValue={positionWork[index] || ""}
                   readOnly={!editMode}
                 />
               </div>
               <div className={` ${bgColorMain} flex flex-col gap-1`}>
-                {workFile[index]?.fileUrl ||
-                getWorkFile[index]?.fileUrl ||
-                editMode ? (
+                {workFile[index]?.fileUrl || editMode ? (
                   <label>เอกสารประกอบ</label>
                 ) : null}
                 {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
-                {(workFile[index] && workFile[index]?.fileUrl !== "") ||
-                (getWorkFile[index] && getWorkFile[index]?.fileUrl !== "") ? (
+                {workFile[index] && workFile[index]?.fileUrl !== "" ? (
                   <div className={`mt-1 w-fit py-2 flex gap-8`}>
                     <div
-                      onClick={() =>
-                        openFile(
-                          workFile[index]?.fileUrl || getWorkFile[index].fileUrl
-                        )
-                      }
+                      onClick={() => openFile(workFile[index]?.fileUrl)}
                       className="cursor-pointer"
                     >
                       <p>
-                        {workFile[index]?.fileName ||
-                          getWorkFile[index]?.fileName}
-                        .
-                        {workFile[index]?.fileType ||
-                          getWorkFile[index]?.fileType}
+                        {workFile[index]?.fileName}.{workFile[index]?.fileType}
                       </p>
                     </div>
                     <p className="text-gray-500">
-                      {workFile[index]?.fileSize ||
-                        getWorkFile[index]?.fileSize}{" "}
-                      MB
+                      {workFile[index]?.fileSize} MB
                     </p>
                     <div className="cursor-pointer flex gap-2">
                       {/* <Icon className={` text-black`} path={mdiDelete} size={1} /> */}
                       <Icon
                         onClick={() =>
                           handleDownloadFile(
-                            workFile[index]?.fileUrl ||
-                              getWorkFile[index].fileUrl,
-                            workFile[index]?.fileName ||
-                              getWorkFile[index].fileName
+                            workFile[index]?.fileUrl,
+                            workFile[index]?.fileName
                           )
                         }
                         className={` text-black`}
@@ -1991,8 +1767,7 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
                         <Icon
                           onClick={() =>
                             handleDeleteFileWork(
-                              workFile[index]?.fileName ||
-                                getWorkFile[index]?.fileName,
+                              workFile[index]?.fileName,
                               index
                             )
                           }
@@ -2056,7 +1831,7 @@ function HistoryWorkForm({ id, dataHistoryWork }) {
               value={statusNow || getStatusNow || ""}
               disabled={!editMode}
             >
-              <option value="0">เลือกสถานะ</option>
+              <option value="">เลือกสถานะ</option>
               {dataStatus.map((item, index) => (
                 <option key={index} value={item}>
                   {item}

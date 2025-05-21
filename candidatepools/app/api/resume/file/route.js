@@ -96,23 +96,23 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const uuid = searchParams.get("uuid");
 
-    if (!uuid) {
-      return Response.json({ message: "กรุณาระบุ uuid" }, { status: 400 });
-    }
+    // if (!uuid) {
+    //   return Response.json({ message: "กรุณาระบุ uuid" }, { status: 400 });
+    // }
 
     const resume = await Resume.findOne({ uuid });
 
-    if (!resume) {
-      return Response.json({ message: "ไม่พบข้อมูล Resume" }, { status: 404 });
-    }
+    // if (!resume) {
+    //   return Response.json({ message: "ไม่พบข้อมูล Resume" }, { status: 404 });
+    // }
 
     return Response.json({ files: resume.files }, { status: 200 });
   } catch (error) {
     console.error("Get resume error:", error);
-    return Response.json(
-      { message: "เกิดข้อผิดพลาดที่ server" },
-      { status: 500 }
-    );
+    // return Response.json(
+    //   { message: "เกิดข้อผิดพลาดที่ server" },
+    //   { status: 500 }
+    // );
   }
 }
 

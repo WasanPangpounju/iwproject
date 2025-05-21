@@ -8,8 +8,6 @@ import {
   mdiCloseCircle,
   mdiDownload,
   mdiArrowDownDropCircle,
-  mdiPencil,
-  mdiContentSave,
   mdiDelete,
 } from "@mdi/js";
 import Swal from "sweetalert2";
@@ -28,8 +26,9 @@ import { saveAs } from "file-saver";
 import { useSkillStore } from "@/stores/useSkillStore";
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
 import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
+import { toast } from "react-toastify";
 
-function SkillForm({ dataSkills, id }) {
+function SkillForm({ dataSkills, id, handleStep }) {
   const [error, setError] = useState("");
 
   //store
@@ -54,9 +53,6 @@ function SkillForm({ dataSkills, id }) {
   const [skillType, setSkillType] = useState([]);
   const [skillName, setSkillName] = useState([]);
   const [skillDetail, setSkillDetail] = useState([]);
-  const [getSkillType, setGetSkillType] = useState([]);
-  const [getSkillName, setGetSkillName] = useState([]);
-  const [getSkillDetail, setGetSkillDetail] = useState([]);
 
   const handleSkillType = (e, index) => {
     const newTemp = e; // ค่าที่ได้รับจาก input
@@ -113,12 +109,9 @@ function SkillForm({ dataSkills, id }) {
   const handleAddSkill = () => {
     // ตรวจสอบให้แน่ใจว่ามีการกรอกข้อมูล skill ครบถ้วนก่อนที่จะเพิ่มข้อมูลใหม่
     if (
-      (!skillType[skills.length - 1] ||
-        !skillName[skills.length - 1] ||
-        !skillDetail[skills.length - 1]) &&
-      (!getSkillType[skills.length - 1] ||
-        !getSkillName[skills.length - 1] ||
-        !getSkillDetail[skills.length - 1])
+      !skillType[skills.length - 1] ||
+      !skillName[skills.length - 1] ||
+      !skillDetail[skills.length - 1]
     ) {
       setErrorFieldSkill("กรุณากรอกข้อมูลทักษะให้ครบก่อนเพิ่มข้อมูลใหม่");
       return;
@@ -157,11 +150,6 @@ function SkillForm({ dataSkills, id }) {
         setSkillType((prev) => prev.filter((_, i) => i !== temp));
         setSkillName((prev) => prev.filter((_, i) => i !== temp));
         setSkillDetail((prev) => prev.filter((_, i) => i !== temp));
-
-        // ลบข้อมูลจาก getSkillType, getSkillName, และ getSkillDetail
-        setGetSkillType((prev) => prev.filter((_, i) => i !== temp));
-        setGetSkillName((prev) => prev.filter((_, i) => i !== temp));
-        setGetSkillDetail((prev) => prev.filter((_, i) => i !== temp));
       }
     });
   };
@@ -170,16 +158,6 @@ function SkillForm({ dataSkills, id }) {
   const [trainName, setTrainName] = useState([]);
   const [trainDetail, setTrainDetail] = useState([]);
   const [trainFile, setTrainFile] = useState([
-    {
-      fileName: "",
-      fileType: "",
-      fileUrl: "",
-      fileSize: "",
-    },
-  ]);
-  const [getTrainName, setGetTrainName] = useState([]);
-  const [getTrainDetail, setGetTrainDetail] = useState([]);
-  const [getTrainFile, setGetTrainFile] = useState([
     {
       fileName: "",
       fileType: "",
@@ -226,10 +204,7 @@ function SkillForm({ dataSkills, id }) {
 
   const handleAddTrain = () => {
     // ตรวจสอบให้แน่ใจว่ามีการกรอกข้อมูล train ครบถ้วนก่อนที่จะเพิ่มข้อมูลใหม่
-    if (
-      (!trainName[trains.length - 1] || !trainDetail[trains.length - 1]) &&
-      (!getTrainName[trains.length - 1] || !getTrainDetail[trains.length - 1])
-    ) {
+    if (!trainName[trains.length - 1] || !trainDetail[trains.length - 1]) {
       setErrorFieldTrain("กรุณากรอกข้อมูลการอบรมให้ครบก่อนเพิ่มข้อมูลใหม่");
       return;
     }
@@ -267,11 +242,6 @@ function SkillForm({ dataSkills, id }) {
         setTrainName((prev) => prev.filter((_, i) => i !== temp));
         setTrainDetail((prev) => prev.filter((_, i) => i !== temp));
         setTrainFile((prev) => prev.filter((_, i) => i !== temp));
-
-        // ลบข้อมูลจาก getTrainName, getTrainDetail, และ getTrainFile
-        setGetTrainName((prev) => prev.filter((_, i) => i !== temp));
-        setGetTrainDetail((prev) => prev.filter((_, i) => i !== temp));
-        setGetTrainFile((prev) => prev.filter((_, i) => i !== temp));
       }
     });
   };
@@ -391,13 +361,13 @@ function SkillForm({ dataSkills, id }) {
   async function handleSubmit(e, fieldSkills, fieldTrains) {
     e.preventDefault();
 
-    const mergedSkillType = mergeArrayValues(skillType, getSkillType);
-    const mergedSkillName = mergeArrayValues(skillName, getSkillName);
-    const mergedSkillDetail = mergeArrayValues(skillDetail, getSkillDetail);
+    const mergedSkillType = skillType;
+    const mergedSkillName = skillName;
+    const mergedSkillDetail = skillDetail;
 
-    const mergedTrainName = mergeArrayValues(trainName, getTrainName);
-    const mergedTrainDetail = mergeArrayValues(trainDetail, getTrainDetail);
-    const mergedTrainFile = mergeArrayObjects(trainFile, getTrainFile);
+    const mergedTrainName = trainName;
+    const mergedTrainDetail = trainDetail;
+    const mergedTrainFile = trainFile;
 
     // ลดค่าตัวนับของแต่ละฟิลด์ลง 1
     fieldSkills -= 1;
@@ -471,39 +441,22 @@ function SkillForm({ dataSkills, id }) {
       const response = await updateSkillById(data);
 
       if (response.ok) {
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          confirmButtonText: "ตกลง",
-          confirmButtonColor: "#0d96f8",
-        }).then(() => {
-          setEditMode(false);
-        });
+        toast.success("บันทึกข้อมูลสำเร็จ");
+        setEditMode(false);
+        if (handleStep) {
+          handleStep();
+        }
       } else {
         console.error("Failed to submit data");
-        Swal.fire({
-          title: "เกิดข้อผิดพลาด",
-          text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-          icon: "error",
-          confirmButtonText: "ตกลง",
-          confirmButtonColor: "#f27474",
-        }).then(() => {
-          setEditMode(false);
-        });
-
+        toast.error("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง");
+        setEditMode(false);
         return;
       }
     } catch (error) {
       console.error("Error submitting data:", error);
-      Swal.fire({
-        title: "เกิดข้อผิดพลาด",
-        text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-        icon: "error",
-        confirmButtonText: "ตกลง",
-        confirmButtonColor: "#f27474",
-      }).then(() => {
-        setEditMode(false);
-      });
+      toast.error("เกิดข้อผิดพลาด");
+      setEditMode(false);
+      return;
     }
   }
 
@@ -512,13 +465,13 @@ function SkillForm({ dataSkills, id }) {
     if (!dataSkills) return;
 
     // ตั้งค่าตัวแปรต่าง ๆ จากข้อมูลใน dataHistoryWork
-    setGetSkillType(dataSkills.skills?.map((skill) => skill.type) || []);
-    setGetSkillName(dataSkills.skills?.map((skill) => skill.name) || []);
-    setGetSkillDetail(dataSkills.skills?.map((skill) => skill.detail) || []);
+    setSkillType(dataSkills.skills?.map((skill) => skill.type) || []);
+    setSkillName(dataSkills.skills?.map((skill) => skill.name) || []);
+    setSkillDetail(dataSkills.skills?.map((skill) => skill.detail) || []);
 
-    setGetTrainName(dataSkills.trains?.map((train) => train.name) || []);
-    setGetTrainDetail(dataSkills.trains?.map((train) => train.detail) || []);
-    setGetTrainFile(dataSkills.trains?.flatMap((train) => train.files) || []);
+    setTrainName(dataSkills.trains?.map((train) => train.name) || []);
+    setTrainDetail(dataSkills.trains?.map((train) => train.detail) || []);
+    setTrainFile(dataSkills.trains?.flatMap((train) => train.files) || []);
 
     // set ฟิลด์เริ่มต้น
     if (Array.isArray(dataSkills.skills) && dataSkills.skills.length > 0) {
@@ -568,25 +521,24 @@ function SkillForm({ dataSkills, id }) {
       cancelButtonText: "ไม่",
     });
 
-    const mergedTrainFile = mergeArrayObjects(trainFile, getTrainFile);
+    const mergedTrainFile = trainFile;
 
     if (result.isConfirmed) {
       const updatedTrainFiles = [...mergedTrainFile];
       updatedTrainFiles[index] = undefined; // ตั้งค่าตำแหน่งที่ต้องการเป็น undefined แทนการลบ
 
       setTrainFile(updatedTrainFiles);
-      setGetTrainFile(updatedTrainFiles);
-      Swal.fire("ลบไฟล์สำเร็จ", `${name} ถูกลบเรียบร้อยแล้ว`, "success");
+      toast.success("ลบไฟล์สำเร็จ", `${name} ถูกลบเรียบร้อยแล้ว`, "success");
     }
   }
 
   //for progressbar
   const fieldProgress = [
-    skillType,
-    skillDetail,
-    skillName,
-    trainName,
-    trainDetail,
+    skillType[0],
+    skillDetail[0],
+    skillName[0],
+    trainName[0],
+    trainDetail[0],
   ];
   return (
     <form
@@ -628,10 +580,10 @@ function SkillForm({ dataSkills, id }) {
                     } ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                     style={{ appearance: "none" }}
                     onChange={(e) => handleSkillType(e.target.value, index)}
-                    value={skillType[index] || getSkillType[index] || ""}
+                    value={skillType[index] || ""}
                     disabled={!editMode}
                   >
-                    <option value="0">-</option>
+                    <option value="">-</option>
                     <option value="ด้านคอมพิวเตอร์">ด้านคอมพิวเตอร์</option>
                     <option value="ด้านการสื่อสาร">ด้านการสื่อสาร</option>
                     <option value="ด้านการออกแบบ/กราฟฟิก">
@@ -669,7 +621,7 @@ function SkillForm({ dataSkills, id }) {
                   } ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                   readOnly={!editMode}
                   placeholder="รายละเอียดเพิ่มเติม"
-                  defaultValue={getSkillName[index] || ""}
+                  defaultValue={skillName[index] || ""}
                   onBlur={(e) => handleSkillName(e.target.value, index)}
                 />
               </div>
@@ -687,7 +639,7 @@ function SkillForm({ dataSkills, id }) {
                   } ${bgColorMain}  mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                   readOnly={!editMode}
                   placeholder="รายละเอียดเพิ่มเติม"
-                  defaultValue={getSkillDetail[index] || ""}
+                  defaultValue={skillDetail[index] || ""}
                   onBlur={(e) => handleSkillDetail(e.target.value, index)}
                 />
               </div>
@@ -743,7 +695,7 @@ function SkillForm({ dataSkills, id }) {
                   } ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                   placeholder="ระบุชื่อเรื่องการอบรม"
                   onBlur={(e) => handleTrainName(e.target.value, index)}
-                  defaultValue={getTrainName[index] || ""}
+                  defaultValue={trainName[index] || ""}
                   readOnly={!editMode}
                 />
               </div>
@@ -761,52 +713,37 @@ function SkillForm({ dataSkills, id }) {
                   } ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                   placeholder="รายละเอียดเพิ่มเติม"
                   onBlur={(e) => handleTrainDetail(e.target.value, index)}
-                  defaultValue={getTrainDetail[index] || ""}
+                  defaultValue={trainDetail[index] || ""}
                   readOnly={!editMode}
                 />
               </div>
               <div className={` ${bgColorMain} flex flex-col gap-1`}>
-                {trainFile[index]?.fileUrl ||
-                getTrainFile[index]?.fileUrl ||
-                editMode ? (
+                {trainFile[index]?.fileUrl || editMode ? (
                   <label>เอกสารประกอบ / ใบประกาศ</label>
                 ) : null}
                 {/* input สำหรับเลือกไฟล์ */}
 
                 {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
-                {(trainFile[index] && trainFile[index]?.fileUrl !== "") ||
-                (getTrainFile[index] && getTrainFile[index]?.fileUrl !== "") ? (
+                {trainFile[index] && trainFile[index]?.fileUrl !== "" ? (
                   <div className={`mt-1 w-fit py-2 flex gap-8`}>
                     <div
                       className="cursor-pointer"
-                      onClick={() =>
-                        openFile(
-                          trainFile[index]?.fileUrl ||
-                            getTrainFile[index]?.fileUrl
-                        )
-                      }
+                      onClick={() => openFile(trainFile[index]?.fileUrl)}
                     >
                       <p>
-                        {trainFile[index]?.fileName ||
-                          getTrainFile[index]?.fileName}
-                        .
-                        {trainFile[index]?.fileType ||
-                          getTrainFile[index].fileType}
+                        {trainFile[index]?.fileName}.
+                        {trainFile[index]?.fileType}
                       </p>
                     </div>
                     <p className="text-gray-500">
-                      {trainFile[index]?.fileSize ||
-                        getTrainFile[index]?.fileSize}{" "}
-                      MB
+                      {trainFile[index]?.fileSize} MB
                     </p>
                     <div className="cursor-pointer flex gap-2">
                       <Icon
                         onClick={() =>
                           handleDownloadFile(
-                            trainFile[index]?.fileUrl ||
-                              getTrainFile[index]?.fileUrl,
-                            trainFile[index]?.fileName ||
-                              getTrainFile[index]?.fileName
+                            trainFile[index]?.fileUrl,
+                            trainFile[index]?.fileName
                           )
                         }
                         className="text-black"
@@ -816,11 +753,7 @@ function SkillForm({ dataSkills, id }) {
                       {editMode && (
                         <Icon
                           onClick={() =>
-                            handleDeleteFile(
-                              trainFile[index]?.fileName ||
-                                getTrainFile[index]?.fileName,
-                              index
-                            )
+                            handleDeleteFile(trainFile[index]?.fileName, index)
                           }
                           className={` text-black`}
                           path={mdiDelete}

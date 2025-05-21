@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, {useEffect} from "react";
 import { useTheme } from "@/app/ThemeContext";
 import ResumeComponent from "@/app/components/Resume/ResumeComponent";
 
@@ -19,7 +19,14 @@ function ResumePage() {
   const { dataSkills } = useSkillStore();
   const { dataEducations } = useEducationStore();
   const { dataHistoryWork } = useHistoryWorkStore();
-  const { resumeFiles } = useResumeStore();
+  const { resumeFiles, fetchResumeFiles, clearResumeFiles } = useResumeStore();
+
+  useEffect(() => {
+    fetchResumeFiles(dataUser?.uuid);
+    return () => {
+      clearResumeFiles();
+    };
+  }, [dataUser]);
 
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>

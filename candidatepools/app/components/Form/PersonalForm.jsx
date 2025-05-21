@@ -27,7 +27,7 @@ import InputUniversityAutoComplete from "./InputUniversityAutoComplete";
 import { ROLE } from "@/const/enum";
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
 
-function PersonalForm({ dataUser, isStudent = true, isCreate = false }) {
+function PersonalForm({ dataUser, isStudent = true, isCreate = false, handleStep }) {
   //data value
   const [user, setUser] = useState(null);
   const [password, setPassword] = useState(null);
@@ -69,7 +69,7 @@ function PersonalForm({ dataUser, isStudent = true, isCreate = false }) {
   //hooks
   const { fontSize, bgColorMain, inputGrayColor } = useTheme();
 
-  const studentForm = useStudentForm(dataUser, setEditMode);
+  const studentForm = useStudentForm(dataUser, setEditMode, handleStep);
   const userForm = useUserForm(dataUser, setEditMode);
 
   const handleForm = isStudent

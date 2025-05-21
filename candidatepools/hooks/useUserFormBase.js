@@ -1,12 +1,18 @@
 import { useState } from "react";
-import Swal from "sweetalert2";
 import { useUserStore } from "@/stores/useUserStore";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
-export function useUserFormBase(dataUser, setEditMode, options = {}) {
+export function useUserFormBase(
+  dataUser,
+  setEditMode,
+  options = {},
+  handleStep
+) {
   const router = useRouter();
   const { checkIdCardDisabled } = options;
-  const { createUser, updateUserById, checkIdExists, checkUserExists } = useUserStore();
+  const { createUser, updateUserById, checkIdExists, checkUserExists } =
+    useUserStore();
   const [error, setError] = useState("");
   const [errorIdCard, setErrorIdCard] = useState("");
   const [errorIdCardDisabled, setErrorIdCardDisabled] = useState("");
@@ -155,23 +161,15 @@ export function useUserFormBase(dataUser, setEditMode, options = {}) {
         : await createUser(formState);
 
       if (!res.ok) {
-        Swal.fire({
-          title: "เกิดข้อผิดพลาด",
-          text: isEditing
-            ? "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง"
-            : "สร้างผู้ใช้ไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-          icon: "error",
-          confirmButtonText: "ตกลง",
-        });
+        toast.error("เกิดข้อผิดพลาด");
         return false;
       }
 
-      Swal.fire({
-        title: isEditing ? "บันทึกข้อมูลสำเร็จ" : "สร้างผู้ใช้สำเร็จ",
-        icon: "success",
-        confirmButtonText: "ตกลง",
-      });
+      toast.success("บันทึกข้อมูลสำเร็จ");
 
+      if (handleStep) {
+        handleStep();
+      }
       if (!isEditing) {
         router.back();
       }

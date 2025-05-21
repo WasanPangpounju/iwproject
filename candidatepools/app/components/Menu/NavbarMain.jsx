@@ -118,19 +118,19 @@ function NavbarMain() {
     },
     {
       id: 2,
-      link: `${mainRoute}/edit/editPersonal`,
+      link: `${mainRoute}/edit?stepper=1`,
     },
     {
       id: 3,
-      link: `${mainRoute}/edit/editEducation`,
+      link: `${mainRoute}/edit?stepper=2`,
     },
     {
       id: 4,
-      link: `${mainRoute}/edit/workHistory`,
+      link: `${mainRoute}/edit?stepper=3`,
     },
     {
       id: 5,
-      link: `${mainRoute}/edit/editSkill`,
+      link: `${mainRoute}/edit?stepper=4`,
     },
     {
       id: 6,
