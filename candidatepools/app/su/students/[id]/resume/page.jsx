@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 //component
 import ResumeComponent from "@/app/components/Resume/ResumeComponent";
@@ -13,12 +13,18 @@ import { useSkillStore } from "@/stores/useSkillStore";
 import { useResumeStore } from "@/stores/useResumeStore";
 
 function page() {
-
   const { dataUserById } = useUserStore();
   const { dataEducationById } = useEducationStore();
   const { dataHistoryWorkById } = useHistoryWorkStore();
   const { dataSkillById } = useSkillStore();
-  const { resumeFiles } = useResumeStore();
+  const { resumeFiles, fetchResumeFiles, clearResumeFiles } = useResumeStore();
+
+  useEffect(() => {
+    fetchResumeFiles(dataUserById?.uuid);
+    return () => {
+      clearResumeFiles();
+    };
+  }, [dataUserById]);
 
   return (
     <div className="mt-5">

@@ -13,7 +13,6 @@ export const useFetchUserData = (id) => {
   const { getDataHistoryWork } = useHistoryWorkStore();
   const { getDataSkills } = useSkillStore();
   const { getDataInterestedWork } = useInterestedWorkStore();
-  const { fetchResumeFiles } = useResumeStore();
 
   useEffect(() => {
     if (!id) return;
@@ -25,10 +24,9 @@ export const useFetchUserData = (id) => {
         getDataHistoryWork(id),
         getDataSkills(id),
         getDataInterestedWork(id),
-        fetchResumeFiles(id)
       ]);
     };
 
     fetchAll();
-  }, [id, getUser, getEducation, getDataHistoryWork, getDataSkills, getDataInterestedWork, fetchResumeFiles]);
+  }, [id, getUser, getEducation, getDataHistoryWork, getDataSkills, getDataInterestedWork]);
 };

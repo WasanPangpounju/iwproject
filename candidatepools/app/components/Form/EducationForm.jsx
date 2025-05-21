@@ -39,7 +39,7 @@ import { downloadFileFromFirebase } from "@/utils/firebaseDownload";
 import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
 import { TYPE_PERSON } from "@/const/enum";
 
-function EducationForm({ dataEducations, dataUser }) {
+function EducationForm({ dataEducations, dataUser, handleStep }) {
   //store
   const { updateEducationById, updateFileName } = useEducationStore();
 
@@ -64,6 +64,25 @@ function EducationForm({ dataEducations, dataUser }) {
   const handleFaculty = (e, index) => {
     const newFaculty = e; // ค่าที่ได้รับจาก input
     setFaculty((prevFaculties) => {
+      const updatedFaculties = Array.isArray(prevFaculties)
+        ? [...prevFaculties]
+        : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
+      updatedFaculties[index] = newFaculty; // อัปเดตค่าใหม่
+      // ขยับค่าทั้งหมดถ้ามีตำแหน่งที่ว่าง
+      return updatedFaculties
+        .filter((fac) => fac !== "")
+        .concat(
+          Array(
+            updatedFaculties.length -
+              updatedFaculties.filter((fac) => fac !== "").length
+          ).fill("")
+        );
+    });
+  };
+
+  const handleUniversity = (e, index) => {
+    const newFaculty = e; // ค่าที่ได้รับจาก input
+    setUniversity((prevFaculties) => {
       const updatedFaculties = Array.isArray(prevFaculties)
         ? [...prevFaculties]
         : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
@@ -419,26 +438,17 @@ function EducationForm({ dataEducations, dataUser }) {
       const res = await updateEducationById(bodyEducation);
 
       if (!res.ok) {
-        Swal.fire({
-          title: "เกิดข้อผิดพลาด",
-          text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-          icon: "error",
-          confirmButtonText: "ตกลง",
-          confirmButtonColor: "#f27474",
-        }).then(() => {
-          setEditMode(false);
-        });
+        toast.error("เกิดข้อผิดพลาด");
+        setEditMode(false);
         return;
       }
 
-      Swal.fire({
-        title: "บันทึกข้อมูลสำเร็จ",
-        icon: "success",
-        confirmButtonText: "ตกลง",
-        confirmButtonColor: "#0d96f8",
-      }).then(() => {
-        setEditMode(false);
-      });
+      toast.success("บันทึกข้อมูลสำเร็จ");
+
+      setEditMode(false);
+      if (handleStep) {
+        handleStep();
+      }
     } catch (err) {
       console.log(err);
       setError("เกิดข้อผิดพลาดในการเชื่อมต่อ");
@@ -469,24 +479,9 @@ function EducationForm({ dataEducations, dataUser }) {
           const res = updateFileName(id, oldName, newName);
 
           if (res.ok) {
-            Swal.fire({
-              title: "เปลี่ยนชื่อไฟล์สำเร็จ",
-              icon: "success",
-              confirmButtonText: "ตกลง",
-              confirmButtonColor: "#0d96f8",
-            }).then(() => {
-              window.location.reload();
-            });
+            toast.success("เปลี่ยนชื่อไฟล์สำเร็จ");
           } else {
-            Swal.fire({
-              title: "เกิดข้อผิดพลาด",
-              text: "เปลี่ยนชื่อไฟล์ไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-              icon: "error",
-              confirmButtonText: "ตกลง",
-              confirmButtonColor: "#f27474",
-            }).then(() => {
-              window.location.reload();
-            });
+            toast.error("เกิดข้อผิดพลาด");
           }
         } catch (err) {
           console.log(`เกิดข้อผิดพลาดในการติดต่อ API:`, err);
@@ -609,15 +604,16 @@ function EducationForm({ dataEducations, dataUser }) {
 
   //for progressbar
   const fieldProgress = [
-    ...(typePerson === TYPE_PERSON.STUDENT ? [level] : [yearGraduation]),
-    university,
+    ...(typePerson === TYPE_PERSON.STUDENT ? [level] : [yearGraduation[0]]),
+    university[0],
     typePerson,
-    educationLevel,
-    campus,
-    faculty,
-    grade,
-    branch,
+    educationLevel[0],
+    campus[0],
+    faculty[0],
+    grade[0],
+    branch[0],
   ];
+
   return (
     <form
       onSubmit={(e) => handleSubmit(e, fields.length)}
@@ -697,7 +693,7 @@ function EducationForm({ dataEducations, dataUser }) {
                       : "-"
                   }
                 >
-                  <option value="0">-</option>
+                  <option value="">-</option>
                   <option value="ปริญญาตรี">ปริญญาตรี</option>
                   <option value="ปริญญาโท">ปริญญาโท</option>
                   <option value="ปริญญาเอก">ปริญญาเอก</option>
@@ -747,7 +743,7 @@ function EducationForm({ dataEducations, dataUser }) {
                           : "-"
                       }
                     >
-                      <option value="0">-</option>
+                      <option value="">-</option>
                       {years.map((y, index) => (
                         <option key={index} value={y}>
                           {y}
@@ -841,6 +837,7 @@ function EducationForm({ dataEducations, dataUser }) {
                     ) {
                       setTimeout(() => setIsFocusUni(false), 200);
                     }
+                    handleUniversity(e.target.value, index);
                   }}
                   type="text"
                   readOnly={!editMode}
@@ -868,26 +865,25 @@ function EducationForm({ dataEducations, dataUser }) {
               </div>
             </div>
             {/* วิทยาเขต */}
-            {index === 0 &&
-              (editMode ? (
-                <div className="flex col flex-col">
-                  <label>วิทยาเขต</label>
-                  <input
-                    type="text"
-                    className={`${
-                      !editMode ? `cursor-default ${inputEditColor}` : ""
-                    } ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                    onBlur={(e) => handleCampus(e.target.value, index)}
-                    defaultValue={
-                      Array.isArray(campus) && campus[index] !== undefined
-                        ? campus[index]
-                        : ""
-                    }
-                    readOnly={!editMode}
-                    placeholder="ระบุวิทยาเขตการศึกษา"
-                  />
-                </div>
-              ) : null)}
+            {index === 0 && (
+              <div className="flex col flex-col">
+                <label>วิทยาเขต</label>
+                <input
+                  type="text"
+                  className={`${
+                    !editMode ? `cursor-default ${inputEditColor}` : ""
+                  } ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                  onBlur={(e) => handleCampus(e.target.value, index)}
+                  defaultValue={
+                    Array.isArray(campus) && campus[index] !== undefined
+                      ? campus[index]
+                      : ""
+                  }
+                  readOnly={!editMode}
+                  placeholder="ระบุวิทยาเขตการศึกษา"
+                />
+              </div>
+            )}
             {/* คณะ */}
             <div className="flex col flex-col">
               <label>

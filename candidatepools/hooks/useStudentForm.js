@@ -1,8 +1,8 @@
 import { useUserFormBase } from "./useUserFormBase";
 
-export function useStudentForm(dataUser, setEditMode) {
-  const formBase = useUserFormBase(dataUser, setEditMode);
-
+export function useStudentForm(dataUser, setEditMode, handleStep) {
+  const formBase = useUserFormBase(dataUser, setEditMode, {}, handleStep);
+  
   const handleStudentForm = (e, formState) => {
     const requiredFields = [
       formState.prefix,
