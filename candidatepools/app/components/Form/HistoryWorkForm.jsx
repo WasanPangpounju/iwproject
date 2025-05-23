@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useTheme } from "@/app/ThemeContext";
+import { useSession } from "next-auth/react";
 import Icon from "@mdi/react";
 import {
   mdiPlus,
@@ -24,14 +25,27 @@ import { saveAs } from "file-saver";
 
 //stores
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
+import { useSystemLogStore } from "@/stores/useSystemLogStore";
+
 import { dataStatus } from "@/assets/dataStatus";
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
 import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
-import { toast } from "react-toastify";
 
-function HistoryWorkForm({ id, dataHistoryWork, handleStep }) {
-  //hooks
+import { toast } from "react-toastify";
+import { ACTION_ACTIVITY, TARGET_MODEL } from "@/const/enum";
+
+function HistoryWorkForm({
+  id,
+  dataHistoryWork,
+  handleStep,
+  readOnly = false,
+}) {
+  //session
+  const { data: session } = useSession();
+
+  //store
   const { updateHistoryWorkById } = useHistoryWorkStore();
+  const { addLog } = useSystemLogStore();
   const [error, setError] = useState("");
 
   //Theme
@@ -984,18 +998,42 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep }) {
 
       if (response.ok) {
         toast.success("บันทึกข้อมูลสำเร็จ");
+        await addLog({
+          actorUuid: session?.user?.id,
+          targetUuid: id,
+          action: ACTION_ACTIVITY.UPDATE,
+          targetModel: TARGET_MODEL.HISTORYWORK,
+          description: "Update History Work",
+          data: data,
+        });
         setEditMode(false);
         if (handleStep) {
           handleStep();
         }
       } else {
         console.error("Failed to submit data:", result.message);
+        await addLog({
+          actorUuid: session?.user?.id,
+          targetUuid: id,
+          action: ACTION_ACTIVITY.ERROR,
+          targetModel: TARGET_MODEL.HISTORYWORK,
+          description: "Error History Work",
+          data: data,
+        });
         toast.error("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง");
         setEditMode(false);
         return;
       }
     } catch (error) {
       console.error("Error submitting data:", error);
+      await addLog({
+        actorUuid: session?.user?.id,
+        targetUuid: id,
+        action: ACTION_ACTIVITY.ERROR,
+        targetModel: TARGET_MODEL.HISTORYWORK,
+        description: "Error History Work",
+        data: data,
+      });
       toast.error("เกิดข้อผิดพลาด ", error);
       setEditMode(false);
       return;
@@ -1854,11 +1892,13 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep }) {
         )}
         {editMode && <ProgressBarForm fields={fieldProgress} />}
 
-        <ButtonGroup
-          editMode={editMode}
-          setEditMode={setEditMode}
-          tailwind="mt-5"
-        />
+        {!readOnly && (
+          <ButtonGroup
+            editMode={editMode}
+            setEditMode={setEditMode}
+            tailwind="mt-5"
+          />
+        )}
       </div>
     </form>
   );

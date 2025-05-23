@@ -179,7 +179,7 @@ function ResumeComponent({
                 setValue={(url) => setUrlFile(url)}
                 setSizeFile={(size) => setSizeFiles(size)}
                 setTypeFile={(type) => setTypeFiles(type)}
-                isDisabled={nameFile || urlFile}
+                isDisabled={!nameFile || nameFile && urlFile}
               />
             </div>
             <div className="mt-3">

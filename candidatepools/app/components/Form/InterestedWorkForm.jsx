@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@/app/ThemeContext";
+import { useSession } from "next-auth/react";
 import Icon from "@mdi/react";
 import {
   mdiPlus,
@@ -16,7 +17,11 @@ import useProvinceData from "@/app/components/province";
 
 //store
 import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
+import { useSystemLogStore } from "@/stores/useSystemLogStore";
+
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
+import { toast } from "react-toastify";
+import { ACTION_ACTIVITY, TARGET_MODEL } from "@/const/enum";
 
 function InterestedWorkForm({ id, dataWorks }) {
   const {
@@ -28,8 +33,12 @@ function InterestedWorkForm({ id, dataWorks }) {
     inputTextColor,
     inputGrayColor,
   } = useTheme();
+
+  //session
+  const { data: session } = useSession();
   //store
   const { updateInterestedWorkById } = useInterestedWorkStore();
+  const { addLog } = useSystemLogStore();
 
   //set Mode
   const [editMode, setEditMode] = useState(false);
@@ -288,39 +297,29 @@ function InterestedWorkForm({ id, dataWorks }) {
       const response = await updateInterestedWorkById(data);
 
       if (response.ok) {
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          confirmButtonText: "ตกลง",
-          confirmButtonColor: "#0d96f8",
-        }).then(() => {
-          setEditMode(false);
+        await addLog({
+          actorUuid: session?.user?.id,
+          targetUuid: id,
+          action: ACTION_ACTIVITY.UPDATE,
+          targetModel: TARGET_MODEL.INTERESTEDWORK,
+          description: "Update Interested work",
+          data: data,
         });
-      } else {
-        console.error("Failed to submit data");
-        Swal.fire({
-          title: "เกิดข้อผิดพลาด",
-          text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-          icon: "error",
-          confirmButtonText: "ตกลง",
-          confirmButtonColor: "#f27474",
-        }).then(() => {
-          setEditMode(false);
-        });
-
-        return;
+        toast.success("บันทึกข้อมูลสำเร็จ");
+        setEditMode(false);
       }
     } catch (error) {
-      console.error("Error submitting data:", error);
-      Swal.fire({
-        title: "เกิดข้อผิดพลาด",
-        text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-        icon: "error",
-        confirmButtonText: "ตกลง",
-        confirmButtonColor: "#f27474",
-      }).then(() => {
-        setEditMode(false);
+      await addLog({
+        actorUuid: session?.user?.id,
+        targetUuid: id,
+        action: ACTION_ACTIVITY.ERROR,
+        targetModel: TARGET_MODEL.INTERESTEDWORK,
+        description: "Error Interested work",
+        data: data,
       });
+      console.error("Error submitting data:", error);
+      toast.error("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง");
+      setEditMode(false);
     }
   }
 

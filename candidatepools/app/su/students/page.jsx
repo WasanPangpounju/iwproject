@@ -27,6 +27,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import { ROLE } from "@/const/enum";
 
 const columns = [
   {
@@ -346,7 +347,7 @@ function SupervisorPage() {
         return null;
       }
 
-      if (!hasMatchTypePerson) {
+      if (!hasMatchTypePerson && typePersonSearch) {
         return null;
       }
 
@@ -361,7 +362,7 @@ function SupervisorPage() {
         return null;
       }
 
-      if (std.role === "user") {
+      if (std.role === ROLE.USER) {
         return createData(
           `${std.firstName} ${std.lastName}`,
           `${education?.university?.join(",\n") || "ไม่มีข้อมูล"}`,
@@ -375,7 +376,7 @@ function SupervisorPage() {
           }`}`,
           // `${std.typeDisabled?.length > 1 ? std.typeDisabled[0] : `${std.typeDisabled[0]}...`}`,
           `${std?.typeDisabled?.join(",\n") || "ไม่มีข้อมูล"}`,
-          "s",
+          "",
           `${std?.uuid}`
         );
       }

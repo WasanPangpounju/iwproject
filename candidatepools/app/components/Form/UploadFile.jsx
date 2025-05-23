@@ -12,7 +12,7 @@ function UploadFile({
   setNameFile,
   setSizeFile,
   setTypeFile,
-  isDisabled,
+  isDisabled=false,
 }) {
   const { bgColorMain, inputEditColor } = useTheme();
 
@@ -64,7 +64,7 @@ function UploadFile({
     <div
       className={`${
         !editMode ? "hidden" : ""
-      } ${bgColorMain} mt-1 flex items-center`}
+      } ${bgColorMain} mt-1 flex items-center cursor-pointer`}
     >
       <input
         type="file"
@@ -75,7 +75,7 @@ function UploadFile({
 
       <div
         onClick={() => {
-          if (isDisabled) openFileDialog();
+          if (!isDisabled) openFileDialog();
         }}
         className={`border rounded-lg py-2 px-8 text-center ${inputEditColor}`}
       >

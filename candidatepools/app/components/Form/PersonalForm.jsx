@@ -27,7 +27,13 @@ import InputUniversityAutoComplete from "./InputUniversityAutoComplete";
 import { ROLE } from "@/const/enum";
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
 
-function PersonalForm({ dataUser, isStudent = true, isCreate = false, handleStep }) {
+function PersonalForm({
+  dataUser,
+  isStudent = true,
+  isCreate = false,
+  handleStep,
+  readOnly = false,
+}) {
   //data value
   const [user, setUser] = useState(null);
   const [password, setPassword] = useState(null);
@@ -1020,7 +1026,7 @@ function PersonalForm({ dataUser, isStudent = true, isCreate = false, handleStep
                   />
                 </div>
                 <UploadFile
-                  isDisabled={true}
+                  isDisabled={false}
                   editMode={editMode}
                   uuid={dataUser?.uuid}
                   setValue={(url) => setProfile(url)} // หรือ setValue(url) ตามที่คุณใช้
@@ -1060,12 +1066,14 @@ function PersonalForm({ dataUser, isStudent = true, isCreate = false, handleStep
         </div>
       )} */}
         {editMode && <ProgressBarForm fields={fields} />}
-        <ButtonGroup
-          editMode={editMode}
-          setEditMode={setEditMode}
-          isCreate={isCreate}
-          tailwind="mt-5"
-        />
+        {!readOnly && (
+          <ButtonGroup
+            editMode={editMode}
+            setEditMode={setEditMode}
+            isCreate={isCreate}
+            tailwind="mt-5"
+          />
+        )}
       </form>
     </>
   );

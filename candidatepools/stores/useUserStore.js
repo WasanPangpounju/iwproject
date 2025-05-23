@@ -35,6 +35,7 @@ export const useUserStore = create((set, get) => ({
       );
 
       if (res.status === 200) {
+        await get().getUserAll();
         return { ok: true, message: res.data.message };
       } else {
         return {
@@ -52,7 +53,7 @@ export const useUserStore = create((set, get) => ({
       set({ loading: false });
     }
   },
-  
+
   getUser: async (id) => {
     const current = useUserStore.getState().dataUser;
     if (current && current.uuid === id) return;
