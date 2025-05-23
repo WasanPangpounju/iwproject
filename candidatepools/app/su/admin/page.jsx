@@ -141,7 +141,7 @@ function AdminManagement() {
             `${std.firstName} ${std.lastName}`,
             `${std?.university || "ไม่มีข้อมูล"}`,
             `${std?.position || "ไม่มีข้อมูล"}`,
-            `${std?.addressProvince || '-'}`,
+            `${std?.addressProvince || "-"}`,
             "s",
             `${std?.uuid}`
           );
@@ -155,7 +155,13 @@ function AdminManagement() {
       });
 
     setRows(newRows);
-  }, [dataAdmin, session?.user?.id, wordSearch, wordSearchFilter, addressProvince]);
+  }, [
+    dataAdmin,
+    session?.user?.id,
+    wordSearch,
+    wordSearchFilter,
+    addressProvince,
+  ]);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -281,16 +287,18 @@ function AdminManagement() {
                 <TableBody>
                   {rows
                     .sort((a, b) => {
-                      // แทน 'columnToSort' ด้วยชื่อฟิลด์ที่ต้องการเรียง
-                      const columnToSort = "name"; // เช่น เรียงตามชื่อ
-                      if (a[columnToSort] < b[columnToSort]) return 1; // เรียงจากมากไปน้อย
-                      if (a[columnToSort] > b[columnToSort]) return -1;
-                      return 0; // กรณีที่เท่ากัน
+                      const columnToSort = "name";
+                      const aValue = a?.[columnToSort] ?? "";
+                      const bValue = b?.[columnToSort] ?? "";
+
+                      if (aValue < bValue) return 1;
+                      if (aValue > bValue) return -1;
+                      return 0;
                     })
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
-                      const student = dataAdmin.find(
-                        (std) => std?.uuid === row.uuid
+                      const student = dataAdmin?.find(
+                        (std) => std?.uuid === row?.uuid
                       );
                       if (student) {
                         return (

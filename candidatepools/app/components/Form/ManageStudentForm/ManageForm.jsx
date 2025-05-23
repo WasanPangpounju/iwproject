@@ -79,28 +79,30 @@ function ManageForm({ children, rootPath, isUser = false }) {
             throw new Error("Error getting data from API");
           }
 
-          let timerInterval;
-          Swal.fire({
-            title: "กำลังลบข้อมูลบัญชี",
-            html: "<b></b> milliseconds.",
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: () => {
-              Swal.showLoading();
-              const timer = Swal.getPopup().querySelector("b");
-              timerInterval = setInterval(() => {
-                timer.textContent = `${Swal.getTimerLeft()}`;
-              }, 100);
-            },
-            willClose: () => {
-              clearInterval(timerInterval);
-            },
-          }).then((result) => {
-            if (result.dismiss === Swal.DismissReason.timer) {
-              console.log("I was closed by the timer");
-              router.push(rootPath);
-            }
-          });
+          // let timerInterval;
+          // Swal.fire({
+          //   title: "กำลังลบข้อมูลบัญชี",
+          //   html: "<b></b> milliseconds.",
+          //   timer: 2000,
+          //   timerProgressBar: true,
+          //   didOpen: () => {
+          //     Swal.showLoading();
+          //     const timer = Swal.getPopup().querySelector("b");
+          //     timerInterval = setInterval(() => {
+          //       timer.textContent = `${Swal.getTimerLeft()}`;
+          //     }, 100);
+          //   },
+          //   willClose: () => {
+          //     clearInterval(timerInterval);
+          //   },
+          // }).then((result) => {
+          //   if (result.dismiss === Swal.DismissReason.timer) {
+          //     console.log("I was closed by the timer");
+
+          //   }
+          // });
+          toast.error("ลบบัญชีสำเร็จ !");
+          router.push(rootPath);
         } catch (err) {
           console.error("Error fetching API", err);
 

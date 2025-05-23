@@ -41,7 +41,7 @@ function InputForm({
           ? `${inputEditColor} cursor-default focus:outline-none`
           : ""
       } ${bgColorMain} ${
-        disabled && "bg-gray-200 "
+        disabled && "bg-gray-200"
       } ${tailwind} border border-gray-400 py-2 px-4 rounded-lg`}
       onChange={(e) => setValue(e.target.value)}
       value={value || ""}

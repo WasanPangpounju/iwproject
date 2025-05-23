@@ -4,6 +4,7 @@ import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
 import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
 import { useChatStore } from "@/stores/useChatStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
+import { useSystemLogStore } from "@/stores/useSystemLogStore";
 export const fetchAllUserData = async () => {
   const { getUserAll } = useUserStore.getState();
   const { getEducationAll } = useEducationStore.getState();
@@ -11,6 +12,7 @@ export const fetchAllUserData = async () => {
   const { getDataInterestedWorkAll } = useInterestedWorkStore.getState();
   const { fetchChats } = useChatStore.getState();
   const { fetchCompanies } = useCompanyStore.getState();
+  const { getLogs } = useSystemLogStore.getState();
 
   await Promise.all([
     getUserAll(),
@@ -19,6 +21,7 @@ export const fetchAllUserData = async () => {
     getDataInterestedWorkAll(),
     fetchChats(),
     fetchCompanies(),
+    getLogs(),
   ]);
 };
 
@@ -29,11 +32,13 @@ export const clearAllUserData = () => {
   const { clearInterestedWorkAll } = useInterestedWorkStore.getState();
   const { clearAllChats } = useChatStore.getState();
   const { clearCompany } = useCompanyStore.getState();
-
+  const { clearSystemLogs } = useSystemLogStore.getState();
+  
   clearUserAll();
   clearEducationAll();
   clearHistoryWorkAll();
   clearInterestedWorkAll();
   clearAllChats();
   clearCompany();
+  clearSystemLogs();
 };

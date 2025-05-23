@@ -92,7 +92,7 @@ export default function RootLayout({ children }) {
       <HeaderLogo dataUser={dataUser} />
       <div className="flex">
         <NavbarAdmin status="ad" />
-        <div className="w-10/12 px-7 py-5">{children}</div>
+        <div className="overflow-x-auto w-10/12 px-7 py-5">{children}</div>
       </div>
     </div>
   );
