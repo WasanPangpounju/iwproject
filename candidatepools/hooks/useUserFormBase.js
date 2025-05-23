@@ -2,6 +2,11 @@ import { useState } from "react";
 import { useUserStore } from "@/stores/useUserStore";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
+
+//store
+import { useSystemLogStore } from "@/stores/useSystemLogStore";
+import { ACTION_ACTIVITY, TARGET_MODEL } from "@/const/enum";
 
 export function useUserFormBase(
   dataUser,
@@ -9,6 +14,12 @@ export function useUserFormBase(
   options = {},
   handleStep
 ) {
+  //store
+  const { addLog } = useSystemLogStore();
+
+  //session
+  const { data: session } = useSession();
+
   const router = useRouter();
   const { checkIdCardDisabled } = options;
   const { createUser, updateUserById, checkIdExists, checkUserExists } =
@@ -162,8 +173,29 @@ export function useUserFormBase(
 
       if (!res.ok) {
         toast.error("เกิดข้อผิดพลาด");
+        try {
+          await addLog({
+            actorUuid: session?.user?.id,
+            targetUuid: isEditing ? dataUser?.uuid : res?.data?.uuid,
+            action: ACTION_ACTIVITY.ERROR,
+            targetModel: TARGET_MODEL.PERSONAL,
+            description: "Error create or update",
+            data: formState,
+          });
+        } catch (logErr) {
+          console.warn("log error failed:", logErr);
+        }
         return false;
       }
+
+      await addLog({
+        actorUuid: session?.user?.id,
+        targetUuid: isEditing ? dataUser?.uuid : res?.data?.uuid,
+        action: isEditing ? ACTION_ACTIVITY.UPDATE : ACTION_ACTIVITY.CREATE,
+        targetModel: TARGET_MODEL.PERSONAL,
+        description: isEditing ? "Update Personal" : "Created Personal User",
+        data: formState,
+      });
 
       toast.success("บันทึกข้อมูลสำเร็จ");
 

@@ -26,9 +26,11 @@ import {
 import { storage } from "@/app/firebaseConfig";
 
 import { useTheme } from "@/app/ThemeContext";
+import { useSession } from "next-auth/react";
 
 //stores
 import { useEducationStore } from "@/stores/useEducationStore";
+import { useSystemLogStore } from "@/stores/useSystemLogStore";
 
 import TextError from "@/app/components/TextError";
 import SelectLabelForm from "@/app/components/Form/SelectLabelForm";
@@ -37,11 +39,20 @@ import ButtonGroup from "./ButtonGroup/ButtonGroup";
 import { toast } from "react-toastify";
 import { downloadFileFromFirebase } from "@/utils/firebaseDownload";
 import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
-import { TYPE_PERSON } from "@/const/enum";
+import { ACTION_ACTIVITY, TARGET_MODEL, TYPE_PERSON } from "@/const/enum";
 
-function EducationForm({ dataEducations, dataUser, handleStep }) {
+function EducationForm({
+  dataEducations,
+  dataUser,
+  handleStep,
+  readOnly = false,
+}) {
   //store
   const { updateEducationById, updateFileName } = useEducationStore();
+  const { addLog } = useSystemLogStore();
+
+  //session
+  const { data: session } = useSession();
 
   //Theme
   const { bgColor, bgColorMain, inputEditColor } = useTheme();
@@ -440,8 +451,25 @@ function EducationForm({ dataEducations, dataUser, handleStep }) {
       if (!res.ok) {
         toast.error("เกิดข้อผิดพลาด");
         setEditMode(false);
+        await addLog({
+          actorUuid: session?.user?.id,
+          targetUuid: dataUser.uuid,
+          action: ACTION_ACTIVITY.ERROR,
+          targetModel: TARGET_MODEL.EDUCATION,
+          description: "Error Education Form",
+          data: bodyEducation,
+        });
         return;
       }
+
+      await addLog({
+        actorUuid: session?.user?.id,
+        targetUuid: dataUser.uuid,
+        action: ACTION_ACTIVITY.UPDATE,
+        targetModel: TARGET_MODEL.EDUCATION,
+        description: "Update Education Form",
+        data: bodyEducation,
+      });
 
       toast.success("บันทึกข้อมูลสำเร็จ");
 
@@ -1095,13 +1123,17 @@ function EducationForm({ dataEducations, dataUser, handleStep }) {
                     onClick={() =>
                       handleEditNameFile(dataUser?.uuid, nameFile[index], index)
                     }
-                    className={`cursor-pointer text-gray-40 mx-1`}
+                    className={`${
+                      editMode ? "" : "hidden"
+                    } cursor-pointer text-gray-40 mx-1`}
                     path={mdiPencil}
                     size={0.8}
                   />
                   <Icon
                     onClick={() => handleDownloadFile(n, nameFile[index])}
-                    className={`cursor-pointer text-gray-40 mx-1`}
+                    className={`${
+                      editMode ? "" : "hidden"
+                    } cursor-pointer text-gray-40 mx-1`}
                     path={mdiDownload}
                     size={0.8}
                   />
@@ -1133,11 +1165,13 @@ function EducationForm({ dataEducations, dataUser, handleStep }) {
       <div className="mt-4 w-full">
         {editMode && <ProgressBarForm fields={fieldProgress} />}
       </div>
-      <ButtonGroup
-        editMode={editMode}
-        setEditMode={setEditMode}
-        tailwind="mt-5"
-      />
+      {!readOnly && (
+        <ButtonGroup
+          editMode={editMode}
+          setEditMode={setEditMode}
+          tailwind="mt-5"
+        />
+      )}
     </form>
   );
 }

@@ -1,3 +1,4 @@
+import { TYPE_PERSON } from "@/const/enum";
 import { useUserFormBase } from "./useUserFormBase";
 
 export function useUserForm(dataUser, setEditMode) {

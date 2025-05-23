@@ -8,22 +8,29 @@ import { mdiCloseCircle } from "@mdi/js";
 import Swal from "sweetalert2";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 import { useParams } from "next/navigation";
 import { usePathname } from "next/navigation";
 
 //stores
 import { useUserStore } from "@/stores/useUserStore";
+import { useSystemLogStore } from "@/stores/useSystemLogStore";
 
 //component
 import BackButton from "@/app/components/Button/BackButton";
+import { toast } from "react-toastify";
+import { ACTION_ACTIVITY, TARGET_MODEL } from "@/const/enum";
 
 function ManageForm({ children, rootPath, isUser = false }) {
+  //session
+  const { data: session } = useSession();
   //Theme
   const { bgColorWhite, inputGrayColor } = useTheme();
 
   //stores
   const { dataUserById, deleteUserById } = useUserStore();
+  const { addLog } = useSystemLogStore();
 
   //params
   const { id } = useParams();
@@ -73,6 +80,14 @@ function ManageForm({ children, rootPath, isUser = false }) {
           if (!res.ok) {
             throw new Error("Error getting data from API");
           }
+          await addLog({
+            actorUuid: session?.user?.id,
+            targetUuid: dataUserById?.uuid,
+            action: ACTION_ACTIVITY.DELETE,
+            targetModel: TARGET_MODEL.ACCOUNT,
+            description: "Delete Account.",
+            data: dataUserById,
+          });
 
           let timerInterval;
           Swal.fire({
@@ -98,11 +113,16 @@ function ManageForm({ children, rootPath, isUser = false }) {
           });
         } catch (err) {
           console.error("Error fetching API", err);
-          Swal.fire({
-            title: "เกิดข้อผิดพลาด",
-            text: "ไม่สามารถลบบัญชีได้",
-            icon: "error",
+          await addLog({
+            actorUuid: session?.user?.id,
+            targetUuid: dataUserById?.uuid,
+            action: ACTION_ACTIVITY.ERROR,
+            targetModel: TARGET_MODEL.ACCOUNT,
+            description: "Delete account is failed",
+            data: dataUserById,
           });
+
+          toast.error("เกิดข้อผิดพลาด, ไม่สามารถลบบัญชีได้");
         }
       }
     });

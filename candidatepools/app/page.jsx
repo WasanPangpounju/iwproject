@@ -14,6 +14,7 @@ import React from "react";
 
 //stores
 import { useCredentialStore } from "@/stores/useCredentialStore";
+import { useSystemLogStore } from "@/stores/useSystemLogStore";
 
 //hooks
 import useRoleRedirect from "@/hooks/useRoleRedirect";
@@ -21,12 +22,16 @@ import useRoleRedirect from "@/hooks/useRoleRedirect";
 //SweetAlert2
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { ACTION_ACTIVITY, TARGET_MODEL } from "@/const/enum";
+import { toast } from "react-toastify";
 
 const MySwal = withReactContent(Swal);
 
 export default function Home() {
   //store
   const { forgotPassword } = useCredentialStore();
+  const { addLog } = useSystemLogStore();
+
   const {
     setFontSize,
     setBgColor,
@@ -115,6 +120,7 @@ export default function Home() {
           } else {
             setError("อีเมลหรือชื่อผู้ใช้ของคุณไม่ถูกต้อง");
           }
+
         } catch (err) {
           setError("เกิดข้อผิดพลาดในการตรวจสอบผู้ใช้");
           console.error("Error fetching API in register: ", err);
@@ -124,12 +130,7 @@ export default function Home() {
       }
     } catch (err) {
       setLoader(false);
-      Swal.fire({
-        title: "ข้อผิดพลาด",
-        text: "เกิดข้อผิดพลาดกรุณาลองใหม่ในภายหลัง",
-        icon: "error",
-        confirmButtonText: "ตกลง",
-      });
+      toast.error("เกิดข้อผิดพลาดกรุณาลองใหม่ในภายหลัง")
       console.error("Unexpected error:", err);
     }
   }

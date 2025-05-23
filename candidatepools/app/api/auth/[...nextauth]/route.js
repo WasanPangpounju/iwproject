@@ -5,6 +5,14 @@ import Users from "@/models/user";
 import GoogleProvider from "next-auth/providers/google";
 import LineProvider from "next-auth/providers/line";
 import { v4 as uuidv4 } from "uuid";
+
+
+//lib
+import { addSystemLog } from "@/lib/logHelper";
+
+//enum
+import { ACTION_ACTIVITY, TARGET_MODEL, ROLE } from "@/const/enum";
+
 // import bcrypt from 'bcrypt';
 
 const authOption = {
@@ -63,8 +71,35 @@ const authOption = {
           //     return null;
           // }
           // ส่งคืนข้อมูลผู้ใช้หากสำเร็จ
-          return userDocument;
+
+          // await addLog({
+          //   actorUuid: user?.uuid ?? null,
+          //   targetUuid: user?.uuid ?? null,
+          //   action: ACTION_ACTIVITY.LOGIN_FAILED,
+          //   targetModel: TARGET_MODEL.LOGIN,
+          //   description: "User failed to login",
+          //   data: { email },
+          // });
+          if (userDocument) {
+            await addSystemLog({
+              actorUuid: userDocument?.uuid,
+              targetUuid: userDocument?.uuid,
+              action: ACTION_ACTIVITY.LOGIN,
+              targetModel: TARGET_MODEL.LOGIN,
+              description: `${userDocument?.role === ROLE.SUPERVISOR ? "admin": userDocument?.role === ROLE.ADMIN ? "super user":  ROLE.USER} login.`,
+              data: userDocument,
+            });
+            return userDocument;
+          }
         } catch (err) {
+          await addSystemLog({
+            actorUuid: email,
+            targetUuid: email,
+            action: ACTION_ACTIVITY.ERROR,
+            targetModel: TARGET_MODEL.LOGIN,
+            description: "Login is Failed",
+            data: { email },
+          });
           console.error("Error during authentication:", err);
           return null;
         }

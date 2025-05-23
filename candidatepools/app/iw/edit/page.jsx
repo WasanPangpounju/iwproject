@@ -31,6 +31,24 @@ const steps = [
   "ความสามาร/การอบรม",
 ];
 
+const stepStyle = {
+  "& .Mui-active": {
+    "&.MuiStepIcon-root": {
+      color: "#F97201",
+    },
+  },
+  "& .Mui-completed": {
+    "&.MuiStepIcon-root": {
+      color: "#F97201",
+    },
+  },
+  // "& .Mui-disabled": {
+  //   "&.MuiStepIcon-root": {
+  //     color: "#F97201",
+  //   },
+  // },
+};
+
 export default function HorizontalNonLinearStepper() {
   //params
   const searchParams = useSearchParams();
@@ -109,6 +127,7 @@ export default function HorizontalNonLinearStepper() {
 
   const handleStep = (step) => () => {
     setActiveStep(step);
+    router.push(`?stepper=${step + 1}`);
   };
 
   const handleComplete = () => {
@@ -157,7 +176,14 @@ export default function HorizontalNonLinearStepper() {
           />
         );
       case 4:
-        return <SumaryData dataUser={dataUser} dataEducations={dataEducations} dataHistoryWorks={dataHistoryWork} dataSkills={dataSkills}/>;
+        return (
+          <SumaryData
+            dataUser={dataUser}
+            dataEducations={dataEducations}
+            dataHistoryWork={dataHistoryWork}
+            dataSkills={dataSkills}
+          />
+        );
       default:
         return "Unknown step";
     }
@@ -167,24 +193,24 @@ export default function HorizontalNonLinearStepper() {
       <Box sx={{ width: "100%" }}>
         <Stepper nonLinear activeStep={activeStep}>
           {steps.map((label, index) => (
-            <Step key={label} completed={completed[index]}>
+            <Step key={label} completed={completed[index]} sx={stepStyle}>
               <StepButton
                 onClick={handleStep(index)}
-                sx={{
-                  ".MuiStepIcon-root": {
-                    color: "#F97201 !important",
-                  },
-                  "&.Mui-completed .MuiStepIcon-root": {
-                    color: "#F97201 !important", // สีเมื่อ completed
-                  },
-                  "&.Mui-active .MuiStepIcon-root": {
-                    color: "#F97201 !important", // สีเมื่อ active
-                  },
+                // sx={{
+                //   ".MuiStepIcon-root": {
+                //     color: "#F97201 !important",
+                //   },
+                //   "&.Mui-completed .MuiStepIcon-root": {
+                //     color: "#F97201 !important", // สีเมื่อ completed
+                //   },
+                //   "&.Mui-active .MuiStepIcon-root": {
+                //     color: "#F97201 !important", // สีเมื่อ active
+                //   },
 
-                  "&.Mui-disabled .MuiStepIcon-root": {
-                    color: "grey.400 !important",
-                  },
-                }}
+                //   "&.Mui-disabled .MuiStepIcon-root": {
+                //     color: "grey.400 !important",
+                //   },
+                // }}
               >
                 {label}
               </StepButton>
@@ -206,12 +232,13 @@ export default function HorizontalNonLinearStepper() {
             ย้อนกลับ
           </Button>
           <Box sx={{ flex: "1 1 auto" }} />
-          <Button onClick={handleNext} sx={{ mr: 1 }}
-          >
+          <Button onClick={handleNext} sx={{ mr: 1 }}>
             <p className="text-[#F97201]">
-              {activeStep+1 === steps.length && allStepsCompleted()
+              {activeStep + 1 === steps.length && allStepsCompleted()
                 ? "สรุปข้อมูล"
-                : activeStep+1 > steps.length ? "": "ต่อไป"}
+                : activeStep + 1 > steps.length
+                ? ""
+                : "ต่อไป"}
             </p>
           </Button>
         </Box>
