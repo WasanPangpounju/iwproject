@@ -28,6 +28,7 @@ export const ROLE = {
   ADMIN: "admin",
   SUPERVISOR: "supervisor",
   SUPERUSER: "super user",
+  SYSTEM: "System",
 };
 
 export const ACTION_ACTIVITY = {
@@ -49,5 +50,6 @@ export const TARGET_MODEL = {
   RESUME: "เรซูเม่",
   LOGIN: "เข้าสู่ระบบ",
   LOGOUT: "ออกจากระบบ",
-  ACCOUNT: "บัญชี"
+  ACCOUNT: "บัญชี",
+  COMPANY: "บริษัท",
 };

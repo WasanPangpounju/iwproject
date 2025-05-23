@@ -25,7 +25,6 @@ import { saveAs } from "file-saver";
 
 //stores
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
-import { useSystemLogStore } from "@/stores/useSystemLogStore";
 
 import { dataStatus } from "@/assets/dataStatus";
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
@@ -45,7 +44,6 @@ function HistoryWorkForm({
 
   //store
   const { updateHistoryWorkById } = useHistoryWorkStore();
-  const { addLog } = useSystemLogStore();
   const [error, setError] = useState("");
 
   //Theme
@@ -998,42 +996,18 @@ function HistoryWorkForm({
 
       if (response.ok) {
         toast.success("บันทึกข้อมูลสำเร็จ");
-        await addLog({
-          actorUuid: session?.user?.id,
-          targetUuid: id,
-          action: ACTION_ACTIVITY.UPDATE,
-          targetModel: TARGET_MODEL.HISTORYWORK,
-          description: "Update History Work",
-          data: data,
-        });
         setEditMode(false);
         if (handleStep) {
           handleStep();
         }
       } else {
         console.error("Failed to submit data:", result.message);
-        await addLog({
-          actorUuid: session?.user?.id,
-          targetUuid: id,
-          action: ACTION_ACTIVITY.ERROR,
-          targetModel: TARGET_MODEL.HISTORYWORK,
-          description: "Error History Work",
-          data: data,
-        });
         toast.error("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง");
         setEditMode(false);
         return;
       }
     } catch (error) {
       console.error("Error submitting data:", error);
-      await addLog({
-        actorUuid: session?.user?.id,
-        targetUuid: id,
-        action: ACTION_ACTIVITY.ERROR,
-        targetModel: TARGET_MODEL.HISTORYWORK,
-        description: "Error History Work",
-        data: data,
-      });
       toast.error("เกิดข้อผิดพลาด ", error);
       setEditMode(false);
       return;

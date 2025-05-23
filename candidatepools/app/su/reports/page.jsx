@@ -473,15 +473,19 @@ function ReportPage() {
       },
       ตามประเภทความพิการ: {
         columns: columnStudentCatagory,
-        rows: rowCountUni,
+        rows: rowCatagoryStudents(),
       },
       ตามประเภทบุคคล: {
         columns: columnStudentCatagory,
-        rows: rowCountUni,
+        rows: rowCatagoryStudents(),
       },
       ตามลักษณะงานที่สนใจ: {
         columns: columnStudentCatagory,
-        rows: rowCountUni,
+        rows: rowCatagoryStudents(),
+      },
+      ตามสถานะ: {
+        columns: columnStudentCatagory,
+        rows: rowCatagoryStudents(),
       },
     },
   };

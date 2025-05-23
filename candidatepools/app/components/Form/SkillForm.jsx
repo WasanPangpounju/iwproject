@@ -25,7 +25,6 @@ import { saveAs } from "file-saver";
 
 //stores
 import { useSkillStore } from "@/stores/useSkillStore";
-import { useSystemLogStore } from "@/stores/useSystemLogStore";
 
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
 import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
@@ -40,7 +39,6 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
 
   //store
   const { updateSkillById } = useSkillStore();
-  const { addLog } = useSystemLogStore();
 
   //Theme
   const {
@@ -450,14 +448,6 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
 
       if (response.ok) {
         toast.success("บันทึกข้อมูลสำเร็จ");
-        await addLog({
-          actorUuid: session?.user?.id,
-          targetUuid: id,
-          action: ACTION_ACTIVITY.UPDATE,
-          targetModel: TARGET_MODEL.SKILL,
-          description: "Update Skill Form",
-          data: data,
-        });
         setEditMode(false);
         if (handleStep) {
           handleStep();
@@ -465,27 +455,11 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
       } else {
         console.error("Failed to submit data");
         toast.error("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง");
-         await addLog({
-          actorUuid: session?.user?.id,
-          targetUuid: id,
-          action: ACTION_ACTIVITY.ERROR,
-          targetModel: TARGET_MODEL.SKILL,
-          description: "Error Skill Form",
-          data: data,
-        });
         setEditMode(false);
         return;
       }
     } catch (error) {
       console.error("Error submitting data:", error);
-        await addLog({
-          actorUuid: session?.user?.id,
-          targetUuid: id,
-          action: ACTION_ACTIVITY.ERROR,
-          targetModel: TARGET_MODEL.SKILL,
-          description: "Error Skill Form",
-          data: data,
-        });
       toast.error("เกิดข้อผิดพลาด");
       setEditMode(false);
       return;

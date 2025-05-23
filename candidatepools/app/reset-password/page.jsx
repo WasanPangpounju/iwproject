@@ -56,8 +56,6 @@ function page() {
 
     setError("");
 
-    console.log("token: ", token);
-    console.log("password: ", password);
     const { ok, error: apiError } = await resetPassword({
       token,
       newPassword: password,

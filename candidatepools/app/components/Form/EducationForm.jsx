@@ -39,7 +39,7 @@ import ButtonGroup from "./ButtonGroup/ButtonGroup";
 import { toast } from "react-toastify";
 import { downloadFileFromFirebase } from "@/utils/firebaseDownload";
 import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
-import { ACTION_ACTIVITY, TARGET_MODEL, TYPE_PERSON } from "@/const/enum";
+import { TYPE_PERSON } from "@/const/enum";
 
 function EducationForm({
   dataEducations,
@@ -49,7 +49,6 @@ function EducationForm({
 }) {
   //store
   const { updateEducationById, updateFileName } = useEducationStore();
-  const { addLog } = useSystemLogStore();
 
   //session
   const { data: session } = useSession();
@@ -451,25 +450,8 @@ function EducationForm({
       if (!res.ok) {
         toast.error("เกิดข้อผิดพลาด");
         setEditMode(false);
-        await addLog({
-          actorUuid: session?.user?.id,
-          targetUuid: dataUser.uuid,
-          action: ACTION_ACTIVITY.ERROR,
-          targetModel: TARGET_MODEL.EDUCATION,
-          description: "Error Education Form",
-          data: bodyEducation,
-        });
         return;
       }
-
-      await addLog({
-        actorUuid: session?.user?.id,
-        targetUuid: dataUser.uuid,
-        action: ACTION_ACTIVITY.UPDATE,
-        targetModel: TARGET_MODEL.EDUCATION,
-        description: "Update Education Form",
-        data: bodyEducation,
-      });
 
       toast.success("บันทึกข้อมูลสำเร็จ");
 
