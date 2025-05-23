@@ -18,7 +18,7 @@ function SelectForm({ setValue, value, editMode, options, tailwind }) {
         value={value || ""}
       >
         <option value="">-</option>
-        {options.map((item) => (
+        {options?.map((item) => (
           <option key={item.id} value={item.id}>
             {item.value}
           </option>

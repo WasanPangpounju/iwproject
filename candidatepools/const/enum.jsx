@@ -32,12 +32,10 @@ export const ROLE = {
 };
 
 export const ACTION_ACTIVITY = {
-  LOGIN: "Login",
-  LOGOUT: "Logout",
   CREATE: "Create",
   UPDATE: "Update",
   DELETE: "Delete",
-  VIEW: "View",
+  LOGIN: "Login",
   ERROR: "Error",
 };
 

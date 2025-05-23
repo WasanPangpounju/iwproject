@@ -65,11 +65,15 @@ export default function HorizontalNonLinearStepper() {
   const [activeStep, setActiveStep] = useState(stepper - 1);
   const [completed, setCompleted] = useState({});
 
+  useEffect(() => {
+    setActiveStep(stepper - 1);
+  }, [stepper]);
+
   //check complete
   useEffect(() => {
     const newCompleted = {};
 
-    if (dataUser?.tel) {
+    if (dataUser?.idCardDisabled) {
       newCompleted[0] = true;
     }
 
@@ -81,7 +85,7 @@ export default function HorizontalNonLinearStepper() {
       newCompleted[2] = true;
     }
 
-    if (dataSkills?.skills[0]?.type) {
+    if (dataSkills?.skills[0]?.type || dataSkills?.trains[0]?.name) {
       newCompleted[3] = true;
     }
 

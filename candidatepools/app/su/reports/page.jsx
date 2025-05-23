@@ -96,6 +96,81 @@ const columnStudentCatagory = [
   { id: "disabled", label: "ความพิการ", minWidth: 170, align: "center" },
 ];
 
+const columnAll = [
+  { id: "prefix", label: "คำนำหน้า", minWidth: 170, align: "center" },
+  { id: "firstName", label: "ชื่อ", minWidth: 170, align: "center" },
+  { id: "lastName", label: "นามสกุล", minWidth: 170, align: "center" },
+  { id: "email", label: "อีเมล", minWidth: 170, align: "center" },
+  { id: "dateBirthday", label: "วันเกิด", minWidth: 170, align: "center" },
+  { id: "monthBirthday", label: "เดือนเกิด", minWidth: 170, align: "center" },
+  { id: "yearBirthday", label: "ปีเกิด", minWidth: 170, align: "center" },
+  { id: "nationality", label: "สัญชาติ", minWidth: 170, align: "center" },
+  { id: "idCard", label: "เลขบัตรประชาชน", minWidth: 170, align: "center" },
+  {
+    id: "idCardDisabled",
+    label: "บัตรคนพิการ",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "addressIdCard",
+    label: "ที่อยู่ตามบัตร",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "addressIdCardProvince",
+    label: "จังหวัด (บัตร)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "addressIdCardAmphor",
+    label: "อำเภอ (บัตร)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "addressIdCardTambon",
+    label: "ตำบล (บัตร)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "addressIdCardZipCode",
+    label: "รหัสไปรษณีย์ (บัตร)",
+    minWidth: 170,
+    align: "center",
+  },
+  { id: "address", label: "ที่อยู่ปัจจุบัน", minWidth: 170, align: "center" },
+  {
+    id: "addressProvince",
+    label: "จังหวัด (ปัจจุบัน)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "addressAmphor",
+    label: "อำเภอ (ปัจจุบัน)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "addressTambon",
+    label: "ตำบล (ปัจจุบัน)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "addressZipCode",
+    label: "รหัสไปรษณีย์ (ปัจจุบัน)",
+    minWidth: 170,
+    align: "center",
+  },
+  { id: "role", label: "บทบาท", minWidth: 170, align: "center" },
+  { id: "tel", label: "เบอร์โทร", minWidth: 170, align: "center" },
+];
+
 function ReportPage() {
   //store
   const { dataStudents } = useUserStore();
@@ -440,8 +515,8 @@ function ReportPage() {
   const tableConfig = {
     หัวข้อทั้งหมด: {
       เลือกประเภท: {
-        columns: columnCountUni,
-        rows: rowCountUni,
+        columns: columnAll,
+        rows: dataState.dataStudents,
       },
     },
     แยกตามจำนวน: {

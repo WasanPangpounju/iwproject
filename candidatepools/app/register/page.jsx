@@ -217,22 +217,6 @@ function Register({ statusAgreement }) {
         }
       );
 
-      const resEducation = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            uuid: session?.user?.id || id,
-            email,
-            typePerson,
-            university,
-          }),
-        }
-      );
-
       try {
         const resSessionEmail = await signIn("credentials", {
           email,

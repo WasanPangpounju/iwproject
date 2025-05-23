@@ -5,6 +5,9 @@ import Users from "@/models/user";
 import Educations from "@/models/education";
 import SystemLog from "@/models/systemLog";
 import { ACTION_ACTIVITY, ROLE, TARGET_MODEL } from "@/const/enum";
+import HistoryWork from "@/models/historyWork";
+import Skills from "@/models/skill";
+import Resume from "@/models/resume";
 
 export async function POST(req) {
   const {
@@ -99,6 +102,14 @@ export async function POST(req) {
       email,
       typePerson,
       university,
+    });
+
+    await HistoryWork.create({
+      uuid: uuid,
+    });
+
+    await Skills.create({
+      uuid: uuid,
     });
 
     const dataLog = {

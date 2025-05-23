@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useUserStore } from "@/stores/useUserStore";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { useSession } from "next-auth/react";
 
 export function useUserFormBase(
   dataUser,
@@ -10,9 +9,6 @@ export function useUserFormBase(
   options = {},
   handleStep
 ) {
-
-  //session
-  const { data: session } = useSession();
 
   const router = useRouter();
   const { checkIdCardDisabled } = options;

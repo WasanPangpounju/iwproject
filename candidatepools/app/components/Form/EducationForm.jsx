@@ -50,9 +50,6 @@ function EducationForm({
   //store
   const { updateEducationById, updateFileName } = useEducationStore();
 
-  //session
-  const { data: session } = useSession();
-
   //Theme
   const { bgColor, bgColorMain, inputEditColor } = useTheme();
 

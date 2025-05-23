@@ -6,57 +6,33 @@ import Link from "next/link";
 import Icon from "@mdi/react";
 import {
   mdiDomain,
-  mdiBriefcaseOutline,
   mdiAccountSchool,
   mdiAccountGroup,
   mdiLogout,
-  mdiHelpCircle,
-  mdiMessageAlert,
   mdiAccountDetails,
   mdiChartBox,
-  mdiFileEditOutline,
   mdiHomeAccount,
   mdiCog,
   mdiForum,
+  mdiClipboardTextClock,
 } from "@mdi/js";
 
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useTheme } from "@/app/ThemeContext";
 
 function NavbarSupervisor() {
   const {
-    setFontSize,
-    setBgColor,
-    setBgColorNavbar,
-    setBgColorWhite,
-    setBgColorMain,
-    setBgColorMain2,
     fontSize,
-    bgColorNavbar,
     bgColor,
-    bgColorWhite,
-    bgColorMain,
-    setLineBlack,
-    lineBlack,
-    setTextBlue,
-    textBlue,
-    setRegisterColor,
-    registerColor,
     bgColorMain2,
   } = useTheme();
 
-  const router = useRouter();
 
   useEffect(() => {
-    getChats();
     // แก้ปัญหาหน้าแรกไม่ scroll
     document.body.style.overflow = "auto";
     document.documentElement.style.overflow = "auto";
   }, []);
-
-  //set path default
-  const pathDefault = "/su";
 
   // Logout
   function handleLogout() {
@@ -68,51 +44,6 @@ function NavbarSupervisor() {
       .catch((err) => {
         console.log("Sign out error:", err);
       });
-  }
-
-  //edit menu open
-  const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
-
-  const handleMenuOpen = () => {
-    setIsEditMenuOpen(true); // เปิดเมนู
-  };
-
-  const handleMenuClose = () => {
-    setIsEditMenuOpen(false); // ปิดเมนู
-  };
-
-  //resume menu open
-  const [isResumeMenuOpen, setIsResumeMenuOpen] = useState(false);
-
-  const handleResumeMenuOpen = () => {
-    setIsResumeMenuOpen(true); // เปิดเมนู
-  };
-
-  const handleResumeMenuClose = () => {
-    setIsResumeMenuOpen(false); // ปิดเมนู
-  };
-
-  //get chats
-  const [chats, setChats] = useState([]);
-  async function getChats() {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Error getting data from API");
-      }
-
-      const data = await res.json();
-      setChats(data.chats || {});
-    } catch (err) {
-      console.log(err);
-    }
   }
 
   const pathname = usePathname();
@@ -152,6 +83,10 @@ function NavbarSupervisor() {
     {
       id: 7,
       link: `${mainRoute}/usermanagement`,
+    },
+    {
+      id: 8,
+      link: `${mainRoute}/system-log`,
     },
   ];
 
@@ -272,6 +207,28 @@ function NavbarSupervisor() {
           className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
         >
           จัดการผู้ใช้งาน
+        </p>
+      </Link>
+      <Link
+        href={getLink(8)}
+        className={`${
+          status === "system-log"
+            ? "bg-[#fee2d9] text-[#ff7201]"
+            : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
+        } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`}
+        role="menuitem"
+        aria-label="บันทึกกิจกรรม"
+      >
+        <Icon
+          path={mdiClipboardTextClock}
+          size={1}
+          aria-hidden="true"
+          aria-label="บันทึกกิจกรรม"
+        />
+        <p
+          className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
+        >
+          บันทึกกิจกรรม
         </p>
       </Link>
       <Link
