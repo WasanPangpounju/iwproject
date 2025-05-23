@@ -15,7 +15,6 @@ import { usePathname } from "next/navigation";
 
 //stores
 import { useUserStore } from "@/stores/useUserStore";
-import { useSystemLogStore } from "@/stores/useSystemLogStore";
 
 //component
 import BackButton from "@/app/components/Button/BackButton";
@@ -30,7 +29,6 @@ function ManageForm({ children, rootPath, isUser = false }) {
 
   //stores
   const { dataUserById, deleteUserById } = useUserStore();
-  const { addLog } = useSystemLogStore();
 
   //params
   const { id } = useParams();
@@ -80,14 +78,6 @@ function ManageForm({ children, rootPath, isUser = false }) {
           if (!res.ok) {
             throw new Error("Error getting data from API");
           }
-          await addLog({
-            actorUuid: session?.user?.id,
-            targetUuid: dataUserById?.uuid,
-            action: ACTION_ACTIVITY.DELETE,
-            targetModel: TARGET_MODEL.ACCOUNT,
-            description: "Delete Account.",
-            data: dataUserById,
-          });
 
           let timerInterval;
           Swal.fire({
@@ -113,14 +103,6 @@ function ManageForm({ children, rootPath, isUser = false }) {
           });
         } catch (err) {
           console.error("Error fetching API", err);
-          await addLog({
-            actorUuid: session?.user?.id,
-            targetUuid: dataUserById?.uuid,
-            action: ACTION_ACTIVITY.ERROR,
-            targetModel: TARGET_MODEL.ACCOUNT,
-            description: "Delete account is failed",
-            data: dataUserById,
-          });
 
           toast.error("เกิดข้อผิดพลาด, ไม่สามารถลบบัญชีได้");
         }

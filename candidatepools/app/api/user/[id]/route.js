@@ -5,7 +5,9 @@ import HistoryWork from "@/models/historyWork";
 import Skills from "@/models/skill";
 import Resume from "@/models/resume";
 import Chats from "@/models/chat";
+import SystemLog from "@/models/systemLog";
 import { NextResponse } from "next/server";
+import { ACTION_ACTIVITY, ROLE, TARGET_MODEL } from "@/const/enum";
 
 export async function GET(req) {
   const id = req.nextUrl.pathname.split("/").filter(Boolean).pop();
@@ -17,7 +19,14 @@ export async function GET(req) {
 export async function DELETE(req) {
   const id = req.nextUrl.pathname.split("/").filter(Boolean).pop(); // uuid ที่ต้องการลบ
   await mongoDB();
+  const user = await Users.findOne({ uuid: id });
 
+  if (!user) {
+    return new Response(JSON.stringify({ error: "User not found." }), {
+      status: 404,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
   try {
     const deleteResults = await Promise.all([
       Users.findOneAndDelete({ uuid: id }),
@@ -40,6 +49,13 @@ export async function DELETE(req) {
       );
     }
 
+    await SystemLog.create({
+      actorUuid: ROLE.SYSTEM,
+      action: ACTION_ACTIVITY.DELETE,
+      targetModel: TARGET_MODEL.ACCOUNT,
+      description: `ลบบัญชี ${user.email} (${user.role})`,
+      data: {},
+    });
     return new Response(
       JSON.stringify({
         message: "User and related data deleted successfully.",
@@ -50,6 +66,13 @@ export async function DELETE(req) {
       }
     );
   } catch (error) {
+    await SystemLog.create({
+      actorUuid: ROLE.SYSTEM,
+      action: ACTION_ACTIVITY.ERROR,
+      targetModel: TARGET_MODEL.ACCOUNT,
+      description: `ลบบัญชี ${user.email} (${user.role}) ล้มเหลว`,
+      data: {},
+    });
     console.error("Error deleting user and related data:", error);
     return new Response(
       JSON.stringify({ error: `Failed to delete: ${error.message}` }),
@@ -66,6 +89,10 @@ export async function PUT(req) {
 
   try {
     await mongoDB();
+
+    if (!id) {
+      return NextResponse.json({ message: "Missing user ID" }, { status: 400 });
+    }
 
     const {
       user,
@@ -106,6 +133,45 @@ export async function PUT(req) {
       role,
       position,
     } = await req.json();
+
+    const data = {
+      user: user,
+      firstName: firstName,
+      lastName: lastName,
+      firstNameEng: firstNameEng,
+      lastNameEng: lastNameEng,
+      profile: profile,
+      typeDisabled: typeDisabled,
+      detailDisabled: detailDisabled,
+      university: university,
+      email: email,
+      prefix: prefix,
+      nickname: nickname,
+      sex: sex,
+      dateBirthday: dateBirthday,
+      monthBirthday: monthBirthday,
+      yearBirthday: yearBirthday,
+      nationality: nationality,
+      religion: religion,
+      idCard: idCard,
+      idCardDisabled: idCardDisabled,
+      addressIdCard: addressIdCard,
+      addressIdCardProvince: addressIdCardProvince,
+      addressIdCardAmphor: addressIdCardAmphor,
+      addressIdCardTambon: addressIdCardTambon,
+      addressIdCardZipCode: addressIdCardZipCode,
+      address: address,
+      addressProvince: addressProvince,
+      addressAmphor: addressAmphor,
+      addressTambon: addressTambon,
+      addressZipCode: addressZipCode,
+      tel: tel,
+      telEmergency: telEmergency,
+      relationship: relationship,
+      typePerson: typePerson,
+      role: role,
+      position: position,
+    };
 
     // อัปเดตข้อมูลผู้ใช้ในฐานข้อมูล
     const result = await Users.findOneAndUpdate(
@@ -156,11 +222,25 @@ export async function PUT(req) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
+    await SystemLog.create({
+      actorUuid: id,
+      action: ACTION_ACTIVITY.UPDATE,
+      targetModel: TARGET_MODEL.PERSONAL,
+      description: `${ACTION_ACTIVITY.UPDATE} "${TARGET_MODEL.PERSONAL}"`,
+      data: data,
+    });
     return NextResponse.json(
       { message: "User updated successfully", user: result },
       { status: 200 }
     );
   } catch (error) {
+    await SystemLog.create({
+      actorUuid: id || ROLE.SYSTEM,
+      action: ACTION_ACTIVITY.ERROR,
+      targetModel: TARGET_MODEL.PERSONAL,
+      description: `เกิดข้อผิดพลาด ${ACTION_ACTIVITY.UPDATE} "${TARGET_MODEL.PERSONAL}" ล้มเหลว`,
+      data: error,
+    });
     console.error("Error updating user:", error);
     return NextResponse.json(
       { message: "Error updating user" },

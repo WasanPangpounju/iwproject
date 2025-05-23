@@ -17,7 +17,6 @@ import useProvinceData from "@/app/components/province";
 
 //store
 import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
-import { useSystemLogStore } from "@/stores/useSystemLogStore";
 
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
 import { toast } from "react-toastify";
@@ -38,7 +37,6 @@ function InterestedWorkForm({ id, dataWorks }) {
   const { data: session } = useSession();
   //store
   const { updateInterestedWorkById } = useInterestedWorkStore();
-  const { addLog } = useSystemLogStore();
 
   //set Mode
   const [editMode, setEditMode] = useState(false);
@@ -297,26 +295,10 @@ function InterestedWorkForm({ id, dataWorks }) {
       const response = await updateInterestedWorkById(data);
 
       if (response.ok) {
-        await addLog({
-          actorUuid: session?.user?.id,
-          targetUuid: id,
-          action: ACTION_ACTIVITY.UPDATE,
-          targetModel: TARGET_MODEL.INTERESTEDWORK,
-          description: "Update Interested work",
-          data: data,
-        });
         toast.success("บันทึกข้อมูลสำเร็จ");
         setEditMode(false);
       }
     } catch (error) {
-      await addLog({
-        actorUuid: session?.user?.id,
-        targetUuid: id,
-        action: ACTION_ACTIVITY.ERROR,
-        targetModel: TARGET_MODEL.INTERESTEDWORK,
-        description: "Error Interested work",
-        data: data,
-      });
       console.error("Error submitting data:", error);
       toast.error("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง");
       setEditMode(false);

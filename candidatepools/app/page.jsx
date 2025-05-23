@@ -30,7 +30,6 @@ const MySwal = withReactContent(Swal);
 export default function Home() {
   //store
   const { forgotPassword } = useCredentialStore();
-  const { addLog } = useSystemLogStore();
 
   const {
     setFontSize,
