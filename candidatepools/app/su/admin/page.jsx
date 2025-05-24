@@ -69,9 +69,6 @@ function AdminManagement() {
   const { bgColor, bgColorWhite, bgColorMain, bgColorMain2, inputGrayColor } =
     useTheme();
 
-  //getDatastudent
-  const [loaderTable, setLoaderTable] = useState(true);
-
   //table
   function createData(name, university, level, disabled, details, uuid) {
     return { name, university, level, disabled, details, uuid };

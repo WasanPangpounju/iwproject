@@ -8,7 +8,6 @@ import { mdiCloseCircle } from "@mdi/js";
 import Swal from "sweetalert2";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 import { useParams } from "next/navigation";
 import { usePathname } from "next/navigation";
@@ -19,11 +18,8 @@ import { useUserStore } from "@/stores/useUserStore";
 //component
 import BackButton from "@/app/components/Button/BackButton";
 import { toast } from "react-toastify";
-import { ACTION_ACTIVITY, TARGET_MODEL } from "@/const/enum";
 
 function ManageForm({ children, rootPath, isUser = false }) {
-  //session
-  const { data: session } = useSession();
   //Theme
   const { bgColorWhite, inputGrayColor } = useTheme();
 
@@ -101,7 +97,7 @@ function ManageForm({ children, rootPath, isUser = false }) {
 
           //   }
           // });
-          toast.error("ลบบัญชีสำเร็จ !");
+          toast.success("ลบบัญชีสำเร็จ !");
           router.push(rootPath);
         } catch (err) {
           console.error("Error fetching API", err);

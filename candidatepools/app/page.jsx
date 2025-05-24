@@ -4,17 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "./ThemeContext";
 import HeaderLogo from "./components/HeaderLogo";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import Loader from "./components/Loader";
 import Footer from "./components/Footer";
 import React from "react";
 
 //stores
 import { useCredentialStore } from "@/stores/useCredentialStore";
-import { useSystemLogStore } from "@/stores/useSystemLogStore";
 
 //hooks
 import useRoleRedirect from "@/hooks/useRoleRedirect";
@@ -22,7 +18,6 @@ import useRoleRedirect from "@/hooks/useRoleRedirect";
 //SweetAlert2
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { ACTION_ACTIVITY, TARGET_MODEL } from "@/const/enum";
 import { toast } from "react-toastify";
 
 const MySwal = withReactContent(Swal);
@@ -32,15 +27,8 @@ export default function Home() {
   const { forgotPassword } = useCredentialStore();
 
   const {
-    setFontSize,
-    setBgColor,
-    setBgColorNavbar,
-    setBgColorWhite,
-    setBgColorMain,
     fontSize,
-    bgColorNavbar,
     bgColor,
-    bgColorWhite,
     bgColorMain,
     bgColorMain2,
     lineBlack,
@@ -53,7 +41,6 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loader, setLoader] = useState(false);
 
   //eye show password
   const [showPassword, setShowPassword] = useState(false);
@@ -61,28 +48,13 @@ export default function Home() {
   //set change login mod user and admin
   const [loginMod, setLoginMod] = useState("user");
 
-  //validate session
-  const { status, data: session } = useSession();
-  const router = useRouter();
-
-  //loader
-  useEffect(() => {
-    setLoader(false);
-  }, []);
-
-  // Manage loader state
-  useEffect(() => {
-    document.body.classList.toggle("no_scroll", loader);
-  }, [loader]);
-
   //submit login
   async function handleSubmit(e) {
     e.preventDefault();
-    setLoader(true);
 
     if (!email || !password) {
       setError("กรุณากรอก อีเมลและรหัสผ่านของคุณ");
-      setLoader(false);
+    
       return;
     }
 
@@ -108,7 +80,7 @@ export default function Home() {
           );
 
           if (!resCheckUser.ok) {
-            setLoader(false);
+          
             throw new Error("Error fetching API to check user.");
           }
 
@@ -124,11 +96,11 @@ export default function Home() {
           setError("เกิดข้อผิดพลาดในการตรวจสอบผู้ใช้");
           console.error("Error fetching API in register: ", err);
         } finally {
-          setLoader(false);
+        
         }
       }
     } catch (err) {
-      setLoader(false);
+    
       toast.error("เกิดข้อผิดพลาดกรุณาลองใหม่ในภายหลัง")
       console.error("Unexpected error:", err);
     }
@@ -341,9 +313,6 @@ export default function Home() {
         </div>
       </div>
       <Footer />
-      <div className={loader ? "" : "hidden"}>
-        <Loader />
-      </div>
     </div>
   );
 }

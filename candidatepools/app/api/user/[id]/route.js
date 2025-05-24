@@ -50,7 +50,7 @@ export async function DELETE(req) {
     }
 
     await SystemLog.create({
-      actorUuid: ROLE.SYSTEM,
+      actorUuid: ROLE.ADMIN,
       action: ACTION_ACTIVITY.DELETE,
       targetModel: TARGET_MODEL.ACCOUNT,
       description: `ลบบัญชี ${user.email} (${user.role})`,
@@ -67,7 +67,7 @@ export async function DELETE(req) {
     );
   } catch (error) {
     await SystemLog.create({
-      actorUuid: ROLE.SYSTEM,
+      actorUuid: ROLE.ADMIN,
       action: ACTION_ACTIVITY.ERROR,
       targetModel: TARGET_MODEL.ACCOUNT,
       description: `ลบบัญชี ${user.email} (${user.role}) ล้มเหลว`,
@@ -235,7 +235,7 @@ export async function PUT(req) {
     );
   } catch (error) {
     await SystemLog.create({
-      actorUuid: id || ROLE.SYSTEM,
+      actorUuid: id || ROLE.ADMIN,
       action: ACTION_ACTIVITY.ERROR,
       targetModel: TARGET_MODEL.PERSONAL,
       description: `เกิดข้อผิดพลาด ${ACTION_ACTIVITY.UPDATE} "${TARGET_MODEL.PERSONAL}" ล้มเหลว`,

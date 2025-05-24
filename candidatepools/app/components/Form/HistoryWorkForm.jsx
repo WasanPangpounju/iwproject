@@ -1860,7 +1860,7 @@ function HistoryWorkForm({
       </div>
       <div>
         {error && (
-          <div className="w-full text-center">
+          <div className="w-full text-center my-5">
             <p className="text-red-500">* {error}</p>
           </div>
         )}

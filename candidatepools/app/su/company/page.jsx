@@ -163,11 +163,6 @@ function CompanyPage() {
     setPage(0);
   };
 
-  //show detail
-  const [idDetail, setIdDetail] = useState("");
-
-  //show addCompany
-  const [addCompany, setAddCompany] = useState(false);
 
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
@@ -252,7 +247,6 @@ function CompanyPage() {
                 className={` ${bgColorWhite} ${
                   inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#74d886]" : ""
                 }  hover:cursor-pointer py-2 px-6  rounded-2xl flex justify-center items-center gap-1 border border-white`}
-                onClick={() => setAddCompany(true)}
               >
                 <Icon path={mdiPlus} size={0.7} />
                 <p>เพิ่มบริษัท</p>

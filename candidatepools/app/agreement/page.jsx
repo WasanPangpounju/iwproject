@@ -1,13 +1,12 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import HeaderLogo from '../components/HeaderLogo'
 import Icon from '@mdi/react';
 import { mdiAccountEdit, mdiCloseCircle } from '@mdi/js';
 import Footer from '../components/Footer';
 import { useRouter } from 'next/navigation';
 import Register from '../register/page';
-import Loader from '../components/Loader';
 import { useSession } from 'next-auth/react';
 import { useTheme } from '../ThemeContext';
 import Link from 'next/link';
@@ -18,34 +17,19 @@ function Agreement() {
 
     //Theme
     const {
-        setFontSize,
-        setBgColor,
-        setBgColorNavbar,
-        setBgColorWhite,
-        setBgColorMain,
-        setBgColorMain2,
         fontSize,
         bgColorNavbar,
         bgColor,
         bgColorWhite,
         bgColorMain,
         bgColorMain2,
-        setLineBlack,
-        lineBlack,
-        setTextBlue,
-        textBlue,
-        setRegisterColor,
-        registerColor,
-        inputEditColor,
         inputGrayColor,
-        setInputGrayColor,
         inputTextColor
     } = useTheme();
 
     const [statusAgreement, setStatusAgreement] = useState(false);
     const [error, setError] = useState('');
     const router = useRouter();
-    const [loader, setLoader] = useState(true);
 
     function handleAgreement() {
         const temp = document.getElementById('checkStatus').checked
@@ -59,56 +43,8 @@ function Agreement() {
     }
 
     //check session
-    const { status, data: session } = useSession();
-    const [dataUser, setDataUser] = useState(null);
-    // Validate session and fetch user data
-    useEffect(() => {
-        if (status === 'loading') {
-            return;
-        }
-        setLoader(false);
-
-        if (session?.user?.id) {
-            getUser(session.user.id);
-        }
-
-    }, [status, session, router]);
-
-
-    // Fetch user data from API
-    async function getUser(id) {
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`, {
-                method: "GET",
-                cache: "no-store"
-            });
-
-            if (!res.ok) {
-                throw new Error("Error getting data from API");
-            }
-
-            const data = await res.json();
-            setDataUser(data.user || {});
-
-        } catch (err) {
-            console.error("Error fetching API", err);
-        } finally {
-            setLoader(false);
-        }
-    }
-
-    //loader
-    useEffect(() => {
-        setLoader(false);
-    }, [])
-    useEffect(() => {
-        if (loader) {
-            document.body.classList.add('no_scroll')
-        } else {
-            document.body.classList.remove('no_scroll')
-        }
-    }, [loader])
-
+    const { data: session } = useSession();
+   
     //logout
     function handleLogout() {
         Swal.fire({
@@ -255,9 +191,6 @@ function Agreement() {
                     <Footer />
                 </div>
             )}
-            <div className={loader ? "" : "hidden"}>
-                <Loader />
-            </div>
         </div>
     )
 }

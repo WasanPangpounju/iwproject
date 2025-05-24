@@ -75,30 +75,15 @@ function Register({ statusAgreement }) {
       if (session?.user) {
         setEmail(session?.user?.email || "");
         setUser(session?.user?.name || session?.user?.user || "");
-        getUser(session?.user?.id);
       }
     },
     [session],
     [router]
   );
 
-  //loader
-  const [loader, setLoader] = useState(true);
-  useEffect(() => {
-    setLoader(false);
-  }, []);
-  useEffect(() => {
-    if (loader) {
-      document.body.classList.add("no_scroll");
-    } else {
-      document.body.classList.remove("no_scroll");
-    }
-  }, [loader]);
-
   //submit register
   async function handleRegister(e) {
     e.preventDefault();
-    setLoader(true);
 
     if (!session) {
       if (
@@ -113,7 +98,7 @@ function Register({ statusAgreement }) {
         !typePerson
       ) {
         setError("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-        setLoader(false);
+       
         return;
       }
 
@@ -123,13 +108,13 @@ function Register({ statusAgreement }) {
         setError(
           "รหัสผ่านต้องมีตัวอักษรภาษาอังกฤษ ตัวเลข และสัญลักษณ์พิเศษอย่างน้อย 1 ตัว และความยาวไม่ต่ำกว่า 8 ตัวอักษร"
         );
-        setLoader(false);
+       
         return;
       }
 
       if (password !== confirmPassword) {
         setError("รหัสผ่านไม่ตรงกัน");
-        setLoader(false);
+       
         return;
       }
     }
@@ -143,13 +128,13 @@ function Register({ statusAgreement }) {
       !email
     ) {
       setError("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-      setLoader(false);
+     
       return;
     }
 
     if (typeDisabled === "0") {
       setError("กรุณาเลือกประเภทความพิการ");
-      setLoader(false);
+     
       return;
     }
 
@@ -161,12 +146,12 @@ function Register({ statusAgreement }) {
 
       if (userExists) {
         setError("username มีการใช้งานแล้ว");
-        setLoader(false);
+       
         return;
       }
       if (emailExists) {
         setError("email นี้มีการใช้งานแล้ว");
-        setLoader(false);
+       
         return;
       }
 
@@ -182,14 +167,14 @@ function Register({ statusAgreement }) {
       );
 
       if (!resCheckID.ok) {
-        setLoader(false);
+       
         throw new Error("Error fetch api checkuser.");
       }
 
       const { idCard: idCardExists } = await resCheckID.json();
       if (idCardExists) {
         setError("เลขบัตรประชาชนนี้มีการใช้งานแล้ว");
-        setLoader(false);
+       
         return;
       }
       setError("");
@@ -224,7 +209,7 @@ function Register({ statusAgreement }) {
           redirect: false,
         });
         if (resSessionEmail.ok) {
-          setLoader(false);
+         
           Swal.fire({
             title: "ลงทะเบียนสำเร็จ",
             icon: "success",
@@ -232,9 +217,9 @@ function Register({ statusAgreement }) {
             confirmButtonColor: "#0d96f8",
           }).then((result) => {});
         } else {
-          setLoader(false);
+         
           if (!res.ok || !resEducation.ok) {
-            setLoader(false);
+           
             Swal.fire({
               title: "เกิดข้อผิดพลาด",
               text: "ลงทะเบียนไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
@@ -248,31 +233,8 @@ function Register({ statusAgreement }) {
         console.log(err);
       }
     } catch (err) {
-      setLoader(false);
+     
       console.log(err);
-    }
-  }
-
-  async function getUser(email) {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${email}`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Error getting data from API");
-      }
-
-      const data = await res.json();
-      setDataUser(data.user || {});
-    } catch (err) {
-      console.error("Error fetching API", err);
-    } finally {
-      setLoader(false);
     }
   }
 
@@ -609,9 +571,6 @@ function Register({ statusAgreement }) {
         </form>
       </div>
       <Footer />
-      <div className={loader ? "" : "hidden"}>
-        <Loader />
-      </div>
     </div>
   );
 }

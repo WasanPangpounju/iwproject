@@ -23,33 +23,15 @@ import {
 } from "@mdi/js";
 
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useTheme } from "../../ThemeContext";
 import { usePathname } from "next/navigation";
 
 function NavbarMain() {
   const {
-    setFontSize,
-    setBgColor,
-    setBgColorNavbar,
-    setBgColorWhite,
-    setBgColorMain,
-    setBgColorMain2,
     fontSize,
-    bgColorNavbar,
     bgColor,
-    bgColorWhite,
-    bgColorMain,
-    setLineBlack,
-    lineBlack,
-    setTextBlue,
-    textBlue,
-    setRegisterColor,
-    registerColor,
     bgColorMain2,
   } = useTheme();
-
-  const router = useRouter();
 
   useEffect(() => {
     // แก้ปัญหาหน้าแรกไม่ scroll
