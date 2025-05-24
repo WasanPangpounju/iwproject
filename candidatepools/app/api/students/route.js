@@ -8,3 +8,4 @@ export async function GET(req) {
     const user = await Users.find({})
     return NextResponse.json({ user });
 }
+

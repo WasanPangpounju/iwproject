@@ -36,6 +36,7 @@ export const ACTION_ACTIVITY = {
   UPDATE: "Update",
   DELETE: "Delete",
   LOGIN: "Login",
+  LOGOUT: "Logout",
   ERROR: "Error",
 };
 
@@ -50,4 +51,9 @@ export const TARGET_MODEL = {
   LOGOUT: "ออกจากระบบ",
   ACCOUNT: "บัญชี",
   COMPANY: "บริษัท",
+};
+
+export const GENDER = {
+  MALE: "ชาย",
+  FEMALE: "หญิง",
 };

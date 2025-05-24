@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { ACTION_ACTIVITY } from "@/const/enum";
 
 const LogSchema = new Schema(
   {

@@ -73,42 +73,19 @@ function EditCompany() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const res = await deleteCompany(id)
+          const res = await deleteCompany(id);
 
           if (!res.ok) {
             throw new Error("Error getting data from API");
           }
 
           await fetchCompanies();
-          let timerInterval;
-          Swal.fire({
-            title: "กำลังลบข้อมูลบริษัท",
-            html: "<b></b> milliseconds.",
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: () => {
-              Swal.showLoading();
-              const timer = Swal.getPopup().querySelector("b");
-              timerInterval = setInterval(() => {
-                timer.textContent = `${Swal.getTimerLeft()}`;
-              }, 100);
-            },
-            willClose: () => {
-              clearInterval(timerInterval);
-            },
-          }).then((result) => {
-            if (result.dismiss === Swal.DismissReason.timer) {
-              console.log("I was closed by the timer");
-              router.push("/su/company");
-            }
-          });
+
+          toast.success("ลบบริษัทสำเร็จ !");
+          router.push("/su/company");
         } catch (err) {
+          toast.error("เกิดข้อผิดพลาด, ไม่สามารถลบบัญชีได้ !");
           console.error("Error fetching API", err);
-          Swal.fire({
-            title: "เกิดข้อผิดพลาด",
-            text: "ไม่สามารถลบบัญชีได้",
-            icon: "error",
-          });
         }
       }
     });

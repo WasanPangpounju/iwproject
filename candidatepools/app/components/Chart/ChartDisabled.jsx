@@ -8,7 +8,7 @@ import { mdiBorderRadius } from '@mdi/js';
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 //manage chart
-const PieChart = ({ d1, d2, d3, d4, d5, d6, d7, allStudents }) => {
+const PieChart = ({ d1, d2, d3, d4, d5, d6, d7 }) => {
     const data = {
         labels:['พิการทางการมองเห็น', 'พิการทางการได้ยินหรือสื่อความหมาย', 'พิการทางการเคลื่อนไหวหรือทางร่างกาย', 'พิการทางจิตใจหรือพฤติดรรม', 'พิการทางสติปัญญา', 'พิการทางการเรียนรู้', 'พิการทางออทิสติก'],
         datasets: [{

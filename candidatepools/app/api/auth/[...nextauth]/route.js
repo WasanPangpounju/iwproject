@@ -134,6 +134,22 @@ const authOption = {
       return session;
     },
   },
+  events: {
+    async signOut({ token }) {
+      if (!token?.email) return;
+      try {
+        await addSystemLog({
+          actorUuid: token?.id || "unknown",
+          action: ACTION_ACTIVITY.LOGOUT,
+          targetModel: TARGET_MODEL.LOGOUT,
+          description: `${token?.email} logout.`,
+          data: { email: token.email },
+        });
+      } catch (err) {
+        console.error("Error logging logout activity:", err);
+      }
+    },
+  },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/",

@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import ButtonGroup from "@/app/components/Form/ButtonGroup/ButtonGroup";
 
 import { useCompanyStore } from "@/stores/useCompanyStore";
+import { toast } from "react-toastify";
 
 function CompanyForm({ id, dataCompany, isEdit = false, path }) {
   //Theme
@@ -214,33 +215,19 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
         : await createCompany(body);
 
       if (!res.ok) {
-        Swal.fire({
-          title: "เกิดข้อผิดพลาด",
-          text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-          icon: "error",
-          confirmButtonText: "ตกลง",
-          confirmButtonColor: "#f27474",
-        }).then(() => {
-          setError("");
-        });
+        toast.error("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง");
+        setError("");
         return;
       }
 
-      Swal.fire({
-        title: "บันทึกข้อมูลสำเร็จ",
-        icon: "success",
-        confirmButtonText: "ตกลง",
-        confirmButtonColor: "#0d96f8",
-      }).then(() => {
-        if (isEdit) {
-          setEditMode(false);
-        }else{
-            router.push(path)
-        }
-        fetchCompanies();
-
-        setError("");
-      });
+      toast.success("บันทึกข้อมูลสำเร็จ");
+      if (isEdit) {
+        setEditMode(false);
+      } else {
+        router.push(path);
+      }
+      fetchCompanies();
+      setError("");
     } catch (err) {
       console.log(err);
     }

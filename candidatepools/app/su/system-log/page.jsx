@@ -4,7 +4,7 @@ import InputLabelForm from "@/app/components/Form/InputLabelForm";
 import SelectLabelForm from "@/app/components/Form/SelectLabelForm";
 import ReportTable from "@/app/components/Table/ReportTable";
 import { useTheme } from "@/app/ThemeContext";
-import { REPORT_TYPE_ALL, ACTION_ACTIVITY } from "@/const/enum";
+import { ACTION_ACTIVITY } from "@/const/enum";
 import React, { useState } from "react";
 
 //store
@@ -41,6 +41,7 @@ function page() {
 
   const actionColorMap = {
     Login: { color: "#1976d2", backgroundColor: "#e3f2fd" },
+    Logout: { color: "#512da8", backgroundColor: "#ede7f6" },
     Create: { color: "#388e3c", backgroundColor: "#e8f5e9" },
     Update: { color: "#f57c00", backgroundColor: "#fff3e0" },
     Delete: { color: "#d32f2f", backgroundColor: "#ffebee" },
@@ -64,14 +65,14 @@ function page() {
         account: item.actorName,
         target: item.targetModel,
         description: item.description,
-        actionStyle
+        actionStyle,
       };
     });
   //column
   const columns = [
     { id: "date", label: "วันที่", minWidth: 170, align: "left" },
     { id: "account", label: "บัญชี", minWidth: 170, align: "left" },
-     {
+    {
       id: "action",
       label: "การกระทำ",
       minWidth: 170,

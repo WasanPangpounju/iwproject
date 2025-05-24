@@ -16,55 +16,13 @@ function ChatComponent({ id, dataUser }) {
 
     //Theme
     const {
-        setFontSize,
-        setBgColor,
-        setBgColorNavbar,
-        setBgColorWhite,
-        setBgColorMain,
-        setBgColorMain2,
-        fontSize,
         bgColorNavbar,
         bgColor,
         bgColorWhite,
-        bgColorMain,
         bgColorMain2,
-        setLineBlack,
-        lineBlack,
-        setTextBlue,
-        textBlue,
-        setRegisterColor,
-        registerColor,
-        inputEditColor,
     } = useTheme();
 
     const [openChat, setOpenChat] = useState(false);
-
-    const testChat = [
-        {
-            role: "user",
-            message: "ขอความช่วยเหลือครับ"
-        },
-        {
-            role: "admin",
-            message: "แจ้งปัญหามาได้เลยครับ"
-        },
-        {
-            role: "admin",
-            message: "asdasdasdlajsdlajsdalsjdalskdjalsdjalsdjalsdjalasjkal"
-        },
-        {
-            role: "user",
-            message: "asdasdasdlajsdlajsdalsjdalskdjalsdjalsdjalsdjalasjkal"
-        },
-        {
-            role: "admin",
-            message: "asdasdasdlajsdlajsdalsjdalskdjalsdjalsdjalsdjalasjkal"
-        },
-        {
-            role: "user",
-            message: "asdasdasdlajsdlajsdalsjdalskdjalsdjalsdjalsdjalasjkal"
-        },
-    ]
 
     //latest chat
     const chatEndRef = useRef(null);
