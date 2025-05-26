@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import useAppStore from "./useAppStore";
 
 export const useChatStore = create((set) => ({
   chats: null,
@@ -9,7 +10,9 @@ export const useChatStore = create((set) => ({
 
   // ดึงแชททั้งหมด
   fetchChats: async () => {
-    set({ loading: true, error: null });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
+
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages`
@@ -19,13 +22,15 @@ export const useChatStore = create((set) => ({
       console.error("Error fetching all chats:", error);
       set({ chats: null, error });
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   // ดึงแชทตาม userId
   fetchChatById: async (userId) => {
-    set({ loading: true, error: null });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
+
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages/${userId}`
@@ -36,7 +41,7 @@ export const useChatStore = create((set) => ({
       console.error("Error fetching chat by ID:", error);
       set({ chatById: null, error });
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
@@ -48,7 +53,9 @@ export const useChatStore = create((set) => ({
     statusRead,
     statusReadAdmin,
   }) => {
-    set({ loading: true, error: null });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
+
     try {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages`,
@@ -65,12 +72,13 @@ export const useChatStore = create((set) => ({
       console.error("Error sending message:", error);
       return { ok: false, error };
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   updateStatusRead: async ({ userId, statusRead, statusReadAdmin }) => {
-    set({ loading: true, error: null });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.put(
@@ -87,7 +95,7 @@ export const useChatStore = create((set) => ({
       set({ error });
       return { ok: false, error };
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 

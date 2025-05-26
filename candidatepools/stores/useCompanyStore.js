@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import useAppStore from "./useAppStore";
 
 export const useCompanyStore = create((set, get) => ({
   companies: null,
@@ -7,7 +8,9 @@ export const useCompanyStore = create((set, get) => ({
   error: null,
 
   fetchCompanies: async () => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
+
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/company`,
@@ -21,11 +24,15 @@ export const useCompanyStore = create((set, get) => ({
       set({ companies: data.companys, loading: false });
     } catch (err) {
       set({ error: err.message, loading: false });
+    } finally {
+      setLoading(false);
     }
   },
 
   fetchCompanyById: async (id) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
+
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/company/${id}`,
@@ -39,11 +46,15 @@ export const useCompanyStore = create((set, get) => ({
       set({ companyById: data.company, loading: false });
     } catch (err) {
       set({ error: err.message, loading: false });
+    } finally {
+      setLoading(false);
     }
   },
 
   createCompany: async (body) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
+
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/company`,
@@ -62,12 +73,14 @@ export const useCompanyStore = create((set, get) => ({
       set({ error: err.message });
       return { ok: false };
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   updateCompany: async (id, body) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
+
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/company/${id}`,
@@ -86,12 +99,14 @@ export const useCompanyStore = create((set, get) => ({
       set({ error: err.message });
       return { ok: false };
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   deleteCompany: async (id) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
+
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/company/${id}`,
@@ -107,7 +122,7 @@ export const useCompanyStore = create((set, get) => ({
       set({ error: err.message });
       return { ok: false };
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 

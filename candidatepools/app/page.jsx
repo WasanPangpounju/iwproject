@@ -20,11 +20,14 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { toast } from "react-toastify";
 
+//store
+import useAppStore from "@/stores/useAppStore";
 const MySwal = withReactContent(Swal);
 
 export default function Home() {
   //store
   const { forgotPassword } = useCredentialStore();
+  const { setLoading } = useAppStore();
 
   const {
     fontSize,
@@ -51,10 +54,11 @@ export default function Home() {
   //submit login
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
 
     if (!email || !password) {
       setError("กรุณากรอก อีเมลและรหัสผ่านของคุณ");
-    
+      setLoading(false);
       return;
     }
 
@@ -80,7 +84,6 @@ export default function Home() {
           );
 
           if (!resCheckUser.ok) {
-          
             throw new Error("Error fetching API to check user.");
           }
 
@@ -91,18 +94,18 @@ export default function Home() {
           } else {
             setError("อีเมลหรือชื่อผู้ใช้ของคุณไม่ถูกต้อง");
           }
-
         } catch (err) {
           setError("เกิดข้อผิดพลาดในการตรวจสอบผู้ใช้");
           console.error("Error fetching API in register: ", err);
         } finally {
-        
+          setLoading(false);
         }
       }
     } catch (err) {
-    
-      toast.error("เกิดข้อผิดพลาดกรุณาลองใหม่ในภายหลัง")
+      toast.error("เกิดข้อผิดพลาดกรุณาลองใหม่ในภายหลัง");
       console.error("Unexpected error:", err);
+    } finally {
+      setLoading(false);
     }
   }
 

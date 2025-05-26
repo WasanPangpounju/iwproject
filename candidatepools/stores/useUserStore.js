@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import useAppStore from "./useAppStore";
 
 export const useUserStore = create((set, get) => ({
   dataUser: null,
@@ -10,8 +11,8 @@ export const useUserStore = create((set, get) => ({
   loading: false,
 
   getUserById: async (id) => {
-    //for user id use some component
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -23,12 +24,13 @@ export const useUserStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching user:", err);
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   deleteUserById: async (id) => {
-    set({ loading: true, error: null });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
     try {
       const res = await axios.delete(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`
@@ -50,7 +52,7 @@ export const useUserStore = create((set, get) => ({
         message: error.response?.data?.error || "Server error",
       };
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
@@ -58,7 +60,8 @@ export const useUserStore = create((set, get) => ({
     const current = useUserStore.getState().dataUser;
     if (current && current.uuid === id) return;
 
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -70,12 +73,13 @@ export const useUserStore = create((set, get) => ({
       console.error("Error fetching user:", err);
       set({ dataUser: null });
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   getUserAll: async () => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -102,12 +106,13 @@ export const useUserStore = create((set, get) => ({
         dataUserAll: [],
       });
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   updateUserById: async (id, updatedData) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
     try {
       const res = await axios.put(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
@@ -127,12 +132,13 @@ export const useUserStore = create((set, get) => ({
       console.error("Error updating user:", err);
       return { ok: false };
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   createUser: async (bodyData) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user`,
@@ -143,7 +149,7 @@ export const useUserStore = create((set, get) => ({
       console.error("Error updating user:", err);
       return { ok: false };
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 

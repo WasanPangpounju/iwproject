@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import useAppStore from "./useAppStore";
 
 export const useSystemLogStore = create((set) => ({
   logs: [],
@@ -8,19 +9,25 @@ export const useSystemLogStore = create((set) => ({
 
   // ✅ ดึง log ทั้งหมด
   getLogs: async () => {
-    set({ loading: true, error: null });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
+
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/systemLog`
       );
-      set({ logs: res.data.data, loading: false });
+      set({ logs: res.data.data });
     } catch (err) {
-      set({ error: err.message, loading: false });
+      set({ error: err.message });
+    } finally {
+      setLoading(false);
     }
   },
 
   // ✅ เพิ่ม log ใหม่
   addLog: async (logData) => {
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
     try {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/systemLog`,
@@ -31,6 +38,8 @@ export const useSystemLogStore = create((set) => ({
       }));
     } catch (err) {
       set({ error: err.message });
+    } finally {
+      setLoading(false);
     }
   },
   clearSystemLogs: () => set({ logs: null }),

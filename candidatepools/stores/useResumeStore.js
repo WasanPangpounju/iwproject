@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import useAppStore from "./useAppStore";
 
 export const useResumeStore = create((set, get) => ({
   resumeFiles: [],
@@ -9,7 +10,8 @@ export const useResumeStore = create((set, get) => ({
   // ดึงรายการไฟล์จาก uuid
   fetchResumeFiles: async (uuid) => {
     try {
-      set({ loading: true, error: null });
+      const setLoading = useAppStore.getState().setLoading;
+      setLoading(true);
 
       const res = await axios.get(`/api/resume/file?uuid=${uuid}`);
       set({ resumeFiles: res.data.files, loading: false });
@@ -19,20 +21,22 @@ export const useResumeStore = create((set, get) => ({
       console.error("Fetch error:", err);
       set({ loading: false, error: "ไม่สามารถโหลดข้อมูลได้" });
       return { ok: false, error: "ไม่สามารถโหลดข้อมูลได้" };
+    } finally {
+      setLoading(false);
     }
   },
 
   // อัปโหลดไฟล์เข้า resume
   uploadResumeFile: async ({ uuid, file }) => {
     try {
-      set({ loading: true, error: null });
+      const setLoading = useAppStore.getState().setLoading;
+      setLoading(true);
 
       const res = await axios.post("/api/resume/file", {
         uuid,
         file,
       });
 
-      console.log("uuid: ", uuid)
       const currentFiles = get().resumeFiles || [];
       set({
         resumeFiles: [...currentFiles, file],
@@ -40,16 +44,17 @@ export const useResumeStore = create((set, get) => ({
 
       return { ok: true, data: res.data };
     } catch (err) {
-      console.error("Upload error:", err);
-      set({ loading: false, error: "อัปโหลดไฟล์ล้มเหลว" });
       return { ok: false, error: "อัปโหลดไฟล์ล้มเหลว" };
+    } finally {
+      setLoading(false);
     }
   },
 
   // เปลี่ยนชื่อไฟล์
   updateFileName: async ({ uuid, fileUrl, newFileName }) => {
     try {
-      set({ loading: true, error: null });
+      const setLoading = useAppStore.getState().setLoading;
+      setLoading(true);
 
       const res = await axios.patch("/api/resume/file", {
         uuid,
@@ -67,26 +72,29 @@ export const useResumeStore = create((set, get) => ({
 
       return { ok: true, data: res.data };
     } catch (err) {
-      console.error("Rename error:", err);
-      set({ loading: false, error: "เปลี่ยนชื่อไฟล์ล้มเหลว" });
       return { ok: false, error: "เปลี่ยนชื่อไฟล์ล้มเหลว" };
+    } finally {
+      setLoading(false);
     }
   },
 
   // ลบไฟล์
   deleteResumeFile: async ({ uuid, fileUrl }) => {
     try {
-      set({ loading: true, error: null });
+      const setLoading = useAppStore.getState().setLoading;
+      setLoading(true);
 
       const res = await axios.delete("/api/resume/file", {
         data: { uuid, fileUrl },
       });
-      
+
       return { ok: true };
     } catch (err) {
       console.error("Delete error:", err);
       set({ loading: false, error: "ลบไฟล์ไม่สำเร็จ" });
       return { ok: false, error: "ลบไฟล์ไม่สำเร็จ" };
+    } finally {
+      setLoading(false);
     }
   },
   clearResumeFiles: () => set({ resumeFiles: null }),
