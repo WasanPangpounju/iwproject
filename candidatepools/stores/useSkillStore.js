@@ -11,9 +11,6 @@ export const useSkillStore = create((set, get) => ({
     const current = useSkillStore.getState().dataSkills;
     if (current && current.uuid === id) return;
 
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
-
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/skill/${id}`
@@ -24,14 +21,11 @@ export const useSkillStore = create((set, get) => ({
       console.error("Error fetching skills:", err);
       set({ dataSkills: null });
     } finally {
-      setLoading(false);
+  
     }
   },
 
   getSkillById: async (id) => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
-
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/skill/${id}`
@@ -42,7 +36,7 @@ export const useSkillStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching skill by ID:", err);
     } finally {
-      setLoading(false);
+    
     }
   },
 

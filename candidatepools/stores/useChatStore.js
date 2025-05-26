@@ -10,8 +10,6 @@ export const useChatStore = create((set) => ({
 
   // ดึงแชททั้งหมด
   fetchChats: async () => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -22,7 +20,6 @@ export const useChatStore = create((set) => ({
       console.error("Error fetching all chats:", error);
       set({ chats: null, error });
     } finally {
-      setLoading(false);
     }
   },
 
@@ -53,8 +50,8 @@ export const useChatStore = create((set) => ({
     statusRead,
     statusReadAdmin,
   }) => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
+    // const setLoading = useAppStore.getState().setLoading;
+    // setLoading(true);
 
     try {
       const res = await axios.post(
@@ -72,13 +69,13 @@ export const useChatStore = create((set) => ({
       console.error("Error sending message:", error);
       return { ok: false, error };
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   },
 
   updateStatusRead: async ({ userId, statusRead, statusReadAdmin }) => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
+    // const setLoading = useAppStore.getState().setLoading;
+    // setLoading(true);
 
     try {
       const res = await axios.put(
@@ -95,7 +92,7 @@ export const useChatStore = create((set) => ({
       set({ error });
       return { ok: false, error };
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   },
 

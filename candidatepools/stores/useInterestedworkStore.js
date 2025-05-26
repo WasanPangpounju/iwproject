@@ -12,9 +12,6 @@ export const useInterestedWorkStore = create((set, get) => ({
     const current = get().dataWorks;
     if (current && current.uuid === id) return;
 
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
-
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/interestedwork/${id}`
@@ -25,13 +22,10 @@ export const useInterestedWorkStore = create((set, get) => ({
       console.error("Error fetching interestedWork:", err);
       set({ dataWorks: null });
     } finally {
-      setLoading(false);
     }
   },
 
   getDataInterestedWorkAll: async () => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -43,14 +37,11 @@ export const useInterestedWorkStore = create((set, get) => ({
       console.error("Error fetching interestedWork:", err);
       set({ dataWorkAll: null });
     } finally {
-      setLoading(false);
     }
   },
 
   getInterestedWorkById: async (id) => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
-
+  
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/interestedwork/${id}`
@@ -61,7 +52,6 @@ export const useInterestedWorkStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching interestedwork by ID:", err);
     } finally {
-      setLoading(false);
     }
   },
 

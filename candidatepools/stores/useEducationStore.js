@@ -12,9 +12,6 @@ export const useEducationStore = create((set, get) => ({
     const current = useEducationStore.getState().dataEducations;
     if (current && current.uuid === id) return;
 
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
-
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/educations/${id}`
@@ -25,13 +22,10 @@ export const useEducationStore = create((set, get) => ({
       console.error("Error fetching educations:", err);
       set({ dataEducations: null });
     } finally {
-      setLoading(false);
     }
   },
 
   getEducationAll: async () => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -43,13 +37,10 @@ export const useEducationStore = create((set, get) => ({
       console.error("Error fetching educations:", err);
       set({ dataEducationAll: null });
     } finally {
-      setLoading(false);
     }
   },
 
   getEducationById: async (id) => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -61,7 +52,6 @@ export const useEducationStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching user:", err);
     } finally {
-      setLoading(false);
     }
   },
 

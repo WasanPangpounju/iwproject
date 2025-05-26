@@ -104,8 +104,6 @@ export default function Home() {
     } catch (err) {
       toast.error("เกิดข้อผิดพลาดกรุณาลองใหม่ในภายหลัง");
       console.error("Unexpected error:", err);
-    } finally {
-      setLoading(false);
     }
   }
 
