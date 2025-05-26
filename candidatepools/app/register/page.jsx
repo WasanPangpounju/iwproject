@@ -22,6 +22,7 @@ import universitys from "@/app/data/universitys.json";
 
 //store
 import { useUserStore } from "@/stores/useUserStore";
+import { toast } from "react-toastify";
 
 function Register({ statusAgreement }) {
   const { checkUserExists } = useUserStore();
@@ -96,7 +97,7 @@ function Register({ statusAgreement }) {
         !typePerson
       ) {
         setError("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-       
+
         return;
       }
 
@@ -106,13 +107,13 @@ function Register({ statusAgreement }) {
         setError(
           "รหัสผ่านต้องมีตัวอักษรภาษาอังกฤษ ตัวเลข และสัญลักษณ์พิเศษอย่างน้อย 1 ตัว และความยาวไม่ต่ำกว่า 8 ตัวอักษร"
         );
-       
+
         return;
       }
 
       if (password !== confirmPassword) {
         setError("รหัสผ่านไม่ตรงกัน");
-       
+
         return;
       }
     }
@@ -126,13 +127,13 @@ function Register({ statusAgreement }) {
       !email
     ) {
       setError("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-     
+
       return;
     }
 
     if (typeDisabled === "0") {
       setError("กรุณาเลือกประเภทความพิการ");
-     
+
       return;
     }
 
@@ -144,12 +145,12 @@ function Register({ statusAgreement }) {
 
       if (userExists) {
         setError("username มีการใช้งานแล้ว");
-       
+
         return;
       }
       if (emailExists) {
         setError("email นี้มีการใช้งานแล้ว");
-       
+
         return;
       }
 
@@ -165,14 +166,13 @@ function Register({ statusAgreement }) {
       );
 
       if (!resCheckID.ok) {
-       
         throw new Error("Error fetch api checkuser.");
       }
 
       const { idCard: idCardExists } = await resCheckID.json();
       if (idCardExists) {
         setError("เลขบัตรประชาชนนี้มีการใช้งานแล้ว");
-       
+
         return;
       }
       setError("");
@@ -207,24 +207,10 @@ function Register({ statusAgreement }) {
           redirect: false,
         });
         if (resSessionEmail.ok) {
-         
-          Swal.fire({
-            title: "ลงทะเบียนสำเร็จ",
-            icon: "success",
-            confirmButtonText: "ตกลง",
-            confirmButtonColor: "#0d96f8",
-          }).then((result) => {});
+          toast.success("ลงทะเบียนสำเร็จ");
         } else {
-         
           if (!res.ok || !resEducation.ok) {
-           
-            Swal.fire({
-              title: "เกิดข้อผิดพลาด",
-              text: "ลงทะเบียนไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-              icon: "error",
-              confirmButtonText: "ตกลง",
-              confirmButtonColor: "#f27474",
-            });
+            toast.error("ลงทะเบียนไม่สำเร็จ กรุณาลองใหม่ในภายหลัง");
           }
         }
       } catch (err) {
@@ -237,22 +223,13 @@ function Register({ statusAgreement }) {
 
   //logout
   function handleLogout() {
-    Swal.fire({
-      title: "ออกจากระบบสำเร็จ",
-      icon: "success",
-      confirmButtonText: "ตกลง",
-      confirmButtonColor: "#0d96f8",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        signOut()
-          .then(() => {
-            router.replace("/");
-          })
-          .catch((err) => {
-            console.log("Sign out error :", err);
-          });
-      }
-    });
+    signOut()
+      .then(() => {
+        router.replace("/");
+      })
+      .catch((err) => {
+        console.log("Sign out error :", err);
+      });
   }
 
   //select university
