@@ -30,7 +30,7 @@ function ChatComponent({ id, dataUser }) {
     useEffect(() => {
         // เลื่อนลงไปที่ข้อความล่าสุดทันทีเมื่อเปิด
         chatEndRef.current?.scrollIntoView({ behavior: "auto" });
-    }, [testChat]); // ใช้ dependency array เป็น [] เพื่อให้ทำงานเฉพาะครั้งแรก
+    }, [openChat]); // ใช้ dependency array เป็น [] เพื่อให้ทำงานเฉพาะครั้งแรก
 
     //sendMessage
     const [input, setInput] = useState("")

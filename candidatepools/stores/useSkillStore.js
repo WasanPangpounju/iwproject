@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import useAppStore from "./useAppStore";
 
 export const useSkillStore = create((set, get) => ({
   dataSkills: null,
@@ -10,7 +11,8 @@ export const useSkillStore = create((set, get) => ({
     const current = useSkillStore.getState().dataSkills;
     if (current && current.uuid === id) return;
 
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -22,12 +24,13 @@ export const useSkillStore = create((set, get) => ({
       console.error("Error fetching skills:", err);
       set({ dataSkills: null });
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   getSkillById: async (id) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -39,12 +42,13 @@ export const useSkillStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching skill by ID:", err);
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   updateSkillById: async (updatedData) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     const id = updatedData.uuid;
 
@@ -66,7 +70,7 @@ export const useSkillStore = create((set, get) => ({
       console.error("Error updating skills:", err);
       return { ok: false, error: err };
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 

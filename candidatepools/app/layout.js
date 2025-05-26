@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 
 //component
 import ClientRedirector from "@/app/components/Redirector/ClientRedirector";
+import Loader from "./components/Loader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({ children }) {
         <body className={`${(bgColorMain, bgColorWhite)}`}>
           <AuthProvider>
             <ClientRedirector />
+            <Loader/>
             <Header />
             <ToastContainer />
             <div>{children}</div>

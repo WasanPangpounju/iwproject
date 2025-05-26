@@ -1,13 +1,14 @@
 import { create } from "zustand";
 import axios from "axios";
-
+import useAppStore from "./useAppStore";
 export const useCredentialStore = create((set) => ({
   isLoading: false,
   error: null,
   message: "",
 
   forgotPassword: async (email) => {
-    set({ isLoading: true, error: null, message: "" });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.post(
@@ -26,16 +27,22 @@ export const useCredentialStore = create((set) => ({
 
       return { ok: false };
     } finally {
-      set({ isLoading: false });
+      setLoading(false);
     }
   },
 
   resetPassword: async ({ token, newPassword }) => {
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
+
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/reset-password`, {
-        token,
-        newPassword,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/reset-password`,
+        {
+          token,
+          newPassword,
+        }
+      );
 
       return { ok: true, data: response.data };
     } catch (error) {
@@ -47,6 +54,8 @@ export const useCredentialStore = create((set) => ({
         ok: false,
         error: error?.response?.data?.message || "เกิดข้อผิดพลาดบางอย่าง",
       };
+    } finally {
+      setLoading(false);
     }
   },
 }));

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import useAppStore from "./useAppStore";
 
 export const useEducationStore = create((set, get) => ({
   dataEducations: null, //my users
@@ -11,7 +12,8 @@ export const useEducationStore = create((set, get) => ({
     const current = useEducationStore.getState().dataEducations;
     if (current && current.uuid === id) return;
 
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -23,12 +25,13 @@ export const useEducationStore = create((set, get) => ({
       console.error("Error fetching educations:", err);
       set({ dataEducations: null });
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
-   getEducationAll: async () => {
-    set({ loading: true });
+  getEducationAll: async () => {
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -40,12 +43,13 @@ export const useEducationStore = create((set, get) => ({
       console.error("Error fetching educations:", err);
       set({ dataEducationAll: null });
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   getEducationById: async (id) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -57,12 +61,13 @@ export const useEducationStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching user:", err);
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   updateEducationById: async (updatedData) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     const id = updatedData.uuid;
     try {
@@ -83,12 +88,13 @@ export const useEducationStore = create((set, get) => ({
       console.error("Error updating education:", err);
       return { ok: false, error: err };
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   updateFileName: async ({ id, oldName, newName }) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.put(
@@ -123,7 +129,7 @@ export const useEducationStore = create((set, get) => ({
       console.error("Error updating file name:", err);
       return { ok: false, error: err };
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 

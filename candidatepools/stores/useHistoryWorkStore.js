@@ -1,17 +1,19 @@
 import { create } from "zustand";
 import axios from "axios";
+import useAppStore from "./useAppStore";
 
 export const useHistoryWorkStore = create((set, get) => ({
-  dataHistoryWork: null, 
-  dataHistoryWorkById: null, 
-  dataHistoryWorkAll: null, 
+  dataHistoryWork: null,
+  dataHistoryWorkById: null,
+  dataHistoryWorkAll: null,
   loading: false,
 
   getDataHistoryWork: async (id) => {
     const current = useHistoryWorkStore.getState().dataHistoryWork;
     if (current && current.uuid === id) return;
 
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -23,12 +25,13 @@ export const useHistoryWorkStore = create((set, get) => ({
       console.error("Error fetching historyWork:", err);
       set({ dataHistoryWork: null });
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   getDataHistoryWorkAll: async () => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -40,12 +43,13 @@ export const useHistoryWorkStore = create((set, get) => ({
       console.error("Error fetching historyWork:", err);
       set({ dataHistoryWorkAll: null });
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   getHistoryWorkById: async (id) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -57,12 +61,13 @@ export const useHistoryWorkStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching historyWork by ID:", err);
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   updateHistoryWorkById: async (updatedData) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     const id = updatedData.uuid;
 
@@ -84,7 +89,7 @@ export const useHistoryWorkStore = create((set, get) => ({
       console.error("Error updating historyWork:", err);
       return { ok: false, error: err };
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 

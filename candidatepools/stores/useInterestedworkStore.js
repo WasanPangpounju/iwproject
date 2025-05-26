@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import useAppStore from "./useAppStore";
 
 export const useInterestedWorkStore = create((set, get) => ({
   dataWorks: null,
@@ -11,7 +12,8 @@ export const useInterestedWorkStore = create((set, get) => ({
     const current = get().dataWorks;
     if (current && current.uuid === id) return;
 
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -23,12 +25,13 @@ export const useInterestedWorkStore = create((set, get) => ({
       console.error("Error fetching interestedWork:", err);
       set({ dataWorks: null });
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   getDataInterestedWorkAll: async () => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -40,12 +43,13 @@ export const useInterestedWorkStore = create((set, get) => ({
       console.error("Error fetching interestedWork:", err);
       set({ dataWorkAll: null });
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   getInterestedWorkById: async (id) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -57,12 +61,13 @@ export const useInterestedWorkStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching interestedwork by ID:", err);
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 
   updateInterestedWorkById: async (updatedData) => {
-    set({ loading: true });
+    const setLoading = useAppStore.getState().setLoading;
+    setLoading(true);
 
     const id = updatedData.uuid;
 
@@ -84,7 +89,7 @@ export const useInterestedWorkStore = create((set, get) => ({
       console.error("Error updating interestedWork:", err);
       return { ok: false, error: err };
     } finally {
-      set({ loading: false });
+      setLoading(false);
     }
   },
 

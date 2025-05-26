@@ -57,8 +57,6 @@ function Register({ statusAgreement }) {
   const [idCard, setIdCard] = useState("");
   const [error, setError] = useState("");
 
-  const [dataUser, setDataUser] = useState(null);
-
   //validate session
   const { status, data: session } = useSession();
   const router = useRouter();
