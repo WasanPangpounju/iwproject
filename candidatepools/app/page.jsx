@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 
 //store
 import useAppStore from "@/stores/useAppStore";
+import TextError from "./components/TextError";
 const MySwal = withReactContent(Swal);
 
 export default function Home() {
@@ -88,12 +89,7 @@ export default function Home() {
           }
 
           const { user } = await resCheckUser.json();
-
-          if (user) {
-            setError("รหัสผ่านของคุณไม่ถูกต้อง");
-          } else {
-            setError("อีเมลหรือชื่อผู้ใช้ของคุณไม่ถูกต้อง");
-          }
+          setError("อีเมลหรือรหัสผ่านของคุณไม่ถูกต้อง");
         } catch (err) {
           setError("เกิดข้อผิดพลาดในการตรวจสอบผู้ใช้");
           console.error("Error fetching API in register: ", err);
@@ -124,7 +120,7 @@ export default function Home() {
       try {
         const res = await forgotPassword(email);
 
-        if (!res.ok) throw new Error(`ส่งอีเมลไม่สำเร็จ ${res.statusText}`);
+        if (!res.ok) throw new Error(`ไม่พบผู้ใช้งานนี้ในระบบ`);
 
         MySwal.fire({
           title: "ส่งลิงก์แล้ว",
@@ -223,7 +219,9 @@ export default function Home() {
             </div>
 
             {error ? (
-              <div className="self-start mt-3 text-red-500">*{error}</div>
+              <div className="self-start mt-3 text-red-500">
+                <TextError text={error} />
+              </div>
             ) : null}
             {loginMod === "user" ? (
               <div className="self-end mt-4">

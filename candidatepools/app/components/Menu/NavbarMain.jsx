@@ -44,7 +44,6 @@ function NavbarMain() {
     signOut({ redirect: false })
       .then(() => {
         console.log("ออกจากระบบสำเร็จ");
-        window?.location?.reload();
       })
       .catch((err) => {
         console.log("Sign out error:", err);
