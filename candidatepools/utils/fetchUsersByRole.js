@@ -5,6 +5,8 @@ import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
 import { useChatStore } from "@/stores/useChatStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useSystemLogStore } from "@/stores/useSystemLogStore";
+import useAppStore from "@/stores/useAppStore";
+
 export const fetchAllUserData = async () => {
   const { getUserAll } = useUserStore.getState();
   const { getEducationAll } = useEducationStore.getState();
@@ -13,16 +15,25 @@ export const fetchAllUserData = async () => {
   const { fetchChats } = useChatStore.getState();
   const { fetchCompanies } = useCompanyStore.getState();
   const { getLogs } = useSystemLogStore.getState();
+  const { setLoading } = useAppStore.getState(); 
 
-  await Promise.all([
-    getUserAll(),
-    getEducationAll(),
-    getDataHistoryWorkAll(),
-    getDataInterestedWorkAll(),
-    fetchChats(),
-    fetchCompanies(),
-    getLogs(),
-  ]);
+  try {
+    setLoading(true); // ✅ เริ่มโหลด
+
+    await Promise.all([
+      getUserAll(),
+      getEducationAll(),
+      getDataHistoryWorkAll(),
+      getDataInterestedWorkAll(),
+      fetchChats(),
+      fetchCompanies(),
+      getLogs(),
+    ]);
+  } catch (err) {
+    console.error("Error fetching all user data:", err);
+  } finally {
+    setLoading(false); 
+  }
 };
 
 export const clearAllUserData = () => {
@@ -33,7 +44,7 @@ export const clearAllUserData = () => {
   const { clearAllChats } = useChatStore.getState();
   const { clearCompany } = useCompanyStore.getState();
   const { clearSystemLogs } = useSystemLogStore.getState();
-  
+
   clearUserAll();
   clearEducationAll();
   clearHistoryWorkAll();

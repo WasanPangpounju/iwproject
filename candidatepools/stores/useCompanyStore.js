@@ -8,9 +8,6 @@ export const useCompanyStore = create((set, get) => ({
   error: null,
 
   fetchCompanies: async () => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
-
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/company`,
@@ -25,7 +22,6 @@ export const useCompanyStore = create((set, get) => ({
     } catch (err) {
       set({ error: err.message, loading: false });
     } finally {
-      setLoading(false);
     }
   },
 

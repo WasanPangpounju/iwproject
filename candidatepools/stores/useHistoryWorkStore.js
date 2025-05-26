@@ -12,9 +12,6 @@ export const useHistoryWorkStore = create((set, get) => ({
     const current = useHistoryWorkStore.getState().dataHistoryWork;
     if (current && current.uuid === id) return;
 
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
-
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/historyWork/${id}`
@@ -25,13 +22,11 @@ export const useHistoryWorkStore = create((set, get) => ({
       console.error("Error fetching historyWork:", err);
       set({ dataHistoryWork: null });
     } finally {
-      setLoading(false);
+
     }
   },
 
   getDataHistoryWorkAll: async () => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -43,13 +38,10 @@ export const useHistoryWorkStore = create((set, get) => ({
       console.error("Error fetching historyWork:", err);
       set({ dataHistoryWorkAll: null });
     } finally {
-      setLoading(false);
     }
   },
 
   getHistoryWorkById: async (id) => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
 
     try {
       const res = await axios.get(
@@ -61,7 +53,6 @@ export const useHistoryWorkStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching historyWork by ID:", err);
     } finally {
-      setLoading(false);
     }
   },
 

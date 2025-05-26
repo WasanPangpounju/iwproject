@@ -9,9 +9,6 @@ export const useSystemLogStore = create((set) => ({
 
   // ✅ ดึง log ทั้งหมด
   getLogs: async () => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
-
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/systemLog`
@@ -20,7 +17,7 @@ export const useSystemLogStore = create((set) => ({
     } catch (err) {
       set({ error: err.message });
     } finally {
-      setLoading(false);
+   
     }
   },
 

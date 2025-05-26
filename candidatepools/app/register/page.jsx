@@ -231,7 +231,6 @@ function Register({ statusAgreement }) {
         console.log(err);
       }
     } catch (err) {
-     
       console.log(err);
     }
   }

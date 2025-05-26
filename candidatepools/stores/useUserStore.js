@@ -11,9 +11,6 @@ export const useUserStore = create((set, get) => ({
   loading: false,
 
   getUserById: async (id) => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
-
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`
@@ -24,7 +21,7 @@ export const useUserStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching user:", err);
     } finally {
-      setLoading(false);
+      
     }
   },
 
@@ -60,9 +57,6 @@ export const useUserStore = create((set, get) => ({
     const current = useUserStore.getState().dataUser;
     if (current && current.uuid === id) return;
 
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
-
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`
@@ -73,14 +67,11 @@ export const useUserStore = create((set, get) => ({
       console.error("Error fetching user:", err);
       set({ dataUser: null });
     } finally {
-      setLoading(false);
+     
     }
   },
 
   getUserAll: async () => {
-    const setLoading = useAppStore.getState().setLoading;
-    setLoading(true);
-
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/students`
@@ -106,7 +97,7 @@ export const useUserStore = create((set, get) => ({
         dataUserAll: [],
       });
     } finally {
-      setLoading(false);
+   
     }
   },
 

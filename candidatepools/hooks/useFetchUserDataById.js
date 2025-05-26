@@ -6,6 +6,7 @@ import { useEducationStore } from "@/stores/useEducationStore";
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
 import { useSkillStore } from "@/stores/useSkillStore";
 import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
+import useAppStore from "@/stores/useAppStore";
 
 // ✅ ฟังก์ชันล้างข้อมูลทั้งหมด
 const clearUserDataById = () => {
@@ -22,23 +23,30 @@ export const useFetchUserDataById = (id) => {
   const { getHistoryWorkById } = useHistoryWorkStore();
   const { getSkillById } = useSkillStore();
   const { getInterestedWorkById } = useInterestedWorkStore();
+  const { setLoading } = useAppStore();
 
   useEffect(() => {
     if (!id) return;
 
     const fetchAll = async () => {
-      await Promise.all([
-        getUserById(id),
-        getEducationById(id),
-        getHistoryWorkById(id),
-        getSkillById(id),
-        getInterestedWorkById(id),
-      ]);
+      setLoading(true);
+      try {
+        await Promise.all([
+          getUserById(id),
+          getEducationById(id),
+          getHistoryWorkById(id),
+          getSkillById(id),
+          getInterestedWorkById(id),
+        ]);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchAll();
 
-    // ✅ ล้างข้อมูลเมื่อออกจากหน้า
     return () => {
       clearUserDataById();
     };
