@@ -25,7 +25,7 @@ import { useUserStore } from "@/stores/useUserStore";
 import { toast } from "react-toastify";
 
 function Register({ statusAgreement }) {
-  const { checkUserExists } = useUserStore();
+  const { checkUserExists, createUser } = useUserStore();
 
   //Theme
   const {
@@ -178,27 +178,20 @@ function Register({ statusAgreement }) {
       setError("");
 
       const id = uuidv4();
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: session?.user?.id || id,
-            user,
-            password,
-            firstName,
-            lastName,
-            typeDisabled,
-            university,
-            email,
-            typePerson,
-            idCard,
-          }),
-        }
-      );
+      const body = {
+        id: session?.user?.id || id,
+        user,
+        password,
+        firstName,
+        lastName,
+        typeDisabled,
+        university,
+        email,
+        typePerson,
+        idCard,
+      };
+
+      const res = await createUser(body);
 
       try {
         const resSessionEmail = await signIn("credentials", {

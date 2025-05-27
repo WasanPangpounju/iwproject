@@ -44,7 +44,7 @@ export async function GET() {
     // สร้าง array ใหม่ที่เพิ่ม actorName (ไม่มี object ซ้อน)
     const result = logs.map((log) => ({
       ...log,
-      actorName: userMap.get(log.actorUuid) || log.actorUuid,
+      actorName: userMap.get(log.actorUuid) || "unknown",
       createdAtFormatted: formatThaiDate(log.createdAt),
     }));
 
