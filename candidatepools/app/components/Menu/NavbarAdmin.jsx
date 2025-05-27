@@ -60,13 +60,7 @@ function NavbarAdmin() {
 
   // Logout
   function handleLogout() {
-    signOut({ redirect: false })
-      .then(() => {
-        console.log("ออกจากระบบสำเร็จ");
-      })
-      .catch((err) => {
-        console.log("Sign out error:", err);
-      });
+    signOut({ callbackUrl: "/" });
   }
 
   //edit menu open

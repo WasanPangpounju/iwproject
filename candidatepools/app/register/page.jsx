@@ -223,13 +223,7 @@ function Register({ statusAgreement }) {
 
   //logout
   function handleLogout() {
-    signOut()
-      .then(() => {
-        router.replace("/");
-      })
-      .catch((err) => {
-        console.log("Sign out error :", err);
-      });
+    signOut({ callbackUrl: "/" });
   }
 
   //select university
