@@ -76,6 +76,10 @@ function NavbarSupervisor() {
       id: 8,
       link: `${mainRoute}/system-log`,
     },
+    {
+      id: 9,
+      link: `${mainRoute}/setting`,
+    },
   ];
 
   const getLink = (id) => {
@@ -267,7 +271,7 @@ function NavbarSupervisor() {
         </p>
       </Link>
       <Link
-        href="#"
+        href={getLink(9)}
         className={`${
           status === "setting"
             ? "bg-[#fee2d9] text-[#ff7201]"

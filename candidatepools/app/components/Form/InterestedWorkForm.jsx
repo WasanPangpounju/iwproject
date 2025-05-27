@@ -13,7 +13,7 @@ import {
 } from "@mdi/js";
 import Swal from "sweetalert2";
 import dataWorkType from "@/assets/dataWorkType";
-import useProvinceData from "@/app/components/province";
+import useProvinceData from "@/utils/province";
 
 //store
 import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";

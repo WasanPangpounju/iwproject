@@ -123,15 +123,14 @@ function EditCompany() {
               </p>
               <p>สถานที่: {companyById?.address || "-"} </p>
             </div>
-            <div className="absolute right-0 top-0">
-              <Icon
-                onClick={() =>
-                  deletedUser(companyById?._id, companyById?.nameCompany)
-                }
-                className={` cursor-pointer text-red-400 mx-2`}
-                path={mdiCloseCircle}
-                size={0.8}
-              />
+            <div
+              className="absolute right-0 top-0 flex gap-1 items-center rounded-xl bg-red-400 py-1 px-2 text-white"
+              onClick={() =>
+                deletedUser(companyById?._id, companyById?.nameCompany)
+              }
+            >
+              <Icon className={``} path={mdiCloseCircle} size={0.8} />
+              <p>ลบ</p>
             </div>
           </div>
         ) : (
