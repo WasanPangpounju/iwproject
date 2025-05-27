@@ -70,29 +70,29 @@ const authOption = {
           // ส่งคืนข้อมูลผู้ใช้หากสำเร็จ
 
           if (userDocument) {
-            await addSystemLog({
-              actorUuid: userDocument?.uuid,
-              action: ACTION_ACTIVITY.LOGIN,
-              targetModel: TARGET_MODEL.LOGIN,
-              description: `${email} ${
-                userDocument?.role === ROLE.SUPERVISOR
-                  ? "(admin)"
-                  : userDocument?.role === ROLE.ADMIN
-                  ? "(super user)"
-                  : `(${ROLE.USER})`
-              } login.`,
-              data: userDocument,
-            });
+            // await addSystemLog({
+            //   actorUuid: userDocument?.uuid,
+            //   action: ACTION_ACTIVITY.LOGIN,
+            //   targetModel: TARGET_MODEL.LOGIN,
+            //   description: `${email} ${
+            //     userDocument?.role === ROLE.SUPERVISOR
+            //       ? "(admin)"
+            //       : userDocument?.role === ROLE.ADMIN
+            //       ? "(super user)"
+            //       : `(${ROLE.USER})`
+            //   } login.`,
+            //   data: userDocument,
+            // });
             return userDocument;
           }
         } catch (err) {
-          await addSystemLog({
-            actorUuid: email,
-            action: ACTION_ACTIVITY.ERROR,
-            targetModel: TARGET_MODEL.LOGIN,
-            description: `${email} Login is Failed`,
-            data: { email },
-          });
+          // await addSystemLog({
+          //   actorUuid: email,
+          //   action: ACTION_ACTIVITY.ERROR,
+          //   targetModel: TARGET_MODEL.LOGIN,
+          //   description: `${email} Login is Failed`,
+          //   data: { email },
+          // });
           console.error("Error during authentication:", err);
           return null;
         }
@@ -109,17 +109,22 @@ const authOption = {
     maxAge: 7 * 24 * 60 * 60,
   },
   callbacks: {
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user }) {
       try {
-        // ตรวจสอบว่ามาจาก LINE หรือไม่
-        const existingUser = await Users.findOne({ email: user?.email });
+        if (user) {
+          const existingUser = await Users.findOne({ email: user.email });
 
-        if (account && account.provider === "line") {
-          token.id = profile?.sub || uuidv4();
-          token.role = existingUser?.role || "user";
-        } else if (user) {
-          token.id = existingUser?.uuid || uuidv4();
-          token.role = existingUser?.role || "user";
+          if (existingUser) {
+            token.id = existingUser.uuid;
+            token.role = existingUser.role || "user";
+            token.email = existingUser.email;
+            token.isRegistered = true; // ✅ ลงทะเบียนแล้ว
+          } else {
+            token.id = null; // ❌ อย่า gen UUID
+            token.role = "user";
+            token.email = user.email;
+            token.isRegistered = false; // ❌ ยังไม่ได้สมัคร
+          }
         }
       } catch (error) {
         console.error("JWT callback error:", error);
@@ -127,12 +132,59 @@ const authOption = {
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.id;
-      session.user.role = token.role;
+      if (token.isRegistered) {
+        session.user.id = token.id;
+        session.user.role = token.role;
+      }
+      session.user.email = token.email;
+      session.user.isRegistered = token.isRegistered;
       return session;
     },
   },
   events: {
+    async signIn({ user, account }) {
+      const email = user?.email;
+      const provider = account?.provider;
+      try {
+        // ค้นหาข้อมูลในฐานข้อมูล (เพื่อดึง uuid & role)
+        const existingUser = await Users.findOne({ email });
+
+        // ถ้าไม่มีในระบบ (OAuth ผู้ใช้ใหม่)
+        if (!existingUser) {
+          console.log(
+            `[SignIn Event] ${email} login via ${provider} but not registered.`
+          );
+          return;
+        }
+
+        await addSystemLog({
+          actorUuid: existingUser?.uuid,
+          action: ACTION_ACTIVITY.LOGIN,
+          targetModel: TARGET_MODEL.LOGIN,
+          description: `${email} from (${provider}) role: ${
+            existingUser?.role === ROLE.SUPERVISOR
+              ? "admin"
+              : existingUser?.role === ROLE.ADMIN
+              ? "super user"
+              : `${ROLE.USER}`
+          }.`,
+          data: {
+            provider,
+            email,
+            role: existingUser?.role,
+          },
+        });
+      } catch (err) {
+        await addSystemLog({
+          actorUuid: email,
+          action: ACTION_ACTIVITY.ERROR,
+          targetModel: TARGET_MODEL.LOGIN,
+          description: `${email} Login is Failed`,
+          data: { email },
+        });
+        console.error("Error logging OAuth login:", err);
+      }
+    },
     async signOut({ token }) {
       const existingUser = await Users.findOne({ email: token?.email });
 
