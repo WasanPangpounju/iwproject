@@ -27,11 +27,7 @@ import { useTheme } from "../../ThemeContext";
 import { usePathname } from "next/navigation";
 
 function NavbarMain() {
-  const {
-    fontSize,
-    bgColor,
-    bgColorMain2,
-  } = useTheme();
+  const { fontSize, bgColor, bgColorMain2 } = useTheme();
 
   useEffect(() => {
     // แก้ปัญหาหน้าแรกไม่ scroll
@@ -41,13 +37,7 @@ function NavbarMain() {
 
   // Logout
   function handleLogout() {
-    signOut({ redirect: false })
-      .then(() => {
-        console.log("ออกจากระบบสำเร็จ");
-      })
-      .catch((err) => {
-        console.log("Sign out error:", err);
-      });
+    signOut({ callbackUrl: "/" });
   }
 
   //edit menu open

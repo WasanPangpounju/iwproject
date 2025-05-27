@@ -29,8 +29,6 @@ const authOption = {
       name: "credentials",
       credentials: {},
       async authorize(credentials) {
-        console.log("Authorizing user:", credentials); // เพิ่ม log ที่นี่
-
         const { email, password, loginMod } = credentials;
 
         try {
@@ -136,7 +134,9 @@ const authOption = {
   },
   events: {
     async signOut({ token }) {
-      if (!token?.email) return;
+      const existingUser = await Users.findOne({ email: token?.email });
+
+      if (!token?.email || !existingUser) return;
       try {
         await addSystemLog({
           actorUuid: token?.id || "unknown",

@@ -21,12 +21,7 @@ import { signOut } from "next-auth/react";
 import { useTheme } from "@/app/ThemeContext";
 
 function NavbarSupervisor() {
-  const {
-    fontSize,
-    bgColor,
-    bgColorMain2,
-  } = useTheme();
-
+  const { fontSize, bgColor, bgColorMain2 } = useTheme();
 
   useEffect(() => {
     // แก้ปัญหาหน้าแรกไม่ scroll
@@ -36,13 +31,7 @@ function NavbarSupervisor() {
 
   // Logout
   function handleLogout() {
-    signOut({ redirect: false })
-      .then(() => {
-        console.log("ออกจากระบบสำเร็จ");
-      })
-      .catch((err) => {
-        console.log("Sign out error:", err);
-      });
+    signOut({ callbackUrl: "/" });
   }
 
   const pathname = usePathname();
