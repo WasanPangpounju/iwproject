@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { mongoDB } from "@/lib/mongodb";
 import SystemLog from "@/models/systemLog";
 import Users from "@/models/user";
+import { ROLE } from "@/const/enum";
 
 // เชื่อมต่อ MongoDB ก่อนทุก request
 await mongoDB();
@@ -29,24 +30,23 @@ export async function GET() {
       userMap.set(user.uuid, fullName);
     });
 
-    function formatThaiDate(dateString) {
-      const date = new Date(dateString);
-      const thDate = new Intl.DateTimeFormat("th-TH", {
-        year: "2-digit",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }).format(date);
-      return `${thDate} น.`; // เพิ่มคำว่า "น." ต่อท้าย
-    }
     // สร้าง array ใหม่ที่เพิ่ม actorName (ไม่มี object ซ้อน)
-    const result = logs.map((log) => ({
-      ...log,
-      actorName: userMap.get(log.actorUuid) || "unknown",
-      createdAtFormatted: formatThaiDate(log.createdAt),
-    }));
+    const result = logs.map((log) => {
+      let actorName;
+
+      if (log.actorUuid === ROLE.ADMIN) {
+        actorName = ROLE.ADMIN;
+      } else if (userMap.has(log.actorUuid)) {
+        actorName = userMap.get(log.actorUuid);
+      } else {
+        actorName = "unknown"; // UUID ไม่มีใน userMap
+      }
+
+      return {
+        ...log,
+        actorName,
+      };
+    });
 
     return NextResponse.json({ success: true, data: result }, { status: 200 });
   } catch (error) {

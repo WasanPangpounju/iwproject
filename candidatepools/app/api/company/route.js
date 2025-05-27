@@ -50,7 +50,7 @@ export async function POST(req) {
     });
 
     await SystemLog.create({
-      actorUuid: "Admin",
+      actorUuid: ROLE.ADMIN,
       action: ACTION_ACTIVITY.CREATE,
       targetModel: TARGET_MODEL.COMPANY,
       description: `${ACTION_ACTIVITY.CREATE} บริษัท "${data.nameCompany}"`,
@@ -63,7 +63,7 @@ export async function POST(req) {
     );
   } catch (error) {
     await SystemLog.create({
-      actorUuid: "Admin",
+      actorUuid: ROLE.ADMIN,
       action: ACTION_ACTIVITY.ERROR,
       targetModel: TARGET_MODEL.COMPANY,
       description: `เกิดข้อผิดพลาด ${ACTION_ACTIVITY.CREATE} บริษัท "${data.nameCompany}" ล้มเหลว`,

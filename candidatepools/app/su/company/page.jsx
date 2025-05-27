@@ -13,7 +13,7 @@ import {
 } from "@mdi/js";
 import dataWorkType from "@/assets/dataWorkType";
 import Link from "next/link";
-import useProvinceData from "@/app/components/province";
+import useProvinceData from "@/utils/province";
 
 //table
 import Paper from "@mui/material/Paper";

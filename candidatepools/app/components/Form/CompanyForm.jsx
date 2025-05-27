@@ -5,7 +5,7 @@ import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
 import { mdiPlus, mdiCloseCircle, mdiArrowDownDropCircle } from "@mdi/js";
 import Swal from "sweetalert2";
-import useProvinceData from "@/app/components/province";
+import useProvinceData from "@/utils/province";
 import dataWorkType from "@/assets/dataWorkType";
 import dates from "@/app/data/date.json";
 

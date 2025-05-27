@@ -136,19 +136,22 @@ function ManageForm({ children, rootPath, isUser = false }) {
                   : "ไม่มีข้อมูล"}{" "}
               </p>
             </div>
-            <div className="absolute right-0 top-0">
+            <div
+              className="absolute right-0 top-0 flex gap-1 items-center rounded-xl bg-red-400 py-1 px-2 text-white"
+              onClick={() =>
+                deletedUser(
+                  dataUserById?.uuid,
+                  dataUserById?.idCard,
+                  dataUserById?.firstName
+                )
+              }
+            >
               <Icon
-                onClick={() =>
-                  deletedUser(
-                    dataUserById?.uuid,
-                    dataUserById?.idCard,
-                    dataUserById?.firstName
-                  )
-                }
-                className={` cursor-pointer text-red-400 mx-2`}
+                className={``}
                 path={mdiCloseCircle}
                 size={0.8}
               />
+              <p>ลบ</p>
             </div>
           </div>
         ) : (

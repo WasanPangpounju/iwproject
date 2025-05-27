@@ -47,6 +47,7 @@ function page() {
     Delete: { color: "#d32f2f", backgroundColor: "#ffebee" },
     Error: { color: "#fff", backgroundColor: "#d32f2f" },
   };
+
   const rowLogs = logs
     ?.filter((item) => {
       if (!targetValue) return true; // ถ้าไม่เลือก filter ประเภทกิจกรรม แสดงหมด
@@ -60,7 +61,7 @@ function page() {
     .map((item) => {
       const actionStyle = actionColorMap[item.action] || {};
       return {
-        date: item.createdAtFormatted,
+        date: item.dateTime || "-",
         action: item.action,
         account: item.actorName,
         target: item.targetModel,

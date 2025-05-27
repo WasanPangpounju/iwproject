@@ -10,7 +10,7 @@ import {
   mdiArrowDownDropCircle,
   mdiCloseThick,
 } from "@mdi/js";
-import useProvinceData from "@/app/components/province";
+import useProvinceData from "@/utils/province";
 
 //table
 import Paper from "@mui/material/Paper";
@@ -148,7 +148,7 @@ function AdminManagement() {
       })
       .filter((row) => {
         if (addressProvince === REPORT_TYPE_ALL.ALL) return true; // แสดงทั้งหมด
-        return row.disabled === addressProvince; // แสดงเฉพาะจังหวัดที่เลือก
+        return row?.disabled === addressProvince; // แสดงเฉพาะจังหวัดที่เลือก
       });
 
     setRows(newRows);

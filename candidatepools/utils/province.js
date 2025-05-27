@@ -17,6 +17,7 @@ const useProvinceData = () => {
       }
 
       const data = await res.json();
+      data.sort((a, b) => a.name_th.localeCompare(b.name_th, 'th', { sensitivity: 'base' }));
       setDataProvince(data);
     } catch (err) {
       console.error("Error fetching province data:", err);
