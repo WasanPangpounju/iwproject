@@ -5,6 +5,8 @@ import { storage } from "@/app/firebaseConfig";
 import { useTheme } from "@/app/ThemeContext";
 import { useFirebaseUpload } from "@/hooks/useFirebaseUpload";
 
+import { toast } from "react-toastify";
+
 function UploadFile({
   editMode,
   uuid,
@@ -12,7 +14,9 @@ function UploadFile({
   setNameFile,
   setSizeFile,
   setTypeFile,
-  isDisabled=false,
+  isDisabled = false,
+  maxSizeKB = 1000,
+  acceptTypes = [], // เช่น ['image/jpeg', 'image/png']
 }) {
   const { bgColorMain, inputEditColor } = useTheme();
 
@@ -60,6 +64,23 @@ function UploadFile({
     }
   }, [downloadURL]);
 
+  const handleFileChange = (file) => {
+    if (!file) return;
+
+    const fileSizeKB = file.size / 1024;
+    if (fileSizeKB > maxSizeKB) {
+      toast.error(`ไฟล์ต้องมีขนาดไม่เกิน ${maxSizeKB} KB`);
+      return;
+    }
+
+    if (acceptTypes.length > 0 && !acceptTypes.includes(file.type)) {
+      toast.error("ประเภทไฟล์ไม่ถูกต้อง");
+      return;
+    }
+
+    uploadFile(file, uuid);
+  };
+
   return (
     <div
       className={`${
@@ -70,7 +91,9 @@ function UploadFile({
         type="file"
         ref={inputRef}
         className="hidden"
-        onChange={(e) => uploadFile(e.target.files[0], uuid)}
+        onChange={(e) => handleFileChange(e.target.files[0])}
+        accept={acceptTypes.join(",")} // ให้ browser filter ด้วย
+        disabled={isDisabled}
       />
 
       <div

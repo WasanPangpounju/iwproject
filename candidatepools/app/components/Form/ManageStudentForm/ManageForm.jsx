@@ -18,6 +18,7 @@ import { useUserStore } from "@/stores/useUserStore";
 //component
 import BackButton from "@/app/components/Button/BackButton";
 import { toast } from "react-toastify";
+import Profile from "../../Profile/Profile";
 
 function ManageForm({ children, rootPath, isUser = false }) {
   //Theme
@@ -114,14 +115,8 @@ function ManageForm({ children, rootPath, isUser = false }) {
         {dataUserById ? (
           <div className="flex gap-10 mt-5 relative">
             <div>
-              <Image
-                priority
-                alt="icon"
-                className="w-28 h-28"
-                src={dataUserById.profile || "/image/main/user.png"}
-                height={1000}
-                width={1000}
-              />
+              <Profile imageSrc={dataUserById.profile}/>
+
             </div>
             <div className="flex flex-col gap-2 justify-center">
               <p>
