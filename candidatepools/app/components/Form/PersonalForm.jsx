@@ -897,7 +897,7 @@ function PersonalForm({
               <InputUniversityAutoComplete
                 value={university}
                 onChange={setUniversity}
-                tailwind={"py-2 w-60"}
+                tailwind={"py-2 w-60 mt-1"}
                 editMode={editMode}
               />
             </div>

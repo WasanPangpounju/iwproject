@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import universitys from "@/app/data/universitys.json";
+
+import useUniversityStore from "@/stores/useUniversityStore";
 
 function InputUniversityAutoComplete({
   value,
@@ -8,13 +9,14 @@ function InputUniversityAutoComplete({
   tailwind,
   editMode = true,
 }) {
+  const { universities } = useUniversityStore();
   const [optionUniversity, setOptionUniversity] = useState([]);
   const [isFocusUni, setIsFocusUni] = useState(false);
 
   function handleUniversity(input) {
     onChange(input); // ส่งค่าที่พิมพ์กลับไปให้ parent
 
-    const filteredOptions = universitys.filter((uni) =>
+    const filteredOptions = universities?.data?.filter((uni) =>
       uni.university.toLowerCase().includes(input.toLowerCase())
     );
     setOptionUniversity(filteredOptions);
@@ -25,8 +27,9 @@ function InputUniversityAutoComplete({
     setOptionUniversity([]);
   }
 
+
   return (
-    <div className={`relative ${tailwind} `}>
+    <div className={`relative `}>
       <input
         disabled={!editMode}
         value={value || ""}
@@ -45,7 +48,7 @@ function InputUniversityAutoComplete({
         placeholder={placeholder}
       />
       {isFocusUni && optionUniversity.length > 0 && (
-        <div className="absolute shadow max-h-24 overflow-scroll hide-scrollbar bg-white z-10">
+        <div className="absolute shadow max-h-24 w-full overflow-scroll hide-scrollbar bg-white z-10">
           {optionUniversity.map((uni, index) => (
             <div
               key={index}

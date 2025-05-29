@@ -18,13 +18,17 @@ import Image from "next/image";
 import Footer from "../components/Footer";
 import { useTheme } from "../ThemeContext";
 import { v4 as uuidv4 } from "uuid";
-import universitys from "@/app/data/universitys.json";
+
+import useUniversityStore from "@/stores/useUniversityStore";
 
 //store
 import { useUserStore } from "@/stores/useUserStore";
 import { toast } from "react-toastify";
 
 function Register({ statusAgreement }) {
+
+  //store
+  const { universities } = useUniversityStore();
   const { checkUserExists, createUser } = useUserStore();
 
   //Theme
@@ -228,7 +232,7 @@ function Register({ statusAgreement }) {
     setUniversity(input);
 
     // ค้นหาคำที่มีความคล้าย
-    const filteredOptions = universitys.filter(
+    const filteredOptions = universities?.data?.filter(
       (uni) => uni.university.toLowerCase().includes(input.toLowerCase()) // เปรียบเทียบแบบ case-insensitive
     );
     setOptionUniversity(filteredOptions);

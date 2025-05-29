@@ -18,7 +18,6 @@ import universitys from "@/app/data/universitys.json";
 
 //firebase
 import {
-  getStorage,
   ref,
   uploadBytesResumable,
   getDownloadURL,
@@ -26,11 +25,9 @@ import {
 import { storage } from "@/app/firebaseConfig";
 
 import { useTheme } from "@/app/ThemeContext";
-import { useSession } from "next-auth/react";
 
 //stores
 import { useEducationStore } from "@/stores/useEducationStore";
-import { useSystemLogStore } from "@/stores/useSystemLogStore";
 
 import TextError from "@/app/components/TextError";
 import SelectLabelForm from "@/app/components/Form/SelectLabelForm";
@@ -40,6 +37,7 @@ import { toast } from "react-toastify";
 import { downloadFileFromFirebase } from "@/utils/firebaseDownload";
 import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
 import { TYPE_PERSON } from "@/const/enum";
+import InputUniversityAutoComplete from "./InputUniversityAutoComplete";
 
 function EducationForm({
   dataEducations,
@@ -87,24 +85,32 @@ function EducationForm({
     });
   };
 
-  const handleUniversity = (e, index) => {
-    const newFaculty = e; // ค่าที่ได้รับจาก input
-    setUniversity((prevFaculties) => {
-      const updatedFaculties = Array.isArray(prevFaculties)
-        ? [...prevFaculties]
-        : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
-      updatedFaculties[index] = newFaculty; // อัปเดตค่าใหม่
-      // ขยับค่าทั้งหมดถ้ามีตำแหน่งที่ว่าง
-      return updatedFaculties
-        .filter((fac) => fac !== "")
-        .concat(
-          Array(
-            updatedFaculties.length -
-              updatedFaculties.filter((fac) => fac !== "").length
-          ).fill("")
-        );
+  const handleUniversity = (value, index) => {
+    setUniversity((prev) => {
+      const updated = [...(Array.isArray(prev) ? prev : [])];
+      updated[index] = value;
+      return updated;
     });
   };
+
+  // const handleUniversity = (e, index) => {
+  //   const newFaculty = e; // ค่าที่ได้รับจาก input
+  //   setUniversity((prevFaculties) => {
+  //     const updatedFaculties = Array.isArray(prevFaculties)
+  //       ? [...prevFaculties]
+  //       : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
+  //     updatedFaculties[index] = newFaculty; // อัปเดตค่าใหม่
+  //     // ขยับค่าทั้งหมดถ้ามีตำแหน่งที่ว่าง
+  //     return updatedFaculties
+  //       .filter((fac) => fac !== "")
+  //       .concat(
+  //         Array(
+  //           updatedFaculties.length -
+  //             updatedFaculties.filter((fac) => fac !== "").length
+  //         ).fill("")
+  //       );
+  //   });
+  // };
 
   const handleBranch = (e, index) => {
     const newBranch = e; // ค่าที่ได้รับจาก input
@@ -824,7 +830,7 @@ function EducationForm({
                 </span>
               </label>
               <div className="relative">
-                <input
+                {/* <input
                   value={
                     Array.isArray(inputUniversity) &&
                     inputUniversity[index] !== undefined
@@ -852,8 +858,24 @@ function EducationForm({
                     !editMode ? `cursor-default ${inputEditColor}` : ""
                   } ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                   placeholder="ระบุสถานศึกษา"
+                /> */}
+                <InputUniversityAutoComplete
+                  value={
+                    Array.isArray(inputUniversity) &&
+                    inputUniversity[index] !== undefined
+                      ? inputUniversity[index]
+                      : Array.isArray(university) &&
+                        university[index] !== undefined
+                      ? university[index]
+                      : ""
+                  }
+                  onChange={(value) => handleUniversity(value, index)}
+                  placeholder="ระบุสถานศึกษา"
+                  editMode={editMode}
+                  tailwind={'py-2 mt-1'}
                 />
-                {isFocusUni === index && optionUniversity?.length > 0 && (
+
+                {/* {isFocusUni === index && optionUniversity?.length > 0 && (
                   <div className="z-10 w-full absolute shadow max-h-24 overflow-scroll hide-scrollbar">
                     {optionUniversity.map((uni, i) => (
                       <div
@@ -868,7 +890,7 @@ function EducationForm({
                       </div>
                     ))}
                   </div>
-                )}
+                )} */}
               </div>
             </div>
             {/* วิทยาเขต */}
