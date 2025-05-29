@@ -165,11 +165,14 @@ const columnAll = [
   { id: "tel", label: "เบอร์โทร", minWidth: 170, align: "center" },
 ];
 
-function ReportTablePage({dataStudents, dataEducationAll, dataWorkAll, dataHistoryWorkAll }) {
-
+function ReportTablePage({
+  dataStudents,
+  dataEducationAll,
+  dataWorkAll,
+  dataHistoryWorkAll,
+}) {
   // Theme
-  const { bgColor, bgColorWhite, bgColorMain2, inputGrayColor } =
-    useTheme();
+  const { bgColor, bgColorWhite, bgColorMain2, inputGrayColor } = useTheme();
 
   const [dataState, setDataState] = useState();
   const [header, setHeader] = useState(REPORT_TYPE_ALL.HEADER_ALL);
@@ -288,8 +291,17 @@ function ReportTablePage({dataStudents, dataEducationAll, dataWorkAll, dataHisto
   if (!dataState) return null;
 
   // set year 10 later
-  const yearToday = new Date().getFullYear();
-  const years = Array.from({ length: 10 }, (_, i) => yearToday - i);
+  const getYearsFrom = () => {
+    const currentYear = new Date().getFullYear();
+    const startYear = 2025;
+    const years = [];
+
+    for (let year = startYear; year <= currentYear; year++) {
+      years.push(year);
+    }
+
+    return years;
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -311,7 +323,7 @@ function ReportTablePage({dataStudents, dataEducationAll, dataWorkAll, dataHisto
     ...Object.values(REPORT_CONTENT_TYPE),
   ];
 
-  const yearData = [REPORT_TYPE_ALL.ALL, ...years];
+  const yearData = [REPORT_TYPE_ALL.ALL, ... getYearsFrom()];
   const disabledData = [REPORT_TYPE_ALL.ALL, ...dataDisabled];
   const workData = [REPORT_TYPE_ALL.ALL, ...dataWorkType];
   const statusData = [REPORT_TYPE_ALL.ALL, ...dataStatus];

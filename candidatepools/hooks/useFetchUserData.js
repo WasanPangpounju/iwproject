@@ -7,6 +7,7 @@ import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
 import { useSkillStore } from "@/stores/useSkillStore";
 import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
 import useAppStore from "@/stores/useAppStore";
+
 export const useFetchUserData = (id) => {
   const { getUser } = useUserStore();
   const { getEducation } = useEducationStore();
