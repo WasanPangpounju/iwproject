@@ -107,7 +107,7 @@ function Dashboard({ dataStudents, dataEducationAll }) {
         <p>กำลังโหลด...</p>
       ) : (
         <>
-          <p className="font-bold">ข้อมูลนักศึกษาทั้งหมด</p>
+          <p className="font-bold">ข้อมูลผู้ใช้งานทั้งหมด</p>
           <div
             className={`mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2`}
           >
