@@ -7,6 +7,7 @@ import { useUserStore } from "@/stores/useUserStore";
 import { useEducationStore } from "@/stores/useEducationStore";
 import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
+import { useSkillStore } from "@/stores/useSkillStore";
 
 import ReportTablePage from "@/app/components/Report/ReportTablePage/ReportTablePage";
 function page() {
@@ -15,6 +16,8 @@ function page() {
   const { dataEducationAll } = useEducationStore();
   const { dataWorkAll } = useInterestedWorkStore();
   const { dataHistoryWorkAll } = useHistoryWorkStore();
+  const { dataSkillAll} = useSkillStore();
+  
   return (
     <div>
       <ReportTablePage
@@ -22,6 +25,7 @@ function page() {
         dataEducationAll={dataEducationAll}
         dataWorkAll={dataWorkAll}
         dataHistoryWorkAll={dataHistoryWorkAll}
+        dataSkillAll={dataSkillAll}
       />
     </div>
   );

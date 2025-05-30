@@ -5,6 +5,7 @@ import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
 import { useChatStore } from "@/stores/useChatStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useSystemLogStore } from "@/stores/useSystemLogStore";
+import { useSkillStore } from "@/stores/useSkillStore";
 import useAppStore from "@/stores/useAppStore";
 
 export const fetchAllUserData = async () => {
@@ -16,6 +17,7 @@ export const fetchAllUserData = async () => {
   const { fetchCompanies } = useCompanyStore.getState();
   const { getLogs } = useSystemLogStore.getState();
   const { setLoading } = useAppStore.getState(); 
+  const { getDataSkillAll } = useSkillStore.getState(); 
 
   try {
     setLoading(true); // ✅ เริ่มโหลด
@@ -28,6 +30,7 @@ export const fetchAllUserData = async () => {
       fetchChats(),
       fetchCompanies(),
       getLogs(),
+      getDataSkillAll(),
     ]);
   } catch (err) {
     console.error("Error fetching all user data:", err);
@@ -44,6 +47,7 @@ export const clearAllUserData = () => {
   const { clearAllChats } = useChatStore.getState();
   const { clearCompany } = useCompanyStore.getState();
   const { clearSystemLogs } = useSystemLogStore.getState();
+  const { clearSkillAll } = useSkillStore.getState();
 
   clearUserAll();
   clearEducationAll();
@@ -52,4 +56,5 @@ export const clearAllUserData = () => {
   clearAllChats();
   clearCompany();
   clearSystemLogs();
+  clearSkillAll();
 };

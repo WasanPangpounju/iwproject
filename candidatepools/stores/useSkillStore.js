@@ -5,6 +5,7 @@ import useAppStore from "./useAppStore";
 export const useSkillStore = create((set, get) => ({
   dataSkills: null,
   dataSkillById: null,
+  dataSkillAll: null,
   loading: false,
 
   getDataSkills: async (id) => {
@@ -21,8 +22,20 @@ export const useSkillStore = create((set, get) => ({
       console.error("Error fetching skills:", err);
       set({ dataSkills: null });
     } finally {
-  
     }
+  },
+
+  getDataSkillAll: async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/skill`
+      );
+
+      set({ dataSkillAll: res.data.data });
+    } catch (err) {
+      console.error("Error fetching educations:", err);
+      set({ dataSkillAll: null });
+    } 
   },
 
   getSkillById: async (id) => {
@@ -36,7 +49,6 @@ export const useSkillStore = create((set, get) => ({
     } catch (err) {
       console.error("Error fetching skill by ID:", err);
     } finally {
-    
     }
   },
 
@@ -70,4 +82,5 @@ export const useSkillStore = create((set, get) => ({
 
   clearSkills: () => set({ dataSkills: null }),
   clearSkillById: () => set({ dataSkillById: null }),
+  clearSkillAll: () => set({ dataSkillAll: null }),
 }));
