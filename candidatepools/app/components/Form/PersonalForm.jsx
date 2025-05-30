@@ -26,6 +26,7 @@ import UploadFile from "./UploadFile";
 import InputUniversityAutoComplete from "./InputUniversityAutoComplete";
 import { ROLE } from "@/const/enum";
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
+import Profile from "../Profile/Profile";
 
 function PersonalForm({
   dataUser,
@@ -896,7 +897,7 @@ function PersonalForm({
               <InputUniversityAutoComplete
                 value={university}
                 onChange={setUniversity}
-                tailwind={"py-2 w-60"}
+                tailwind={"py-2 w-60 mt-1"}
                 editMode={editMode}
               />
             </div>
@@ -1015,21 +1016,25 @@ function PersonalForm({
             <div className="w-full flex">
               <div className="flex flex-col gap-1">
                 <LabelForm label={"อัปโหลดรูปโปรไฟล์"} editMode={editMode} />
-                <div className="w-32 h-32 relative my-1">
-                  <Image
-                    className="w-full h-full cursor-pointer"
-                    src={profile || "/image/main/user.png"}
-                    height={1000}
-                    width={1000}
-                    alt="profile"
-                    priority
-                  />
+                <div className="my-1">
+                  <Profile imageSrc={profile} />
+                  {editMode && (
+                    <div className="mt-2">
+                      <TextError
+                        text={
+                          "รูปภาพสี่เหลี่ยมจัตุรัส (128×128px) ขนาดไม่เกิน 500KB (JPG, JEPG, PNG)"
+                        }
+                      />
+                    </div>
+                  )}
                 </div>
                 <UploadFile
                   isDisabled={false}
                   editMode={editMode}
                   uuid={dataUser?.uuid}
                   setValue={(url) => setProfile(url)} // หรือ setValue(url) ตามที่คุณใช้
+                  maxSizeKB={500}
+                  acceptTypes={["image/jpeg", "image/png" , "image/jpg"]}
                 />
               </div>
             </div>
@@ -1038,33 +1043,6 @@ function PersonalForm({
         <div className="w-full text-center">
           {error ? <TextError text={error} /> : null}
         </div>
-        {/* {editMode ? (
-        <div className="flex gap-10 w-full justify-center mt-5">
-          {!isCreate && (
-            <ButtonBG1
-              text={"ยกเลิก"}
-              mdiIcon={mdiCloseCircle}
-              handleClick={() => setEditMode(false)}
-            />
-          )}
-          <ButtonBG2
-            text={"บันทึก"}
-            mdiIcon={mdiContentSave}
-            btn
-            handleClick={() => {
-              console.log("Submit Form");
-            }}
-          />
-        </div>
-      ) : (
-        <div className="flex justify-center w-full">
-          <ButtonBG1
-            text={"แก้ไขข้อมูล"}
-            mdiIcon={mdiAccountEdit}
-            handleClick={() => setEditMode(true)}
-          />
-        </div>
-      )} */}
         {editMode && <ProgressBarForm fields={fields} />}
         {!readOnly && (
           <ButtonGroup
