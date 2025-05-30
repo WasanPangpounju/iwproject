@@ -56,3 +56,16 @@ export async function POST(req) {
     );
   }
 }
+
+// GET
+export async function GET() {
+  try {
+    const list = await Skills.find(); 
+    return NextResponse.json({ data: list }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "เกิดข้อผิดพลาดในการดึงข้อมูล" },
+      { status: 500 }
+    );
+  }
+}

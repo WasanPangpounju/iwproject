@@ -163,6 +163,137 @@ const columnAll = [
   },
   { id: "role", label: "บทบาท", minWidth: 170, align: "center" },
   { id: "tel", label: "เบอร์โทร", minWidth: 170, align: "center" },
+  { id: "typePerson", label: "ประเภทบุคคล", minWidth: 170, align: "center" },
+
+  // ข้อมูลการศึกษา
+  { id: "educationLevel", label: "ระดับชั้น", minWidth: 170, align: "center" },
+  { id: "yearGraduation", label: "ปีที่จบ", minWidth: 170, align: "center" },
+  { id: "university", label: "มหาวิทยาลัย", minWidth: 170, align: "center" },
+  { id: "campus", label: "วิทยาเขต", minWidth: 170, align: "center" },
+  { id: "faculty", label: "คณะ", minWidth: 170, align: "center" },
+  { id: "branch", label: "สาขา", minWidth: 170, align: "center" },
+  { id: "grade", label: "เกรด", minWidth: 170, align: "center" },
+  { id: "level", label: "ชั้นปี", minWidth: 170, align: "center" },
+
+  // ข้อมูลฝึกงาน
+  {
+    id: "internshipPlace",
+    label: "สถานที่ฝึกงาน",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "internshipPosition",
+    label: "ตำแหน่งฝึกงาน",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "internshipDateStart",
+    label: "เริ่มฝึกงาน (ปี)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "internshipDateStartMonth",
+    label: "เริ่มฝึกงาน (เดือน)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "internshipDateEnd",
+    label: "สิ้นสุดฝึกงาน (ปี)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "internshipDateEndMonth",
+    label: "สิ้นสุดฝึกงาน (เดือน)",
+    minWidth: 170,
+    align: "center",
+  },
+
+  // ข้อมูลโครงงาน
+  { id: "projectName", label: "ชื่อโครงงาน", minWidth: 170, align: "center" },
+  {
+    id: "projectDetail",
+    label: "รายละเอียดโครงงาน",
+    minWidth: 170,
+    align: "center",
+  },
+
+  // ข้อมูลประสบการณ์การทำงาน
+  { id: "workPlace", label: "สถานที่ทำงาน", minWidth: 170, align: "center" },
+  { id: "workPosition", label: "ตำแหน่งงาน", minWidth: 170, align: "center" },
+  {
+    id: "workDateStart",
+    label: "เริ่มงาน (ปี)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "workDateStartMonth",
+    label: "เริ่มงาน (เดือน)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "workDateEnd",
+    label: "สิ้นสุดงาน (ปี)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "workDateEndMonth",
+    label: "สิ้นสุดงาน (เดือน)",
+    minWidth: 170,
+    align: "center",
+  },
+
+  // ความสนใจในการทำงาน
+  { id: "interestedType", label: "งานที่สนใจ", minWidth: 170, align: "center" },
+  {
+    id: "interestedDetail",
+    label: "รายละเอียดงานที่สนใจ",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "interestedProvince1",
+    label: "จังหวัดที่สนใจ (1)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "interestedProvince2",
+    label: "จังหวัดที่สนใจ (2)",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "interestedProvince3",
+    label: "จังหวัดที่สนใจ (3)",
+    minWidth: 170,
+    align: "center",
+  },
+
+  //skills
+  { id: "skillType", label: "ประเภททักษะ", minWidth: 170, align: "center" },
+  { id: "skillName", label: "ชื่อทักษะ", minWidth: 170, align: "center" },
+  {
+    id: "skillDetail",
+    label: "รายละเอียดทักษะ",
+    minWidth: 170,
+    align: "center",
+  },
+
+  { id: "trainName", label: "ชื่อการอบรม", minWidth: 170, align: "center" },
+  {
+    id: "trainDetail",
+    label: "รายละเอียดอบรม",
+    minWidth: 170,
+    align: "center",
+  },
 ];
 
 function ReportTablePage({
@@ -170,10 +301,12 @@ function ReportTablePage({
   dataEducationAll,
   dataWorkAll,
   dataHistoryWorkAll,
+  dataSkillAll,
 }) {
   // Theme
   const { bgColor, bgColorWhite, bgColorMain2, inputGrayColor } = useTheme();
 
+  //state
   const [dataState, setDataState] = useState();
   const [header, setHeader] = useState(REPORT_TYPE_ALL.HEADER_ALL);
   const [content, setContent] = useState(REPORT_TYPE_ALL.SELECT_TYPE);
@@ -187,15 +320,27 @@ function ReportTablePage({
 
   //setDataState
   useEffect(() => {
-    if (dataStudents || dataEducationAll || dataWorkAll || dataHistoryWorkAll) {
+    if (
+      dataStudents ||
+      dataEducationAll ||
+      dataWorkAll ||
+      dataHistoryWorkAll ||
+      dataSkillAll
+    ) {
       setDataState({
         dataStudents,
         dataEducationAll,
         dataWorkAll,
         dataHistoryWorkAll,
+        dataSkillAll,
       });
     }
-  }, [dataStudents, dataEducationAll, dataWorkAll, dataHistoryWorkAll]);
+  }, [
+    dataStudents,
+    dataEducationAll,
+    dataWorkAll,
+    dataHistoryWorkAll || dataSkillAll,
+  ]);
 
   //filter
   useEffect(() => {
@@ -203,7 +348,8 @@ function ReportTablePage({
       !dataStudents ||
       !dataEducationAll ||
       !dataWorkAll ||
-      !dataHistoryWorkAll
+      !dataHistoryWorkAll ||
+      !dataSkillAll
     )
       return;
 
@@ -276,6 +422,7 @@ function ReportTablePage({
       dataEducationAll: filteredEducation,
       dataWorkAll: filteredWork,
       dataHistoryWorkAll: filteredHistory,
+      dataSkillAll: dataSkillAll
     });
   }, [
     universityActive,
@@ -323,7 +470,7 @@ function ReportTablePage({
     ...Object.values(REPORT_CONTENT_TYPE),
   ];
 
-  const yearData = [REPORT_TYPE_ALL.ALL, ... getYearsFrom()];
+  const yearData = [REPORT_TYPE_ALL.ALL, ...getYearsFrom()];
   const disabledData = [REPORT_TYPE_ALL.ALL, ...dataDisabled];
   const workData = [REPORT_TYPE_ALL.ALL, ...dataWorkType];
   const statusData = [REPORT_TYPE_ALL.ALL, ...dataStatus];
@@ -513,11 +660,124 @@ function ReportTablePage({
       contentType === REPORT_TYPE_ALL.ALL ? true : row.status === contentType
     );
 
+  //all data
+  function mergeDataByUUID(
+    dataStudents,
+    dataEducationAll,
+    dataWorkAll,
+    dataHistoryWorkAll,
+    dataSkillAll
+  ) {
+    const mergedMap = new Map();
+
+    // รวมข้อมูลนักเรียนหลัก
+    dataStudents?.forEach((student) => {
+      mergedMap.set(student.uuid, { ...student });
+    });
+
+    // แกะ Education
+    dataEducationAll?.forEach((edu) => {
+      const existing = mergedMap.get(edu.uuid) || {};
+      mergedMap.set(edu.uuid, {
+        ...existing,
+        educationLevel: edu.educationLevel || "",
+        yearGraduation: edu.yearGraduation || "",
+        university: edu.university || "",
+        campus: edu.campus || "",
+        faculty: edu.faculty || "",
+        branch: edu.branch || "",
+        grade: edu.grade || "",
+        level: edu.level || "",
+      });
+    });
+
+    // แกะ Work History (ฝึกงาน/โครงการ)
+    dataHistoryWorkAll?.forEach((work) => {
+      const existing = mergedMap.get(work.uuid) || {};
+
+      const internship = work.internships?.[0] || {};
+      const project = work.projects?.[0] || {};
+      const workExp = work.workExperience?.[0] || {};
+
+      mergedMap.set(work.uuid, {
+        ...existing,
+
+        // Internship
+        internshipPlace: internship.place || "",
+        internshipPosition: internship.position || "",
+        internshipDateStart: internship.dateStart || "",
+        internshipDateStartMonth: internship.dateStartMonth || "",
+        internshipDateEnd: internship.dateEnd || "",
+        internshipDateEndMonth: internship.dateEndMonth || "",
+
+        // Project
+        projectName: project.name || "",
+        projectDetail: project.detail || "",
+
+        // Work Experience
+        workPlace: workExp.place || "",
+        workPosition: workExp.position || "",
+        workDateStart: workExp.dateStart || "",
+        workDateStartMonth: workExp.dateStartMonth || "",
+        workDateEnd: workExp.dateEnd || "",
+        workDateEndMonth: workExp.dateEndMonth || "",
+      });
+    });
+
+    // แกะ WorkExperience ปกติ
+    dataWorkAll?.forEach((work) => {
+      const existing = mergedMap.get(work.uuid) || {};
+      const interested = work.interestedWork?.[0] || {};
+
+      mergedMap.set(work.uuid, {
+        ...existing,
+
+        // ข้อมูลความสนใจในการทำงาน
+        interestedType: interested.type || "",
+        interestedDetail: interested.detail || "",
+        interestedProvince1: interested.province1 || "",
+        interestedProvince2: interested.province2 || "",
+        interestedProvince3: interested.province3 || "",
+      });
+    });
+
+    // 🔧 ทักษะและการฝึกอบรม
+    dataSkillAll?.forEach((skill) => {
+      const existing = mergedMap.get(skill.uuid) || {};
+
+      const skillItem = skill.skills?.[0] || {};
+      const trainItem = skill.trains?.[0] || {};
+
+      mergedMap.set(skill.uuid, {
+        ...existing,
+        skillType: skillItem.type || "",
+        skillName: skillItem.name || "",
+        skillDetail: skillItem.detail || "",
+
+        trainName: trainItem.name || "",
+        trainDetail: trainItem.detail || "",
+      });
+    });
+
+    return Array.from(mergedMap.values());
+  }
+ 
+  // ตัวอย่างการใช้
+  const dataAll = mergeDataByUUID(
+    dataState.dataStudents,
+    dataState.dataEducationAll,
+    dataState.dataWorkAll,
+    dataState.dataHistoryWorkAll,
+    dataState.dataSkillAll
+  );
+
+  
+  // console.log(dataAll.find((item) => item.firstName === "คุโด้"));
   const tableConfig = {
     หัวข้อทั้งหมด: {
       เลือกประเภท: {
         columns: columnAll,
-        rows: dataState.dataStudents,
+        rows: dataAll,
       },
     },
     แยกตามจำนวน: {
