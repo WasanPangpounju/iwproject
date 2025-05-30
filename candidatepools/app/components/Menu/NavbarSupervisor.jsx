@@ -15,6 +15,7 @@ import {
   mdiCog,
   mdiForum,
   mdiClipboardTextClock,
+  mdiSchool,
 } from "@mdi/js";
 
 import { signOut } from "next-auth/react";
@@ -78,12 +79,23 @@ function NavbarSupervisor() {
     },
     {
       id: 9,
-      link: `${mainRoute}/setting`,
+      link: `${mainRoute}/setting/uni`,
     },
   ];
 
   const getLink = (id) => {
     return menuItems.find((item) => item.id === id).link;
+  };
+
+  //resume menu open
+  const [isSettingMenuOpen, setIsResumeMenuOpen] = useState(false);
+
+  const handleSettingMenuOpen = () => {
+    setIsResumeMenuOpen(true); // เปิดเมนู
+  };
+
+  const handleSettingMenuClose = () => {
+    setIsResumeMenuOpen(false); // ปิดเมนู
   };
 
   return (
@@ -270,29 +282,54 @@ function NavbarSupervisor() {
           รายงาน
         </p>
       </Link>
-      <Link
-        href={getLink(9)}
+      <div
+        tabIndex="0" // ทำให้สามารถเข้าถึงได้ด้วยการกด Tab
+        role="menuitem"
         className={`${
           status === "setting"
             ? "bg-[#fee2d9] text-[#ff7201]"
             : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
-        } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`}
-        role="menuitem"
-        aria-label="ตั้งค่าการใช้งาน"
+        } ${fontSize} cursor-pointer relative flex items-center px-7 gap-5 py-3 focus:bg-[#fee2d9] focus:text-[#ff7201]`}
+        aria-haspopup="true"
+        aria-expanded={isSettingMenuOpen} // แสดงสถานะว่าเปิดหรือปิดเมนู
+        onMouseEnter={handleSettingMenuOpen} // เปิดเมนูเมื่อ mouse hover
+        onMouseLeave={handleSettingMenuClose} // ปิดเมนูเมื่อ mouse ออกจากพื้นที่เมนู
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleSettingMenuOpen(); // เปิดเมนูเมื่อกด Enter
+          }
+          if (e.key === "Escape") {
+            handleSettingMenuClose(); // ปิดเมนูเมื่อกด Escape
+          }
+        }}
       >
-        <Icon
-          path={mdiCog}
-          size={1}
-          aria-hidden="true"
-          aria-label="ตั้งค่าการใช้งาน"
-        />
+        <Icon path={mdiCog} size={1} aria-hidden="true" />
         <p
           className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
         >
           ตั้งค่าการใช้งาน
         </p>
-      </Link>
-
+        {isSettingMenuOpen && ( // แสดงเมนูถ้า isEditMenuOpen เป็น true
+          <div
+            className={`${bgColorMain2} ${bgColor}  max-w-fit absolute left-full top-0 z-10`}
+            role="menu"
+          >
+            <Link
+              href={getLink(9)}
+              className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3"
+              role="menuitem"
+              aria-label="ตั้งค่าสถาบันการศึกษา"
+            >
+              <Icon path={mdiSchool} size={1} aria-hidden="true" aria-label="" />
+              <p
+                className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
+              >
+                ตั้งค่าสถาบันการศึกษา
+              </p>
+            </Link>
+          </div>
+        )}
+      </div>
       <div
         onClick={handleLogout}
         className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3"
@@ -315,5 +352,4 @@ function NavbarSupervisor() {
     </nav>
   );
 }
-
 export default NavbarSupervisor;

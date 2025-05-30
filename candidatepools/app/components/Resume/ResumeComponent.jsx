@@ -179,11 +179,13 @@ function ResumeComponent({
                 setValue={(url) => setUrlFile(url)}
                 setSizeFile={(size) => setSizeFiles(size)}
                 setTypeFile={(type) => setTypeFiles(type)}
-                isDisabled={!nameFile || nameFile && urlFile}
+                isDisabled={!nameFile || (nameFile && urlFile)}
+                maxSizeKB={2048} 
+                acceptTypes={["application/pdf"]}
               />
             </div>
             <div className="mt-3">
-              {!nameFile && <TextError text={"กรอกชื่อไฟล์ก่อน upload."} />}
+              {!nameFile && <TextError text={"กรอกชื่อไฟล์ก่อน Upload (PDF) ขนาดไม่เกิน 2 MB."} />}
             </div>
             {urlFile && (
               <div className="mt-5 flex items-center">

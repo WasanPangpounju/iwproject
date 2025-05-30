@@ -20,6 +20,7 @@ import { useUserStore } from "@/stores/useUserStore";
 import { useEducationStore } from "@/stores/useEducationStore";
 import { useSkillStore } from "@/stores/useSkillStore";
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
+import Profile from "../Profile/Profile";
 
 function Resume({
   type,
@@ -299,14 +300,15 @@ function Resume({
               >
                 <div className=" text-white max-w-60">
                   <div className="bg-[#fea661] p-5 flex justify-center">
-                    <Image
+                    <Profile imageSrc={dataUser.profile} />
+                    {/* <Image
                       priority
                       alt="icon"
                       className="w-32 h-32"
                       src={dataUser.profile || "/image/main/user.png"}
                       height={1000}
                       width={1000}
-                    />
+                    /> */}
                   </div>
                   <div className="bg-[#f48e07] h-full">
                     <div className="p-5">
@@ -778,14 +780,15 @@ function Resume({
               >
                 <div className=" text-white w-full flex bg-[#f48e07] ">
                   <div className="bg-[#fea661] p-5 flex justify-center w-fit ">
-                    <Image
+                    <Profile imageSrc={dataUser.profile} />
+                    {/* <Image
                       priority
                       alt="icon"
                       className="w-32 h-32 rounded-full"
                       src={dataUser.profile || "/image/main/user.png"}
                       height={1000}
                       width={1000}
-                    />
+                    /> */}
                   </div>
                   <div className="py-5 px-10 flex flex-col justify-center  ">
                     <div className=" flex gap-3 whitespace-nowrap">
@@ -1023,11 +1026,11 @@ function Resume({
                                         " - "}
                                     </p>
                                     <p>
-                                      คณะ
+                                      คณะ{" "}
                                       {dataEducations.faculty[index] || " - "}
                                     </p>
                                     <p>
-                                      สาขา
+                                      สาขา{" "}
                                       {dataEducations.branch[index] || " - "}
                                     </p>
                                     {dataEducations?.typePerson ===
@@ -1269,14 +1272,15 @@ function Resume({
               >
                 <div className=" w-full flex  ">
                   <div className="py-5 px-10 flex justify-center w-fit ">
-                    <Image
+                    <Profile imageSrc={dataUser.profile} />
+                    {/* <Image
                       priority
                       alt="icon"
                       className="w-32 h-32 rounded-full"
                       src={dataUser.profile || "/image/main/user.png"}
                       height={1000}
                       width={1000}
-                    />
+                    /> */}
                   </div>
                   <div className="py-5 px-8 flex flex-col justify-center  ">
                     <div className=" flex gap-3 whitespace-nowrap">

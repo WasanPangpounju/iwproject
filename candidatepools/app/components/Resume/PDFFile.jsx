@@ -81,7 +81,7 @@ const PDFFile = ({
               >
                 <Image
                   src={dataUser.profile || "/image/main/user.png"}
-                  style={tw("max-w-40 max-h-52")}
+                  style={tw("w-32 h-32")}
                 />
               </View>
               <View style={tw("bg-[#f48e07] h-full")}>
@@ -235,7 +235,7 @@ const PDFFile = ({
               <View style={tw("bg-[#fea661] p-5 flex flex-row justify-center")}>
                 <Image
                   src={dataUser.profile || "/image/main/user.png"}
-                  style={tw(" max-h-48 rounded-full")}
+                  style={tw("w-32 h-32")}
                 />
               </View>
               <View style={tw("flex flex-col gap-5")}>
@@ -297,10 +297,10 @@ const PDFFile = ({
                               {dataEducations.university[index] || "-"}
                             </Text>
                             <Text>
-                              คณะ{dataEducations.faculty[index] || "-"}
+                              คณะ {dataEducations.faculty[index] || "-"}
                             </Text>
                             <Text>
-                              สาขา{dataEducations.branch[index] || "-"}
+                              สาขา {dataEducations.branch[index] || "-"}
                             </Text>
                             {dataEducations?.typePerson === "นักศึกษาพิการ" &&
                             index === 0 ? (
@@ -393,7 +393,7 @@ const PDFFile = ({
               <View style={tw(" pt-5 px-14 flex flex-row justify-center")}>
                 <Image
                   src={dataUser.profile || "/image/main/user.png"}
-                  style={tw(" max-h-40 rounded-full")}
+                  style={tw("w-32 h-32")}
                 />
               </View>
               <View style={tw("flex flex-col gap-5")}>
