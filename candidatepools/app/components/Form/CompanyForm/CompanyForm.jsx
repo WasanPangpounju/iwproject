@@ -14,6 +14,12 @@ import ButtonGroup from "@/app/components/Form/ButtonGroup/ButtonGroup";
 
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { toast } from "react-toastify";
+import SelectLabelForm from "../SelectLabelForm";
+import { dataTypeBusiness } from "@/assets/dataTypeBusiness";
+import InputLabelForm from "../InputLabelForm";
+import SelectForm from "../SelectForm";
+import LabelForm from "../LabelForm";
+import InputForm from "../InputForm";
 
 function CompanyForm({ id, dataCompany, isEdit = false, path }) {
   //Theme
@@ -25,15 +31,36 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
 
   //address data
   const [editMode, setEditMode] = useState(!isEdit);
+  const [nameCompany, setNameCompany] = useState("");
   const [addressIdCard, setAddressIdCard] = useState(null);
   const [addressIdCardProvince, setAddressIdCardProvince] = useState(null);
   const [addressIdCardAmphor, setAddressIdCardAmphor] = useState(null);
   const [addressIdCardTambon, setAddressIdCardTambon] = useState(null);
   const [addressIdCardZipCode, setAddressIdCardZipCode] = useState(null);
+  const [typeBusiness, setTypeBusiness] = useState(null);
+  const [quantityEmployee, setQuantityEmployee] = useState(null);
+  const [quantityDisabled, setQuantityDisabled] = useState(null);
+  const [coordinator, setCoordinator] = useState("");
+  const [telCoordinator, setTelCoordinator] = useState("");
+  const [emailCompany, setEmailCompany] = useState("");
+  const [positionWork, setPositionWork] = useState("");
+  const [workType, setWorkType] = useState("");
+  const [workDetail, setWorkDetail] = useState("");
+  const [dutyWork, setDutyWork] = useState("");
+  const [addressWork, setAddressWork] = useState("");
+  const [dateStart, setDateStart] = useState("");
+  const [dateEnd, setDateEnd] = useState("");
+  const [timeStart, setTimeStart] = useState("");
+  const [timeEnd, setTimeEnd] = useState("");
+  const [budget, setBudget] = useState(null);
+  const [timeStartWork, setTimeStartWork] = useState(null);
+  const [welfare, setWelfare] = useState([]);
+
   const [getAddressIdCard, setGetAddressIdCard] = useState("");
   const [IDaddressIdCardProvince, setIDAddressIdCardProvince] = useState("");
   const [IDaddressIdCardAmphor, setIDAddressIdCardAmphor] = useState("");
   const [IDaddressIdCardTambon, setIDAddressIdCardTambon] = useState("");
+
   const [getAddressIdCardProvince, setGetAddressIdCardProvince] = useState("");
   const [getAddressIdCardAmphor, setGetAddressIdCardAmphor] = useState("");
   const [getAddressIdCardTambon, setGetAddressIdCardTambon] = useState("");
@@ -43,25 +70,21 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
   const [error, setError] = useState("");
 
   //worktype
-  const [workType, setWorkType] = useState("");
-  const [workDetail, setWorkDetail] = useState("");
+
   const [getWorkType, setGetWorkType] = useState("");
   const [getWorkDetail, setGetWorkDetail] = useState("");
 
   //dateWork
-  const [dateStart, setDateStart] = useState("");
-  const [dateEnd, setDateEnd] = useState("");
+
   const [getDateStart, setGetDateStart] = useState("");
   const [getDateEnd, setGetDateEnd] = useState("");
 
   //time
-  const [timeStart, setTimeStart] = useState("");
-  const [timeEnd, setTimeEnd] = useState("");
+
   const [getTimeStart, setGetTimeStart] = useState("");
   const [getTimeEnd, setGetTimeEnd] = useState("");
 
   //welfare
-  const [welfare, setWelfare] = useState([]);
   const [getWelfare, setGetWelfare] = useState([]);
 
   const handleGetArray = (e, index) => {
@@ -123,13 +146,11 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
   };
 
   //Coordinator
-  const [coordinator, setCoordinator] = useState("");
+
   const [getCoordinator, setGetCoordinator] = useState("");
-  const [telCoordinator, setTelCoordinator] = useState("");
   const [getTetCoordinator, setGetTelCoordinator] = useState("");
 
   //name company
-  const [nameCompany, setNameCompany] = useState("");
   const [getNameCompany, setGetNameCompany] = useState("");
 
   //handle array
@@ -183,7 +204,16 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
       !tempTimeEnd ||
       !tempCoordinator ||
       !tempCoordinatorTel ||
-      !mergedWelfare[mergedWelfare?.length - 1]
+      !mergedWelfare[mergedWelfare?.length - 1] ||
+      !typeBusiness ||
+      !dutyWork ||
+      !quantityEmployee ||
+      !quantityDisabled ||
+      !emailCompany ||
+      !positionWork ||
+      !addressWork ||
+      !budget ||
+      !timeStartWork
     ) {
       setError("กรุณกรอกข้อมูลให้ครบทุกช่อง");
 
@@ -208,6 +238,15 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
       welfare: mergedWelfare,
       coordinator: tempCoordinator,
       coordinator_tel: tempCoordinatorTel,
+      typeBusiness: typeBusiness,
+      dutyWork: dutyWork,
+      quantityEmployee: quantityEmployee,
+      quantityDisabled: quantityDisabled,
+      emailCompany: emailCompany,
+      positionWork: positionWork,
+      addressWork: addressWork,
+      budget: budget,
+      timeStartWork: timeStartWork,
     };
     try {
       const res = (await isEdit)
@@ -276,54 +315,46 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
     }
   }, [dataCompany, dataProvince]);
 
+  const CheckAddressSame = (checked) => {
+    if (
+      !addressIdCard ||
+      !addressIdCardZipCode
+    ) {
+      setError("ไม่พบข้อมูลที่ตั้งกรุณาระบุข้อมูลที่ตั้งก่อน")
+      return;
+    }
+    if (checked === true) {
+      setAddressWork(
+        `${addressIdCard} ${addressIdCardProvince} ${addressIdCardAmphor} ${addressIdCardTambon} ${addressIdCardZipCode}`
+      );
+    }
+  };
+
   return (
     <form
       onSubmit={(e) => handleSubmit(e)}
       className={`${bgColorMain2} ${bgColor} rounded-lg flex flex-col gap-7`}
     >
       <div className="flex gap-y-5 gap-x-10 flex-wrap">
-        <div className="flex flex-col gap-1">
-          <label>
-            ชื่อบริษัท{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          <input
-            defaultValue={nameCompany || getNameCompany || ""}
-            type="text"
-            className={`${
-              !editMode ? "editModeTrue" : ""
-            } ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
-            readOnly={!editMode}
-            placeholder="ตัวอย่าง: บริษัทเฟรนลี่เดฟ จำกัด"
-            onChange={(e) => setNameCompany(e.target.value)}
-          />
-        </div>
-
+        <InputLabelForm
+          label="ชื่อบริษัท"
+          isRequire
+          value={nameCompany || getNameCompany || ""}
+          setValue={setNameCompany}
+          editMode={editMode}
+          placeholder={"ตัวอย่าง: บริษัทเฟรนลี่เดฟ จำกัด"}
+          tailwind={"w-96"}
+        />
         <div className="flex gap-x-10 gap-y-5 flex-wrap w-full">
-          <div className="flex col flex-col">
-            <label>
-              ที่ตั้ง{" "}
-              <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                *
-              </span>
-            </label>
-            <input
-              type="text"
-              className={` ${
-                !editMode
-                  ? `${inputEditColor} cursor-default focus:outline-none`
-                  : ""
-              } ${bgColorMain} w-96 mt-1 border border-gray-400 py-2 px-4 rounded-lg`}
-              onChange={(e) => {
-                setAddressIdCard(e.target.value);
-              }}
-              defaultValue={addressIdCard || getAddressIdCard || ""}
-              placeholder={`สถานที่ใกล้สถานีรถไฟฟ้า พหลโยธิน 59`}
-              readOnly={!editMode}
-            />
-          </div>
+          <InputLabelForm
+            label="ที่ตั้ง"
+            isRequire
+            value={addressIdCard || getAddressIdCard || ""}
+            setValue={setAddressIdCard}
+            editMode={editMode}
+            placeholder={"สถานที่ใกล้สถานีรถไฟฟ้า พหลโยธิน 59"}
+            tailwind={"w-96"}
+          />
           <div className=" flex flex-col ">
             <label>
               จังหวัด{" "}
@@ -377,7 +408,9 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
           {IDaddressIdCardProvince ? (
             <div className=" flex flex-col">
               <label>
-                {IDaddressIdCardProvince.toString() === "1" ? "แขวง ":"อำเภอ "}
+                {IDaddressIdCardProvince.toString() === "1"
+                  ? "แขวง "
+                  : "อำเภอ "}
                 <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
                   *
                 </span>
@@ -433,7 +466,7 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
           {IDaddressIdCardProvince && IDaddressIdCardAmphor ? (
             <div className=" flex flex-col">
               <label>
-                {IDaddressIdCardProvince.toString() === "1" ? "เขต ":"ตำบล "}
+                {IDaddressIdCardProvince.toString() === "1" ? "เขต " : "ตำบล "}
                 <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
                   *
                 </span>
@@ -521,163 +554,222 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
             </div>
           ) : null}
         </div>
-        <div className="flex flex-col gap-1">
-          <label>
-            ประเภทงาน{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          <div className="relative col w-fit mt-1">
-            <select
-              className={`${
-                !editMode ? "editModeTrue" : ""
-              } ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-              style={{ appearance: "none" }}
-              onChange={(e) => setWorkType(e.target.value)}
-              value={workType || getWorkType || ""}
-              disabled={!editMode}
-            >
-              <option value="0">-</option>
-              {dataWorkType.map((work, index) => (
-                <option key={index} value={work}>
-                  {work}
-                </option>
-              ))}
-            </select>
-            <Icon
-              className={`cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-              path={mdiArrowDownDropCircle}
-              size={0.8}
-            />
-          </div>
-        </div>
-        <div className="flex flex-col gap-1">
-          <label>
-            รายละเอียดเกี่ยวกับงาน{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          <input
-            type="text"
-            className={`${
-              !editMode ? "editModeTrue" : ""
-            } ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
-            readOnly={!editMode}
-            placeholder="ระบุรายละเอียด"
-            defaultValue={workDetail || getWorkDetail || ""}
-            onChange={(e) => setWorkDetail(e.target.value)}
+        <SelectLabelForm
+          label="ประเภทธุรกิจ"
+          isRequire
+          editMode={editMode}
+          value={typeBusiness}
+          setValue={setTypeBusiness}
+          options={dataTypeBusiness.map((item) => {
+            return {
+              id: item.id,
+              value: item.name,
+            };
+          })}
+          tailwind={"w-56"}
+        />
+        <InputLabelForm
+          label="จำนวนพนักงานทั้งหมด"
+          isRequire
+          value={quantityEmployee}
+          setValue={setQuantityEmployee}
+          editMode={editMode}
+          placeholder={"ใส่เป็นตัวเลขเช่น 100"}
+          tailwind={"w-30"}
+          type={"number"}
+        />
+        <InputLabelForm
+          label="จำนวนคนพิการที่ต้องการ"
+          isRequire
+          value={quantityDisabled}
+          setValue={setQuantityDisabled}
+          editMode={editMode}
+          placeholder={"ใส่เป็นตัวเลขเช่น 100"}
+          tailwind={"w-30"}
+          type={"number"}
+        />
+        <div className="w-full flex flex-wrap gap-y-5 gap-x-10">
+          <InputLabelForm
+            label="ผู้ประสานงาน"
+            isRequire
+            value={coordinator || getCoordinator || ""}
+            setValue={setCoordinator}
+            editMode={editMode}
+            placeholder={"ตัวอย่าง: คุณสมชาย มานะ"}
+            tailwind={"w-96"}
+          />
+
+          <InputLabelForm
+            label="เบอร์ติดต่อ"
+            isRequire
+            value={telCoordinator || getTetCoordinator || ""}
+            setValue={setTelCoordinator}
+            editMode={editMode}
+            placeholder={'ระบุเฉพาะตัวเลข เช่น " 0923235223 "'}
+            tailwind={"w-64"}
+            styles={"tel"}
+          />
+          <InputLabelForm
+            label="อีเมล"
+            isRequire
+            value={emailCompany}
+            setValue={setEmailCompany}
+            editMode={editMode}
+            placeholder={"example@gmail.com"}
+            tailwind={"w-64"}
           />
         </div>
-        <div className="flex gap-x-10 gap-y-5 ">
-          <div className="flex flex-col gap-1">
-            <label>
-              วันที่ทำงาน{" "}
-              <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                *
-              </span>
-            </label>
-            <div className="flex items-center gap-x-3">
-              <div className="relative col w-fit mt-1">
-                <select
-                  className={`${
-                    !editMode ? "editModeTrue" : ""
-                  } ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-2 px-4 rounded-lg`}
-                  style={{ appearance: "none" }}
-                  onChange={(e) => setDateStart(e.target.value)}
+        <div className="flex gap-5 flex-wrap">
+          <InputLabelForm
+            label="ตำแหน่งงาน"
+            isRequire
+            value={positionWork}
+            setValue={setPositionWork}
+            editMode={editMode}
+            placeholder={"ระบุตำแหน่งงาน"}
+            tailwind={"w-60"}
+          />
+          <SelectLabelForm
+            label="ประเภทงาน"
+            isRequire
+            editMode={editMode}
+            value={workType || getWorkType || ""}
+            setValue={setWorkType}
+            options={dataWorkType.map((item) => {
+              return {
+                id: item,
+                value: item,
+              };
+            })}
+            tailwind={"w-96"}
+          />
+          <InputLabelForm
+            label="รายละเอียดเกี่ยวกับงาน"
+            isRequire
+            value={workDetail || getWorkDetail || ""}
+            setValue={setWorkDetail}
+            editMode={editMode}
+            placeholder={"ระบุรายละเอียด"}
+            tailwind={"w-96"}
+          />
+          <InputLabelForm
+            label="หน้าที่/ความรับผิดชอบ/คุณสมบัติ"
+            isRequire
+            value={dutyWork}
+            setValue={setDutyWork}
+            editMode={editMode}
+            placeholder={"ดูแลเว็บไซต์"}
+            tailwind={"w-96"}
+          />
+          <div>
+            <div className="flex gap-x-2 ">
+              <LabelForm label={"สถานที่ทำงาน"} isRequire editMode={editMode} />
+              <div className={`${!editMode ? "hidden" : ""} flex gap-x-1`}>
+                <input
+                  type="checkbox"
+                  className={`cursor-pointer w-3 h-full border`}
+                  onChange={(e) => CheckAddressSame(e.target.checked)}
+                />
+                <p>(ตามที่ตั้งบริษัท)</p>
+              </div>
+            </div>
+            <InputForm
+              editMode={editMode}
+              placeholder={"45/7 อาคาร B ชั้น 5 แขวงจอมพล เขตจตุจักร กรุงเทพ"}
+              tailwind={"mt-1 w-96"}
+              value={addressWork}
+              setValue={setAddressWork}
+            />
+          </div>
+          <div className="flex gap-x-10 gap-y-5 ">
+            <div className="flex flex-col gap-1">
+              <LabelForm isRequire label={"วันที่ทำงาน"} editMode={editMode} />
+              <div className="flex items-center gap-x-3">
+                <SelectForm
+                  editMode={editMode}
+                  options={dates.map((item) => {
+                    return {
+                      id: item,
+                      value: item,
+                    };
+                  })}
+                  tailwind={"w-40"}
                   value={dateStart || getDateStart || ""}
-                  disabled={!editMode}
-                >
-                  <option value="0">-</option>
-                  {dates.map((date, index) => (
-                    <option key={index} value={date}>
-                      {date}
-                    </option>
-                  ))}
-                </select>
-                <Icon
-                  className={`cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                  path={mdiArrowDownDropCircle}
-                  size={0.8}
+                  setValue={setDateStart}
                 />
-              </div>
-              <p>ถึง</p>
-              <div className="relative col w-fit mt-1">
-                <select
-                  className={`${
-                    !editMode ? "editModeTrue" : ""
-                  } ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-2 px-4 rounded-lg`}
-                  style={{ appearance: "none" }}
-                  onChange={(e) => setDateEnd(e.target.value)}
+
+                <p>ถึง</p>
+                <SelectForm
+                  editMode={editMode}
+                  options={dates.map((item) => {
+                    return {
+                      id: item,
+                      value: item,
+                    };
+                  })}
+                  tailwind={"w-40"}
                   value={dateEnd || getDateEnd || ""}
-                  disabled={!editMode}
-                >
-                  <option value="0">-</option>
-                  {dates.map((date, index) => (
-                    <option key={index} value={date}>
-                      {date}
-                    </option>
-                  ))}
-                </select>
-                <Icon
-                  className={`cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                  path={mdiArrowDownDropCircle}
-                  size={0.8}
+                  setValue={setDateEnd}
                 />
               </div>
             </div>
           </div>
-        </div>
-        <div className="flex gap-x-10 gap-y-5 ">
-          <div className="flex flex-col gap-1">
-            <label>
-              เวลาทำงาน{" "}
-              <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                *
-              </span>
-            </label>
-            <div className="flex items-center gap-x-3">
-              <div className="relative col w-fit mt-1">
-                <input
-                  type="time"
-                  className={`${
-                    !editMode ? "editModeTrue" : ""
-                  } ${bgColorMain} mt-1 w-40 border border-gray-400 py-2 px-4 rounded-lg`}
-                  readOnly={!editMode}
-                  placeholder="เวลาเริ่ม"
-                  onChange={(e) => setTimeStart(e.target.value)}
-                  defaultValue={timeStart || getTimeStart || ""}
-                />
-              </div>
-              <p>ถึง</p>
-              <div className="relative col w-fit mt-1">
-                <input
-                  type="time"
-                  className={`${
-                    !editMode ? "editModeTrue" : ""
-                  } ${bgColorMain} mt-1 w-40 border border-gray-400 py-2 px-4 rounded-lg`}
-                  readOnly={!editMode}
-                  placeholder="เวลาเลิก"
-                  onChange={(e) => setTimeEnd(e.target.value)}
-                  defaultValue={timeEnd || getTimeEnd || ""}
-                />
+          <div className="flex gap-x-10 gap-y-5 ">
+            <div className="flex flex-col gap-1">
+              <LabelForm isRequire label={"เวลาทำงาน"} editMode={editMode} />
+              <div className="flex items-center gap-x-3">
+                <div className="relative col w-fit ">
+                  <input
+                    type="time"
+                    className={`${
+                      !editMode ? "editModeTrue" : ""
+                    } ${bgColorMain}  w-40 border border-gray-400 py-2 px-4 rounded-lg`}
+                    readOnly={!editMode}
+                    placeholder="เวลาเริ่ม"
+                    onChange={(e) => setTimeStart(e.target.value)}
+                    defaultValue={timeStart || getTimeStart || ""}
+                  />
+                </div>
+                <p>ถึง</p>
+                <div className="relative col w-fit">
+                  <input
+                    type="time"
+                    className={`${
+                      !editMode ? "editModeTrue" : ""
+                    } ${bgColorMain}  w-40 border border-gray-400 py-2 px-4 rounded-lg`}
+                    readOnly={!editMode}
+                    placeholder="เวลาเลิก"
+                    onChange={(e) => setTimeEnd(e.target.value)}
+                    defaultValue={timeEnd || getTimeEnd || ""}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="w-full">
-          <label>
-            สวัสดิการ{" "}
-            <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-              *
-            </span>
-          </label>
-          {getWelfare?.length >= 0 &&
-            fieldwalfare.map((skill, index) => (
-              <div key={index} className="">
-                <div className="flex-col">
-                  <div className="mt-2 flex gap-5 flex-wrap ">
+          <InputLabelForm
+            label="ค่าตอบแทน"
+            isRequire
+            editMode={editMode}
+            placeholder={"ex:  15,000/เดือน"}
+            tailwind={"w-30"}
+            value={budget}
+            setValue={setBudget}
+          />
+          <InputLabelForm
+            label="ช่วงเวลาที่ต้องการให้เริ่มงาน"
+            isRequire
+            editMode={editMode}
+            placeholder={"ex: 1 มิถุนายน 2568"}
+            tailwind={"w-56"}
+            value={timeStartWork}
+            setValue={setTimeStartWork}
+          />
+          <div className="w-full">
+            <LabelForm label={"สวัสดิการ"} editMode={editMode} isRequire />
+            {getWelfare?.length >= 0 &&
+              fieldwalfare.map((skill, index) => (
+                <div key={index} className="flex-col">
+                  <div className=" flex gap-5 flex-wrap ">
                     <div className="flex gap-5 items-center">
                       <input
                         type="text"
@@ -706,61 +798,24 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
                     </div>
                   </div>
                 </div>
+              ))}
+            {errorFieldWalfare && (
+              <div className="mt-3 text-red-500">*{errorFieldWalfare}</div>
+            )}
+            {fieldwalfare.length < 10 && editMode && (
+              <div className={`mt-2`}>
+                <div
+                  className={` cursor-pointer  rounded-lg bg-[#4a94ff] w-fit`}
+                  onClick={handleAddField}
+                >
+                  <Icon
+                    className={` text-white mx-3`}
+                    path={mdiPlus}
+                    size={1}
+                  />
+                </div>
               </div>
-            ))}
-          {errorFieldWalfare && (
-            <div className="mt-3 text-red-500">*{errorFieldWalfare}</div>
-          )}
-          {fieldwalfare.length < 10 && editMode && (
-            <div className={`mt-2`}>
-              <div
-                className={` cursor-pointer  rounded-lg bg-[#4a94ff] w-fit`}
-                onClick={handleAddField}
-              >
-                <Icon className={` text-white mx-3`} path={mdiPlus} size={1} />
-              </div>
-            </div>
-          )}
-        </div>
-        <div className="w-full flex flex-wrap gap-y-5 gap-x-10">
-          <div className="flex flex-col gap-1">
-            <label>
-              ผู้ประสานงาน{" "}
-              <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                *
-              </span>
-            </label>
-            <input
-              type="text"
-              className={`${
-                !editMode ? "editModeTrue" : ""
-              } ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
-              readOnly={!editMode}
-              placeholder="ตัวอย่าง: คุณสมชาย มานะ"
-              defaultValue={coordinator || getCoordinator || ""}
-              onChange={(e) => setCoordinator(e.target.value)}
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label>
-              เบอร์ติดต่อ{" "}
-              <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                *
-              </span>
-            </label>
-            <input
-              type="tel"
-              inputMode="numeric"
-              pattern="\d{10}"
-              maxLength={10}
-              className={`${
-                !editMode ? "editModeTrue" : ""
-              } ${bgColorMain} mt-1 w-64 border border-gray-400 py-2 px-4 rounded-lg`}
-              readOnly={!editMode}
-              placeholder={`ระบุเฉพาะตัวเลข เช่น " 0923235223 "`}
-              defaultValue={telCoordinator || getTetCoordinator || ""}
-              onChange={(e) => setTelCoordinator(e.target.value)}
-            />
+            )}
           </div>
         </div>
       </div>

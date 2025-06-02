@@ -2,10 +2,10 @@
 
 import React from "react";
 import { useParams } from "next/navigation";
-import CompanyForm from "@/app/components/Form/CompanyForm";
 
 //store
 import { useCompanyStore } from "@/stores/useCompanyStore";
+import CompanyForm1 from "@/app/components/Form/CompanyForm/CompanyForm1";
 
 function EditCompany() {
   //Theme
@@ -18,7 +18,7 @@ function EditCompany() {
  
   return (
     <div>
-      <CompanyForm dataCompany={companyById} id={id} isEdit={true} />
+      <CompanyForm1 dataCompany={companyById} id={id} isEdit={true} />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import Icon from "@mdi/react";
 import { mdiCloseCircle, mdiArrowLeftCircle } from "@mdi/js";
 import Swal from "sweetalert2";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 import { useParams, useRouter } from "next/navigation";
 
