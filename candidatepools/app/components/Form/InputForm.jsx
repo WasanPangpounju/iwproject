@@ -9,6 +9,7 @@ function InputForm({
   disabled,
   styles,
   placeholder,
+  type = "text"
 }) {
   const { bgColorMain, inputEditColor } = useTheme();
 
@@ -35,7 +36,7 @@ function InputForm({
   return (
     <input
       placeholder={placeholder}
-      type="text"
+      type={type}
       className={`${
         !editMode && !disabled
           ? `${inputEditColor} cursor-default focus:outline-none`
