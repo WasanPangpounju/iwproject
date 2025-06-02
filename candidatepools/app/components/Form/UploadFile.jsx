@@ -1,5 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { storage } from "@/app/firebaseConfig";
+
+import ImageCropModal from "@/app/components/Model/ImageCropModal";
 
 //hooks
 import { useTheme } from "@/app/ThemeContext";
@@ -19,6 +21,7 @@ function UploadFile({
   acceptTypes = [], // เช่น ['image/jpeg', 'image/png']
 }) {
   const { bgColorMain, inputEditColor } = useTheme();
+  const [cropImageSrc, setCropImageSrc] = useState(null);
 
   const {
     inputRef,
@@ -78,7 +81,15 @@ function UploadFile({
       return;
     }
 
-    uploadFile(file, uuid);
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setCropImageSrc(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      uploadFile(file, uuid);
+    }
   };
 
   return (
@@ -109,6 +120,16 @@ function UploadFile({
         <div className="mx-3">
           <p>{Math.round(uploadProgress)}%</p>
         </div>
+      )}
+      {cropImageSrc && (
+        <ImageCropModal
+          imageSrc={cropImageSrc}
+          onCropComplete={async (croppedFile) => {
+            setCropImageSrc(null);
+            uploadFile(croppedFile, uuid);
+          }}
+          onClose={() => setCropImageSrc(null)}
+        />
       )}
     </div>
   );
