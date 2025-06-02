@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useTheme } from "@/app/ThemeContext";
-import { useSession } from "next-auth/react";
 import Icon from "@mdi/react";
 import {
   mdiPlus,
@@ -29,13 +28,9 @@ import { useSkillStore } from "@/stores/useSkillStore";
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
 import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
 import { toast } from "react-toastify";
-import { ACTION_ACTIVITY, TARGET_MODEL } from "@/const/enum";
 
 function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
   const [error, setError] = useState("");
-
-  //session
-  const { data: session } = useSession();
 
   //store
   const { updateSkillById } = useSkillStore();
@@ -593,7 +588,7 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
                     <option value="ด้านคอมพิวเตอร์">ด้านคอมพิวเตอร์</option>
                     <option value="ด้านการสื่อสาร">ด้านการสื่อสาร</option>
                     <option value="ด้านการออกแบบ/กราฟฟิก">
-                      ด้านการออกแบบ/กราฟฟิก
+                      ด้านการออกแบบ/กราฟิก
                     </option>
                     <option value="ด้านการบริการ">ด้านการบริการ</option>
                     <option value="ด้านบัญชี/การเงิน">ด้านบัญชี/การเงิน</option>

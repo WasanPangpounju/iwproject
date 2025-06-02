@@ -56,7 +56,7 @@ function Dashboard({ dataStudents, dataEducationAll }) {
     user?.typeDisabled?.some((disa) => disa === "พิการทางการเรียนรู้")
   )?.length;
   const count_d7 = dataStudents?.filter((user) =>
-    user?.typeDisabled?.some((disa) => disa === "พิการทางการออทิสติก")
+    user?.typeDisabled?.some((disa) => disa === "พิการทางออทิสติก")
   )?.length;
 
   //level

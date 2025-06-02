@@ -362,7 +362,7 @@ function Register({ statusAgreement }) {
                 </option>
                 <option value="พิการทางสติปัญญา">พิการทางสติปัญญา</option>
                 <option value="พิการทางการเรียนรู้">พิการทางการเรียนรู้</option>
-                <option value="พิการทางการออทิสติก">พิการทางการออทิสติก</option>
+                <option value="พิการทางออทิสติก">พิการทางออทิสติก</option>
               </select>
               <Icon
                 className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3"
@@ -472,7 +472,7 @@ function Register({ statusAgreement }) {
           <div
             className={`${fontSize} mt-4 w-[35rem] font-bold  flex justify-between items-center'`}
           >
-            <label>Email:</label>
+            <label>อีเมล:</label>
             <input
               onChange={(e) => setEmail(e.target.value)}
               type="email"
@@ -481,7 +481,7 @@ function Register({ statusAgreement }) {
                   ? "bg-gray-200 cursor-default focus:outline-none"
                   : ""
               }`}
-              placeholder="กรอกชื่อผู้ใช้"
+              placeholder="กรอกอีเมล"
               value={email}
               readOnly={!!session?.user?.email}
             />

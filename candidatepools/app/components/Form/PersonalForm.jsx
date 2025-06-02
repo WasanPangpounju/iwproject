@@ -377,7 +377,7 @@ function PersonalForm({
     telEmergency,
     age,
   ];
-
+  
   return (
     <>
       <form
@@ -600,7 +600,7 @@ function PersonalForm({
           />
           {IDaddressIdCardProvince ? (
             <SelectLabelForm
-              label={"อำเภอ"}
+              label={IDaddressIdCardProvince.toString() === "1" ? "แขวง":"อำเภอ"}
               isRequire
               editMode={editMode}
               setValue={(e) => {
@@ -637,7 +637,7 @@ function PersonalForm({
           ) : null}
           {IDaddressIdCardProvince && IDaddressIdCardAmphor ? (
             <SelectLabelForm
-              label={"ตำบล"}
+              label={IDaddressIdCardProvince.toString() === "1" ? "เขต":"ตำบล"}
               isRequire
               editMode={editMode}
               setValue={(e) => {
@@ -749,7 +749,7 @@ function PersonalForm({
           />
           {IDaddressProvince ? (
             <SelectLabelForm
-              label={"อำเภอ"}
+              label={IDaddressProvince.toString() === "1" ? "แขวง":"อำเภอ"}
               isRequire
               editMode={editMode && !statusSameAddress}
               setValue={(e) => {
@@ -788,7 +788,7 @@ function PersonalForm({
           ) : null}
           {IDaddressProvince && IDaddressAmphor ? (
             <SelectLabelForm
-              label={"ตำบล"}
+              label={IDaddressProvince.toString() === "1" ? "เขต":"ตำบล"}
               isRequire
               editMode={editMode && !statusSameAddress}
               setValue={(e) => {

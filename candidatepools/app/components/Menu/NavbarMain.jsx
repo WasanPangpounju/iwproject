@@ -301,7 +301,7 @@ function NavbarMain() {
               href={menuItems.find((item) => item.id === 6).link}
               className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3"
               role="menuitem"
-              aria-label="ข้อมูลส่วนบุคคล"
+              aria-label="เรซูเม่"
             >
               <Icon
                 path={mdiAccount}
@@ -319,7 +319,7 @@ function NavbarMain() {
               href={menuItems.find((item) => item.id === 7).link}
               className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3"
               role="menuitem"
-              aria-label="ประวัติการศึกษา"
+              aria-label="ลักษณะงานที่สนใจ"
             >
               <Icon
                 path={mdiBriefcaseAccount}
@@ -397,13 +397,13 @@ function NavbarMain() {
               href={menuItems.find((item) => item.id === 8).link}
               className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3"
               role="menuitem"
-              aria-label="ข้อมูลส่วนบุคคล"
+              aria-label="ที่มา"
             >
               <Icon
                 path={mdiAlertBox}
                 size={1}
                 aria-hidden="true"
-                aria-label="เรซูเม่"
+                aria-label="ที่มา"
               />
               <p
                 className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
@@ -415,13 +415,13 @@ function NavbarMain() {
               href={menuItems.find((item) => item.id === 9).link}
               className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3"
               role="menuitem"
-              aria-label="ประวัติการศึกษา"
+              aria-label="พันธกิจ"
             >
               <Icon
                 path={mdiBullseyeArrow}
                 size={1}
                 aria-hidden="true"
-                aria-label="ลักษณะงานที่สนใจ"
+                aria-label="พันธกิจ"
               />
               <p
                 className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
@@ -433,13 +433,13 @@ function NavbarMain() {
               href={menuItems.find((item) => item.id === 10).link}
               className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3"
               role="menuitem"
-              aria-label="ประวัติการศึกษา"
+              aria-label="มหาวิทยาลัย"
             >
               <Icon
                 path={mdiTownHall}
                 size={1}
                 aria-hidden="true"
-                aria-label="ลักษณะงานที่สนใจ"
+                aria-label="มหาวิทยาลัย"
               />
               <p
                 className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
@@ -451,13 +451,13 @@ function NavbarMain() {
               href={menuItems.find((item) => item.id === 11).link}
               className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3"
               role="menuitem"
-              aria-label="ประวัติการศึกษา"
+              aria-label="นายจ้าง"
             >
               <Icon
                 path={mdiDomain}
                 size={1}
                 aria-hidden="true"
-                aria-label="ลักษณะงานที่สนใจ"
+                aria-label="นายจ้าง"
               />
               <p
                 className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
@@ -477,13 +477,13 @@ function NavbarMain() {
             : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
         } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`}
         role="menuitem"
-        aria-label="ช่วยเหลือ"
+        aria-label="ติดต่อเรา"
       >
         <Icon
           path={mdiHelpCircle}
           size={1}
           aria-hidden="true"
-          aria-label="ช่วยเหลือ"
+          aria-label="ติดต่อเรา"
         />
         <p
           className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
