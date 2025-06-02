@@ -5,7 +5,7 @@ import useUniversityStore from "@/stores/useUniversityStore";
 function InputUniversityAutoComplete({
   value,
   onChange,
-  placeholder = "กรอกชื่อมหาวิทยาลับ",
+  placeholder = "กรอกชื่อมหาวิทยาลัย",
   tailwind,
   editMode = true,
 }) {

@@ -23,12 +23,20 @@ import EducationForm from "@/app/components/Form/EducationForm";
 import HistoryWorkForm from "@/app/components/Form/HistoryWorkForm";
 import SkillForm from "@/app/components/Form/SkillForm";
 import SumaryData from "@/app/components/Form/SumaryData";
+import ButtonBG2 from "@/app/components/Button/ButtonBG2";
+
+import {
+  mdiArrowBottomLeft,
+  mdiArrowLeftCircle,
+  mdiArrowRightCircle,
+} from "@mdi/js";
+import ButtonBG1 from "@/app/components/Button/ButtonBG1";
 
 const steps = [
   "ข้อมูลส่วนบุลคล",
   "ประวัติการศึกษา",
   "ประวัติการทำงาน/ฝึกงาน",
-  "ความสามาร/การอบรม",
+  "ความสามารถ/การอบรม",
 ];
 
 const stepStyle = {
@@ -203,16 +211,23 @@ export default function StepperForm() {
 
         {/* ปุ่มควบคุม */}
         <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-          <Button
+          {activeStep !== 0 && (
+            <ButtonBG1
+              handleClick={handleBack}
+              text={"ย้อนกลับ"}
+              mdiIcon={mdiArrowLeftCircle}
+            />
+          )}
+          {/* <Button
             color="inherit"
             disabled={activeStep === 0}
             onClick={handleBack}
             sx={{ mr: 1 }}
           >
             ย้อนกลับ
-          </Button>
+          </Button> */}
           <Box sx={{ flex: "1 1 auto" }} />
-          <Button onClick={handleNext} sx={{ mr: 1 }}>
+          {/* <Button onClick={handleNext} sx={{ mr: 1 }}>
             <p className="text-[#F97201]">
               {activeStep + 1 === steps.length && allStepsCompleted()
                 ? "สรุปข้อมูล"
@@ -220,7 +235,21 @@ export default function StepperForm() {
                 ? ""
                 : "ต่อไป"}
             </p>
-          </Button>
+          </Button> */}
+          {activeStep <= steps.length-1 && (
+            <ButtonBG1
+              handleClick={handleNext}
+              text={
+                activeStep + 1 === steps.length && allStepsCompleted()
+                  ? "สรุปข้อมูล"
+                  : activeStep + 1 > steps.length
+                  ? ""
+                  : "ต่อไป"
+              }
+              mdiIcon={mdiArrowRightCircle}
+              tailwind={"flex-row-reverse"}
+            />
+          )}
         </Box>
       </Box>
     </div>
