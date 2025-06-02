@@ -132,7 +132,7 @@ function ManageForm({ children, rootPath, isUser = false }) {
               </p>
             </div>
             <div
-              className="absolute right-0 top-0 flex gap-1 items-center rounded-xl bg-red-400 py-1 px-2 text-white"
+              className="cursor-pointer absolute right-0 top-0 flex gap-1 items-center rounded-xl bg-red-400 py-1 px-2 text-white"
               onClick={() =>
                 deletedUser(
                   dataUserById?.uuid,

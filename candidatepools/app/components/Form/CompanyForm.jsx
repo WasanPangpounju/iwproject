@@ -377,7 +377,7 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
           {IDaddressIdCardProvince ? (
             <div className=" flex flex-col">
               <label>
-                อำเภอ{" "}
+                {IDaddressIdCardProvince.toString() === "1" ? "แขวง ":"อำเภอ "}
                 <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
                   *
                 </span>
@@ -433,7 +433,7 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
           {IDaddressIdCardProvince && IDaddressIdCardAmphor ? (
             <div className=" flex flex-col">
               <label>
-                ตำบล{" "}
+                {IDaddressIdCardProvince.toString() === "1" ? "เขต ":"ตำบล "}
                 <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
                   *
                 </span>
