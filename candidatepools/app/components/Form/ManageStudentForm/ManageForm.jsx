@@ -76,28 +76,6 @@ function ManageForm({ children, rootPath, isUser = false }) {
             throw new Error("Error getting data from API");
           }
 
-          // let timerInterval;
-          // Swal.fire({
-          //   title: "กำลังลบข้อมูลบัญชี",
-          //   html: "<b></b> milliseconds.",
-          //   timer: 2000,
-          //   timerProgressBar: true,
-          //   didOpen: () => {
-          //     Swal.showLoading();
-          //     const timer = Swal.getPopup().querySelector("b");
-          //     timerInterval = setInterval(() => {
-          //       timer.textContent = `${Swal.getTimerLeft()}`;
-          //     }, 100);
-          //   },
-          //   willClose: () => {
-          //     clearInterval(timerInterval);
-          //   },
-          // }).then((result) => {
-          //   if (result.dismiss === Swal.DismissReason.timer) {
-          //     console.log("I was closed by the timer");
-
-          //   }
-          // });
           toast.success("ลบบัญชีสำเร็จ !");
           router.push(rootPath);
         } catch (err) {
@@ -130,9 +108,12 @@ function ManageForm({ children, rootPath, isUser = false }) {
                   ? `${yearToday - dataUserById?.yearBirthday} ปี`
                   : "ไม่มีข้อมูล"}{" "}
               </p>
+              {isUser && (
+                <p>สถาบัน: {dataUserById?.university}</p>
+              )}
             </div>
             <div
-              className="absolute right-0 top-0 flex gap-1 items-center rounded-xl bg-red-400 py-1 px-2 text-white"
+              className="cursor-pointer absolute right-0 top-0 flex gap-1 items-center rounded-xl bg-red-400 py-1 px-2 text-white"
               onClick={() =>
                 deletedUser(
                   dataUserById?.uuid,

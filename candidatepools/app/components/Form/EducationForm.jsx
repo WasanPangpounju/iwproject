@@ -894,7 +894,7 @@ function EducationForm({
               </div>
             </div>
             {/* วิทยาเขต */}
-            {index === 0 && (
+          
               <div className="flex col flex-col">
                 <label>วิทยาเขต</label>
                 <input
@@ -912,7 +912,7 @@ function EducationForm({
                   placeholder="ระบุวิทยาเขตการศึกษา"
                 />
               </div>
-            )}
+      
             {/* คณะ */}
             <div className="flex col flex-col">
               <label>

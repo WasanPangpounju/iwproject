@@ -12,6 +12,7 @@ import {
 import PieChart from "@/app/components/Chart/ChartDisabled";
 
 import { GENDER, TYPE_PERSON } from "@/const/enum";
+import Image from "next/image";
 
 function Dashboard({ dataStudents, dataEducationAll }) {
   //Theme
@@ -56,7 +57,7 @@ function Dashboard({ dataStudents, dataEducationAll }) {
     user?.typeDisabled?.some((disa) => disa === "พิการทางการเรียนรู้")
   )?.length;
   const count_d7 = dataStudents?.filter((user) =>
-    user?.typeDisabled?.some((disa) => disa === "พิการทางการออทิสติก")
+    user?.typeDisabled?.some((disa) => disa === "พิการทางออทิสติก")
   )?.length;
 
   //level
@@ -102,30 +103,44 @@ function Dashboard({ dataStudents, dataEducationAll }) {
   })?.length;
 
   return (
-    <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
+    <div
+      className={`${bgColorMain2} ${bgColor} font-bold rounded-lg p-5 max-w-[1400px]`}
+    >
       {!dataStudents ? (
         <p>กำลังโหลด...</p>
       ) : (
         <>
           <p className="font-bold">ข้อมูลผู้ใช้งานทั้งหมด</p>
-          <div
-            className={`mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2`}
-          >
-            <div className="flex flex-col justify-center gap-3 p-5 bg-gray-200 max-w-96">
-              <div className="bg-[#ffa152] rounded-sm py-2  flex flex-col justify-center items-center gap-1">
-                <p>ทั้งหมด</p>
-                <p className="text-xl">{count_allUser}</p>
+          <div className={`mt-5 flex gap-2 flex-wrap`}>
+            <div className="flex flex-col justify-center gap-3 p-5 bg-gray-200 w-[350px]">
+              <div className="bg-white border-2 border-[#ffa152] rounded-sm py-2  flex flex-col justify-center items-center gap-1">
+                <p className="text-xl ">ทั้งหมด</p>
+                <p className="text-2xl">{count_allUser}</p>
               </div>
               <div className="flex gap-3">
-                <div className="bg-[#ffa152] py-2 rounded-sm flex flex-col items-center gap-1 w-[50%]">
-                  <Icon className="" path={mdiAccountSchool} size={1.2} />
+                <div className="bg-white border-2 border-[#ffa152] py-2 rounded-sm flex flex-col items-center gap-1 w-[50%]">
+                  <Image
+                    src="/image/graduate-hat.png"
+                    width={1000}
+                    height={1000}
+                    priority
+                    alt="icon"
+                    className="w-10 h-10"
+                  />
                   <div className="flex flex-col justify-center items-center gap-1">
                     <p>บัณฑิต </p>
                     <p>{count_graduation}</p>
                   </div>
                 </div>
-                <div className="bg-[#ffa152] py-2 rounded-sm flex flex-col justify-center items-center gap-1 w-[50%]">
-                  <Icon className="" path={mdiAccountEdit} size={1.2} />
+                <div className="bg-white border-2 border-[#ffa152] py-2 rounded-sm flex flex-col justify-center items-center gap-1 w-[50%]">
+                  <Image
+                    src="/image/reading-book.png"
+                    width={1000}
+                    height={1000}
+                    priority
+                    alt="icon"
+                    className="w-10 h-10"
+                  />
                   <div className="flex flex-col justify-center items-center gap-1">
                     <p>นักศึกษา </p>
                     <p>{count_students}</p>
@@ -133,25 +148,35 @@ function Dashboard({ dataStudents, dataEducationAll }) {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col bg-gray-200 gap-3 p-5 max-w-96">
-              <div className="bg-[#8aceff]  rounded-sm gap-1 py-2 flex flex-col justify-center items-center">
-                <div className="flex items-center gap-2">
-                  <Icon className="" path={mdiFaceMan} size={1} />
-                  <p>ชาย</p>
-                </div>
-                <p className="text-xl">{count_male}</p>
+            <div className="flex flex-col justify-center bg-gray-200 gap-3 p-5 w-[200px]">
+              <div className="bg-[#cbe9ff] text-xl  rounded-sm gap-1 py-2 flex flex-col justify-center items-center h-full relative">
+                <p>ชาย</p>
+                <p className="">{count_male}</p>
+                <Image
+                  src="/image/teacher.png"
+                  width={1000}
+                  height={1000}
+                  priority
+                  alt="icon"
+                  className="w-14 h-14 absolute left-0 bottom-0"
+                />
               </div>
-              <div className="bg-[#ffdddc]  rounded-sm gap-1 py-2 flex flex-col justify-center items-center">
-                <div className="flex items-center gap-2">
-                  <Icon className="" path={mdiFaceWoman} size={1} />
-                  <p>หญิง</p>
-                </div>
-                <p className="text-xl">{count_female}</p>
+              <div className="bg-[#ffdcdc] text-xl  rounded-sm gap-1 py-2 flex flex-col justify-center items-center h-full relative">
+                <p>หญิง</p>
+                <p className="">{count_female}</p>
+                <Image
+                  src="/image/woman.png"
+                  width={1000}
+                  height={1000}
+                  priority
+                  alt="icon"
+                  className="w-14 h-14 absolute right-0 bottom-0"
+                />
               </div>
             </div>
-            <div className="flex flex-col bg-gray-200 gap-3 p-5 max-w-96">
-              <div className="bg-[#78dfc7]  rounded-sm gap-1 py-2 px-5 flex flex-col justify-center">
-                <p>ระดับชั้น</p>
+            <div className="flex flex-col bg-gray-200 gap-3 p-5 w-[250px]">
+              <div className="border-2 bg-white border-[#78dfc7]  rounded-sm gap-2 py-2 px-5 flex flex-col justify-center h-full">
+                <p className="mb-1">ระดับชั้น</p>
                 <div className="flex justify-between">
                   <p>ปี 1</p>
                   <p>{`${count_level1 === 0 ? "-" : `${count_level1} คน`} `}</p>
@@ -176,9 +201,9 @@ function Dashboard({ dataStudents, dataEducationAll }) {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col bg-gray-200 gap-3 p-5 max-w-96">
-              <div className="bg-[#a9eef9]  rounded-sm gap-1 py-2 px-5 flex flex-col justify-center">
-                <p>ช่วงอายุ</p>
+            <div className="flex flex-col bg-gray-200 gap-3 p-5 w-[250px]">
+              <div className=" bg-white border-2 border-[#ffa152] rounded-sm gap-2 py-2 px-5 flex flex-col justify-center h-full">
+                <p className="mb-1 ">ช่วงอายุ</p>
                 <div className="flex justify-between">
                   <p>11-20 ปี</p>
                   <p>{`${
@@ -210,7 +235,7 @@ function Dashboard({ dataStudents, dataEducationAll }) {
               </div>
             </div>
           </div>
-          <div className="flex mt-5 overflow-scroll">
+          <div className="flex mt-10 overflow-scroll">
             <PieChart
               d1={count_d1}
               d2={count_d2}

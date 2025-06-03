@@ -28,6 +28,15 @@ export async function POST(req) {
       welfare,
       coordinator,
       coordinator_tel,
+      typeBusiness,
+      dutyWork,
+      quantityEmployee,
+      quantityDisabled,
+      emailCompany,
+      positionWork,
+      addressWork,
+      budget,
+      timeStartWork,
     } = data;
 
     // สร้างเอกสารใหม่ใน MongoDB
@@ -47,6 +56,15 @@ export async function POST(req) {
       welfare,
       coordinator,
       coordinator_tel,
+      typeBusiness,
+      dutyWork,
+      quantityEmployee,
+      quantityDisabled,
+      emailCompany,
+      positionWork,
+      addressWork,
+      budget,
+      timeStartWork,
     });
 
     await SystemLog.create({

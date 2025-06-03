@@ -14,7 +14,6 @@ import NavbarMain from "../components/Menu/NavbarMain";
 import { useUserStore } from "@/stores/useUserStore";
 
 import { useFetchUserData } from "@/hooks/useFetchUserData";
-import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({ children }) {
   const { fontSize, bgColor, bgColorMain } = useTheme();
@@ -29,7 +28,7 @@ export default function RootLayout({ children }) {
       <HeaderLogo dataUser={dataUser} />
       <div className="flex">
         <NavbarMain status="main" />
-        <div className="overflow-x-auto w-full px-7 py-5 max-w-[100rem]">{children}</div>
+        <div className="overflow-x-auto w-full px-7 py-5 max-w-[80rem]">{children}</div>
       </div>
     </div>
   );
