@@ -47,7 +47,8 @@ function ReportTable({
                       : value || '-';
 
                     return (
-                      <TableCell key={column.id} align={column.align}>
+                      // <TableCell key={column.id} align={column.align}>
+                      <TableCell key={column.id} align={"left"}>
                         {content}
                       </TableCell>
                     );
