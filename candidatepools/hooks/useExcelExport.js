@@ -29,7 +29,7 @@ export const useExcelExport = () => {
     worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
       if (rowNumber === 1) return;
       row.eachCell((cell) => {
-        cell.alignment = { horizontal: "center" };
+        cell.alignment = { horizontal: "left" };
       });
     });
 
