@@ -9,7 +9,7 @@ import {
 
 import Link from "next/link";
 
-import CompanyForm from "@/app/components/Form/CompanyForm";
+import CompanyForm from "@/app/components/Form/CompanyForm/CompanyForm";
 function AddCompany() {
   //Theme
   const {

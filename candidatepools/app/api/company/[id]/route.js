@@ -30,6 +30,15 @@ export async function PUT(req) {
     welfare,
     coordinator,
     coordinator_tel,
+    typeBusiness,
+    dutyWork,
+    quantityEmployee,
+    quantityDisabled,
+    emailCompany,
+    positionWork,
+    addressWork,
+    budget,
+    timeStartWork,
   } = await req.json();
   try {
     await mongoDB();
@@ -53,6 +62,15 @@ export async function PUT(req) {
         welfare,
         coordinator,
         coordinator_tel,
+        typeBusiness,
+        dutyWork,
+        quantityEmployee,
+        quantityDisabled,
+        emailCompany,
+        positionWork,
+        addressWork,
+        budget,
+        timeStartWork,
       },
       { new: true } // ส่งกลับเอกสารที่อัปเดตใหม่
     );
@@ -69,7 +87,7 @@ export async function PUT(req) {
       data: {},
     });
     return NextResponse.json(
-      { message: "User updated successfully" },
+      { message: "User updated successfully", data: result },
       { status: 200 }
     );
   } catch (error) {
@@ -78,7 +96,7 @@ export async function PUT(req) {
       action: ACTION_ACTIVITY.ERROR,
       targetModel: TARGET_MODEL.COMPANY,
       description: `เกิดข้อผืดพลาด ${ACTION_ACTIVITY.UPDATE} บริษัท "${nameCompany}"`,
-      data: {},
+      data: { result },
     });
     console.error("Error updating user:", error);
     return NextResponse.json(
@@ -111,7 +129,9 @@ export async function DELETE(req) {
       actorUuid: ROLE.ADMIN,
       action: ACTION_ACTIVITY.DELETE,
       targetModel: TARGET_MODEL.COMPANY,
-      description: `${ACTION_ACTIVITY.DELETE} บริษัท "${company?.nameCompany || "N/A"}"`,
+      description: `${ACTION_ACTIVITY.DELETE} บริษัท "${
+        company?.nameCompany || "N/A"
+      }"`,
       data: {},
     });
 
@@ -127,7 +147,9 @@ export async function DELETE(req) {
       actorUuid: ROLE.ADMIN,
       action: ACTION_ACTIVITY.ERROR,
       targetModel: TARGET_MODEL.COMPANY,
-      description: `เกิดข้อผิดพลาด ${ACTION_ACTIVITY.DELETE} บริษัท "${company?.nameCompany || "N/A"}"`,
+      description: `เกิดข้อผิดพลาด ${ACTION_ACTIVITY.DELETE} บริษัท "${
+        company?.nameCompany || "N/A"
+      }"`,
       data: {},
     });
 

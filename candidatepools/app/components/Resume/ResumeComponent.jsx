@@ -20,6 +20,7 @@ import { mdiDelete, mdiDownload } from "@mdi/js";
 
 //utils
 import { downloadFileFromFirebase } from "@/utils/firebaseDownload";
+import Link from "next/link";
 
 function ResumeComponent({
   dataUser,
@@ -120,6 +121,11 @@ function ResumeComponent({
     setSizeFiles("");
     setTypeFiles("");
   };
+
+  function openFile(fileUrl) {
+    window.open(fileUrl, "_blank");
+  }
+
   return (
     <>
       {statusResume > 0 ? (
@@ -180,12 +186,16 @@ function ResumeComponent({
                 setSizeFile={(size) => setSizeFiles(size)}
                 setTypeFile={(type) => setTypeFiles(type)}
                 isDisabled={!nameFile || (nameFile && urlFile)}
-                maxSizeKB={2048} 
+                maxSizeKB={2048}
                 acceptTypes={["application/pdf"]}
               />
             </div>
             <div className="mt-3">
-              {!nameFile && <TextError text={"กรอกชื่อไฟล์ก่อน Upload (PDF) ขนาดไม่เกิน 2 MB."} />}
+              {!nameFile && (
+                <TextError
+                  text={"กรอกชื่อไฟล์ก่อน Upload (PDF) ขนาดไม่เกิน 2 MB."}
+                />
+              )}
             </div>
             {urlFile && (
               <div className="mt-5 flex items-center">
@@ -215,7 +225,10 @@ function ResumeComponent({
                     key={index}
                     className="border py-2 px-4 rounded-lg flex justify-between"
                   >
-                    <div className="flex gap-2">
+                    <div
+                      onClick={() => openFile(item.fileUrl)}
+                      className="flex gap-2 cursor-pointer"
+                    >
                       <p>
                         {item.fileName}.{item.fileType}
                       </p>

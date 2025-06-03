@@ -3,7 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
-import { mdiFileDocument, mdiMicrosoftExcel, mdiMagnify } from "@mdi/js";
+import {
+  mdiFileDocument,
+  mdiMicrosoftExcel,
+  mdiMagnify,
+  mdiAlertCircle,
+} from "@mdi/js";
 
 //select datas
 import dataWorkType from "@/assets/dataWorkType";
@@ -27,6 +32,8 @@ import {
 } from "@/const/enum";
 
 import { dataStatus } from "@/assets/dataStatus";
+import { render } from "@react-pdf/renderer";
+import Link from "next/link";
 
 // รายงานลักษณะงานที่สนใจ
 const columnWork = [
@@ -91,9 +98,10 @@ const columnStudentCatagory = [
 ];
 
 const columnAll = [
-  { id: "prefix", label: "คำนำหน้า", minWidth: 170, align: "center" },
-  { id: "firstName", label: "ชื่อ", minWidth: 170, align: "center" },
-  { id: "lastName", label: "นามสกุล", minWidth: 170, align: "center" },
+  // { id: "prefix", label: "คำนำหน้า", minWidth: 170, align: "center" },
+  // { id: "firstName", label: "ชื่อ", minWidth: 170, align: "center" },
+  // { id: "lastName", label: "นามสกุล", minWidth: 170, align: "center" },
+  { id: "fullName", label: "ชื่อ", minWidth: 200, align: "center" },
   { id: "email", label: "อีเมล", minWidth: 170, align: "center" },
   { id: "dateBirthday", label: "วันเกิด", minWidth: 170, align: "center" },
   { id: "monthBirthday", label: "เดือนเกิด", minWidth: 170, align: "center" },
@@ -294,6 +302,22 @@ const columnAll = [
     minWidth: 170,
     align: "center",
   },
+  {
+    id: "uuid",
+    label: "เรซูเม่",
+    minWidth: 170,
+    align: "center",
+    render: (id, row) => (
+      <Link
+        href={`/su/students/${id}/resume`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`cursor-pointer text-black`}
+      >
+        <Icon path={mdiAlertCircle} size={1} />
+      </Link>
+    ),
+  },
 ];
 
 function ReportTablePage({
@@ -422,7 +446,7 @@ function ReportTablePage({
       dataEducationAll: filteredEducation,
       dataWorkAll: filteredWork,
       dataHistoryWorkAll: filteredHistory,
-      dataSkillAll: dataSkillAll
+      dataSkillAll: dataSkillAll,
     });
   }, [
     universityActive,
@@ -526,7 +550,7 @@ function ReportTablePage({
 
       return {
         id: index + 1,
-        name: `${std.firstName} ${std.lastName}`,
+        name: `${std.prefix ? std.prefix : ""}${std.firstName} ${std.lastName}`,
         university: education?.university?.join(", ") || "-",
         typePerson: std.typePerson,
         level: education?.educationLevel?.join(", ") || "-",
@@ -672,7 +696,12 @@ function ReportTablePage({
 
     // รวมข้อมูลนักเรียนหลัก
     dataStudents?.forEach((student) => {
-      mergedMap.set(student.uuid, { ...student });
+      mergedMap.set(student.uuid, {
+        ...student,
+        fullName: `${student.prefix ? student.prefix : ""}${
+          student.firstName
+        } ${student.lastName}`,
+      });
     });
 
     // แกะ Education
@@ -761,7 +790,7 @@ function ReportTablePage({
 
     return Array.from(mergedMap.values());
   }
- 
+
   // ตัวอย่างการใช้
   const dataAll = mergeDataByUUID(
     dataState.dataStudents,
@@ -771,7 +800,6 @@ function ReportTablePage({
     dataState.dataSkillAll
   );
 
-  
   // console.log(dataAll.find((item) => item.firstName === "คุโด้"));
   const tableConfig = {
     หัวข้อทั้งหมด: {

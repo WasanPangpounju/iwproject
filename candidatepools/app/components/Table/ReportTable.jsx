@@ -9,6 +9,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import { Tooltip } from "@mui/material";
 
 function ReportTable({
   columns,
@@ -44,11 +45,16 @@ function ReportTable({
                     const value = row[column.id];
                     const content = column.render
                       ? column.render(value, row)
-                      : value || '-';
+                      : value || "-";
 
                     return (
-                      <TableCell key={column.id} align={column.align}>
-                        {content}
+                      // <TableCell key={column.id} align={column.align}>
+                      <TableCell key={column.id} align={"left"} className="">
+                        <Tooltip title={content}>
+                          <span className="whitespace-nowrap text-ellipsis overflow-hidden w-[200px]">
+                            {content}
+                          </span>
+                        </Tooltip>
                       </TableCell>
                     );
                   })}

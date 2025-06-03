@@ -198,7 +198,7 @@ function UserManagement() {
                 value={wordSearch}
                 type="text"
                 className={`${bgColorMain} w-56 border border-gray-400 py-1 px-4 rounded-md`}
-                placeholder="ขื่อ-สกุล, มหาวิทยาลัย"
+                placeholder="ชื่อ-สกุล, มหาวิทยาลัย"
                 onChange={(e) => setWordSearch(e.target.value)}
               />
             </div>

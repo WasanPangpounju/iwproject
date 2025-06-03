@@ -13,6 +13,7 @@ function InputLabelForm({
   tailwind,
   styles,
   placeholder,
+  type
 }) {
   return (
     <div className="flex col flex-col gap-1">
@@ -25,6 +26,7 @@ function InputLabelForm({
         tailwind={tailwind}
         styles={styles}
         placeholder={placeholder}
+        type={type}
       />
     </div>
   );

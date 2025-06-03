@@ -90,6 +90,10 @@ export const useCompanyStore = create((set, get) => ({
       );
       if (!res.ok) throw new Error("Failed to update company");
       await get().fetchCompanies();
+      const data = await res.json();
+
+      // set({ companyById: data.data.data });
+
       return { ok: true };
     } catch (err) {
       set({ error: err.message });
