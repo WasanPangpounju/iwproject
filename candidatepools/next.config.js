@@ -18,6 +18,18 @@ const nextConfig = {
         protocol: "https",
         hostname: "firebasestorage.googleapis.com",
       },
+      {
+        protocol: "https",
+        hostname: "scontent.fkkc3-1.fna.fbcdn.net",
+      },
+      {
+        protocol: "https",
+        hostname: "scontent.xx.fbcdn.net", // สำรองสำหรับโดเมนอื่นๆ ของ FB
+      },
+      {
+        protocol: "https",
+        hostname: "platform-lookaside.fbsbx.com", // สำหรับ profile picture จากเพจ
+      },
     ],
   },
   webpack: (config) => {
