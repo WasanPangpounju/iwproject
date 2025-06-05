@@ -9,7 +9,7 @@ function MainPage() {
   const { fontHeadSize, fontSize, bgColor, bgColorMain2 } = useTheme();
   const { posts } = useAppStore();
 
-  if(!posts) return <div>กำลังโหลด...</div>
+  if(!posts) return;
   return (
     
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
