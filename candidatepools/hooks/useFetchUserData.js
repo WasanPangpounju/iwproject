@@ -15,6 +15,7 @@ export const useFetchUserData = (id) => {
   const { getDataSkills } = useSkillStore();
   const { getDataInterestedWork } = useInterestedWorkStore();
   const { setLoading } = useAppStore();
+  const { fetchPosts } = useAppStore.getState();
 
   useEffect(() => {
     if (!id) return;
@@ -28,6 +29,7 @@ export const useFetchUserData = (id) => {
           getDataHistoryWork(id),
           getDataSkills(id),
           getDataInterestedWork(id),
+          fetchPosts(),
         ]);
       } catch (err) {
         console.log(err);
