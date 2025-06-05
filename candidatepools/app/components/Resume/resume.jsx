@@ -332,8 +332,18 @@ function Resume({
                         </div>
                         <div className="flex flex-wrap gap-1">
                           <p>ที่อยู่: {dataUser.address || ""}</p>
-                          <p>ตำบล{dataUser.addressTambon || " - "}</p>
-                          <p>อำเภอ{dataUser.addressAmphor || " - "}</p>
+                          <p>
+                            {dataUser.addressProvince === "กรุงเทพมหานคร"
+                              ? "เขต"
+                              : "ตำบล"}
+                            {dataUser.addressTambon || " - "}
+                          </p>
+                          <p>
+                            {dataUser.addressProvince === "กรุงเทพมหานคร"
+                              ? "แขวง"
+                              : "อำเภอ"}
+                            {dataUser.addressAmphor || " - "}
+                          </p>
                           <p>จังหวัด{dataUser.addressProvince || " - "}</p>
                           <p>รหัสไปรษณีย์ {dataUser.addressZipCode || ""}</p>
                         </div>
@@ -869,8 +879,19 @@ function Resume({
                         </div>
                         <div className="flex flex-wrap gap-1">
                           <p>ที่อยู่: {dataUser.address || ""}</p>
-                          <p>ตำบล{dataUser.addressTambon || " - "}</p>
-                          <p>อำเภอ{dataUser.addressAmphor || " - "}</p>
+                          <p>
+                            {dataUser.addressProvince === "กรุงเทพมหานคร"
+                              ? "เขต"
+                              : "ตำบล"}
+                            {dataUser.addressTambon || " - "}
+                          </p>
+                          <p>
+                            {" "}
+                            {dataUser.addressProvince === "กรุงเทพมหานคร"
+                              ? "แขวง"
+                              : "อำเภอ"}
+                            {dataUser.addressAmphor || " - "}
+                          </p>
                           <p>จังหวัด{dataUser.addressProvince || " - "}</p>
                           <p>รหัสไปรษณีย์ {dataUser.addressZipCode || ""}</p>
                         </div>
@@ -1358,8 +1379,19 @@ function Resume({
                       </div>
                       <div className="flex flex-wrap gap-1">
                         <p>ที่อยู่: {dataUser.address || ""}</p>
-                        <p>ตำบล{dataUser.addressTambon || " - "}</p>
-                        <p>อำเภอ{dataUser.addressAmphor || " - "}</p>
+                        <p>
+                          {dataUser.addressProvince === "กรุงเทพมหานคร"
+                            ? "เขต"
+                            : "ตำบล"}
+                          {dataUser.addressTambon || " - "}
+                        </p>
+                        <p>
+                          {" "}
+                          {dataUser.addressProvince === "กรุงเทพมหานคร"
+                            ? "แขวง"
+                            : "อำเภอ"}
+                          {dataUser.addressAmphor || " - "}
+                        </p>
                         <p>จังหวัด{dataUser.addressProvince || " - "}</p>
                         <p>รหัสไปรษณีย์ {dataUser.addressZipCode || ""}</p>
                       </div>

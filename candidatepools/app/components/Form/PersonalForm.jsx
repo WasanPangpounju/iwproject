@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 
 import { useTheme } from "@/app/ThemeContext";
 
@@ -90,6 +89,7 @@ function PersonalForm({
     ? studentForm.errorIdCardDisabled
     : null;
   const { dataProvince } = useProvince();
+
 
   // สร้าง Date object สำหรับวันที่ปัจจุบัน
   const today = new Date();
