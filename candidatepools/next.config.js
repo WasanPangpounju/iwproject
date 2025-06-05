@@ -20,6 +20,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "scontent.fkkc4-2.fna.fbcdn.net", // ✅ เพิ่มอันนี้
+      },
+      {
+        protocol: "https",
         hostname: "scontent.fkkc3-1.fna.fbcdn.net",
       },
       {
@@ -29,6 +33,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "platform-lookaside.fbsbx.com", // สำหรับ profile picture จากเพจ
+      },
+      {
+        protocol: "https",
+        hostname: "*.fna.fbcdn.net", // สำรองแบบ wildcard (ใช้ได้เฉพาะบาง CDN setup)
       },
     ],
   },
