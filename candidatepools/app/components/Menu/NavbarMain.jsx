@@ -24,7 +24,7 @@ import {
 
 import { signOut } from "next-auth/react";
 import { useTheme } from "../../ThemeContext";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 function NavbarMain() {
   const { fontSize, bgColor, bgColorMain2 } = useTheme();
@@ -74,12 +74,14 @@ function NavbarMain() {
   };
 
   const pathname = usePathname();
-  const activePath = pathname.split("/iw/")[1]?.split("/")[0] || "";
-  const [status, setStatus] = useState();
+  // const activePath = pathname.split("/iw/")[1]?.split("/")[0] || "";
+  // const [status, setStatus] = useState();
+  const searchParams = useSearchParams();
+  const path = searchParams.get("path");
 
-  useEffect(() => {
-    setStatus(activePath);
-  }, [activePath]);
+  // useEffect(() => {
+  //   setStatus(activePath);
+  // }, [activePath]);
 
   const mainRoute = "/iw";
   const menuItems = [
@@ -89,47 +91,49 @@ function NavbarMain() {
     },
     {
       id: 2,
-      link: `${mainRoute}/edit?stepper=1`,
+      link: `${mainRoute}/edit?stepper=1&path=edit`,
     },
     {
       id: 3,
-      link: `${mainRoute}/edit?stepper=2`,
+      link: `${mainRoute}/edit?stepper=2&path=edit`,
     },
     {
       id: 4,
-      link: `${mainRoute}/edit?stepper=3`,
+      link: `${mainRoute}/edit?stepper=3&path=edit`,
     },
     {
       id: 5,
-      link: `${mainRoute}/edit?stepper=4`,
+      link: `${mainRoute}/edit?stepper=4&path=edit`,
     },
     {
       id: 6,
-      link: `${mainRoute}/resume`,
+      // link: `${mainRoute}/resume`,
+      link: `${mainRoute}/edit?stepper=5&path=resume`,
     },
     {
       id: 7,
-      link: `${mainRoute}/resume/interestedwork`,
+      // link: `${mainRoute}/resume/interestedwork`,
+      link: `${mainRoute}/edit?stepper=6&path=resume`,
     },
     {
       id: 8,
-      link: `${mainRoute}/about/origin`,
+      link: `${mainRoute}/about/origin?path=about`,
     },
     {
       id: 9,
-      link: `${mainRoute}/about/mission`,
+      link: `${mainRoute}/about/mission?path=about`,
     },
     {
       id: 10,
-      link: `${mainRoute}/about/university`,
+      link: `${mainRoute}/about/university?path=about`,
     },
     {
       id: 11,
-      link: `${mainRoute}/about/employer`,
+      link: `${mainRoute}/about/employer?path=about`,
     },
     {
       id: 12,
-      link: `${mainRoute}/help`,
+      link: `${mainRoute}/help?path=help`,
     },
   ];
 
@@ -142,7 +146,7 @@ function NavbarMain() {
       <Link
         href={menuItems.find((item) => item.id === 1).link}
         className={`${
-          status === ""
+          path === null
             ? "bg-[#fee2d9] text-[#ff7201] cursor-default"
             : "cursor-pointer hover:bg-[#fee2d9] hover:text-[#ff7201]"
         } ${fontSize} flex items-center px-7 gap-5 py-3 focus:bg-[#fee2d9] focus:text-[#ff7201] `}
@@ -161,7 +165,7 @@ function NavbarMain() {
         tabIndex="0" // ทำให้สามารถเข้าถึงได้ด้วยการกด Tab
         role="menuitem"
         className={`${
-          status === "edit"
+          path === "edit"
             ? "bg-[#fee2d9] text-[#ff7201]"
             : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
         } ${fontSize} cursor-pointer relative flex items-center px-7 gap-5 py-3 focus:bg-[#fee2d9] focus:text-[#ff7201]`}
@@ -269,7 +273,7 @@ function NavbarMain() {
         tabIndex="0" // ทำให้สามารถเข้าถึงได้ด้วยการกด Tab
         role="menuitem"
         className={`${
-          status === "resume"
+          path === "resume"
             ? "bg-[#fee2d9] text-[#ff7201]"
             : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
         } ${fontSize} cursor-pointer relative flex items-center px-7 gap-5 py-3 focus:bg-[#fee2d9] focus:text-[#ff7201]`}
@@ -360,7 +364,7 @@ function NavbarMain() {
         tabIndex="0" // ทำให้สามารถเข้าถึงได้ด้วยการกด Tab
         role="menuitem"
         className={`${
-          status === "about"
+          path === "about"
             ? "bg-[#fee2d9] text-[#ff7201]"
             : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
         } ${fontSize} cursor-pointer relative flex items-center px-7 gap-5 py-3 focus:bg-[#fee2d9] focus:text-[#ff7201]`}
@@ -472,7 +476,7 @@ function NavbarMain() {
       <Link
         href={menuItems.find((item) => item.id === 12).link}
         className={`${
-          status === "help"
+          path === "help"
             ? "bg-[#fee2d9] text-[#ff7201]"
             : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
         } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`}
