@@ -34,6 +34,7 @@ import {
 import { dataStatus } from "@/assets/dataStatus";
 import { render } from "@react-pdf/renderer";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 // รายงานลักษณะงานที่สนใจ
 const columnWork = [
@@ -307,16 +308,20 @@ const columnAll = [
     label: "เรซูเม่",
     minWidth: 170,
     align: "center",
-    render: (id, row) => (
-      <Link
-        href={`/su/students/${id}/resume`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`cursor-pointer text-black`}
-      >
-        <Icon path={mdiAlertCircle} size={1} />
-      </Link>
-    ),
+    render: (id, row) => {
+      const pathname = usePathname();
+      const firstPath = pathname?.split("/")[1] || "";
+      return (
+        <Link
+          href={`/${firstPath}/students/${id}/resume`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`cursor-pointer text-black`}
+        >
+          <Icon path={mdiAlertCircle} size={1} />
+        </Link>
+      );
+    },
   },
 ];
 
