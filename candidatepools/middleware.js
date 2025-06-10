@@ -130,6 +130,6 @@ export const config = {
     "/api/skill/:path*",
     "/api/systemLog/:path*",
     "/api/upload/:path*",
-    "/api/user/:path*",
+    // "/api/user/:path*",
   ],
 };
