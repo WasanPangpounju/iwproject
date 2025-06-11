@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 
 import { useTheme } from "../ThemeContext";
 import { useSession } from "next-auth/react";
@@ -24,12 +24,16 @@ export default function RootLayout({ children }) {
   const { dataUser } = useUserStore();
 
   return (
-    <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
-      <HeaderLogo dataUser={dataUser} />
-      <div className="flex">
-        <NavbarMain status="main" />
-        <div className="overflow-x-auto w-full px-7 py-5 max-w-[80rem]">{children}</div>
+    <Suspense fallback={<div>กำลังโหลด...</div>}>
+      <div className={`${bgColorMain} ${bgColor} ${fontSize}`}>
+        <HeaderLogo dataUser={dataUser} />
+        <div className="flex">
+          <NavbarMain status="main" />
+          <div className="overflow-x-auto w-full px-7 py-5 max-w-[80rem]">
+            {children}
+          </div>
+        </div>
       </div>
-    </div>
+    </Suspense>
   );
 }
