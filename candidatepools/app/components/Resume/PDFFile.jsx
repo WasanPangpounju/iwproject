@@ -107,8 +107,20 @@ const PDFFile = ({
                     </View>
                     <View style={tw("flex flex-row flex-wrap gap-1")}>
                       <Text>ที่อยู่: {dataUser.address}</Text>
-                      <Text>ตำบล{dataUser.addressTambon}</Text>
-                      <Text>อำเภอ{dataUser.addressAmphor}</Text>
+                      <Text>
+                        {" "}
+                        {dataUser.addressProvince === "กรุงเทพมหานคร"
+                          ? "เขต"
+                          : "ตำบล"}
+                        {dataUser.addressTambon}
+                      </Text>
+                      <Text>
+                        {" "}
+                        {dataUser.addressProvince === "กรุงเทพมหานคร"
+                          ? "แขวง"
+                          : "อำเภอ"}
+                        {dataUser.addressAmphor}
+                      </Text>
                       <Text>จังหวัด{dataUser.addressProvince}</Text>
                       <Text>รหัสไปรษณีย์ {dataUser.addressZipCode}</Text>
                     </View>
@@ -272,8 +284,20 @@ const PDFFile = ({
                     </View>
                     <View style={tw("flex flex-row flex-wrap gap-1")}>
                       <Text>ที่อยู่: {dataUser.address}</Text>
-                      <Text>ตำบล{dataUser.addressTambon}</Text>
-                      <Text>อำเภอ{dataUser.addressAmphor}</Text>
+                      <Text>
+                        {" "}
+                        {dataUser.addressProvince === "กรุงเทพมหานคร"
+                          ? "เขต"
+                          : "ตำบล"}
+                        {dataUser.addressTambon}
+                      </Text>
+                      <Text>
+                        {" "}
+                        {dataUser.addressProvince === "กรุงเทพมหานคร"
+                          ? "แขวง"
+                          : "อำเภอ"}
+                        {dataUser.addressAmphor}
+                      </Text>
                       <Text>จังหวัด{dataUser.addressProvince}</Text>
                       <Text>รหัสไปรษณีย์ {dataUser.addressZipCode}</Text>
                     </View>
@@ -436,8 +460,20 @@ const PDFFile = ({
                     </View>
                     <View style={tw("flex flex-row flex-wrap gap-1")}>
                       <Text>ที่อยู่: {dataUser.address}</Text>
-                      <Text>ตำบล{dataUser.addressTambon}</Text>
-                      <Text>อำเภอ{dataUser.addressAmphor}</Text>
+                      <Text>
+                        {" "}
+                        {dataUser.addressProvince === "กรุงเทพมหานคร"
+                          ? "เขต"
+                          : "ตำบล"}
+                        {dataUser.addressTambon}
+                      </Text>
+                      <Text>
+                        {" "}
+                        {dataUser.addressProvince === "กรุงเทพมหานคร"
+                          ? "แขวง"
+                          : "อำเภอ"}
+                        {dataUser.addressAmphor}
+                      </Text>
                       <Text>จังหวัด{dataUser.addressProvince}</Text>
                       <Text>รหัสไปรษณีย์ {dataUser.addressZipCode}</Text>
                     </View>

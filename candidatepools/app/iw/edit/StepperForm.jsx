@@ -9,7 +9,6 @@ import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepButton from "@mui/material/StepButton";
-import Button from "@mui/material/Button";
 
 import { useTheme } from "@/app/ThemeContext";
 
@@ -18,25 +17,28 @@ import { useUserStore } from "@/stores/useUserStore";
 import { useEducationStore } from "@/stores/useEducationStore";
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
 import { useSkillStore } from "@/stores/useSkillStore";
+import { useResumeStore } from "@/stores/useResumeStore";
+
+//components
+import ResumeComponent from "@/app/components/Resume/ResumeComponent";
 import PersonalForm from "@/app/components/Form/PersonalForm";
 import EducationForm from "@/app/components/Form/EducationForm";
 import HistoryWorkForm from "@/app/components/Form/HistoryWorkForm";
 import SkillForm from "@/app/components/Form/SkillForm";
-import SumaryData from "@/app/components/Form/SumaryData";
-import ButtonBG2 from "@/app/components/Button/ButtonBG2";
 
-import {
-  mdiArrowBottomLeft,
-  mdiArrowLeftCircle,
-  mdiArrowRightCircle,
-} from "@mdi/js";
+import { mdiArrowLeftCircle, mdiArrowRightCircle } from "@mdi/js";
 import ButtonBG1 from "@/app/components/Button/ButtonBG1";
+import InterestedWorkForm from "@/app/components/Form/InterestedWorkForm";
+import SumaryData from "@/app/components/Form/SumaryData";
+import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
 
 const steps = [
   "ข้อมูลส่วนบุลคล",
   "ประวัติการศึกษา",
   "ประวัติการทำงาน/ฝึกงาน",
   "ความสามารถ/การอบรม",
+  "เรซูเม่",
+  "ลักษณะงานที่สนใจ",
 ];
 
 const stepStyle = {
@@ -64,9 +66,17 @@ export default function StepperForm() {
   const { dataEducations } = useEducationStore();
   const { dataHistoryWork } = useHistoryWorkStore();
   const { dataSkills } = useSkillStore();
-
+  const { dataWorks } = useInterestedWorkStore();
+  const { resumeFiles, fetchResumeFiles, clearResumeFiles } = useResumeStore();
   const [activeStep, setActiveStep] = useState(stepper - 1);
   const [completed, setCompleted] = useState({});
+
+  useEffect(() => {
+    fetchResumeFiles(dataUser?.uuid);
+    return () => {
+      clearResumeFiles();
+    };
+  }, [dataUser]);
 
   useEffect(() => {
     setActiveStep(stepper - 1);
@@ -84,7 +94,7 @@ export default function StepperForm() {
       newCompleted[1] = true;
     }
 
-    if (dataHistoryWork?.statusNow) {
+    if (dataHistoryWork?.internships[0]?.place || dataHistoryWork?.projects[0]?.name || dataHistoryWork?.workExperience[0]?.place) {
       newCompleted[2] = true;
     }
 
@@ -92,8 +102,21 @@ export default function StepperForm() {
       newCompleted[3] = true;
     }
 
+    if (
+      newCompleted[0] &&
+      newCompleted[1] &&
+      newCompleted[2] &&
+      newCompleted[3]
+    ) {
+      newCompleted[4] = true;
+    }
+
+    if (dataWorks?.interestedWork[0]?.type) {
+      newCompleted[5] = true;
+    }
+
     setCompleted((prev) => ({ ...prev, ...newCompleted }));
-  }, [dataUser, dataEducations, dataHistoryWork, dataSkills]);
+  }, [dataUser, dataEducations, dataHistoryWork, dataSkills, dataWorks]);
 
   const { bgColorMain2 } = useTheme();
 
@@ -122,19 +145,19 @@ export default function StepperForm() {
         ? steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
     // setActiveStep(newActiveStep);
-    router.push(`?stepper=${newActiveStep + 1}`);
+    router.push(`?stepper=${newActiveStep + 1}&path=edit`);
     setActiveStep(newActiveStep);
   };
 
   const handleBack = () => {
     const newActiveStep = activeStep - 1;
     setActiveStep(newActiveStep);
-    router.push(`?stepper=${newActiveStep + 1}`);
+    router.push(`?stepper=${newActiveStep + 1}&path=edit`);
   };
 
   const handleStep = (step) => () => {
     setActiveStep(step);
-    router.push(`?stepper=${step + 1}`);
+    router.push(`?stepper=${step + 1}&path=edit`);
   };
 
   const handleComplete = () => {
@@ -184,17 +207,31 @@ export default function StepperForm() {
         );
       case 4:
         return (
-          <SumaryData
+          <ResumeComponent
             dataUser={dataUser}
+            dataSkills={dataSkills}
             dataEducations={dataEducations}
             dataHistoryWork={dataHistoryWork}
+            resumeFiles={resumeFiles}
+          />
+        );
+      case 5:
+        return <InterestedWorkForm id={dataUser?.uuid} dataWorks={dataWorks} />;
+      case 6:
+        return (
+          <SumaryData
+            dataUser={dataUser}
             dataSkills={dataSkills}
+            dataEducations={dataEducations}
+            dataHistoryWork={dataHistoryWork}
+            dataWorks={dataWorks}
           />
         );
       default:
         return "Unknown step";
     }
   }
+
   return (
     <div className={`${bgColorMain2} rounded-lg p-5`}>
       <Box sx={{ width: "100%" }}>
@@ -236,7 +273,7 @@ export default function StepperForm() {
                 : "ต่อไป"}
             </p>
           </Button> */}
-          {activeStep <= steps.length-1 && (
+          {activeStep <= steps.length - 1 && (
             <ButtonBG1
               handleClick={handleNext}
               text={

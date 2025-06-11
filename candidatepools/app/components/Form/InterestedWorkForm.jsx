@@ -2,15 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@/app/ThemeContext";
-import { useSession } from "next-auth/react";
 import Icon from "@mdi/react";
-import {
-  mdiPlus,
-  mdiCloseCircle,
-  mdiArrowDownDropCircle,
-  mdiPencil,
-  mdiContentSave,
-} from "@mdi/js";
+import { mdiPlus, mdiCloseCircle, mdiArrowDownDropCircle } from "@mdi/js";
 import Swal from "sweetalert2";
 import dataWorkType from "@/assets/dataWorkType";
 import useProvinceData from "@/utils/province";
@@ -20,21 +13,11 @@ import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
 
 import ButtonGroup from "./ButtonGroup/ButtonGroup";
 import { toast } from "react-toastify";
-import { ACTION_ACTIVITY, TARGET_MODEL } from "@/const/enum";
+import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
 
-function InterestedWorkForm({ id, dataWorks }) {
-  const {
-    bgColorMain2,
-    bgColor,
-    bgColorMain,
-    bgColorNavbar,
-    bgColorWhite,
-    inputTextColor,
-    inputGrayColor,
-  } = useTheme();
+function InterestedWorkForm({ id, dataWorks, readOnly = false }) {
+  const { bgColorMain } = useTheme();
 
-  //session
-  const { data: session } = useSession();
   //store
   const { updateInterestedWorkById } = useInterestedWorkStore();
 
@@ -138,12 +121,9 @@ function InterestedWorkForm({ id, dataWorks }) {
   const handleAddWork = () => {
     // ตรวจสอบให้แน่ใจว่าทุกฟิลด์ถูกกรอกก่อนที่จะเพิ่มข้อมูลใหม่
     if (
-      (!workType[works.length - 1] ||
-        !workDetail[works.length - 1] ||
-        !workProvince1[works.length - 1]) &&
-      (!getWorkType[works.length - 1] ||
-        !getWorkDetail[works.length - 1] ||
-        !getWorkProvince1[works.length - 1])
+      !workType[works.length - 1] ||
+      !workDetail[works.length - 1] ||
+      !workProvince1[works.length - 1]
     ) {
       setError("กรุณากรอกข้อมูลให้ครบก่อนเพิ่มข้อมูลใหม่");
       return;
@@ -216,20 +196,11 @@ function InterestedWorkForm({ id, dataWorks }) {
   async function handleSubmit(e, fieldWorks) {
     e.preventDefault();
 
-    const mergedWorkType = mergeArrayValues(workType, getWorkType);
-    const mergedWorkDetail = mergeArrayValues(workDetail, getWorkDetail);
-    const mergedWorkProvince1 = mergeArrayValues(
-      workProvince1,
-      getWorkProvince1
-    );
-    const mergedWorkProvince2 = mergeArrayValues(
-      workProvince2,
-      getWorkProvince2
-    );
-    const mergedWorkProvince3 = mergeArrayValues(
-      workProvince3,
-      getWorkProvince3
-    );
+    const mergedWorkType = workType;
+    const mergedWorkDetail = workDetail;
+    const mergedWorkProvince1 = workProvince1;
+    const mergedWorkProvince2 = workProvince2;
+    const mergedWorkProvince3 = workProvince3;
 
     // ลดค่าตัวนับของแต่ละฟิลด์ลง 1
     fieldWorks -= 1;
@@ -317,17 +288,15 @@ function InterestedWorkForm({ id, dataWorks }) {
     if (!dataWorks) return;
 
     // ตั้งค่าตัวแปรต่าง ๆ จากข้อมูลใน dataHistoryWork
-    setGetWorkType(dataWorks.interestedWork?.map((work) => work.type) || []);
-    setGetWorkDetail(
-      dataWorks.interestedWork?.map((work) => work.detail) || []
-    );
-    setGetWorkProvince1(
+    setWorkType(dataWorks.interestedWork?.map((work) => work.type) || []);
+    setWorkDetail(dataWorks.interestedWork?.map((work) => work.detail) || []);
+    setWorkProvince1(
       dataWorks.interestedWork?.map((work) => work.province1) || []
     );
-    setGetWorkProvince2(
+    setWorkProvince2(
       dataWorks.interestedWork?.map((work) => work.province2) || []
     );
-    setGetWorkProvince3(
+    setWorkProvince3(
       dataWorks.interestedWork?.map((work) => work.province3) || []
     );
 
@@ -342,6 +311,14 @@ function InterestedWorkForm({ id, dataWorks }) {
 
   //set province
   const dataProvince = useProvinceData();
+
+  const fieldProgress = [
+    workType[0],
+    workDetail[0],
+    workProvince1[0],
+    workProvince2[0],
+    workProvince3[0],
+  ];
 
   return (
     <form onSubmit={(e) => handleSubmit(e, works.length)} className={``}>
@@ -379,7 +356,7 @@ function InterestedWorkForm({ id, dataWorks }) {
                   } ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                   style={{ appearance: "none" }}
                   onChange={(e) => handleWorkType(e.target.value, index)}
-                  value={workType[index] || getWorkType[index] || ""}
+                  value={workType[index] || ""}
                   disabled={!editMode}
                 >
                   <option value="0">-</option>
@@ -411,7 +388,7 @@ function InterestedWorkForm({ id, dataWorks }) {
                 } ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
                 readOnly={!editMode}
                 placeholder="รายละเอียดเพิ่มเติม"
-                defaultValue={getWorkDetail[index] || ""}
+                defaultValue={workDetail[index] || ""}
                 onBlur={(e) => handleWorkDetail(e.target.value, index)}
               />
             </div>
@@ -429,10 +406,10 @@ function InterestedWorkForm({ id, dataWorks }) {
                   } ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                   style={{ appearance: "none" }}
                   onChange={(e) => handleWorkProvince1(e.target.value, index)}
-                  value={workProvince1[index] || getWorkProvince1[index] || ""}
+                  value={workProvince1[index] || ""}
                   disabled={!editMode}
                 >
-                  <option value="0">-</option>
+                  <option value="">-</option>
                   {dataProvince.map((province, index) => (
                     <option key={index} value={province?.name_th}>
                       {province?.name_th}
@@ -458,7 +435,7 @@ function InterestedWorkForm({ id, dataWorks }) {
                   value={workProvince2[index] || getWorkProvince2[index] || ""}
                   disabled={!editMode}
                 >
-                  <option value="0">-</option>
+                  <option value="">-</option>
                   {dataProvince.map((province, index) => (
                     <option key={index} value={province?.name_th}>
                       {province?.name_th}
@@ -481,10 +458,10 @@ function InterestedWorkForm({ id, dataWorks }) {
                   } ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
                   style={{ appearance: "none" }}
                   onChange={(e) => handleWorkProvince3(e.target.value, index)}
-                  value={workProvince3[index] || getWorkProvince3[index] || ""}
+                  value={workProvince3[index] || ""}
                   disabled={!editMode}
                 >
-                  <option value="0">-</option>
+                  <option value="">-</option>
                   {dataProvince.map((province, index) => (
                     <option key={index} value={province?.name_th}>
                       {province?.name_th}
@@ -511,18 +488,24 @@ function InterestedWorkForm({ id, dataWorks }) {
           </div>
         </div>
       )}
-
+      {editMode && (
+        <div className="mt-10">
+          <ProgressBarForm fields={fieldProgress} />
+        </div>
+      )}
       <div>
         {error && (
           <div className="w-full text-center mt-5">
             <p className="text-red-500">* {error}</p>
           </div>
         )}
-        <ButtonGroup
-          editMode={editMode}
-          setEditMode={setEditMode}
-          tailwind="mt-5"
-        />
+        {!readOnly && (
+          <ButtonGroup
+            editMode={editMode}
+            setEditMode={setEditMode}
+            tailwind="mt-5"
+          />
+        )}
       </div>
     </form>
   );

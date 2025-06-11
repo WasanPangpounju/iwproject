@@ -112,6 +112,10 @@ export async function POST(req) {
       uuid: uuid,
     });
 
+    await Resume.create({
+      uuid: uuid,
+    });
+
     const dataLog = {
       user: user,
       firstName: firstName,

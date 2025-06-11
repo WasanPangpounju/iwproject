@@ -11,7 +11,6 @@ import {
   mdiArrowLeftCircle,
   mdiContentSave,
 } from "@mdi/js";
-import Swal from "sweetalert2";
 import PDFFile from "./PDFFile";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 
@@ -21,6 +20,7 @@ import { useEducationStore } from "@/stores/useEducationStore";
 import { useSkillStore } from "@/stores/useSkillStore";
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
 import Profile from "../Profile/Profile";
+import { toast } from "react-toastify";
 
 function Resume({
   type,
@@ -259,24 +259,12 @@ function Resume({
       }
 
       if (errorStatus) {
-        Swal.fire({
-          title: "เกิดข้อผิดพลาด",
-          text: "บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง",
-          icon: "error",
-          confirmButtonText: "ตกลง",
-          confirmButtonColor: "#f27474",
-        });
+        toast.error("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง");
         return;
       }
 
-      Swal.fire({
-        title: "บันทึกข้อมูลสำเร็จ",
-        icon: "success",
-        confirmButtonText: "ตกลง",
-        confirmButtonColor: "#0d96f8",
-      }).then(() => {
-        setEditMode(false);
-      });
+      toast.success("บันทึกข้อมูลสำเร็จ");
+      setEditMode(false);
     } catch (err) {
       console.log(err);
     }
@@ -332,8 +320,18 @@ function Resume({
                         </div>
                         <div className="flex flex-wrap gap-1">
                           <p>ที่อยู่: {dataUser.address || ""}</p>
-                          <p>ตำบล{dataUser.addressTambon || " - "}</p>
-                          <p>อำเภอ{dataUser.addressAmphor || " - "}</p>
+                          <p>
+                            {dataUser.addressProvince === "กรุงเทพมหานคร"
+                              ? "เขต"
+                              : "ตำบล"}
+                            {dataUser.addressTambon || " - "}
+                          </p>
+                          <p>
+                            {dataUser.addressProvince === "กรุงเทพมหานคร"
+                              ? "แขวง"
+                              : "อำเภอ"}
+                            {dataUser.addressAmphor || " - "}
+                          </p>
                           <p>จังหวัด{dataUser.addressProvince || " - "}</p>
                           <p>รหัสไปรษณีย์ {dataUser.addressZipCode || ""}</p>
                         </div>
@@ -869,8 +867,19 @@ function Resume({
                         </div>
                         <div className="flex flex-wrap gap-1">
                           <p>ที่อยู่: {dataUser.address || ""}</p>
-                          <p>ตำบล{dataUser.addressTambon || " - "}</p>
-                          <p>อำเภอ{dataUser.addressAmphor || " - "}</p>
+                          <p>
+                            {dataUser.addressProvince === "กรุงเทพมหานคร"
+                              ? "เขต"
+                              : "ตำบล"}
+                            {dataUser.addressTambon || " - "}
+                          </p>
+                          <p>
+                            {" "}
+                            {dataUser.addressProvince === "กรุงเทพมหานคร"
+                              ? "แขวง"
+                              : "อำเภอ"}
+                            {dataUser.addressAmphor || " - "}
+                          </p>
                           <p>จังหวัด{dataUser.addressProvince || " - "}</p>
                           <p>รหัสไปรษณีย์ {dataUser.addressZipCode || ""}</p>
                         </div>
@@ -1358,8 +1367,19 @@ function Resume({
                       </div>
                       <div className="flex flex-wrap gap-1">
                         <p>ที่อยู่: {dataUser.address || ""}</p>
-                        <p>ตำบล{dataUser.addressTambon || " - "}</p>
-                        <p>อำเภอ{dataUser.addressAmphor || " - "}</p>
+                        <p>
+                          {dataUser.addressProvince === "กรุงเทพมหานคร"
+                            ? "เขต"
+                            : "ตำบล"}
+                          {dataUser.addressTambon || " - "}
+                        </p>
+                        <p>
+                          {" "}
+                          {dataUser.addressProvince === "กรุงเทพมหานคร"
+                            ? "แขวง"
+                            : "อำเภอ"}
+                          {dataUser.addressAmphor || " - "}
+                        </p>
                         <p>จังหวัด{dataUser.addressProvince || " - "}</p>
                         <p>รหัสไปรษณีย์ {dataUser.addressZipCode || ""}</p>
                       </div>
