@@ -24,6 +24,7 @@ import useUniversityStore from "@/stores/useUniversityStore";
 //store
 import { useUserStore } from "@/stores/useUserStore";
 import { toast } from "react-toastify";
+import { ROLE } from "@/const/enum";
 
 function Register({ statusAgreement }) {
 
@@ -193,6 +194,7 @@ function Register({ statusAgreement }) {
         email,
         typePerson,
         idCard,
+        role: ROLE.USER
       };
 
       const res = await createUser(body);
