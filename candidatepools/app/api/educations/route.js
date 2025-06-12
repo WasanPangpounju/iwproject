@@ -3,6 +3,7 @@ import { mongoDB } from "@/lib/mongodb";
 import Educations from "@/models/education";
 import SystemLog from "@/models/systemLog";
 import { ACTION_ACTIVITY, ROLE, TARGET_MODEL } from "@/const/enum";
+import Users from "@/models/user";
 
 export async function GET(req) {
   await mongoDB();
@@ -52,6 +53,9 @@ export async function POST(req) {
         },
         { new: true }
       );
+
+      await Users.findOneAndUpdate({ uuid }, {university: university[0]});
+
       await SystemLog.create({
         actorUuid: uuid,
         action: ACTION_ACTIVITY.UPDATE,
@@ -59,6 +63,7 @@ export async function POST(req) {
         description: `${ACTION_ACTIVITY.UPDATE} "${TARGET_MODEL.EDUCATION}"`,
         data: updatedEducation,
       });
+
       return NextResponse.json(
         { educations: updatedEducation },
         { status: 200 }

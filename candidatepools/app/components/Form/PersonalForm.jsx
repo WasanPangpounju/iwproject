@@ -881,6 +881,7 @@ function PersonalForm({
           tailwind={"w-60"}
           editMode={editMode}
           placeholder={"กรอกที่อยู่อีเมล์"}
+          type={"email"}
         />
         {!isStudent && (
           <>
