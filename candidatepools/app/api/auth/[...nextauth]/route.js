@@ -14,7 +14,7 @@ import { ACTION_ACTIVITY, TARGET_MODEL, ROLE } from "@/const/enum";
 
 // import bcrypt from 'bcrypt';
 
-const authOption = {
+export const authOption = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,

@@ -8,6 +8,9 @@ import Chats from "@/models/chat";
 import SystemLog from "@/models/systemLog";
 import { NextResponse } from "next/server";
 import { ACTION_ACTIVITY, ROLE, TARGET_MODEL } from "@/const/enum";
+import { getServerSession } from "next-auth";
+import { authOption } from "../../auth/[...nextauth]/route";
+import { checkUserPermission } from "@/utils/auth/checkUserPermission";
 
 export async function GET(req) {
   const id = req.nextUrl.pathname.split("/").filter(Boolean).pop();
@@ -17,6 +20,12 @@ export async function GET(req) {
 }
 
 export async function DELETE(req) {
+  const session = await getServerSession(authOption);
+
+  if (session?.user?.role !== ROLE.SUPERVISOR && session?.user?.role !== ROLE.ADMIN) {
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+  }
+
   const id = req.nextUrl.pathname.split("/").filter(Boolean).pop(); // uuid ที่ต้องการลบ
   await mongoDB();
   const user = await Users.findOne({ uuid: id });
@@ -85,6 +94,8 @@ export async function DELETE(req) {
 }
 
 export async function PUT(req) {
+  const session = await getServerSession(authOption);
+
   const id = req.nextUrl.pathname.split("/").filter(Boolean).pop();
 
   try {
@@ -133,6 +144,15 @@ export async function PUT(req) {
       role,
       position,
     } = await req.json();
+
+    const permission = checkUserPermission(session?.user?.role, role);
+
+    if (!permission.allowed) {
+      return NextResponse.json(
+        { message: permission.message },
+        { status: permission.status }
+      );
+    }
 
     const data = {
       user: user,

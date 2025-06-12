@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { v4 as uuidv4 } from "uuid"; // สร้าง UUID ใหม่
 import { mongoDB } from "@/lib/mongodb";
 import Users from "@/models/user";
@@ -8,8 +9,12 @@ import { ACTION_ACTIVITY, ROLE, TARGET_MODEL } from "@/const/enum";
 import HistoryWork from "@/models/historyWork";
 import Skills from "@/models/skill";
 import Resume from "@/models/resume";
+import { authOption } from "../auth/[...nextauth]/route";
+import { checkUserPermission } from "@/utils/auth/checkUserPermission";
 
 export async function POST(req) {
+  const session = await getServerSession(authOption);
+
   const {
     id,
     user,
@@ -50,6 +55,16 @@ export async function POST(req) {
     role,
     position,
   } = await req.json();
+
+  const permission = checkUserPermission(session?.user?.role, role);
+
+  if (!permission.allowed) {
+    return NextResponse.json(
+      { message: permission.message },
+      { status: permission.status }
+    );
+  }
+
   try {
     // เชื่อมต่อ MongoDB
     await mongoDB();
@@ -154,6 +169,7 @@ export async function POST(req) {
       role: role,
       position: position,
     };
+
     await SystemLog.create({
       actorUuid: uuid,
       action: ACTION_ACTIVITY.CREATE,
