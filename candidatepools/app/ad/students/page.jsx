@@ -22,9 +22,11 @@ function page() {
   const [historyWorkByUni, setHistoryWorkByUni] = useState();
   useEffect(() => {
     if (!dataStudents || !dataUser?.university || !dataEducationAll) return;
+    
     const tempStudent = dataStudents.filter((item) =>
       item.university.includes(dataUser.university)
     );
+
     setStudentByUni(tempStudent);
     setEducationByUni(
       dataEducationAll.filter((item) =>
