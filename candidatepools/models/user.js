@@ -133,6 +133,9 @@ const UserSchema = new Schema(
       type: Date,
       default: null,
     },
+    comeForm: {
+      type: String,
+    },
   },
   {
     timestamps: true,

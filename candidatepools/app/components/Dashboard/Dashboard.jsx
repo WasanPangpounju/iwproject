@@ -2,17 +2,12 @@
 
 import React from "react";
 import { useTheme } from "@/app/ThemeContext";
-import Icon from "@mdi/react";
-import {
-  mdiAccountSchool,
-  mdiAccountEdit,
-  mdiFaceMan,
-  mdiFaceWoman,
-} from "@mdi/js";
 import PieChart from "@/app/components/Chart/ChartDisabled";
 
 import { GENDER, TYPE_PERSON } from "@/const/enum";
 import Image from "next/image";
+import comeFormChoice from "@/assets/comeFormChoice";
+import { Tooltip } from "@mui/material";
 
 function Dashboard({ dataStudents, dataEducationAll }) {
   //Theme
@@ -232,6 +227,31 @@ function Dashboard({ dataStudents, dataEducationAll }) {
                   <p>{`< 50`}</p>
                   <p>{`${count_age50 === 0 ? "-" : `${count_age50} คน`} `}</p>
                 </div>
+              </div>
+            </div>
+            <div className="flex flex-col bg-gray-200 gap-3 p-5 w-[250px]">
+              <div className=" bg-white border-2 border-[#caaa37] rounded-sm gap-2 py-2 px-5 flex flex-col justify-center h-full">
+                <p className="mb-1 ">รู้จักจากช่องทาง</p>
+
+                {[...comeFormChoice, "อื่นๆ"].map((item, index) => {
+                  const count = dataStudents.filter((student) => {
+                    if (item === "อื่นๆ") {
+                      return !comeFormChoice.includes(student.comeForm);
+                    }
+                    return student.comeForm === item;
+                  }).length;
+
+                  return (
+                    <Tooltip key={index} title={`${item}: ${count} คน`}>
+                      <div className="flex justify-between">
+                        <p className="text-ellipsis overflow-hidden whitespace-nowrap w-28">
+                          {item}
+                        </p>
+                        <p>{count} คน</p>
+                      </div>
+                    </Tooltip>
+                  );
+                })}
               </div>
             </div>
           </div>
