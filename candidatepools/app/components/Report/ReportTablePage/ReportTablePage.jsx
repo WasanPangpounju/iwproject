@@ -304,6 +304,12 @@ const columnAll = [
     align: "center",
   },
   {
+    id: "comeForm",
+    label: "รู้จักจาก",
+    minWidth: 170,
+    align: "center",
+  },
+  {
     id: "uuid",
     label: "เรซูเม่",
     minWidth: 170,

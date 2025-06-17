@@ -54,7 +54,7 @@ const accessRules = [
   {
     path: "/api/messages",
     methods: ["GET"],
-    roles: [ROLE.SUPERVISOR],
+    roles: [ROLE.ADMIN, ROLE.SUPERVISOR],
     exact: true,
   },
   {
