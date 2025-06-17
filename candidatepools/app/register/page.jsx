@@ -10,9 +10,7 @@ import {
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import HeaderLogo from "../components/HeaderLogo";
-import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import Loader from "../components/Loader";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Footer from "../components/Footer";
@@ -25,9 +23,10 @@ import useUniversityStore from "@/stores/useUniversityStore";
 import { useUserStore } from "@/stores/useUserStore";
 import { toast } from "react-toastify";
 import { ROLE } from "@/const/enum";
+import SelectForm from "../components/Form/SelectForm";
+import comeFormChoice from "@/assets/comeFormChoice";
 
 function Register({ statusAgreement }) {
-
   //store
   const { universities } = useUniversityStore();
   const { checkUserExists, createUser } = useUserStore();
@@ -62,6 +61,8 @@ function Register({ statusAgreement }) {
   const [typePerson, setTypePerson] = useState("");
   const [idCard, setIdCard] = useState("");
   const [error, setError] = useState("");
+  const [comeForm, setComeForm] = useState("");
+  const [comeFormMore, setComeFormMore] = useState(false);
 
   //validate session
   const { status, data: session } = useSession();
@@ -129,7 +130,8 @@ function Register({ statusAgreement }) {
       !lastName ||
       !typeDisabled ||
       !university ||
-      !email
+      !email ||
+      !comeForm
     ) {
       setError("กรุณากรอกข้อมูลให้ครบทุกช่อง");
 
@@ -194,7 +196,8 @@ function Register({ statusAgreement }) {
         email,
         typePerson,
         idCard,
-        role: ROLE.USER
+        comeForm,
+        role: ROLE.USER,
       };
 
       const res = await createUser(body);
@@ -488,6 +491,55 @@ function Register({ statusAgreement }) {
               readOnly={!!session?.user?.email}
             />
           </div>
+          <div
+            className={`${fontSize} mt-4 w-[35rem] font-bold  flex justify-between items-center`}
+          >
+            <label>คุณทราบช่องทางการกรอกข้อมูลจากแหล่งไหน:</label>
+            <div className="relative ">
+              <select
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === "อื่นๆ") {
+                    setComeFormMore(true);
+                    setComeForm("");
+                    return;
+                  }
+                  setComeFormMore(false);
+                  setComeForm(e.target.value);
+                }}
+                className={`${bgColorMain} cursor-pointer w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                style={{ appearance: "none" }}
+              >
+                <option value="">ทราบข้อมูลจากแหล่งไหน</option>
+                {comeFormChoice.map((item, index) => (
+                  <option key={index} value={item}>
+                    {item}
+                  </option>
+                ))}
+                <option value="อื่นๆ">อื่นๆ</option>
+              </select>
+              <Icon
+                className="cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3"
+                path={mdiArrowDownDropCircle}
+                size={0.8}
+              />
+            </div>
+          </div>
+          {comeFormMore && (
+            <div
+              className={`${fontSize} mt-4 w-[35rem] font-bold  flex justify-between items-center`}
+            >
+              <label>รู้จักจาก:</label>
+              <input
+                onChange={(e) => setComeForm(e.target.value)}
+                type="text"
+                className={`${bgColorMain} w-96 border  border-gray-400 py-2 px-4 rounded-lg `}
+                placeholder="รู้จักจาก..."
+                value={comeForm}
+              />
+            </div>
+          )}
+
           {error ? (
             <div className="mt-3  text-red-400  w-96 self-end">*{error}</div>
           ) : null}
