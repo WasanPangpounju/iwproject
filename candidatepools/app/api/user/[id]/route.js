@@ -143,6 +143,7 @@ export async function PUT(req) {
       typePerson,
       role,
       position,
+      comeForm
     } = await req.json();
 
     const permission = checkUserPermission(session?.user?.role, role);
@@ -191,6 +192,7 @@ export async function PUT(req) {
       typePerson: typePerson,
       role: role,
       position: position,
+      comeForm: comeForm
     };
 
     // อัปเดตข้อมูลผู้ใช้ในฐานข้อมูล
@@ -234,6 +236,7 @@ export async function PUT(req) {
         typePerson,
         role,
         position,
+        comeForm
       },
       { new: true } // ส่งกลับเอกสารที่อัปเดตใหม่
     );

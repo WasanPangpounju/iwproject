@@ -54,6 +54,7 @@ export async function POST(req) {
     typePerson,
     role,
     position,
+    comeForm
   } = await req.json();
 
   const permission = checkUserPermission(session?.user?.role, role);
@@ -110,6 +111,7 @@ export async function POST(req) {
       typePerson: typePerson,
       role: role,
       position: position,
+      comeForm: comeForm
     });
 
     await Educations.create({
@@ -168,6 +170,7 @@ export async function POST(req) {
       typePerson: typePerson,
       role: role,
       position: position,
+      comeForm: comeForm
     };
 
     await SystemLog.create({

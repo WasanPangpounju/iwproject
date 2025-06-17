@@ -107,7 +107,7 @@ function page() {
           value={search}
           setValue={setSearch}
           tailwind="w-64 py-2"
-          placeholder={"ค้นหาชื่อ, อีเมล, ชื่อผู้ใช้"}
+          placeholder={"ค้นหาชื่อบัญชี"}
         />
         <SelectLabelForm
           editMode={true}
