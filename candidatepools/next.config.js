@@ -38,6 +38,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "*.fna.fbcdn.net", // สำรองแบบ wildcard (ใช้ได้เฉพาะบาง CDN setup)
       },
+      {
+        protocol: "https",
+        hostname: "**.fna.fbcdn.net", // เฟซบุ๊กใช้ CDN ตระกูลนี้
+      },
     ],
   },
   webpack: (config) => {

@@ -56,6 +56,7 @@ export default function Home() {
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     if (!email || !password) {
       setError("กรุณากรอก อีเมลและรหัสผ่านของคุณ");
@@ -101,6 +102,7 @@ export default function Home() {
       toast.error("เกิดข้อผิดพลาดกรุณาลองใหม่ในภายหลัง");
       console.error("Unexpected error:", err);
     }
+    
   }
 
   //forgot Password
