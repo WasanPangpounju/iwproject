@@ -4,7 +4,7 @@ import { mongoDB } from "@/lib/mongodb";
 import Users from "@/models/user";
 import GoogleProvider from "next-auth/providers/google";
 import LineProvider from "next-auth/providers/line";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 
 //lib
 import { addSystemLog } from "@/lib/logHelper";

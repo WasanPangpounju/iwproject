@@ -7,7 +7,7 @@ import { useEducationStore } from "@/stores/useEducationStore";
 
 import Dashboard from "../components/Dashboard/Dashboard";
 function page() {
-  const { dataStudents, dataUserAll } = useUserStore();
+  const { dataUserAll } = useUserStore();
   const { dataEducationAll } = useEducationStore();
   return (
     <Dashboard

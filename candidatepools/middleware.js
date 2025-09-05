@@ -108,7 +108,7 @@ export async function middleware(req) {
       (rule.startsWith && pathname.startsWith(rule.path));
 
     const methodAllowed = !rule.methods || rule.methods.includes(method);
-    const roleAllowed = rule.roles.includes(token.role);
+    const roleAllowed = rule.roles ? rule.roles.includes(token.role) : true;
 
     if (isMatch && methodAllowed && !roleAllowed) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
@@ -130,6 +130,5 @@ export const config = {
     "/api/skill/:path*",
     "/api/systemLog/:path*",
     "/api/upload/:path*",
-    // "/api/user/:path*",
   ],
 };

@@ -255,17 +255,20 @@ function Dashboard({ dataStudents, dataEducationAll }) {
               </div>
             </div>
           </div>
-          <div className="flex mt-10 overflow-scroll">
-            <PieChart
-              d1={count_d1}
-              d2={count_d2}
-              d3={count_d3}
-              d4={count_d4}
-              d5={count_d5}
-              d6={count_d6}
-              d7={count_d7}
-              allStudents={count_graduation + count_students}
-            />
+          <div className="mt-10 flex flex-col gap-2 ">
+            <p className="font-bold">{`จำนวนนักศึกษาพิการ (แยกตามประเภท)`}</p>
+            <div className="flex overflow-scroll mt-5 ">
+              <PieChart
+                d1={count_d1}
+                d2={count_d2}
+                d3={count_d3}
+                d4={count_d4}
+                d5={count_d5}
+                d6={count_d6}
+                d7={count_d7}
+                allStudents={count_graduation + count_students}
+              />
+            </div>
           </div>
         </>
       )}

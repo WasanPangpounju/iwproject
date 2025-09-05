@@ -56,7 +56,7 @@ function StudentReportTable({
   dataStudents,
   dataEducationAll,
   dataHistoryWorkAll,
-  dataWorks,
+  dataWorkAll,
   path,
 }) {
   //Theme
@@ -108,7 +108,7 @@ function StudentReportTable({
       );
       const name = `${std?.firstName} ${std?.lastName}`;
 
-      const interestedWork = dataWorks?.find(
+      const interestedWork = dataWorkAll?.find(
         (work) => work?.uuid === std?.uuid
       );
       const updatedStd = {
@@ -154,6 +154,7 @@ function StudentReportTable({
       const tempInterestedWork = updatedStd?.interestedWork?.find((work) =>
         work?.type.toLowerCase().includes(workSearch.toLowerCase())
       );
+
       const hasMatchInterestedWork = updatedStd?.interestedWork?.some((work) =>
         work?.type
           .toLowerCase()
@@ -264,9 +265,7 @@ function StudentReportTable({
                   <option value="พิการทางการเรียนรู้">
                     พิการทางการเรียนรู้
                   </option>
-                  <option value="พิการทางออทิสติก">
-                    พิการทางออทิสติก
-                  </option>
+                  <option value="พิการทางออทิสติก">พิการทางออทิสติก</option>
                 </select>
                 <Icon
                   className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}
