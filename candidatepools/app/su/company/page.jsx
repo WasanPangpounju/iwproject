@@ -13,7 +13,7 @@ import {
 } from "@mdi/js";
 import dataWorkType from "@/assets/dataWorkType";
 import Link from "next/link";
-import useProvinceData from "@/utils/province";
+import { useProvince } from "@/hooks/useProvince";
 
 //table
 import Paper from "@mui/material/Paper";
@@ -63,7 +63,7 @@ function CompanyPage() {
   const { data: session } = useSession();
 
   //data Province
-  const dataProvince = useProvinceData();
+  const { dataProvince } = useProvince();
 
   //Theme
   const { bgColor, bgColorWhite, bgColorMain, bgColorMain2, inputGrayColor } =
@@ -162,7 +162,6 @@ function CompanyPage() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
 
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>

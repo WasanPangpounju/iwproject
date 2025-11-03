@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
 import { mdiArrowDownDropCircle } from "@mdi/js";
-import useProvinceData from "@/utils/province";
+import { useProvince } from "@/hooks/useProvince";
 import { useRouter } from "next/navigation";
 import ButtonGroup from "@/app/components/Form/ButtonGroup/ButtonGroup";
 
@@ -47,7 +47,7 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
   const [getAddressIdCardAmphor, setGetAddressIdCardAmphor] = useState("");
   const [getAddressIdCardTambon, setGetAddressIdCardTambon] = useState("");
   const [getAddressIdCardZipCode, setGetAddressIdCardZipCode] = useState("");
-  const dataProvince = useProvinceData();
+  const { dataProvince } = useProvince();
 
   const [error, setError] = useState("");
 

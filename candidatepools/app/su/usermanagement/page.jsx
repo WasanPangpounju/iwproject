@@ -165,7 +165,7 @@ function UserManagement() {
             ? "super user"
             : "admin"
         }`,
-        "s",
+        "",
         `${std?.uuid}`
       );
     })

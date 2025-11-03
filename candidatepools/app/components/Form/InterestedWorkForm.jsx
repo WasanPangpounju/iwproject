@@ -6,7 +6,7 @@ import Icon from "@mdi/react";
 import { mdiPlus, mdiCloseCircle, mdiArrowDownDropCircle } from "@mdi/js";
 import Swal from "sweetalert2";
 import dataWorkType from "@/assets/dataWorkType";
-import useProvinceData from "@/utils/province";
+import { useProvince } from "@/hooks/useProvince";
 
 //store
 import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
@@ -310,7 +310,7 @@ function InterestedWorkForm({ id, dataWorks, readOnly = false }) {
   }, [dataWorks]);
 
   //set province
-  const dataProvince = useProvinceData();
+  const { dataProvince } = useProvince();
 
   const fieldProgress = [
     workType[0],

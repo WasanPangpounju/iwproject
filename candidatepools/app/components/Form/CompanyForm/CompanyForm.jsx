@@ -5,7 +5,7 @@ import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
 import { mdiPlus, mdiCloseCircle, mdiArrowDownDropCircle } from "@mdi/js";
 import Swal from "sweetalert2";
-import useProvinceData from "@/utils/province";
+import { useProvince } from "@/hooks/useProvince";
 import dataWorkType from "@/assets/dataWorkType";
 import dates from "@/app/data/date.json";
 
@@ -65,7 +65,7 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
   const [getAddressIdCardAmphor, setGetAddressIdCardAmphor] = useState("");
   const [getAddressIdCardTambon, setGetAddressIdCardTambon] = useState("");
   const [getAddressIdCardZipCode, setGetAddressIdCardZipCode] = useState("");
-  const dataProvince = useProvinceData();
+  const { dataProvince } = useProvince();
 
   const [error, setError] = useState("");
 
@@ -316,11 +316,8 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
   }, [dataCompany, dataProvince]);
 
   const CheckAddressSame = (checked) => {
-    if (
-      !addressIdCard ||
-      !addressIdCardZipCode
-    ) {
-      setError("ไม่พบข้อมูลที่ตั้งกรุณาระบุข้อมูลที่ตั้งก่อน")
+    if (!addressIdCard || !addressIdCardZipCode) {
+      setError("ไม่พบข้อมูลที่ตั้งกรุณาระบุข้อมูลที่ตั้งก่อน");
       return;
     }
     if (checked === true) {

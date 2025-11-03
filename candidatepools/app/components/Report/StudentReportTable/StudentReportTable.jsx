@@ -113,13 +113,17 @@ function StudentReportTable({
       );
       const updatedStd = {
         ...std,
-        interestedWork: interestedWork?.interestedWork || [
-          {
-            detail: "temp",
-            province: "temp",
-            type: "temp",
-          },
-        ],
+        interestedWork:
+          interestedWork?.interestedWork &&
+          interestedWork.interestedWork.length > 0
+            ? interestedWork.interestedWork
+            : [
+                {
+                  detail: "temp",
+                  province: "temp",
+                  type: "temp",
+                },
+              ],
       };
 
       const hasMatchUniversityFilter = education?.university?.find((uni) =>

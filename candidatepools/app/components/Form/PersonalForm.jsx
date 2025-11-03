@@ -90,7 +90,6 @@ function PersonalForm({
     : null;
   const { dataProvince } = useProvince();
 
-
   // สร้าง Date object สำหรับวันที่ปัจจุบัน
   const today = new Date();
 

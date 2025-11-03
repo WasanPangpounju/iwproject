@@ -17,10 +17,10 @@ function EditPersonal() {
 
   //stores
   const { dataUser } = useUserStore();
-  
+
   return (
     <div className={`${bgColorMain2} rounded-lg p-5 pb-10`}>
-      <PersonalForm dataUser={dataUser}/>
+      <PersonalForm dataUser={dataUser} />
     </div>
   );
 }

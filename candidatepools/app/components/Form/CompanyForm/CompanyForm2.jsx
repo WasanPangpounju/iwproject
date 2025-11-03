@@ -5,7 +5,7 @@ import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
 import { mdiPlus, mdiCloseCircle } from "@mdi/js";
 import Swal from "sweetalert2";
-import useProvinceData from "@/utils/province";
+import { useProvince } from "@/hooks/useProvince";
 import dataWorkType from "@/assets/dataWorkType";
 import dates from "@/app/data/date.json";
 
@@ -43,7 +43,7 @@ function CompanyForm2({ id, dataCompany, isEdit = false, path }) {
   const [timeStartWork, setTimeStartWork] = useState(null);
   const [welfare, setWelfare] = useState([]);
 
-  const dataProvince = useProvinceData();
+  const { dataProvince } = useProvince();
 
   const [error, setError] = useState("");
 
