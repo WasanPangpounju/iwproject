@@ -10,7 +10,7 @@ import {
   mdiArrowDownDropCircle,
   mdiCloseThick,
 } from "@mdi/js";
-import useProvinceData from "@/utils/province";
+import { useProvince } from "@/hooks/useProvince";
 
 //table
 import Paper from "@mui/material/Paper";
@@ -63,7 +63,7 @@ function AdminManagement() {
   const { dataAdmin } = useUserStore();
 
   //data Province
-  const dataProvince = useProvinceData();
+  const { dataProvince } = useProvince();
 
   //Theme
   const { bgColor, bgColorWhite, bgColorMain, bgColorMain2, inputGrayColor } =
