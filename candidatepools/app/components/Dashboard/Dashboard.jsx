@@ -257,7 +257,7 @@ function Dashboard({ dataStudents, dataEducationAll }) {
           </div>
           <div className="mt-10 flex flex-col gap-2 ">
             <p className="font-bold">{`จำนวนนักศึกษาพิการ (แยกตามประเภท)`}</p>
-            <div className="flex overflow-scroll mt-5 ">
+            <div className="flex scroll mt-5 ">
               <PieChart
                 d1={count_d1}
                 d2={count_d2}
