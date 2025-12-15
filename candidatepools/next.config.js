@@ -53,6 +53,11 @@ const nextConfig = {
   // assetPrefix: process.env.NODE_ENV === 'production' ? 'https://career.iwsif.org' : '', // Comment out or remove
   async rewrites() {
     return [
+          // ✅ ทำให้ /api/... (ไม่มี /) ไปที่ /api/.../ (มี /) แบบไม่ redirect
+    {
+      source: "/api/:path*",
+      destination: "/api/:path*/",
+    },
       {
         source: "/supervisor/students/detail/:id",
         destination: "/supervisor/students/detail/[id].jsx",
