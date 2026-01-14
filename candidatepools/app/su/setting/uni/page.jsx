@@ -25,6 +25,44 @@ function page() {
     updateUniversity,
   } = useUniversityStore();
 
+    useEffect(() => {
+    fetchUniversities();
+  }, [fetchUniversities]);
+    const [uniSearch, setUniSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const rows = useMemo(() => {
+    const list = Array.isArray(universities) ? universities : [];
+    const search = uniSearch.toLowerCase();
+
+    return list
+      .map((item, index) => ({
+        no: index + 1,
+        university: item.university,
+        action: item._id,
+        id: item._id,
+      }))
+      .filter((uni) => (uni.university || "").toLowerCase().includes(search));
+  }, [universities, uniSearch]);
+
+  if (loading) return null; // หรือทำ UI loading ก็ได้
+
+  return (
+    <div>
+      {/* ส่ง rows ที่เป็น array ชัวร์ ๆ */}
+      <ReportTable
+        columns={columns}
+        resultRows={rows}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        handleChangePage={handleChangePage}
+        handleChangeRowsPerPage={handleChangeRowsPerPage}
+      />
+    </div>
+  );
+}
+
   const { bgColorMain2, bgColor } = useTheme();
 
   //state
