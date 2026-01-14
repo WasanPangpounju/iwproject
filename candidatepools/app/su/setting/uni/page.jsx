@@ -1,8 +1,5 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
 import React, { useEffect, useMemo, useState } from "react";
 
 import { useTheme } from "@/app/ThemeContext";
@@ -18,6 +15,10 @@ import Swal from "sweetalert2";
 
 import useUniversityStore from "@/stores/useUniversityStore";
 
+// ✅ วางไว้หลัง import เพื่อกัน webpack/syntax งอแง
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default function Page() {
   const { bgColorMain2, bgColor } = useTheme();
 
@@ -30,17 +31,14 @@ export default function Page() {
     updateUniversity,
   } = useUniversityStore();
 
-  // โหลดรายการตอนเข้า page
   useEffect(() => {
     fetchUniversities();
   }, [fetchUniversities]);
 
-  // state
   const [uniSearch, setUniSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  // table handlers
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -77,7 +75,6 @@ export default function Page() {
     },
   ];
 
-  // rows (universities ใน store เป็น array)
   const rows = useMemo(() => {
     const list = Array.isArray(universities) ? universities : [];
     const search = uniSearch.toLowerCase();
@@ -85,14 +82,13 @@ export default function Page() {
     return list
       .map((item: any, index: number) => ({
         no: index + 1,
-        university: item.university,
-        action: item._id,
-        id: item._id,
+        university: item?.university ?? "",
+        action: item?._id,
+        id: item?._id,
       }))
       .filter((uni: any) => (uni.university || "").toLowerCase().includes(search));
   }, [universities, uniSearch]);
 
-  // modal add/edit
   async function insertModel(id?: string, name?: string) {
     Swal.fire({
       title: `เพิ่ม/แก้ไข ชื่อสถาบันการศึกษา`,
@@ -114,12 +110,11 @@ export default function Page() {
     }).then(async (result) => {
       if (!result.isConfirmed) return;
 
-      const inputName = result.value as string;
+      const inputName = String(result.value || "");
 
       try {
         if (id) await updateUniversity(id, inputName);
         else await addUniversity(inputName);
-
         toast.success("บันทึกสำเร็จ");
       } catch (err) {
         toast.error("เกิดข้อผิดพลาดในการบันทึก");
@@ -128,7 +123,6 @@ export default function Page() {
     });
   }
 
-  // modal delete
   async function deletedUni(id: string, name: string) {
     Swal.fire({
       title: `คุณต้องการลบชื่อสถาบัน\n"${name}" ?`,
@@ -151,7 +145,6 @@ export default function Page() {
     });
   }
 
-  // loading state
   if (loading) return null;
 
   return (
