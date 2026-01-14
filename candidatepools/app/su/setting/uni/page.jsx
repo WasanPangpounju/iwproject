@@ -143,7 +143,7 @@ function page() {
     });
   }
 
-  if (!universities) return;
+  if (!universities) return null;
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
       <p>ตั้งค่าสถาบันการศึกษา</p>
