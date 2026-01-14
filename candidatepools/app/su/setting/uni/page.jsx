@@ -1,82 +1,52 @@
 "use client";
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { useTheme } from "@/app/ThemeContext";
 import InputLabelForm from "@/app/components/Form/InputLabelForm";
 import ButtonBG2 from "@/app/components/Button/ButtonBG2";
-import { mdiDelete, mdiPencil, mdiPlus } from "@mdi/js";
 import ReportTable from "@/app/components/Table/ReportTable";
+
 import Icon from "@mdi/react";
+import { mdiDelete, mdiPencil, mdiPlus } from "@mdi/js";
+
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
-//store
 import useUniversityStore from "@/stores/useUniversityStore";
 
-function page() {
-  //store
+export default function Page() {
+  const { bgColorMain2, bgColor } = useTheme();
+
   const {
     universities,
+    loading,
+    fetchUniversities,
     deleteUniversity,
     addUniversity,
     updateUniversity,
   } = useUniversityStore();
 
-    useEffect(() => {
+  // โหลดรายการตอนเข้า page
+  useEffect(() => {
     fetchUniversities();
   }, [fetchUniversities]);
-    const [uniSearch, setUniSearch] = useState("");
+
+  // state
+  const [uniSearch, setUniSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const rows = useMemo(() => {
-    const list = Array.isArray(universities) ? universities : [];
-    const search = uniSearch.toLowerCase();
-
-    return list
-      .map((item, index) => ({
-        no: index + 1,
-        university: item.university,
-        action: item._id,
-        id: item._id,
-      }))
-      .filter((uni) => (uni.university || "").toLowerCase().includes(search));
-  }, [universities, uniSearch]);
-
-  if (loading) return null; // หรือทำ UI loading ก็ได้
-
-  return (
-    <div>
-      {/* ส่ง rows ที่เป็น array ชัวร์ ๆ */}
-      <ReportTable
-        columns={columns}
-        resultRows={rows}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        handleChangePage={handleChangePage}
-        handleChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-    </div>
-  );
-}
-
-  const { bgColorMain2, bgColor } = useTheme();
-
-  //state
-  const [uniSearch, setUniSearch] = useState("");
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-  //table
-  const handleChangePage = (event, newPage) => {
+  // table handlers
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(Number(event.target.value));
     setPage(0);
   };
 
@@ -88,17 +58,17 @@ function page() {
       label: "การจัดการ",
       minWidth: 10,
       align: "right",
-      render: (value, row) => (
+      render: (_value: unknown, row: any) => (
         <div className="flex gap-2 justify-end">
           <Icon
             onClick={() => insertModel(row.id, row.university)}
-            className={`cursor-pointer text-gray-40 mx-1`}
+            className="cursor-pointer text-gray-40 mx-1"
             path={mdiPencil}
             size={0.8}
           />
           <Icon
             onClick={() => deletedUni(row.id, row.university)}
-            className={`cursor-pointer text-gray-40 mx-1`}
+            className="cursor-pointer text-gray-40 mx-1"
             path={mdiDelete}
             size={0.8}
           />
@@ -107,30 +77,28 @@ function page() {
     },
   ];
 
-  const rows = universities?.data
-    ?.map((item, index) => {
-      return {
+  // rows (universities ใน store เป็น array)
+  const rows = useMemo(() => {
+    const list = Array.isArray(universities) ? universities : [];
+    const search = uniSearch.toLowerCase();
+
+    return list
+      .map((item: any, index: number) => ({
         no: index + 1,
         university: item.university,
         action: item._id,
         id: item._id,
-      };
-    })
-    ?.filter((uni) => {
-      const search = uniSearch.toLowerCase();
-      const name = uni.university.toLowerCase();
-      return name.includes(search);
-    });
+      }))
+      .filter((uni: any) => (uni.university || "").toLowerCase().includes(search));
+  }, [universities, uniSearch]);
 
-  //open model
-  async function insertModel(id, name) {
+  // modal add/edit
+  async function insertModel(id?: string, name?: string) {
     Swal.fire({
       title: `เพิ่ม/แก้ไข ชื่อสถาบันการศึกษา`,
       input: "text",
-      inputValue: name || "", // กำหนด default value ถ้ามี name
-      inputAttributes: {
-        autocapitalize: "off",
-      },
+      inputValue: name || "",
+      inputAttributes: { autocapitalize: "off" },
       showCancelButton: true,
       cancelButtonText: "ยกเลิก",
       confirmButtonText: "ยืนยัน",
@@ -141,29 +109,27 @@ function page() {
           Swal.showValidationMessage("กรุณากรอกชื่อสถาบัน");
           return;
         }
-
         return input;
       },
     }).then(async (result) => {
-      if (result.isConfirmed) {
-        const inputName = result.value; // ค่า input ที่ผู้ใช้กรอกหรือแก้ไข
-        try {
-          if (id) {
-            await updateUniversity(id, inputName);
-          } else {
-            await addUniversity(inputName);
-          }
-          toast.success("บันทึกสำเร็จ");
-        } catch (err) {
-          toast.error("เกิดข้อผิดพลาดในการบันทึก");
-          console.error(err);
-        }
+      if (!result.isConfirmed) return;
+
+      const inputName = result.value as string;
+
+      try {
+        if (id) await updateUniversity(id, inputName);
+        else await addUniversity(inputName);
+
+        toast.success("บันทึกสำเร็จ");
+      } catch (err) {
+        toast.error("เกิดข้อผิดพลาดในการบันทึก");
+        console.error(err);
       }
     });
   }
 
-  //delete model
-  async function deletedUni(id, name) {
+  // modal delete
+  async function deletedUni(id: string, name: string) {
     Swal.fire({
       title: `คุณต้องการลบชื่อสถาบัน\n"${name}" ?`,
       icon: "warning",
@@ -173,38 +139,45 @@ function page() {
       confirmButtonColor: "#f27474",
       allowOutsideClick: () => !Swal.isLoading(),
     }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await deleteUniversity(id);
-          toast.success("ลบข้อมูลเรียบร้อยแล้ว");
-        } catch {
-          toast.error("เกิดข้อผิดพลาดในการบันทึก");
-        }
+      if (!result.isConfirmed) return;
+
+      try {
+        await deleteUniversity(id);
+        toast.success("ลบข้อมูลเรียบร้อยแล้ว");
+      } catch (err) {
+        toast.error("เกิดข้อผิดพลาดในการลบ");
+        console.error(err);
       }
     });
   }
 
-  if (!universities) return null;
+  // loading state
+  if (loading) return null;
+
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
       <p>ตั้งค่าสถาบันการศึกษา</p>
+
       <div className="mt-5 flex justify-between items-end">
         <InputLabelForm
-          label={"สถาบันการศึกษา"}
+          label="สถาบันการศึกษา"
           value={uniSearch}
           setValue={setUniSearch}
           editMode={true}
-          placeholder={"ชื่อสถาบันการศึกษา"}
-          tailwind={"w-60"}
+          placeholder="ชื่อสถาบันการศึกษา"
+          tailwind="w-60"
         />
+
         <ButtonBG2
           handleClick={() => insertModel()}
           mdiIcon={mdiPlus}
-          text={"เพิ่ม"}
-          tailwind={"h-fit"}
+          text="เพิ่ม"
+          tailwind="h-fit"
         />
       </div>
-      <hr className={` my-7 border-gray-500`} />
+
+      <hr className="my-7 border-gray-500" />
+
       <ReportTable
         columns={columns}
         resultRows={rows}
@@ -216,5 +189,3 @@ function page() {
     </div>
   );
 }
-
-export default page;
