@@ -15,7 +15,6 @@ import Swal from "sweetalert2";
 
 import useUniversityStore from "@/stores/useUniversityStore";
 
-// ✅ วางไว้หลัง import เพื่อกัน webpack/syntax งอแง
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -39,11 +38,13 @@ export default function Page() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const handleChangePage = (_event: unknown, newPage: number) => {
+  // ✅ JS version (ไม่มี type)
+  const handleChangePage = (_event, newPage) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // ✅ JS version (ไม่มี type)
+  const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(Number(event.target.value));
     setPage(0);
   };
@@ -56,7 +57,7 @@ export default function Page() {
       label: "การจัดการ",
       minWidth: 10,
       align: "right",
-      render: (_value: unknown, row: any) => (
+      render: (_value, row) => (
         <div className="flex gap-2 justify-end">
           <Icon
             onClick={() => insertModel(row.id, row.university)}
@@ -77,21 +78,21 @@ export default function Page() {
 
   const rows = useMemo(() => {
     const list = Array.isArray(universities) ? universities : [];
-    const search = uniSearch.toLowerCase();
+    const search = (uniSearch || "").toLowerCase();
 
     return list
-      .map((item: any, index: number) => ({
+      .map((item, index) => ({
         no: index + 1,
         university: item?.university ?? "",
         action: item?._id,
         id: item?._id,
       }))
-      .filter((uni: any) => (uni.university || "").toLowerCase().includes(search));
+      .filter((uni) => (uni.university || "").toLowerCase().includes(search));
   }, [universities, uniSearch]);
 
-  async function insertModel(id?: string, name?: string) {
+  async function insertModel(id, name) {
     Swal.fire({
-      title: `เพิ่ม/แก้ไข ชื่อสถาบันการศึกษา`,
+      title: "เพิ่ม/แก้ไข ชื่อสถาบันการศึกษา",
       input: "text",
       inputValue: name || "",
       inputAttributes: { autocapitalize: "off" },
@@ -115,6 +116,7 @@ export default function Page() {
       try {
         if (id) await updateUniversity(id, inputName);
         else await addUniversity(inputName);
+
         toast.success("บันทึกสำเร็จ");
       } catch (err) {
         toast.error("เกิดข้อผิดพลาดในการบันทึก");
@@ -123,7 +125,7 @@ export default function Page() {
     });
   }
 
-  async function deletedUni(id: string, name: string) {
+  async function deletedUni(id, name) {
     Swal.fire({
       title: `คุณต้องการลบชื่อสถาบัน\n"${name}" ?`,
       icon: "warning",
