@@ -72,8 +72,7 @@ export default function Home() {
         redirect: false,
       });
 
-      // ถ้า error → เช็คเพิ่มว่า user มีจริงไหม แล้วแสดงข้อความเดิม
-      if (res?.error) {
+      if (res.error) {
         try {
           const resCheckUser = await fetch(
             `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/validateUser`,
@@ -90,20 +89,20 @@ export default function Home() {
             throw new Error("Error fetching API to check user.");
           }
 
-          await resCheckUser.json();
+          const { user } = await resCheckUser.json();
           setError("อีเมลหรือรหัสผ่านของคุณไม่ถูกต้อง");
         } catch (err) {
           setError("เกิดข้อผิดพลาดในการตรวจสอบผู้ใช้");
           console.error("Error fetching API in register: ", err);
+        } finally {
+          setLoading(false);
         }
       }
     } catch (err) {
       toast.error("เกิดข้อผิดพลาดกรุณาลองใหม่ในภายหลัง");
       console.error("Unexpected error:", err);
-    } finally {
-      // เดิมที success case ไม่ได้ setLoading(false) ทำให้ loading อาจค้าง
-      setLoading(false);
     }
+    
   }
 
   //forgot Password
@@ -143,27 +142,21 @@ export default function Home() {
       }
     }
   };
-
   return (
     <div className={`${bgColorMain} ${bgColor}`}>
       <HeaderLogo />
-
-      {/* Responsive layout: mobile = column, desktop = row */}
-      <div className="flex text-sm justify-center gap-8 lg:gap-20 mt-10 items-center px-4 flex-col lg:flex-row">
+      <div className="flex text-sm justify-center gap-20 mt-10 items-center ">
         <Image
           alt="poster"
-          className="w-full max-w-sm h-auto"
+          className="w-96 h-96"
           src="/image/main/postermain.png"
           height={1000}
           width={1000}
           priority
         />
-
-        <div className={`${bgColorMain2} rounded-b-lg w-full max-w-md`}>
-          {/* Tabs: div -> button (WCAG), no behavior change */}
-          <div className="flex" role="tablist" aria-label="เลือกประเภทผู้ใช้งาน">
-            <button
-              type="button"
+        <div className={`${bgColorMain2} rounded-b-lg`}>
+          <div className="flex ">
+            <div
               onClick={() => {
                 setLoginMod("user");
                 setEmail("");
@@ -172,16 +165,11 @@ export default function Home() {
               }}
               className={`${
                 loginMod === "user" ? "bg-[#F97201]" : "bg-[#75C7C2]"
-              } ${fontSize} text-center w-6/12 text-white font-thin px-7 rounded-lg py-3
-                focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2`}
-              aria-pressed={loginMod === "user"}
-              role="tab"
+              } ${fontSize} hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
             >
               นักศึกษาพิการ
-            </button>
-
-            <button
-              type="button"
+            </div>
+            <div
               onClick={() => {
                 setLoginMod("admin");
                 setEmail("");
@@ -190,126 +178,88 @@ export default function Home() {
               }}
               className={`${
                 loginMod === "admin" ? "bg-[#F97201]" : "bg-[#75C7C2]"
-              } ${fontSize} text-center w-6/12 text-white font-thin px-7 rounded-lg py-3
-                focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2`}
-              aria-pressed={loginMod === "admin"}
-              role="tab"
+              } ${fontSize} hover:cursor-pointer text-center w-6/12  text-white font-thin px-7 rounded-lg py-3`}
             >
               ผู้ดูแลระบบ
-            </button>
+            </div>
           </div>
-
           <form
             onSubmit={handleSubmit}
-            className={`relative bottom-[5px] rounded-lg ${bgColorMain} p-14 flex flex-col justify-center items-center`}
+            className={`relative bottom-[5px] rounded-lg ${bgColorMain} p-14 flex flex-col justify-center items-center `}
           >
             <p className={`${fontSize}`}>
               {loginMod === "user"
                 ? "เข้าสู่ระบบสำหรับผู้สมัครงาน"
                 : "เข้าสู่ระบบสำหรับผู้ดูแลระบบ"}
             </p>
-
-            {/* Inputs with labels for WCAG (sr-only keeps design) */}
-            <div className="mt-7 flex flex-col gap-5 w-full items-center">
-              <div className="w-full max-w-xs">
-                <label htmlFor="login-identifier" className="sr-only">
-                  อีเมล์ หรือ ชื่อผู้ใช้
-                </label>
+            <div className="mt-7 flex flex-col gap-5">
+              <input
+                value={email || ""}
+                onChange={(e) => setEmail(e.target.value)}
+                className={`${bgColorMain} ${fontSize} w-72 border py-2 px-5 rounded-lg`}
+                type="text"
+                placeholder="อีเมล์ หรือ ชื่อผู้ใช้"
+              />
+              <div className="relative">
                 <input
-                  id="login-identifier"
-                  name="identifier"
-                  value={email || ""}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={`${bgColorMain} ${fontSize} w-full border py-2 px-5 rounded-lg
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2`}
-                  type="text"
-                  inputMode="email"
-                  autoComplete="username"
-                  placeholder="อีเมล์ หรือ ชื่อผู้ใช้"
-                  aria-invalid={!!error}
-                  aria-describedby={error ? "login-error" : undefined}
-                />
-              </div>
-
-              <div className="relative w-full max-w-xs">
-                <label htmlFor="login-password" className="sr-only">
-                  รหัสผ่าน
-                </label>
-                <input
-                  id="login-password"
-                  name="password"
                   value={password || ""}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`${bgColorMain} ${fontSize} w-full border py-2 px-5 rounded-lg pr-12
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2`}
+                  className={`${bgColorMain} ${fontSize} w-72 border py-2 px-5 rounded-lg`}
                   type={showPassword ? "text" : "password"}
                   placeholder="รหัสผ่าน"
-                  autoComplete="current-password"
-                  aria-invalid={!!error}
-                  aria-describedby={error ? "login-error" : undefined}
                 />
-
-                {/* Eye toggle: Image onClick -> button (WCAG) */}
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  className="absolute top-[9px] right-4 p-1 rounded bg-transparent
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                  aria-label={showPassword ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน"}
-                >
-                  <Image
-                    alt=""
-                    className="w-4 h-4"
-                    src="/image/main/eye.png"
-                    height={16}
-                    width={16}
-                    priority
-                  />
-                </button>
+                <Image
+                  onClick={(e) => setShowPassword((e) => !e)}
+                  alt="icon-eye"
+                  className="hover:cursor-pointer absolute top-[11px] right-5 w-4 h-4"
+                  src="/image/main/eye.png"
+                  height={1000}
+                  width={1000}
+                  priority
+                />
               </div>
             </div>
 
-            {/* Error: announce for screen readers */}
             {error ? (
-              <div
-                id="login-error"
-                className="self-start mt-3 text-red-500"
-                role="alert"
-                aria-live="polite"
-              >
+              <div className="self-start mt-3 text-red-500">
                 <TextError text={error} />
               </div>
             ) : null}
-
-            {/* Forgot password: div -> button */}
-            <div className="self-end mt-4">
-              <button
-                type="button"
-                className={`${textBlue} ${fontSize} hover:cursor-pointer hover:underline rounded
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2`}
-                onClick={handleForgotPassword}
-              >
-                {loginMod === "user"
-                  ? "ลืมรหัสผ่าน ?"
-                  : "ลืมรหัสผ่านสำหรับผู้ดูแล ?"}
-              </button>
-            </div>
-
+            {loginMod === "user" ? (
+              <div className="self-end mt-4">
+                <div
+                  // className="text-blue-500 hover:cursor-pointer hover:underline"
+                  className={`${textBlue} ${fontSize} hover:cursor-pointer hover:underline`}
+                  onClick={handleForgotPassword}
+                >
+                  ลืมรหัสผ่าน ?
+                </div>
+              </div>
+            ) : (
+              <div className="self-end mt-4">
+                <div
+                  // className="text-blue-500 hover:cursor-pointer hover:underline"
+                  className={`${textBlue} ${fontSize} hover:cursor-pointer hover:underline`}
+                  onClick={handleForgotPassword}
+                >
+                  ลืมรหัสผ่านสำหรับผู้ดูแล ?
+                </div>
+              </div>
+            )}
             <div className="mt-10">
               <button
                 type="submit"
-                className={`${fontSize} bg-[#F97201] text-white py-2 px-5 rounded-lg
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2`}
+                className={`${fontSize} bg-[#F97201] text-white py-2 px-5 rounded-lg`}
               >
                 เข้าสู่ระบบ
               </button>
             </div>
-
             {loginMod === "user" && (
               <>
                 <p className={`mt-4 ${fontSize}`}>
                   ยังไม่ได้เป็นสมาชิก?
                   <Link
+                    // className="mx-2 text-[#F97201] hover:cursor-pointer hover:underline"
                     className={`mx-2 ${registerColor} hover:cursor-pointer hover:underline`}
                     href="/agreement"
                   >
@@ -317,55 +267,52 @@ export default function Home() {
                   </Link>
                 </p>
 
-                <div className="mt-5 flex justify-center flex-col items-center">
-                  <hr className={`${lineBlack} border w-64`} />
+                <div className="mt-5 flex  justify-center flex-col items-center">
+                  <hr className={`${lineBlack} border  w-64`} />
+                  {/* <p className="bg-white p-1 absolute">หรือ</p> */}
                   <p className={`${bgColorMain2} ${fontSize} p-1 absolute`}>
                     หรือ
                   </p>
                 </div>
-
-                {/* Social login: div -> button */}
-                <div className={`${fontSize} mt-8 text-gray-400 flex flex-col gap-3`}>
-                  <button
-                    type="button"
-                    onClick={() => signIn("google")}
-                    className="hover:cursor-pointer gap-2 py-1 px-5 border rounded-lg flex items-center bg-transparent
-                      focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                <div
+                  className={`${fontSize} mt-8 text-gray-400 flex flex-col gap-3`}
+                >
+                  <div
+                    onClick={() => {
+                      signIn("google");
+                    }}
+                    className="hover:cursor-pointer gap-2 py-1 px-5 border rounded-lg flex"
                   >
                     <Image
-                      alt=""
+                      alt="icon-google"
                       className="w-5 h-5"
                       src="/image/main/google.png"
-                      height={20}
-                      width={20}
+                      height={1000}
+                      width={1000}
                       priority
                     />
                     <p>เข้าสู่ระบบด้วย Google</p>
-                  </button>
-
-                  <button
-                    type="button"
+                  </div>
+                  <div
                     onClick={() => signIn("line")}
-                    className="hover:cursor-pointer gap-2 py-1 px-5 border rounded-lg flex items-center bg-transparent
-                      focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                    className="hover:cursor-pointer gap-2 py-1 px-5 border rounded-lg flex"
                   >
                     <Image
-                      alt=""
+                      alt="icon-line"
                       className="w-5 h-5"
                       src="/image/main/line.png"
-                      height={20}
-                      width={20}
+                      height={1000}
+                      width={1000}
                       priority
                     />
                     <p>เข้าสู่ระบบด้วย Line</p>
-                  </button>
+                  </div>
                 </div>
               </>
             )}
           </form>
         </div>
       </div>
-
       <Footer />
     </div>
   );
