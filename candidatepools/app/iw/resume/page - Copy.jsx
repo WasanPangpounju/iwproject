@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, {useEffect} from "react";
 import { useTheme } from "@/app/ThemeContext";
 import ResumeComponent from "@/app/components/Resume/ResumeComponent";
 
@@ -29,25 +29,15 @@ function ResumePage() {
   }, [dataUser]);
 
   return (
-    <main className="w-full" aria-labelledby="resume-page-title">
-      {/* ชื่อหน้าให้ screen reader (ไม่เปลี่ยนดีไซน์) */}
-      <h1 id="resume-page-title" className="sr-only">
-        เรซูเม่ของฉัน
-      </h1>
-
-      {/* ทำให้ card responsive: ไม่ชิดขอบบนมือถือ + จำกัดความกว้างบนจอใหญ่ */}
-      <div className="mx-auto w-full max-w-5xl px-3 sm:px-4">
-        <div className={`${bgColorMain2} ${bgColor} rounded-lg p-4 sm:p-5`}>
-          <ResumeComponent
-            dataUser={dataUser}
-            dataSkills={dataSkills}
-            dataEducations={dataEducations}
-            dataHistoryWork={dataHistoryWork}
-            resumeFiles={resumeFiles}
-          />
-        </div>
-      </div>
-    </main>
+    <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
+      <ResumeComponent
+        dataUser={dataUser}
+        dataSkills={dataSkills}
+        dataEducations={dataEducations}
+        dataHistoryWork={dataHistoryWork}
+        resumeFiles={resumeFiles}
+      />
+    </div>
   );
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
 import {
@@ -18,7 +18,7 @@ import {
   ref,
   uploadBytesResumable,
   getDownloadURL,
-} from "firebase/storage"; // Import Firebase Storage
+} from "firebase/storage";
 import { storage } from "@/app/firebaseConfig";
 import { saveAs } from "file-saver";
 
@@ -37,67 +37,61 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
 
   //Theme
   const {
-    bgColorNavbar,
     bgColor,
-    bgColorWhite,
     bgColorMain,
     bgColorMain2,
     inputEditColor,
-    inputGrayColor,
-    inputTextColor,
   } = useTheme();
 
   //Mode
   const [editMode, setEditMode] = useState(false);
+
+  // a11y helpers
+  const focusRing =
+    "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500";
+
+  const formErrorId = "skill-form-error";
+  const skillFieldErrorId = "skill-form-skill-field-error";
+  const trainFieldErrorId = "skill-form-train-field-error";
+
+  const fieldId = (section, index, name) => `${section}-${index}-${name}`;
+
+  const formDescribedBy = useMemo(() => {
+    const ids = [];
+    if (error) ids.push(formErrorId);
+    return ids.length ? ids.join(" ") : undefined;
+  }, [error]);
 
   //add data
   const [skillType, setSkillType] = useState([]);
   const [skillName, setSkillName] = useState([]);
   const [skillDetail, setSkillDetail] = useState([]);
 
-  const handleSkillType = (e, index) => {
-    const newTemp = e; // ค่าที่ได้รับจาก input
+  const handleSkillType = (val, index) => {
+    const newTemp = val;
     setSkillType((prevTemp) => {
-      const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevTemp เป็น array หรือไม่
-
-      // เพิ่มค่า "" ในตำแหน่งที่ขาดหายไปให้ครบจนถึง index ที่ระบุ
-      while (updatedTemp.length <= index) {
-        updatedTemp.push(""); // เพิ่มค่าว่างเพื่อคงขนาดอาร์เรย์
-      }
-
-      // อัปเดตค่าใหม่ในตำแหน่งที่กำหนด
+      const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : [];
+      while (updatedTemp.length <= index) updatedTemp.push("");
       updatedTemp[index] = newTemp;
       return updatedTemp;
     });
   };
 
-  const handleSkillName = (e, index) => {
-    const newTemp = e; // ค่าที่ได้รับจาก input
+  const handleSkillName = (val, index) => {
+    const newTemp = val;
     setSkillName((prevTemp) => {
-      const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevTemp เป็น array หรือไม่
-
-      // เพิ่มค่า "" ในตำแหน่งที่ขาดหายไปให้ครบจนถึง index ที่ระบุ
-      while (updatedTemp.length <= index) {
-        updatedTemp.push(""); // เพิ่มค่าว่างเพื่อคงขนาดอาร์เรย์
-      }
-
-      // อัปเดตค่าใหม่ในตำแหน่งที่กำหนด
+      const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : [];
+      while (updatedTemp.length <= index) updatedTemp.push("");
       updatedTemp[index] = newTemp;
       return updatedTemp;
     });
   };
 
-  const handleSkillDetail = (e, index) => {
-    const newTemp = e; // ค่าที่ได้รับจาก input
+  const handleSkillDetail = (val, index) => {
+    const newTemp = val;
     setSkillDetail((prevTemp) => {
-      const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevTemp เป็น array หรือไม่
-
-      // เพิ่มค่า "" ในตำแหน่งที่ขาดหายไปให้ครบจนถึง index ที่ระบุ
-      while (updatedTemp.length <= index) {
-        updatedTemp.push(""); // เพิ่มค่าว่างเพื่อคงขนาดอาร์เรย์
-      }
-
-      // อัปเดตค่าใหม่ในตำแหน่งที่กำหนด
+      const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : [];
+      while (updatedTemp.length <= index) updatedTemp.push("");
       updatedTemp[index] = newTemp;
       return updatedTemp;
     });
@@ -108,7 +102,6 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
   const [errorFieldSkill, setErrorFieldSkill] = useState("");
 
   const handleAddSkill = () => {
-    // ตรวจสอบให้แน่ใจว่ามีการกรอกข้อมูล skill ครบถ้วนก่อนที่จะเพิ่มข้อมูลใหม่
     if (
       !skillType[skills.length - 1] ||
       !skillName[skills.length - 1] ||
@@ -117,15 +110,12 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
       setErrorFieldSkill("กรุณากรอกข้อมูลทักษะให้ครบก่อนเพิ่มข้อมูลใหม่");
       return;
     }
-
-    // จำกัดจำนวนทักษะไม่ให้เกิน 5 รายการ
     if (skills.length >= 5) {
       setErrorFieldSkill("");
       return;
     }
-
     setErrorFieldSkill("");
-    setSkills([...skills, {}]); // เพิ่มออบเจกต์ว่างใน skills
+    setSkills([...skills, {}]);
   };
 
   const handleRemoveSkill = (index) => {
@@ -144,10 +134,7 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
         setSkills(newSkills);
 
         const temp = index;
-
         setErrorFieldSkill("");
-
-        // ลบข้อมูลจาก skillType, skillName, และ skillDetail
         setSkillType((prev) => prev.filter((_, i) => i !== temp));
         setSkillName((prev) => prev.filter((_, i) => i !== temp));
         setSkillDetail((prev) => prev.filter((_, i) => i !== temp));
@@ -159,41 +146,24 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
   const [trainName, setTrainName] = useState([]);
   const [trainDetail, setTrainDetail] = useState([]);
   const [trainFile, setTrainFile] = useState([
-    {
-      fileName: "",
-      fileType: "",
-      fileUrl: "",
-      fileSize: "",
-    },
+    { fileName: "", fileType: "", fileUrl: "", fileSize: "" },
   ]);
 
-  const handleTrainName = (e, index) => {
-    const newTemp = e; // ค่าที่ได้รับจาก input
+  const handleTrainName = (val, index) => {
+    const newTemp = val;
     setTrainName((prevTemp) => {
-      const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevTemp เป็น array หรือไม่
-
-      // เพิ่มค่า "" ในตำแหน่งที่ขาดหายไปให้ครบจนถึง index ที่ระบุ
-      while (updatedTemp.length <= index) {
-        updatedTemp.push(""); // เพิ่มค่าว่างเพื่อคงขนาดอาร์เรย์
-      }
-
-      // อัปเดตค่าใหม่ในตำแหน่งที่กำหนด
+      const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : [];
+      while (updatedTemp.length <= index) updatedTemp.push("");
       updatedTemp[index] = newTemp;
       return updatedTemp;
     });
   };
 
-  const handleTrainDetail = (e, index) => {
-    const newTemp = e; // ค่าที่ได้รับจาก input
+  const handleTrainDetail = (val, index) => {
+    const newTemp = val;
     setTrainDetail((prevTemp) => {
-      const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : []; // ตรวจสอบว่า prevTemp เป็น array หรือไม่
-
-      // เพิ่มค่า "" ในตำแหน่งที่ขาดหายไปให้ครบจนถึง index ที่ระบุ
-      while (updatedTemp.length <= index) {
-        updatedTemp.push(""); // เพิ่มค่าว่างเพื่อคงขนาดอาร์เรย์
-      }
-
-      // อัปเดตค่าใหม่ในตำแหน่งที่กำหนด
+      const updatedTemp = Array.isArray(prevTemp) ? [...prevTemp] : [];
+      while (updatedTemp.length <= index) updatedTemp.push("");
       updatedTemp[index] = newTemp;
       return updatedTemp;
     });
@@ -204,20 +174,16 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
   const [errorFieldTrain, setErrorFieldTrain] = useState("");
 
   const handleAddTrain = () => {
-    // ตรวจสอบให้แน่ใจว่ามีการกรอกข้อมูล train ครบถ้วนก่อนที่จะเพิ่มข้อมูลใหม่
     if (!trainName[trains.length - 1] || !trainDetail[trains.length - 1]) {
       setErrorFieldTrain("กรุณากรอกข้อมูลการอบรมให้ครบก่อนเพิ่มข้อมูลใหม่");
       return;
     }
-
-    // จำกัดจำนวน train ไม่ให้เกิน 5 รายการ
     if (trains.length >= 5) {
       setErrorFieldTrain("");
       return;
     }
-
     setErrorFieldTrain("");
-    setTrains([...trains, {}]); // เพิ่มออบเจกต์ว่างใน trains
+    setTrains([...trains, {}]);
   };
 
   const handleRemoveTrain = (index) => {
@@ -236,10 +202,7 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
         setTrains(newTrains);
 
         const temp = index;
-
         setErrorFieldTrain("");
-
-        // ลบข้อมูลจาก trainName, trainDetail, และ trainFile
         setTrainName((prev) => prev.filter((_, i) => i !== temp));
         setTrainDetail((prev) => prev.filter((_, i) => i !== temp));
         setTrainFile((prev) => prev.filter((_, i) => i !== temp));
@@ -250,57 +213,41 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
   //upload file
   const trainFileInputRef = useRef(null);
   const [trainUploadProgress, setTrainUploadProgress] = useState(0);
-  // ฟังก์ชันสำหรับเปิด dialog เลือกไฟล์
+
   const openFileDialogTrain = () => {
-    if (trainFileInputRef.current) {
-      trainFileInputRef.current.click();
-    }
+    if (trainFileInputRef.current) trainFileInputRef.current.click();
   };
 
   const handleTrainDocument = (event, index) => {
-    const selectedFile = event.target.files[0]; // ไฟล์ที่เลือกจาก input
+    const selectedFile = event.target.files[0];
     if (selectedFile) {
-      const fileExtension = selectedFile.name.split(".").pop(); // รับนามสกุลไฟล์
-      if (
-        fileExtension !== "pdf" &&
-        fileExtension !== "docx" &&
-        fileExtension !== "doc"
-      ) {
+      const fileExtension = selectedFile.name.split(".").pop();
+      if (fileExtension !== "pdf" && fileExtension !== "docx" && fileExtension !== "doc") {
         setError("กรุณาอัปโหลดไฟล์ PDF, Word เท่านั้น");
-
         return;
       }
 
-      // บันทึกขนาดไฟล์ในรูปแบบที่ต้องการ เช่น 3.0MB
       const fileSizeMB = (selectedFile.size / (1024 * 1024)).toFixed(2);
-
-      // ใช้ชื่อไฟล์ที่กำหนดเอง
       const fileName = selectedFile.name.split(".").slice(0, -1).join(".");
 
-      const storageRef = ref(
-        storage,
-        `users/documents/trainHistory/${id}/${fileName}`
-      );
+      const storageRef = ref(storage, `users/documents/trainHistory/${id}/${fileName}`);
       const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
       uploadTask.on(
         "state_changed",
         (snapshot) => {
-          setError(""); // รีเซ็ตข้อความข้อผิดพลาด
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setTrainUploadProgress(progress); // แสดงความก้าวหน้าการอัปโหลด
+          setError("");
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setTrainUploadProgress(progress);
         },
         (error) => {
           console.error("Error uploading file:", error);
         },
         () => {
-          // เมื่ออัปโหลดเสร็จสิ้น
           getDownloadURL(uploadTask.snapshot.ref)
             .then((url) => {
-              // เพิ่ม URL ไฟล์ที่อัปโหลดสำเร็จลงในอาร์เรย์ trainFile
               const newTrainFile = {
-                fileName: fileName,
+                fileName,
                 fileType: fileExtension,
                 fileUrl: url,
                 fileSize: fileSizeMB,
@@ -308,55 +255,18 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
 
               setTrainFile((prevTrainFiles) => {
                 const updatedTrainFiles = [...prevTrainFiles];
-                updatedTrainFiles[index] = newTrainFile; // อัปเดตตำแหน่งที่ index
+                updatedTrainFiles[index] = newTrainFile;
                 return updatedTrainFiles;
               });
-              // รีเซ็ตค่าต่าง ๆ หลังจากอัปโหลดสำเร็จ
+
               setTrainUploadProgress(0);
-              trainFileInputRef.current.value = "";
+              if (trainFileInputRef.current) trainFileInputRef.current.value = "";
             })
-            .catch((error) => {
-              console.error("Error getting download URL:", error);
-            });
+            .catch((error) => console.error("Error getting download URL:", error));
         }
       );
     }
   };
-
-  //handle array
-  function mergeArrayValues(nonGetArray, getArray) {
-    // ถ้า nonGetArray เป็นอาร์เรย์ว่าง ให้คืนค่า getArray โดยตรง
-    if (nonGetArray.length === 0) {
-      return getArray;
-    }
-
-    if (nonGetArray.length > getArray.length) {
-      return nonGetArray.map((value, index) => {
-        return value || getArray[index] || "";
-      });
-    } else {
-      return getArray.map((value, index) => {
-        return nonGetArray[index] || value || "";
-      });
-    }
-  }
-  function mergeArrayObjects(nonGetArray, getArray) {
-    const maxLength = Math.max(nonGetArray.length, getArray.length);
-
-    return Array.from({ length: maxLength }, (_, index) => {
-      const nonGetItem = nonGetArray[index] || {}; // ใช้ค่าจาก nonGetArray ในตำแหน่งที่ระบุ หรือออบเจกต์ว่าง
-      const getItem = getArray[index] || {}; // ใช้ค่าจาก getArray ในตำแหน่งที่ระบุ หรือออบเจกต์ว่าง
-
-      // รวมค่าในตำแหน่งเดียวกันจากทั้งสองอาร์เรย์ โดยให้ข้อมูลที่มีค่าจริงจาก nonGetItem มีความสำคัญกว่า getItem
-      return {
-        fileName: nonGetItem.fileName || getItem.fileName || "",
-        fileSize: nonGetItem.fileSize || getItem.fileSize || "",
-        fileType: nonGetItem.fileType || getItem.fileType || "",
-        fileUrl: nonGetItem.fileUrl || getItem.fileUrl || "",
-        _id: nonGetItem._id || getItem._id || "",
-      };
-    });
-  }
 
   //function submit
   async function handleSubmit(e, fieldSkills, fieldTrains) {
@@ -370,11 +280,9 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
     const mergedTrainDetail = trainDetail;
     const mergedTrainFile = trainFile;
 
-    // ลดค่าตัวนับของแต่ละฟิลด์ลง 1
     fieldSkills -= 1;
     fieldTrains -= 1;
 
-    // ตรวจสอบข้อมูลโครงงาน / ผลงาน
     const hasAnySkillField =
       mergedSkillType[fieldSkills] ||
       mergedSkillName[fieldSkills] ||
@@ -387,35 +295,25 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
 
     if (hasAnySkillField && !isSkillFieldComplete) {
       setError("กรุณาระบุข้อมูล ความสามารถ ให้ครบทุกช่อง");
-
       return;
     }
 
-    const hasAnyTrainField =
-      mergedTrainName[fieldTrains] || mergedTrainDetail[fieldTrains];
+    const hasAnyTrainField = mergedTrainName[fieldTrains] || mergedTrainDetail[fieldTrains];
+    const isTrainFieldComplete = mergedTrainName[fieldTrains] && mergedTrainDetail[fieldTrains];
 
-    const isTrainFieldComplete =
-      mergedTrainName[fieldTrains] && mergedTrainDetail[fieldTrains];
-
-    // ตรวจสอบข้อมูลการฝึกงาน
     if (hasAnyTrainField && !isTrainFieldComplete) {
       setError("กรุณาระบุข้อมูล การอบรม ให้ครบทุกช่อง");
-
       return;
     }
 
     const hasAnyField = hasAnySkillField || hasAnyTrainField;
-    // หากไม่มีข้อมูลเลยในทุกส่วน
     if (!hasAnyField) {
       setError("ไม่มีข้อมูลที่บันทึก");
-
       return;
     }
 
-    // ถ้าผ่านทุกเงื่อนไขให้เคลียร์ error
     setError("");
 
-    // จัดเตรียมข้อมูลที่จะส่งไปยัง API
     const data = {
       uuid: id,
       skills: mergedSkillName.map((name, index) => ({
@@ -438,15 +336,12 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
     };
 
     try {
-      // ส่งข้อมูลไปยัง API ด้วย fetch
       const response = await updateSkillById(data);
 
       if (response.ok) {
         toast.success("บันทึกข้อมูลสำเร็จ");
         setEditMode(false);
-        if (handleStep) {
-          handleStep();
-        }
+        if (handleStep) handleStep();
       } else {
         console.error("Failed to submit data");
         toast.error("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่ในภายหลัง");
@@ -465,7 +360,6 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
   useEffect(() => {
     if (!dataSkills) return;
 
-    // ตั้งค่าตัวแปรต่าง ๆ จากข้อมูลใน dataHistoryWork
     setSkillType(dataSkills.skills?.map((skill) => skill.type) || []);
     setSkillName(dataSkills.skills?.map((skill) => skill.name) || []);
     setSkillDetail(dataSkills.skills?.map((skill) => skill.detail) || []);
@@ -474,7 +368,6 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
     setTrainDetail(dataSkills.trains?.map((train) => train.detail) || []);
     setTrainFile(dataSkills.trains?.flatMap((train) => train.files) || []);
 
-    // set ฟิลด์เริ่มต้น
     if (Array.isArray(dataSkills.skills) && dataSkills.skills.length > 0) {
       setSkills(dataSkills.skills);
     }
@@ -489,28 +382,20 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
     const fileRef = ref(storage, filePath);
 
     try {
-      // ดึง URL ของไฟล์
       const downloadURL = await getDownloadURL(fileRef);
-
-      // ใช้ fetch เพื่อดาวน์โหลดไฟล์
       const response = await fetch(downloadURL);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const blob = await response.blob(); // แปลงเป็น Blob
-      saveAs(blob, fileName); // ใช้ file-saver เพื่อดาวน์โหลดไฟล์
+      if (!response.ok) throw new Error("Network response was not ok");
+      const blob = await response.blob();
+      saveAs(blob, fileName);
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์:", error);
     }
   };
 
-  //openfile
   function openFile(fileUrl) {
     window.open(fileUrl, "_blank");
   }
 
-  //deleteFile
   async function handleDeleteFile(name, index) {
     const result = await Swal.fire({
       title: "ลบข้อมูล",
@@ -526,7 +411,7 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
 
     if (result.isConfirmed) {
       const updatedTrainFiles = [...mergedTrainFile];
-      updatedTrainFiles[index] = undefined; // ตั้งค่าตำแหน่งที่ต้องการเป็น undefined แทนการลบ
+      updatedTrainFiles[index] = undefined;
 
       setTrainFile(updatedTrainFiles);
       toast.success("ลบไฟล์สำเร็จ", `${name} ถูกลบเรียบร้อยแล้ว`, "success");
@@ -541,281 +426,337 @@ function SkillForm({ dataSkills, id, handleStep, readOnly = false }) {
     trainName[0],
     trainDetail[0],
   ];
+
   return (
     <form
       onSubmit={(e) => handleSubmit(e, skills.length, trains.length)}
       className={`${bgColorMain2} ${bgColor} flex flex-col gap-16`}
+      aria-describedby={formDescribedBy}
     >
+      {/* ความสามารถ */}
       <div>
         <p className="mb-2">ความสามารถ</p>
         <hr />
-        {skills.map((skill, index) => (
-          <div key={index}>
-            {index > 0 && editMode && (
-              <div className={` flex col flex-col justify-end w-full mt-5`}>
-                <div
-                  className={` cursor-pointer  rounded-lg w-fit`}
-                  onClick={() => handleRemoveSkill(index)}
-                >
-                  <Icon
-                    className={` text-red-500`}
-                    path={mdiCloseCircle}
-                    size={1}
-                  />
-                </div>
-              </div>
-            )}
-            {index > 0 && !editMode && <hr className="mt-5" />}
-            <div className="mt-5 flex gap-5 flex-wrap">
-              <div className="flex flex-col gap-1">
-                <label>
-                  ด้าน{" "}
-                  <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                    *
-                  </span>
-                </label>
-                <div className="relative col w-fit mt-1">
-                  <select
-                    className={`${
-                      !editMode ? "editModeTrue" : ""
-                    } ${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                    style={{ appearance: "none" }}
-                    onChange={(e) => handleSkillType(e.target.value, index)}
-                    value={skillType[index] || ""}
-                    disabled={!editMode}
-                  >
-                    <option value="">-</option>
-                    <option value="ด้านคอมพิวเตอร์">ด้านคอมพิวเตอร์</option>
-                    <option value="ด้านการสื่อสาร">ด้านการสื่อสาร</option>
-                    <option value="ด้านการออกแบบ/กราฟฟิก">
-                      ด้านการออกแบบ/กราฟิก
-                    </option>
-                    <option value="ด้านการบริการ">ด้านการบริการ</option>
-                    <option value="ด้านบัญชี/การเงิน">ด้านบัญชี/การเงิน</option>
-                    <option value="ด้านการสอน">ด้านการสอน</option>
-                    <option value="ด้านการขาย">ด้านการขาย</option>
-                    <option value="ด้านการจัดการข้อมูล">
-                      ด้านการจัดการข้อมูล
-                    </option>
-                    <option value="ด้านการเขียน">ด้านการเขียน</option>
-                    <option value="ด้านอื่นๆ">ด้านอื่นๆ</option>
-                  </select>
-                  <Icon
-                    className={`cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
-                    path={mdiArrowDownDropCircle}
-                    size={0.8}
-                  />
-                </div>
-              </div>
 
-              <div className="flex flex-col gap-1">
-                <label>
-                  ทักษะ{" "}
-                  <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                    *
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  className={`${
-                    !editMode ? "editModeTrue" : ""
-                  } ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
-                  readOnly={!editMode}
-                  placeholder="รายละเอียดเพิ่มเติม"
-                  defaultValue={skillName[index] || ""}
-                  onBlur={(e) => handleSkillName(e.target.value, index)}
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label>
-                  อธิบายรายละเอียด{" "}
-                  <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                    *
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  className={`${
-                    !editMode ? "editModeTrue" : ""
-                  } ${bgColorMain}  mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
-                  readOnly={!editMode}
-                  placeholder="รายละเอียดเพิ่มเติม"
-                  defaultValue={skillDetail[index] || ""}
-                  onBlur={(e) => handleSkillDetail(e.target.value, index)}
-                />
+        {skills.map((skill, index) => {
+          const typeId = fieldId("skill", index, "type");
+          const nameId = fieldId("skill", index, "name");
+          const detailId = fieldId("skill", index, "detail");
+
+          return (
+            <div key={index}>
+              {index > 0 && editMode && (
+                <div className="flex flex-col justify-end w-full mt-5">
+                  <button
+                    type="button"
+                    className={`rounded-lg w-fit ${focusRing}`}
+                    onClick={() => handleRemoveSkill(index)}
+                    aria-label="ลบทักษะรายการนี้"
+                  >
+                    <Icon className="text-red-500" path={mdiCloseCircle} size={1} aria-hidden="true" />
+                  </button>
+                </div>
+              )}
+
+              {index > 0 && !editMode && <hr className="mt-5" />}
+
+              <div className="mt-5 flex gap-5 flex-wrap">
+                {/* ด้าน */}
+                <div className="flex flex-col gap-1 w-full sm:w-auto">
+                  <label htmlFor={typeId}>
+                    ด้าน{" "}
+                    <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                  </label>
+
+                  <div className="relative w-full sm:w-fit mt-1">
+                    <select
+                      id={typeId}
+                      className={`${
+                        !editMode ? "editModeTrue cursor-default" : "cursor-pointer"
+                      } ${bgColorMain} ${focusRing} whitespace-nowrap text-ellipsis overflow-hidden w-full sm:w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                      style={{ appearance: "none" }}
+                      onChange={(e) => handleSkillType(e.target.value, index)}
+                      value={skillType[index] || ""}
+                      disabled={!editMode}
+                    >
+                      <option value="">-</option>
+                      <option value="ด้านคอมพิวเตอร์">ด้านคอมพิวเตอร์</option>
+                      <option value="ด้านการสื่อสาร">ด้านการสื่อสาร</option>
+                      <option value="ด้านการออกแบบ/กราฟฟิก">ด้านการออกแบบ/กราฟิก</option>
+                      <option value="ด้านการบริการ">ด้านการบริการ</option>
+                      <option value="ด้านบัญชี/การเงิน">ด้านบัญชี/การเงิน</option>
+                      <option value="ด้านการสอน">ด้านการสอน</option>
+                      <option value="ด้านการขาย">ด้านการขาย</option>
+                      <option value="ด้านการจัดการข้อมูล">ด้านการจัดการข้อมูล</option>
+                      <option value="ด้านการเขียน">ด้านการเขียน</option>
+                      <option value="ด้านอื่นๆ">ด้านอื่นๆ</option>
+                    </select>
+
+                    <Icon
+                      className={`${!editMode ? "hidden" : ""} pointer-events-none text-gray-400 absolute right-0 top-[10px] mx-3`}
+                      path={mdiArrowDownDropCircle}
+                      size={0.8}
+                      aria-hidden="true"
+                    />
+                  </div>
+                </div>
+
+                {/* ทักษะ */}
+                <div className="flex flex-col gap-1 w-full sm:w-auto">
+                  <label htmlFor={nameId}>
+                    ทักษะ{" "}
+                    <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                  </label>
+                  <input
+                    id={nameId}
+                    type="text"
+                    className={`${
+                      !editMode ? "editModeTrue cursor-default" : ""
+                    } ${bgColorMain} ${focusRing} mt-1 w-full sm:w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                    readOnly={!editMode}
+                    placeholder="รายละเอียดเพิ่มเติม"
+                    defaultValue={skillName[index] || ""}
+                    onBlur={(e) => handleSkillName(e.target.value, index)}
+                  />
+                </div>
+
+                {/* อธิบายรายละเอียด */}
+                <div className="flex flex-col gap-1 w-full sm:w-auto">
+                  <label htmlFor={detailId}>
+                    อธิบายรายละเอียด{" "}
+                    <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                  </label>
+                  <input
+                    id={detailId}
+                    type="text"
+                    className={`${
+                      !editMode ? "editModeTrue cursor-default" : ""
+                    } ${bgColorMain} ${focusRing} mt-1 w-full sm:w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                    readOnly={!editMode}
+                    placeholder="รายละเอียดเพิ่มเติม"
+                    defaultValue={skillDetail[index] || ""}
+                    onBlur={(e) => handleSkillDetail(e.target.value, index)}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
+
         {errorFieldSkill && (
-          <div className="mt-3 text-red-500">*{errorFieldSkill}</div>
+          <div
+            id={skillFieldErrorId}
+            className="mt-3 text-red-500"
+            role="alert"
+            aria-live="polite"
+          >
+            *{errorFieldSkill}
+          </div>
         )}
+
         {skills.length < 5 && editMode && (
-          <div className={` flex col flex-col justify-end w-full mt-5`}>
-            <div
-              className={` cursor-pointer  rounded-lg bg-[#4a94ff] w-fit`}
+          <div className="flex flex-col justify-end w-full mt-5">
+            <button
+              type="button"
+              className={`rounded-lg bg-[#4a94ff] w-fit ${focusRing}`}
               onClick={handleAddSkill}
+              aria-label="เพิ่มความสามารถ"
             >
-              <Icon className={` text-white mx-3`} path={mdiPlus} size={1.5} />
-            </div>
+              <Icon className="text-white mx-3" path={mdiPlus} size={1.5} aria-hidden="true" />
+            </button>
           </div>
         )}
       </div>
+
+      {/* =========================
+          การอบรม (ปิดไว้ชั่วคราว)
+          เรื่อง / รายละเอียด / เอกสารประกอบ
+          ========================= */}
+      {/*
       <div>
         <p className="mb-2">การอบรม</p>
         <hr />
-        {trains.map((train, index) => (
-          <div key={index}>
-            {index > 0 && editMode && (
-              <div className={` flex col flex-col justify-end w-full mt-5`}>
-                <div
-                  className={` cursor-pointer  rounded-lg w-fit`}
-                  onClick={() => handleRemoveTrain(index)}
-                >
-                  <Icon
-                    className={` text-red-500`}
-                    path={mdiCloseCircle}
-                    size={1}
+
+        {trains.map((train, index) => {
+          const tNameId = fieldId("train", index, "name");
+          const tDetailId = fieldId("train", index, "detail");
+          const chooseTrainFileId = fieldId("train", index, "file");
+
+          return (
+            <div key={index}>
+              {index > 0 && editMode && (
+                <div className="flex flex-col justify-end w-full mt-5">
+                  <button
+                    type="button"
+                    className={`rounded-lg w-fit ${focusRing}`}
+                    onClick={() => handleRemoveTrain(index)}
+                    aria-label="ลบการอบรมรายการนี้"
+                  >
+                    <Icon className="text-red-500" path={mdiCloseCircle} size={1} aria-hidden="true" />
+                  </button>
+                </div>
+              )}
+
+              {index > 0 && !editMode && <hr className="mt-5" />}
+
+              <div className="mt-5 flex gap-5 flex-wrap">
+                <div className="flex flex-col gap-1 w-full sm:w-auto">
+                  <label htmlFor={tNameId}>
+                    เรื่อง{" "}
+                    <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                  </label>
+                  <input
+                    id={tNameId}
+                    type="text"
+                    className={`${!editMode ? "editModeTrue cursor-default" : ""} ${bgColorMain} ${focusRing}
+                      mt-1 w-full sm:w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                    placeholder="ระบุชื่อเรื่องการอบรม"
+                    onBlur={(e) => handleTrainName(e.target.value, index)}
+                    defaultValue={trainName[index] || ""}
+                    readOnly={!editMode}
                   />
                 </div>
-              </div>
-            )}
-            {index > 0 && !editMode && <hr className="mt-5" />}
-            <div className="mt-5 flex gap-5 flex-wrap">
-              <div className="flex flex-col gap-1">
-                <label>
-                  เรื่อง{" "}
-                  <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                    *
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  className={`${
-                    !editMode ? "editModeTrue" : ""
-                  } ${bgColorMain} mt-1 w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                  placeholder="ระบุชื่อเรื่องการอบรม"
-                  onBlur={(e) => handleTrainName(e.target.value, index)}
-                  defaultValue={trainName[index] || ""}
-                  readOnly={!editMode}
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label>
-                  รายละเอียด{" "}
-                  <span className={`${!editMode ? "hidden" : ""} text-red-500`}>
-                    *
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  className={`${
-                    !editMode ? "editModeTrue" : ""
-                  } ${bgColorMain} mt-1 w-96 border border-gray-400 py-2 px-4 rounded-lg`}
-                  placeholder="รายละเอียดเพิ่มเติม"
-                  onBlur={(e) => handleTrainDetail(e.target.value, index)}
-                  defaultValue={trainDetail[index] || ""}
-                  readOnly={!editMode}
-                />
-              </div>
-              <div className={` ${bgColorMain} flex flex-col gap-1`}>
-                {trainFile[index]?.fileUrl || editMode ? (
-                  <label>เอกสารประกอบ / ใบประกาศ</label>
-                ) : null}
-                {/* input สำหรับเลือกไฟล์ */}
 
-                {/* ปุ่มที่ใช้สำหรับเปิด dialog เลือกไฟล์ */}
-                {trainFile[index] && trainFile[index]?.fileUrl !== "" ? (
-                  <div className={`mt-1 w-fit py-2 flex gap-8`}>
-                    <div
-                      className="cursor-pointer"
-                      onClick={() => openFile(trainFile[index]?.fileUrl)}
-                    >
-                      <p>
-                        {trainFile[index]?.fileName}.
-                        {trainFile[index]?.fileType}
-                      </p>
-                    </div>
-                    <p className="text-gray-500">
-                      {trainFile[index]?.fileSize} MB
-                    </p>
-                    <div className="cursor-pointer flex gap-2">
-                      <Icon
-                        onClick={() =>
-                          handleDownloadFile(
-                            trainFile[index]?.fileUrl,
-                            trainFile[index]?.fileName
-                          )
-                        }
-                        className="text-black"
-                        path={mdiDownload}
-                        size={1}
-                      />
-                      {editMode && (
-                        <Icon
+                <div className="flex flex-col gap-1 w-full sm:w-auto">
+                  <label htmlFor={tDetailId}>
+                    รายละเอียด{" "}
+                    <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                  </label>
+                  <input
+                    id={tDetailId}
+                    type="text"
+                    className={`${!editMode ? "editModeTrue cursor-default" : ""} ${bgColorMain} ${focusRing}
+                      mt-1 w-full sm:w-96 border border-gray-400 py-2 px-4 rounded-lg`}
+                    placeholder="รายละเอียดเพิ่มเติม"
+                    onBlur={(e) => handleTrainDetail(e.target.value, index)}
+                    defaultValue={trainDetail[index] || ""}
+                    readOnly={!editMode}
+                  />
+                </div>
+
+                <div className={`${bgColorMain} flex flex-col gap-1 w-full sm:w-auto`}>
+                  {trainFile[index]?.fileUrl || editMode ? (
+                    <label htmlFor={chooseTrainFileId}>เอกสารประกอบ / ใบประกาศ</label>
+                  ) : null}
+
+                  {trainFile[index] && trainFile[index]?.fileUrl !== "" ? (
+                    <div className="mt-1 w-full sm:w-fit py-2 flex flex-wrap gap-4 sm:gap-8 items-center">
+                      <button
+                        type="button"
+                        className={`underline text-left ${focusRing}`}
+                        onClick={() => openFile(trainFile[index]?.fileUrl)}
+                        aria-label={`เปิดไฟล์ ${trainFile[index]?.fileName}.${trainFile[index]?.fileType}`}
+                      >
+                        <p>
+                          {trainFile[index]?.fileName}.{trainFile[index]?.fileType}
+                        </p>
+                      </button>
+
+                      <p className="text-gray-500">{trainFile[index]?.fileSize} MB</p>
+
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
                           onClick={() =>
-                            handleDeleteFile(trainFile[index]?.fileName, index)
+                            handleDownloadFile(
+                              trainFile[index]?.fileUrl,
+                              trainFile[index]?.fileName
+                            )
                           }
-                          className={` text-black`}
-                          path={mdiDelete}
-                          size={1}
+                          className={focusRing}
+                          aria-label="ดาวน์โหลดไฟล์"
+                        >
+                          <Icon className="text-black" path={mdiDownload} size={1} aria-hidden="true" />
+                        </button>
+
+                        {editMode && (
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteFile(trainFile[index]?.fileName, index)}
+                            className={focusRing}
+                            aria-label="ลบไฟล์"
+                          >
+                            <Icon className="text-black" path={mdiDelete} size={1} aria-hidden="true" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    editMode && (
+                      <div className="mt-1 w-full sm:w-fit">
+                        <input
+                          id={chooseTrainFileId}
+                          type="file"
+                          ref={trainFileInputRef}
+                          onChange={(e) => handleTrainDocument(e, index)}
+                          hidden
+                          aria-hidden="true"
+                          tabIndex={-1}
                         />
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  editMode && (
-                    <div
-                      onClick={editMode ? openFileDialogTrain : undefined} // เรียกใช้ฟังก์ชันเมื่อ editMode เป็น true
-                      // className={`border mt-1 rounded-lg py-2 px-8 text-center ${editMode ? 'bg-gray-300 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'
-                      //     }`}
-                      className={`border mt-1 rounded-lg py-2 px-8 text-center ${inputEditColor} ${
-                        editMode ? " cursor-pointer" : " cursor-not-allowed"
-                      }`}
-                      style={{ pointerEvents: editMode ? "auto" : "none" }} // ปิดการคลิกเมื่อ editMode เป็น false
-                    >
-                      <input
-                        id="chooseTrainFile"
-                        type="file"
-                        ref={trainFileInputRef} // เชื่อมต่อกับ ref
-                        onChange={(e) => handleTrainDocument(e, index)}
-                        hidden
-                      />
-                      Choose File
-                    </div>
-                  )
-                )}
+                        <button
+                          type="button"
+                          onClick={openFileDialogTrain}
+                          className={`border rounded-lg py-2 px-8 text-center ${inputEditColor} ${
+                            editMode ? "cursor-pointer" : "cursor-not-allowed"
+                          } ${focusRing}`}
+                        >
+                          Choose File
+                        </button>
+
+                        {trainUploadProgress > 0 && (
+                          <p className="mt-2" aria-live="polite">
+                            กำลังอัปโหลด: {trainUploadProgress.toFixed(2)}%
+                          </p>
+                        )}
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
+
         {errorFieldTrain && (
-          <div className="mt-3 text-red-500">*{errorFieldTrain}</div>
+          <div
+            id={trainFieldErrorId}
+            className="mt-3 text-red-500"
+            role="alert"
+            aria-live="polite"
+          >
+            *{errorFieldTrain}
+          </div>
         )}
+
         {trains.length < 5 && editMode && (
-          <div className={` flex col flex-col justify-end w-full mt-5`}>
-            <div
-              className={` cursor-pointer  rounded-lg bg-[#4a94ff] w-fit`}
+          <div className="flex flex-col justify-end w-full mt-5">
+            <button
+              type="button"
+              className={`rounded-lg bg-[#4a94ff] w-fit ${focusRing}`}
               onClick={handleAddTrain}
+              aria-label="เพิ่มการอบรม"
             >
-              <Icon className={` text-white mx-3`} path={mdiPlus} size={1.5} />
-            </div>
+              <Icon className="text-white mx-3" path={mdiPlus} size={1.5} aria-hidden="true" />
+            </button>
           </div>
         )}
       </div>
+      */}
+
+
       {editMode && <ProgressBarForm fields={fieldProgress} />}
+
       <div>
         {error && (
           <div className="w-full text-center">
-            <p className="text-red-500">* {error}</p>
+            <p id={formErrorId} className="text-red-500" role="alert" aria-live="polite">
+              * {error}
+            </p>
           </div>
         )}
+
         {!readOnly && (
-          <ButtonGroup
-            editMode={editMode}
-            setEditMode={setEditMode}
-            tailwind="mt-5"
-          />
+          <ButtonGroup editMode={editMode} setEditMode={setEditMode} tailwind="mt-5" />
         )}
       </div>
     </form>

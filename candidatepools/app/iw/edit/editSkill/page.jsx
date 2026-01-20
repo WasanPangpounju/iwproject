@@ -10,16 +10,27 @@ import { useUserStore } from "@/stores/useUserStore";
 //component
 import SkillForm from "@/app/components/Form/SkillForm";
 
-function page() {
+function Page() {
   const { dataUser } = useUserStore();
   const { dataSkills } = useSkillStore();
 
   const { bgColorMain2 } = useTheme();
+
   return (
-    <div className={`${bgColorMain2} rounded-lg p-5`}>
-      <SkillForm id={dataUser?.uuid} dataSkills={dataSkills} />
-    </div>
+    <main className="w-full" aria-labelledby="skill-page-title">
+      {/* ชื่อหน้าให้ screen reader (ไม่เปลี่ยนดีไซน์) */}
+      <h1 id="skill-page-title" className="sr-only">
+        แก้ไขทักษะ
+      </h1>
+
+      {/* คง card เดิม แต่ทำให้ responsive มากขึ้น */}
+      <div className="mx-auto w-full max-w-5xl px-3 sm:px-4">
+        <div className={`${bgColorMain2} rounded-lg p-4 sm:p-5`}>
+          <SkillForm id={dataUser?.uuid} dataSkills={dataSkills} />
+        </div>
+      </div>
+    </main>
   );
 }
 
-export default page;
+export default Page;
