@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
+import { useState, useEffect } from "react";
+
 import { useTheme } from "@/app/ThemeContext";
 
-// assets
+//assets
 import dataDisabled from "@/assets/dataDisabled";
 
-// components
+//component
 import InputLabelForm from "@/app/components/Form/InputLabelForm";
 import InputForm from "@/app/components/Form/InputForm";
 import SelectLabelForm from "@/app/components/Form/SelectLabelForm";
@@ -14,18 +16,16 @@ import SelectForm from "@/app/components/Form/SelectForm";
 import LabelForm from "@/app/components/Form/LabelForm";
 import TextError from "@/app/components/TextError";
 import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
-import UploadFile from "./UploadFile";
-import InputUniversityAutoComplete from "./InputUniversityAutoComplete";
-import ButtonGroup from "./ButtonGroup/ButtonGroup";
-import Profile from "../Profile/Profile";
 
-// hooks
+//hooks
 import { useStudentForm } from "@/hooks/useStudentForm";
 import { useUserForm } from "@/hooks/useUserForm";
 import { useProvince } from "@/hooks/useProvince";
-
-// const
+import UploadFile from "./UploadFile";
+import InputUniversityAutoComplete from "./InputUniversityAutoComplete";
 import { ROLE } from "@/const/enum";
+import ButtonGroup from "./ButtonGroup/ButtonGroup";
+import Profile from "../Profile/Profile";
 
 function PersonalForm({
   dataUser,
@@ -34,14 +34,7 @@ function PersonalForm({
   handleStep,
   readOnly = false,
 }) {
-  // =========================
-  // ✅ helpers
-  // =========================
-  const toId13 = (v) => String(v ?? "").replace(/\D/g, "").slice(0, 13);
-
-  // =========================
-  // data value
-  // =========================
+  //data value
   const [user, setUser] = useState(null);
   const [password, setPassword] = useState(null);
   const [firstName, setFirstName] = useState(null);
@@ -59,10 +52,8 @@ function PersonalForm({
   const [yearBirthday, setYearBirthday] = useState(null);
   const [nationality, setNationality] = useState(null);
   const [religion, setReligion] = useState(null);
-
-  // ✅ ผูกเลขบัตรประชาชน + เลขบัตรคนพิการ ให้เป็น state เดียว
-  const [idCardUnified, setIdCardUnified] = useState("");
-
+  const [idCard, setIdCard] = useState(null);
+  const [idCardDisabled, setIdCardDisabled] = useState(null);
   const [addressIdCard, setAddressIdCard] = useState(null);
   const [addressIdCardProvince, setAddressIdCardProvince] = useState(null);
   const [addressIdCardAmphor, setAddressIdCardAmphor] = useState(null);
@@ -81,8 +72,8 @@ function PersonalForm({
   const [role, setRole] = useState(null);
   const [editMode, setEditMode] = useState(isCreate);
 
-  // hooks
-  const { fontSize, bgColorMain } = useTheme();
+  //hooks
+  const { fontSize, bgColorMain, inputGrayColor } = useTheme();
 
   const studentForm = useStudentForm(dataUser, setEditMode, handleStep);
   const userForm = useUserForm(dataUser, setEditMode);
@@ -90,21 +81,23 @@ function PersonalForm({
   const handleForm = isStudent
     ? studentForm.handleStudentForm
     : userForm.handleUserForm;
-
   const error = isStudent ? studentForm.error : userForm.error;
-  const errorIdCard = isStudent ? studentForm.errorIdCard : userForm.errorIdCard;
-  const errorIdCardDisabled = isStudent ? studentForm.errorIdCardDisabled : null;
-
+  const errorIdCard = isStudent
+    ? studentForm.errorIdCard
+    : userForm.errorIdCard;
+  const errorIdCardDisabled = isStudent
+    ? studentForm.errorIdCardDisabled
+    : null;
   const { dataProvince } = useProvince();
 
-  // =========================
-  // Date helpers
-  // =========================
+  // สร้าง Date object สำหรับวันที่ปัจจุบัน
   const today = new Date();
-  const dayOfMonth = today.getDate();
-  const monthToday = today.getMonth();
-  const yearToday = today.getFullYear();
 
+  // ดึงวันปัจจุบันในรูปแบบต่าง ๆ
+  const dayOfMonth = today.getDate(); // วันที่ของเดือน (1-31)
+  const monthToday = today.getMonth(); // เดือน (0-11, 0 คือ มกราคม, 11 คือ ธันวาคม)
+  const yearToday = today.getFullYear();
+  // สร้างลิสต์ปีจากปีปัจจุบันย้อนหลัง 100 ปี
   const years = Array.from({ length: 101 }, (_, i) => yearToday - i);
   const [monthNameToday, setMonthNameToday] = useState("");
   const [months, setMonths] = useState([]);
@@ -121,7 +114,6 @@ function PersonalForm({
   useEffect(() => {
     const dateOptions = Array.from({ length: 31 }, (_, i) => i + 1);
     setDates(dateOptions);
-
     const monthNames = [
       "มกราคม",
       "กุมภาพันธ์",
@@ -141,9 +133,6 @@ function PersonalForm({
     setMonths(monthNames);
   }, [monthToday]);
 
-  // =========================
-  // address IDs
-  // =========================
   const [IDaddressIdCardProvince, setIDAddressIdCardProvince] = useState("");
   const [IDaddressIdCardAmphor, setIDAddressIdCardAmphor] = useState("");
   const [IDaddressIdCardTambon, setIDAddressIdCardTambon] = useState("");
@@ -151,9 +140,6 @@ function PersonalForm({
   const [IDaddressAmphor, setIDAddressAmphor] = useState("");
   const [IDaddressTambon, setIDAddressTambon] = useState("");
 
-  // =========================
-  // init data from user
-  // =========================
   useEffect(() => {
     if (!dataUser || dataProvince.length === 0) return;
 
@@ -174,6 +160,8 @@ function PersonalForm({
       "yearBirthday",
       "nationality",
       "religion",
+      "idCard",
+      "idCardDisabled",
       "addressIdCard",
       "addressIdCardProvince",
       "addressIdCardAmphor",
@@ -208,6 +196,8 @@ function PersonalForm({
       yearBirthday: setYearBirthday,
       nationality: setNationality,
       religion: setReligion,
+      idCard: setIdCard,
+      idCardDisabled: setIdCardDisabled,
       addressIdCard: setAddressIdCard,
       addressIdCardProvince: setAddressIdCardProvince,
       addressIdCardAmphor: setAddressIdCardAmphor,
@@ -236,9 +226,7 @@ function PersonalForm({
         : "พิการ 1 ประเภท"
     );
 
-    // ✅ ตั้งค่าบัตร unified จาก idCard หรือ idCardDisabled (อันไหนมี)
-    setIdCardUnified(toId13(dataUser?.idCard || dataUser?.idCardDisabled || ""));
-
+    // set address
     const resolveLocation = (provinceName, amphorName, tambonName) => {
       const province = dataProvince.find((p) => p.name_th === provinceName);
       const amphor = province?.amphure.find((a) => a.name_th === amphorName);
@@ -269,17 +257,20 @@ function PersonalForm({
     setIDAddressTambon(currentLocation.tambonId);
   }, [dataUser, dataProvince]);
 
-  // checkbox in address add to array
+  //checkbox in address add to array
   const handleCheckboxChange = (value) => {
     setTypeDisabled((prevState) => {
       if (prevState.includes(value)) {
+        // หากค่าอยู่ใน array แล้ว, ลบออก
         return prevState.filter((item) => item !== value);
+      } else {
+        // หากค่าไม่อยู่ใน array, เพิ่มเข้าไป
+        return [...prevState, value];
       }
-      return [...prevState, value];
     });
   };
 
-  // address same ID card
+  // Check address same address IDCard
   const [statusSameAddress, setSameAddress] = useState(false);
   function CheckAddressSameIDCard(e) {
     setSameAddress(e);
@@ -295,7 +286,7 @@ function PersonalForm({
     }
   }
 
-  // option select date
+  //option select
   const dateOptions = (() => {
     if (yearToday === Number(yearBirthday) && monthNameToday === monthBirthday)
       return filteredDate;
@@ -303,12 +294,11 @@ function PersonalForm({
       return filteredDate30;
     if (monthBirthday === "กุมภาพันธ์") {
       if (Number(yearBirthday) % 4 === 0) return filteredDate29;
-      return filteredDate28;
+      else return filteredDate28;
     }
     return filteredDate31;
   })().map((d) => ({ id: d, value: d }));
 
-  // ✅ bodyData: ส่ง 2 ฟิลด์เดิมเหมือนเดิม แต่ใช้ค่าเดียวกัน
   const bodyData = {
     user,
     password,
@@ -327,11 +317,8 @@ function PersonalForm({
     yearBirthday,
     nationality,
     religion,
-
-    // ✅ keep DB schema
-    idCard: idCardUnified,
-    idCardDisabled: idCardUnified,
-
+    idCard,
+    idCardDisabled,
     addressIdCard,
     addressIdCardProvince,
     addressIdCardAmphor,
@@ -350,14 +337,14 @@ function PersonalForm({
     age,
   };
 
-  // progressbar
+  //for progressbar
   const fields = [
     ...(isStudent
       ? [
           typeDisabled,
           detailDisabled,
           profile,
-          idCardUnified, // ✅ unified
+          idCardDisabled,
           selectTypeDisabled,
           relationship,
         ]
@@ -374,7 +361,7 @@ function PersonalForm({
     yearBirthday,
     nationality,
     religion,
-    idCardUnified, // ✅ unified
+    idCard,
     addressIdCard,
     addressIdCardProvince,
     addressIdCardAmphor,
@@ -389,12 +376,12 @@ function PersonalForm({
     telEmergency,
     age,
   ];
-
+  
   return (
     <>
       <form
         onSubmit={(e) => handleForm(e, bodyData)}
-        className={`${fontSize} flex gap-x-10 gap-y-5 flex-wrap w-full`}
+        className={`${fontSize} flex gap-x-10 gap-y-5 gap- flex-wrap`}
       >
         <SelectLabelForm
           label={"คำนำหน้า"}
@@ -418,7 +405,6 @@ function PersonalForm({
             { id: "นางสาว", value: "นางสาว" },
           ]}
         />
-
         <InputLabelForm
           label={"ชื่อ"}
           value={firstName}
@@ -442,7 +428,6 @@ function PersonalForm({
           editMode={editMode}
           placeholder={"ชื่อเล่น"}
         />
-
         {prefix !== "0" && prefix ? (
           <InputLabelForm
             label={"เพศ"}
@@ -453,7 +438,6 @@ function PersonalForm({
             isRequire
           />
         ) : null}
-
         <div className=" flex flex-col gap-1">
           <LabelForm label={"วันเกิด"} isRequire editMode={editMode} />
           <div className="flex gap-3  flex-wrap">
@@ -462,16 +446,25 @@ function PersonalForm({
               setValue={setYearBirthday}
               value={yearBirthday}
               tailwind={"w-32"}
-              options={years.map((item) => ({ id: item, value: item }))}
+              options={years.map((item) => {
+                return {
+                  id: item,
+                  value: item,
+                };
+              })}
             />
             <SelectForm
               editMode={editMode}
               setValue={setMonthBirthday}
               value={monthBirthday}
               tailwind={"w-36"}
-              options={(
-                yearToday === Number(yearBirthday) ? filteredMonths : months
-              ).map((m) => ({ id: m, value: m }))}
+              options={(yearToday === Number(yearBirthday)
+                ? filteredMonths
+                : months
+              ).map((m) => ({
+                id: m,
+                value: m,
+              }))}
             />
             <SelectForm
               editMode={editMode}
@@ -482,7 +475,6 @@ function PersonalForm({
             />
           </div>
         </div>
-
         {yearBirthday !== "0" &&
         monthBirthday !== "0" &&
         dateBirthday !== "0" &&
@@ -498,7 +490,6 @@ function PersonalForm({
             isRequire
           />
         ) : null}
-
         <SelectLabelForm
           label={"สัญชาติ"}
           isRequire
@@ -507,11 +498,16 @@ function PersonalForm({
           value={nationality}
           tailwind={"w-40"}
           options={[
-            { id: "ไทย", value: "ไทย" },
-            { id: "อื่นๆ", value: "อื่นๆ" },
+            {
+              id: "ไทย",
+              value: "ไทย",
+            },
+            {
+              id: "อื่นๆ",
+              value: "อื่นๆ",
+            },
           ]}
         />
-
         <SelectLabelForm
           label={"ศาสนา"}
           isRequire
@@ -526,15 +522,13 @@ function PersonalForm({
             { id: "อื่นๆ", value: "อื่นๆ" },
           ]}
         />
-
-        {/* ✅ ID Cards: ผูกข้อมูลเดียวกัน */}
-        <div className="w-full sm:w-auto">
+        <div>
           <InputLabelForm
             label={`เลขบัตรประจำตัวประชาชน`}
-            value={idCardUnified}
-            setValue={(v) => setIdCardUnified(toId13(v))}
+            value={idCard}
+            setValue={setIdCard}
             editMode={editMode}
-            tailwind={"w-full sm:w-64"}
+            tailwind={"w-64"}
             isRequire
             styles={"idCard"}
             placeholder={"เลขบัตร 13 หลัก"}
@@ -545,15 +539,14 @@ function PersonalForm({
             </div>
           )}
         </div>
-
         {isStudent && (
-          <div className="w-full sm:w-auto">
+          <div>
             <InputLabelForm
               label={`เลขบัตรประจำตัวคนพิการ`}
-              value={idCardUnified}
-              setValue={(v) => setIdCardUnified(toId13(v))}
+              value={idCardDisabled}
+              setValue={setIdCardDisabled}
               editMode={editMode}
-              tailwind={"w-full sm:w-64"}
+              tailwind={"w-64"}
               isRequire
               styles={"idCard"}
               placeholder={"เลขบัตร 13 หลัก"}
@@ -566,20 +559,16 @@ function PersonalForm({
           </div>
         )}
 
-        {/* =========================
-            ที่อยู่ตามบัตรประชาชน
-        ========================= */}
         <div className="flex gap-x-10 gap-y-5 flex-wrap w-full">
           <InputLabelForm
             label={`ที่อยู่ตามบัตรประชาชน`}
             value={addressIdCard}
             setValue={setAddressIdCard}
             editMode={editMode}
-            tailwind={"w-full sm:w-72"}
+            tailwind={"w-72"}
             isRequire
             placeholder={"บ้านเลขที่, หมู่บ้าน, หอพัก"}
           />
-
           <SelectLabelForm
             label={"จังหวัด"}
             isRequire
@@ -600,17 +589,17 @@ function PersonalForm({
                 (p) => p.id === parseInt(IDaddressIdCardProvince)
               )?.id || "0"
             }
-            tailwind={"w-full sm:w-48"}
+            tailwind={"w-48"}
             options={
-              dataProvince?.map((d) => ({ id: d.id, value: d.name_th })) || []
+              dataProvince?.map((d) => ({
+                id: d.id,
+                value: d.name_th,
+              })) || []
             }
           />
-
           {IDaddressIdCardProvince ? (
             <SelectLabelForm
-              label={
-                IDaddressIdCardProvince.toString() === "1" ? "แขวง" : "อำเภอ"
-              }
+              label={IDaddressIdCardProvince.toString() === "1" ? "แขวง":"อำเภอ"}
               isRequire
               editMode={editMode}
               setValue={(e) => {
@@ -634,20 +623,20 @@ function PersonalForm({
                     (a) => a.id === parseInt(IDaddressIdCardAmphor)
                   )?.id || "0"
               }
-              tailwind={"w-full sm:w-48"}
+              tailwind={"w-48"}
               options={
                 dataProvince
                   ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
-                  ?.amphure.map((d) => ({ id: d.id, value: d.name_th })) || []
+                  ?.amphure.map((d) => ({
+                    id: d.id,
+                    value: d.name_th,
+                  })) || []
               }
             />
           ) : null}
-
           {IDaddressIdCardProvince && IDaddressIdCardAmphor ? (
             <SelectLabelForm
-              label={
-                IDaddressIdCardProvince.toString() === "1" ? "เขต" : "ตำบล"
-              }
+              label={IDaddressIdCardProvince.toString() === "1" ? "เขต":"ตำบล"}
               isRequire
               editMode={editMode}
               setValue={(e) => {
@@ -669,22 +658,23 @@ function PersonalForm({
                   ?.amphure.find(
                     (a) => a.id === parseInt(IDaddressIdCardAmphor)
                   )
-                  ?.tambon.find(
-                    (t) => t.id === parseInt(IDaddressIdCardTambon)
-                  )?.id || "0"
+                  ?.tambon.find((t) => t.id === parseInt(IDaddressIdCardTambon))
+                  ?.id || "0"
               }
-              tailwind={"w-full sm:w-48"}
+              tailwind={"w-48"}
               options={
                 dataProvince
                   ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
                   ?.amphure.find(
                     (a) => a.id === parseInt(IDaddressIdCardAmphor)
                   )
-                  ?.tambon.map((t) => ({ id: t.id, value: t.name_th })) || []
+                  ?.tambon.map((t) => ({
+                    id: t.id,
+                    value: t.name_th,
+                  })) || []
               }
             />
           ) : null}
-
           {IDaddressIdCardProvince &&
           IDaddressIdCardAmphor &&
           IDaddressIdCardTambon ? (
@@ -694,16 +684,12 @@ function PersonalForm({
               disabled
               editMode={editMode}
               isRequire
-              tailwind={"w-full sm:w-36"}
+              tailwind={"w-36"}
             />
           ) : null}
         </div>
-
-        {/* =========================
-            ที่อยู่ปัจจุบัน
-        ========================= */}
         <div className="flex gap-x-10 gap-y-5 flex-wrap w-full">
-          <div className="flex col flex-col gap-1 w-full sm:w-auto">
+          <div className="flex col flex-col gap-1">
             <div className="flex gap-x-2 ">
               <LabelForm
                 label={"ที่อยู่ปัจจุบัน"}
@@ -712,7 +698,6 @@ function PersonalForm({
               />
               <div className={`${!editMode ? "hidden" : ""} flex gap-x-1`}>
                 <input
-                  aria-label="ที่อยู่ปัจจุบันเหมือนที่อยู่ตามบัตรประชาชน"
                   onChange={(e) => CheckAddressSameIDCard(e.target.checked)}
                   type="checkbox"
                   className={`cursor-pointer w-3 h-full border`}
@@ -727,10 +712,9 @@ function PersonalForm({
               setValue={setAddress}
               isRequire
               placeholder={"บ้านเลขที่, หมู่บ้าน, หอพัก"}
-              tailwind={"w-full sm:w-72"}
+              tailwind={"w-72"}
             />
           </div>
-
           <SelectLabelForm
             label={"จังหวัด"}
             isRequire
@@ -754,74 +738,166 @@ function PersonalForm({
                 : dataProvince.find((p) => p.id === parseInt(IDaddressProvince))
                     ?.id || "0"
             }
-            tailwind={"w-full sm:w-48"}
-            options={dataProvince.map((d) => ({ id: d.id, value: d.name_th })) || []}
+            tailwind={"w-48"}
+            options={
+              dataProvince.map((d) => ({
+                id: d.id,
+                value: d.name_th,
+              })) || []
+            }
           />
-        </div>
+          {IDaddressProvince ? (
+            <SelectLabelForm
+              label={IDaddressProvince.toString() === "1" ? "แขวง":"อำเภอ"}
+              isRequire
+              editMode={editMode && !statusSameAddress}
+              setValue={(e) => {
+                setIDAddressAmphor(e);
+                setIDAddressTambon("");
+                setAddressTambon("");
+                setAddressZipCode("");
 
-        {/* โทรศัพท์ */}
+                const amphor = dataProvince
+                  ?.find((p) => p.id === parseInt(IDaddressProvince))
+                  ?.amphure.find((a) => a.id === parseInt(e));
+
+                setAddressAmphor(amphor?.name_th || "");
+              }}
+              value={
+                statusSameAddress
+                  ? dataProvince
+                      ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+                      ?.amphure.find(
+                        (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                      )?.id || "0"
+                  : dataProvince
+                      ?.find((p) => p.id === parseInt(IDaddressProvince))
+                      ?.amphure.find((a) => a.id === parseInt(IDaddressAmphor))
+                      ?.id || "0"
+              }
+              tailwind={"w-48"}
+              options={(
+                dataProvince.find((p) => p.id === parseInt(IDaddressProvince))
+                  ?.amphure || []
+              ).map((d) => ({
+                id: d.id,
+                value: d.name_th,
+              }))}
+            />
+          ) : null}
+          {IDaddressProvince && IDaddressAmphor ? (
+            <SelectLabelForm
+              label={IDaddressProvince.toString() === "1" ? "เขต":"ตำบล"}
+              isRequire
+              editMode={editMode && !statusSameAddress}
+              setValue={(e) => {
+                setIDAddressTambon(e);
+
+                const tambon = dataProvince
+                  ?.find((p) => p.id === parseInt(IDaddressProvince))
+                  ?.amphure.find((a) => a.id === parseInt(IDaddressAmphor))
+                  ?.tambon.find((t) => t.id === parseInt(e));
+
+                setAddressTambon(tambon?.name_th || "");
+                setAddressZipCode(tambon?.zip_code || "");
+              }}
+              value={
+                statusSameAddress
+                  ? dataProvince
+                      .find((p) => p.id === parseInt(IDaddressIdCardProvince))
+                      ?.amphure.find(
+                        (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                      )
+                      ?.tambon.find(
+                        (t) => t.id === parseInt(IDaddressIdCardTambon)
+                      )?.id
+                  : dataProvince
+                      .find((p) => p.id === parseInt(IDaddressProvince))
+                      ?.amphure.find((a) => a.id === parseInt(IDaddressAmphor))
+                      ?.tambon.find((t) => t.id === parseInt(IDaddressTambon))
+                      ?.id || "0"
+              }
+              tailwind={"w-48"}
+              options={(
+                dataProvince
+                  .find((p) => p.id === parseInt(IDaddressProvince))
+                  ?.amphure.find((a) => a.id === parseInt(IDaddressAmphor))
+                  ?.tambon || []
+              ).map((d) => ({
+                id: d.id,
+                value: d.name_th,
+              }))}
+            />
+          ) : null}
+          {IDaddressProvince && IDaddressAmphor && IDaddressTambon ? (
+            <InputLabelForm
+              label={"รหัสไปรษณีย์"}
+              isRequire
+              disabled
+              value={
+                statusSameAddress ? addressIdCardZipCode : addressZipCode || "-"
+              }
+              tailwind={"w-36"}
+              editMode={editMode}
+            />
+          ) : null}
+        </div>
         <InputLabelForm
           label={"เบอร์ติดต่อ"}
           isRequire
           value={tel}
           setValue={setTel}
           placeholder={"หมายเลขโทรศัพท์ 10 หลัก"}
-          tailwind={"w-full sm:w-60"}
+          tailwind={"w-60"}
           styles={"tel"}
           editMode={editMode}
         />
-
         <InputLabelForm
           label={"เบอร์ติดต่อฉุกเฉิน"}
           value={telEmergency}
           setValue={setTelEmergency}
           placeholder={"หมายเลขโทรศัพท์ 10 หลัก"}
-          tailwind={"w-full sm:w-60"}
+          tailwind={"w-60"}
           styles={"tel"}
           editMode={editMode}
         />
-
         {isStudent && (
           <InputLabelForm
             label={"ความสัมพันธ์"}
             value={relationship}
             setValue={setRelationship}
             placeholder={"บุคคลใกล้ชิด"}
-            tailwind={"w-full sm:w-60"}
+            tailwind={"w-60"}
             editMode={editMode}
           />
         )}
-
-        {/* อีเมล */}
         <InputLabelForm
           disabled={isStudent}
           isRequire
           label={"อีเมล์"}
           value={email}
           setValue={setEmail}
-          tailwind={"w-full sm:w-60"}
+          tailwind={"w-60"}
           editMode={editMode}
           placeholder={"กรอกที่อยู่อีเมล์"}
           type={"email"}
         />
-
-        {/* staff/admin form */}
         {!isStudent && (
           <>
             <InputLabelForm
               label={"ตำแหน่ง"}
               value={position}
               setValue={setPosition}
-              tailwind={"w-full sm:w-60"}
+              tailwind={"w-60"}
               editMode={editMode}
               placeholder={"ตำแหน่ง"}
             />
-            <div className="w-full sm:w-auto">
+            <div>
               <LabelForm label="มหาวิทยาลัย" isRequire editMode={editMode} />
               <InputUniversityAutoComplete
                 value={university}
                 onChange={setUniversity}
-                tailwind={"py-2 w-full sm:w-60 mt-1"}
+                tailwind={"py-2 w-60 mt-1"}
                 editMode={editMode}
               />
             </div>
@@ -830,7 +906,7 @@ function PersonalForm({
               label={"Username"}
               value={user}
               setValue={setUser}
-              tailwind={"w-full sm:w-60"}
+              tailwind={"w-60"}
               editMode={editMode}
               placeholder={"กรอกชื่อผู้ใช้"}
             />
@@ -839,7 +915,7 @@ function PersonalForm({
               label={"Password"}
               value={password}
               setValue={setPassword}
-              tailwind={"w-full sm:w-60"}
+              tailwind={"w-60"}
               editMode={editMode}
               placeholder={"กรอกรหัสผ่าน"}
               styles={"password"}
@@ -851,39 +927,48 @@ function PersonalForm({
               isRequire
               editMode={editMode}
               options={[
-                { id: ROLE.USER, value: ROLE.USER },
-                { id: ROLE.ADMIN, value: ROLE.SUPERUSER },
-                { id: ROLE.SUPERVISOR, value: ROLE.ADMIN },
+                {
+                  id: ROLE.USER,
+                  value: ROLE.USER,
+                },
+                {
+                  id: ROLE.ADMIN,
+                  value: ROLE.SUPERUSER,
+                },
+                {
+                  id: ROLE.SUPERVISOR,
+                  value: ROLE.ADMIN,
+                },
               ]}
-              tailwind={"w-full sm:w-40"}
+              tailwind={"w-40"}
             />
           </>
         )}
-
-        {/* student: disability */}
         {isStudent && (
           <>
-            <div className="flex gap-x-10 gap-y-5 flex-wrap w-full">
+            <div className="flex gap-x-10 gap-y-5 flex-wrap">
               <SelectLabelForm
                 label={"ประเภทความพิการ"}
                 isRequire
                 editMode={editMode}
                 setValue={(e) => setSelectTypeDisabled(e)}
                 value={selectTypeDisabled || "0"}
-                tailwind={"w-full sm:w-64"}
+                tailwind={"w-64"}
                 options={[
                   { id: "พิการ 1 ประเภท", value: "พิการ 1 ประเภท" },
-                  { id: "พิการมากกว่า 1 ประเภท", value: "พิการมากกว่า 1 ประเภท" },
+                  {
+                    id: "พิการมากกว่า 1 ประเภท",
+                    value: "พิการมากกว่า 1 ประเภท",
+                  },
                 ]}
               />
-
               <SelectLabelForm
                 label="เลือกความพิการ"
                 isRequire
                 editMode={editMode}
                 setValue={(e) => setTypeDisabled([e])}
                 value={typeDisabled[0] || "0"}
-                tailwind={`w-full sm:w-64 ${
+                tailwind={`w-64 ${
                   selectTypeDisabled === "พิการ 1 ประเภท" ? "block" : "hidden"
                 }`}
                 options={[
@@ -893,7 +978,9 @@ function PersonalForm({
 
               <div
                 className={`flex flex-col my-5 ${
-                  selectTypeDisabled === "พิการมากกว่า 1 ประเภท" ? "block" : "hidden"
+                  selectTypeDisabled === "พิการมากกว่า 1 ประเภท"
+                    ? "block"
+                    : "hidden"
                 }`}
               >
                 {dataDisabled.map((type, idx) => (
@@ -905,7 +992,6 @@ function PersonalForm({
                   >
                     <input
                       type="checkbox"
-                      aria-label={`เลือกความพิการ: ${type}`}
                       className="cursor-pointer w-10 border"
                       onChange={() => handleCheckboxChange(type)}
                       checked={typeDisabled.includes(type)}
@@ -918,17 +1004,15 @@ function PersonalForm({
                   </div>
                 ))}
               </div>
-
               <InputLabelForm
                 label={"รายละเอียดเพิ่มเติม"}
                 value={detailDisabled}
                 setValue={setDetailDisabled}
-                tailwind={"w-full sm:w-60"}
+                tailwind={"w-60"}
                 editMode={editMode}
                 placeholder={"รายละเอียด"}
               />
             </div>
-
             <div className="w-full flex">
               <div className="flex flex-col gap-1">
                 <LabelForm label={"อัปโหลดรูปโปรไฟล์"} editMode={editMode} />
@@ -936,30 +1020,30 @@ function PersonalForm({
                   <Profile imageSrc={profile} />
                   {editMode && (
                     <div className="mt-2">
-                      <TextError text="รูปภาพสี่เหลี่ยมจัตุรัส (128×128px) ขนาดไม่เกิน 500KB (JPG, JEPG, PNG)" />
+                      <TextError
+                        text={
+                          "รูปภาพสี่เหลี่ยมจัตุรัส (128×128px) ขนาดไม่เกิน 500KB (JPG, JEPG, PNG)"
+                        }
+                      />
                     </div>
                   )}
                 </div>
-
                 <UploadFile
                   isDisabled={false}
                   editMode={editMode}
                   uuid={dataUser?.uuid}
-                  setValue={(url) => setProfile(url)}
+                  setValue={(url) => setProfile(url)} // หรือ setValue(url) ตามที่คุณใช้
                   maxSizeKB={500}
-                  acceptTypes={["image/jpeg", "image/png", "image/jpg"]}
+                  acceptTypes={["image/jpeg", "image/png" , "image/jpg"]}
                 />
               </div>
             </div>
           </>
         )}
-
         <div className="w-full text-center">
           {error ? <TextError text={error} /> : null}
         </div>
-
         {editMode && <ProgressBarForm fields={fields} />}
-
         {!readOnly && (
           <ButtonGroup
             editMode={editMode}

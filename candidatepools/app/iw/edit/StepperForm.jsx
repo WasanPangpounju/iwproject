@@ -33,7 +33,7 @@ import SumaryData from "@/app/components/Form/SumaryData";
 import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
 
 const steps = [
-  "ข้อมูลส่วนบุลคล",
+  "ข้อมูลส่วนบุคคล",
   "ประวัติการศึกษา",
   "ประวัติการทำงาน/ฝึกงาน",
   "ความสามารถ/การอบรม",

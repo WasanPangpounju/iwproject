@@ -3,36 +3,19 @@ import Icon from "@mdi/react";
 import { mdiArrowDownDropCircle } from "@mdi/js";
 import { useTheme } from "@/app/ThemeContext";
 
-function SelectForm({
-  id, // ✅ รับ id จาก SelectLabelForm
-  setValue,
-  value,
-  editMode,
-  options,
-  tailwind,
-
-  // ✅ WCAG
-  describedBy,
-  ariaInvalid = false,
-}) {
+function SelectForm({ setValue, value, editMode, options, tailwind }) {
   const { inputEditColor, bgColorMain } = useTheme();
-
-  const focusRing =
-    "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500";
 
   return (
     <div className="relative col w-fit">
       <select
-        id={id}
         onChange={(e) => setValue(e.target.value)}
         className={`${
           !editMode ? `${inputEditColor} cursor-default` : `cursor-pointer`
-        } ${bgColorMain} ${focusRing} ${tailwind} border border-gray-400 py-2 px-4 rounded-lg`}
+        } ${bgColorMain} ${tailwind} border border-gray-400 py-2 px-4 rounded-lg`}
         style={{ appearance: "none" }}
         disabled={!editMode}
         value={value || ""}
-        aria-describedby={describedBy}
-        aria-invalid={ariaInvalid ? "true" : "false"}
       >
         <option value="">-</option>
         {options?.map((item) => (
@@ -41,14 +24,12 @@ function SelectForm({
           </option>
         ))}
       </select>
-
       <Icon
         className={`${
           !editMode ? "hidden" : ""
-        } pointer-events-none text-gray-400 absolute right-0 top-[10px] mx-3`}
+        } cursor-pointer text-gray-400 absolute right-0 top-[10px] mx-3`}
         path={mdiArrowDownDropCircle}
         size={0.8}
-        aria-hidden="true"
       />
     </div>
   );
