@@ -1,63 +1,167 @@
-import React, { useState } from "react";
-
+import React, { useId, useMemo, useState } from "react";
 import useUniversityStore from "@/stores/useUniversityStore";
 
 function InputUniversityAutoComplete({
+  id, // ✅ รับ id จาก parent เพื่อให้ label htmlFor โฟกัสได้
   value,
   onChange,
   placeholder = "กรอกชื่อมหาวิทยาลัย",
-  tailwind,
+  tailwind = "",
   editMode = true,
+
+  // (optional) a11y error binding
+  describedBy,
+  ariaInvalid = false,
 }) {
   const { universities } = useUniversityStore();
+  const reactId = useId();
+
+  const inputId = id || `uni-input-${reactId}`;
+  const listboxId = `${inputId}-listbox`;
+
   const [optionUniversity, setOptionUniversity] = useState([]);
-  const [isFocusUni, setIsFocusUni] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
 
-  function handleUniversity(input) {
-    onChange(input); // ส่งค่าที่พิมพ์กลับไปให้ parent
+  const options = useMemo(() => optionUniversity || [], [optionUniversity]);
 
-    const filteredOptions = universities?.data?.filter((uni) =>
-      uni.university.toLowerCase().includes(input.toLowerCase())
-    );
-    setOptionUniversity(filteredOptions);
+  const getUniName = (item) => (item?.university ? String(item.university) : "");
+
+  function filterOptions(input) {
+    const source = universities?.data || universities || [];
+    const text = (input || "").toLowerCase();
+
+    const filtered =
+      Array.isArray(source) && text
+        ? source.filter((u) => getUniName(u).toLowerCase().includes(text))
+        : Array.isArray(source)
+        ? source.slice(0, 10) // ถ้าไม่พิมพ์อะไร แสดงตัวอย่างบางส่วนได้ (ไม่หนักเครื่อง)
+        : [];
+
+    setOptionUniversity(filtered);
+    setIsOpen(true);
+    setActiveIndex(-1);
   }
 
-  function handleSelectOption(uni) {
-    onChange(uni); // ส่งค่าที่เลือกกลับไปให้ parent
+  function handleInputChange(input) {
+    // ✅ ส่งค่ากลับ parent เหมือนเดิม (string)
+    onChange?.(input);
+    filterOptions(input);
+  }
+
+  function handleSelectOption(uniName) {
+    onChange?.(uniName);
     setOptionUniversity([]);
+    setIsOpen(false);
+    setActiveIndex(-1);
   }
 
+  function handleKeyDown(e) {
+    if (!editMode) return;
+
+    if (e.key === "ArrowDown") {
+      if (!isOpen) {
+        setIsOpen(true);
+        return;
+      }
+      if (options.length === 0) return;
+      e.preventDefault();
+      setActiveIndex((prev) => Math.min(prev + 1, options.length - 1));
+      return;
+    }
+
+    if (e.key === "ArrowUp") {
+      if (!isOpen || options.length === 0) return;
+      e.preventDefault();
+      setActiveIndex((prev) => Math.max(prev - 1, 0));
+      return;
+    }
+
+    if (e.key === "Enter") {
+      if (!isOpen || options.length === 0) return;
+      if (activeIndex >= 0 && activeIndex < options.length) {
+        e.preventDefault();
+        handleSelectOption(getUniName(options[activeIndex]));
+      }
+      return;
+    }
+
+    if (e.key === "Escape") {
+      if (!isOpen) return;
+      e.preventDefault();
+      setIsOpen(false);
+      setActiveIndex(-1);
+    }
+  }
+
+  const activeDescendantId =
+    activeIndex >= 0 ? `${inputId}-opt-${activeIndex}` : undefined;
 
   return (
-    <div className={`relative `}>
+    <div className="relative">
       <input
-        disabled={!editMode}
+        id={inputId}
+        type="text"
         value={value || ""}
-        onChange={(e) => handleUniversity(e.target.value)}
-        onFocus={() => setIsFocusUni(true)}
+        onChange={(e) => handleInputChange(e.target.value)}
+        onFocus={() => {
+          if (!editMode) return;
+          setIsOpen(true);
+          // ถ้า focus แล้วไม่มี options ให้ filter ตามค่าปัจจุบัน
+          if (optionUniversity.length === 0) filterOptions(value || "");
+        }}
         onBlur={(e) => {
-          if (
-            !e.relatedTarget ||
-            !e.relatedTarget.classList.contains("uni-option")
-          ) {
-            setTimeout(() => setIsFocusUni(false), 200);
+          // ปิด dropdown เมื่อ focus ออกไปข้างนอก (แต่เผื่อกรณีคลิก option)
+          const next = e.relatedTarget;
+          const isOption = next?.getAttribute?.("role") === "option";
+          if (!isOption) {
+            setTimeout(() => setIsOpen(false), 150);
           }
         }}
-        type="text"
-        className={`${tailwind} ${!editMode && "bg-gray-200"} border border-gray-400 px-4 py-1 rounded-lg`}
+        onKeyDown={handleKeyDown}
+        disabled={!editMode}
         placeholder={placeholder}
+        className={`${tailwind} ${!editMode ? "bg-gray-200 cursor-default" : ""} border border-gray-400 px-4 py-2 rounded-lg`}
+        // ✅ WCAG combobox pattern
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded={isOpen && options.length > 0 ? "true" : "false"}
+        aria-controls={listboxId}
+        aria-activedescendant={activeDescendantId}
+        aria-describedby={describedBy}
+        aria-invalid={ariaInvalid ? "true" : "false"}
+        autoComplete="off"
       />
-      {isFocusUni && optionUniversity.length > 0 && (
-        <div className="absolute shadow max-h-24 w-full overflow-scroll hide-scrollbar bg-white z-10">
-          {optionUniversity.map((uni, index) => (
-            <div
-              key={index}
-              className="px-2 py-1 border hover:bg-gray-200 cursor-pointer uni-option"
-              onMouseDown={() => handleSelectOption(uni.university)}
-            >
-              {uni.university}
-            </div>
-          ))}
+
+      {editMode && isOpen && options.length > 0 && (
+        <div
+          id={listboxId}
+          role="listbox"
+          className="absolute z-10 mt-2 max-h-60 w-full overflow-auto rounded-lg border bg-white shadow"
+        >
+          {options.slice(0, 30).map((item, index) => {
+            const name = getUniName(item);
+            const optionId = `${inputId}-opt-${index}`;
+            const isActive = index === activeIndex;
+
+            return (
+              <button
+                key={`${name}-${index}`}
+                id={optionId}
+                type="button"
+                role="option"
+                tabIndex={-1}
+                aria-selected={isActive ? "true" : "false"}
+                className={`block w-full text-left px-4 py-2 ${
+                  isActive ? "bg-gray-100" : "bg-white"
+                } hover:bg-gray-100`}
+                onMouseDown={(e) => e.preventDefault()} // กัน blur ก่อนเลือก
+                onClick={() => handleSelectOption(name)}
+              >
+                {name}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
