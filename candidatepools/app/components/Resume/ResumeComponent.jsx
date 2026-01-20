@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useTheme } from "@/app/ThemeContext";
 import Resume from "@/app/components/Resume/resume";
 import InputLabelForm from "../Form/InputLabelForm";
@@ -20,7 +20,6 @@ import { mdiDelete, mdiDownload } from "@mdi/js";
 
 //utils
 import { downloadFileFromFirebase } from "@/utils/firebaseDownload";
-import Link from "next/link";
 
 function ResumeComponent({
   dataUser,
@@ -33,15 +32,14 @@ function ResumeComponent({
   const { bgColorNavbar, bgColorWhite, inputTextColor, inputGrayColor } =
     useTheme();
 
+  const focusRing =
+    "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500";
+
   //open resume check
   const [statusResume, setStatusResume] = useState(0);
 
   //store
-  const {
-    uploadResumeFile,
-    deleteResumeFile,
-    fetchResumeFiles, // ถ้าคุณต้องการ refresh list
-  } = useResumeStore();
+  const { uploadResumeFile, deleteResumeFile, fetchResumeFiles } = useResumeStore();
 
   //file
   const [urlFile, setUrlFile] = useState("");
@@ -49,9 +47,13 @@ function ResumeComponent({
   const [sizeFile, setSizeFiles] = useState("");
   const [typeFile, setTypeFiles] = useState("");
 
+  const canSave = useMemo(() => {
+    return Boolean(urlFile && nameFile && sizeFile && typeFile);
+  }, [urlFile, nameFile, sizeFile, typeFile]);
+
   const handleSaveFile = async () => {
-    if (!urlFile || !nameFile || !sizeFile || !typeFile) {
-      alert("กรุณากรอกข้อมูลไฟล์ให้ครบถ้วนก่อนบันทึก");
+    if (!canSave) {
+      toast.error("กรุณากรอกข้อมูลไฟล์ให้ครบถ้วนก่อนบันทึก");
       return;
     }
 
@@ -68,15 +70,11 @@ function ResumeComponent({
     });
 
     if (result.ok) {
-      // ดึงรายการไฟล์ใหม่มาแสดง
       await fetchResumeFiles(dataUser?.uuid);
-
-      // รีเซ็ต state
       setUrlFile("");
       setNameFiles("");
       setSizeFiles("");
       setTypeFiles("");
-
       toast.success("บันทึกไฟล์เรียบร้อยแล้ว");
     } else {
       toast.error("เกิดข้อผิดพลาดในการบันทึกไฟล์");
@@ -108,13 +106,14 @@ function ResumeComponent({
 
         if (response.ok) {
           toast.success("ลบไฟล์สำเร็จแล้ว");
-          await fetchResumeFiles(uuid); // อัปเดตรายการไฟล์ใหม่
+          await fetchResumeFiles(uuid);
         } else {
           toast.error("เกิดข้อผิดพลาดในการลบไฟล์");
         }
       }
     });
   };
+
   const clearFile = () => {
     setUrlFile("");
     setNameFiles("");
@@ -140,117 +139,157 @@ function ResumeComponent({
         />
       ) : (
         <>
-          <p>สร้างเรซูเม่</p>
-          <div className="mt-5 grid grid-cols-3 gap-5 text-center">
+          <h2 className="font-medium">สร้างเรซูเม่</h2>
+
+          {/* ✅ responsive: มือถือเป็น 1 คอลัมน์, จอใหญ่เป็น 3 */}
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5 text-center">
             <button
-              className={`py-5 rounded-lg max-w-96 ${bgColorNavbar} ${bgColorWhite}`}
+              type="button"
+              className={`py-5 rounded-lg w-full sm:max-w-96 ${bgColorNavbar} ${bgColorWhite} ${focusRing}`}
               onClick={() => setStatusResume(1)}
+              aria-label="เลือกเรซูเม่รูปแบบที่ 1"
             >
               <p>รูปแบบที่ 1</p>
             </button>
+
             <button
-              className={`py-5 rounded-lg max-w-96 ${
+              type="button"
+              className={`py-5 rounded-lg w-full sm:max-w-96 ${
                 bgColorNavbar === "bg-[#F97201]" ? "bg-[#f48e07]" : ""
-              } ${bgColorWhite}`}
+              } ${bgColorWhite} ${focusRing}`}
               onClick={() => setStatusResume(2)}
+              aria-label="เลือกเรซูเม่รูปแบบที่ 2"
             >
               <p>รูปแบบที่ 2</p>
             </button>
+
             <button
-              className={`py-5  rounded-lg max-w-96 ${
+              type="button"
+              className={`py-5 rounded-lg w-full sm:max-w-96 ${
                 bgColorNavbar === "bg-[#F97201]" ? "bg-[#feb61c]" : ""
-              } ${bgColorWhite}`}
+              } ${bgColorWhite} ${focusRing}`}
               onClick={() => setStatusResume(3)}
+              aria-label="เลือกเรซูเม่รูปแบบที่ 3"
             >
               <p>รูปแบบที่ 3</p>
             </button>
           </div>
+
           <div className="mt-10">
             <p className="font-bold">อัพโหลดไฟล์ resume/cv เพิ่มเติม</p>
-            <div className="mt-3 flex gap-5 items-end">
-              <InputLabelForm
-                value={nameFile}
-                setValue={setNameFiles}
-                label={"ชื่อไฟล์"}
-                editMode={true}
-                placeholder={"ชื่อไฟล์ที่ต้องการ"}
-                tailwind={"w-44"}
-                isRequire
-                disabled={urlFile}
-              />
 
-              <UploadFile
-                editMode={true}
-                uuid={dataUser?.uuid}
-                setValue={(url) => setUrlFile(url)}
-                setSizeFile={(size) => setSizeFiles(size)}
-                setTypeFile={(type) => setTypeFiles(type)}
-                isDisabled={!nameFile || (nameFile && urlFile)}
-                maxSizeKB={2048}
-                acceptTypes={["application/pdf"]}
-              />
-            </div>
-            <div className="mt-3">
-              {!nameFile && (
-                <TextError
-                  text={"กรอกชื่อไฟล์ก่อน Upload (PDF) ขนาดไม่เกิน 2 MB."}
+            {/* ✅ responsive: มือถือ stack, จอใหญ่เรียงแถว */}
+            <div className="mt-3 flex flex-col sm:flex-row gap-4 sm:gap-5 sm:items-end">
+              <div className="w-full sm:w-auto">
+                <InputLabelForm
+                  value={nameFile}
+                  setValue={setNameFiles}
+                  label={"ชื่อไฟล์"}
+                  editMode={true}
+                  placeholder={"ชื่อไฟล์ที่ต้องการ"}
+                  tailwind={"w-full sm:w-44"}
+                  isRequire
+                  disabled={urlFile}
                 />
+              </div>
+
+              <div className="w-full sm:w-auto">
+                <UploadFile
+                  editMode={true}
+                  uuid={dataUser?.uuid}
+                  setValue={(url) => setUrlFile(url)}
+                  setSizeFile={(size) => setSizeFiles(size)}
+                  setTypeFile={(type) => setTypeFiles(type)}
+                  isDisabled={!nameFile || (nameFile && urlFile)}
+                  maxSizeKB={2048}
+                  acceptTypes={["application/pdf"]}
+                />
+              </div>
+            </div>
+
+            <div className="mt-3" aria-live="polite">
+              {!nameFile && (
+                <TextError text={"กรอกชื่อไฟล์ก่อน Upload (PDF) ขนาดไม่เกิน 2 MB."} />
               )}
             </div>
+
             {urlFile && (
-              <div className="mt-5 flex items-center">
-                <div className=" me-14">
+              <div className="mt-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+                <div className="break-all sm:me-14" aria-live="polite">
                   {nameFile}.{typeFile}/{sizeFile}
                 </div>
-                <div className="flex gap-3">
-                  <div
+
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
                     onClick={handleSaveFile}
-                    className={` ${inputTextColor} ${inputGrayColor} py-1 px-4 cursor-pointer rounded-lg`}
+                    disabled={!canSave}
+                    className={`${inputTextColor} ${inputGrayColor} py-1 px-4 rounded-lg ${focusRing}
+                      disabled:opacity-60 disabled:cursor-not-allowed`}
+                    aria-label="บันทึกไฟล์เรซูเม่"
                   >
                     บันทึก
-                  </div>
-                  <div
+                  </button>
+
+                  <button
+                    type="button"
                     onClick={clearFile}
-                    className={` ${bgColorNavbar} ${bgColorWhite} py-1 px-4 cursor-pointer rounded-lg`}
+                    className={`${bgColorNavbar} ${bgColorWhite} py-1 px-4 rounded-lg ${focusRing}`}
+                    aria-label="ยกเลิกการอัปโหลด"
                   >
                     ยกเลิก
-                  </div>
+                  </button>
                 </div>
               </div>
             )}
+
             {resumeFiles?.length > 0 && (
-              <div className="mt-5 border rounded-lg p-5 flex flex-col gap-1">
+              <div className="mt-5 border rounded-lg p-4 sm:p-5 flex flex-col gap-2">
                 {resumeFiles?.map((item, index) => (
                   <div
                     key={index}
-                    className="border py-2 px-4 rounded-lg flex justify-between"
+                    className="border py-2 px-4 rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
                   >
-                    <div
+                    <button
+                      type="button"
                       onClick={() => openFile(item.fileUrl)}
-                      className="flex gap-2 cursor-pointer"
+                      className={`flex flex-wrap gap-2 text-left underline ${focusRing}`}
+                      aria-label={`เปิดไฟล์ ${item.fileName}.${item.fileType}`}
                     >
-                      <p>
+                      <span>
                         {item.fileName}.{item.fileType}
-                      </p>
-                      <p>/{item.fileSize}</p>
-                    </div>
-                    <div className="flex items-end">
-                      <Icon
-                        onClick={() =>
-                          handleDownloadFile(item.fileUrl, item.fileName)
-                        }
-                        className={`cursor-pointer text-gray-40 mx-1`}
-                        path={mdiDownload}
-                        size={0.8}
-                      />
-                      <Icon
-                        onClick={() =>
-                          handleDeleteFile(dataUser?.uuid, item.fileUrl)
-                        }
-                        className={`cursor-pointer text-gray-40 mx-1`}
-                        path={mdiDelete}
-                        size={0.8}
-                      />
+                      </span>
+                      <span>/ {item.fileSize}</span>
+                    </button>
+
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleDownloadFile(item.fileUrl, item.fileName)}
+                        className={focusRing}
+                        aria-label={`ดาวน์โหลดไฟล์ ${item.fileName}.${item.fileType}`}
+                      >
+                        <Icon
+                          className="text-gray-400"
+                          path={mdiDownload}
+                          size={0.8}
+                          aria-hidden="true"
+                        />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteFile(dataUser?.uuid, item.fileUrl)}
+                        className={focusRing}
+                        aria-label={`ลบไฟล์ ${item.fileName}.${item.fileType}`}
+                      >
+                        <Icon
+                          className="text-gray-400"
+                          path={mdiDelete}
+                          size={0.8}
+                          aria-hidden="true"
+                        />
+                      </button>
                     </div>
                   </div>
                 ))}
