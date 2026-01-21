@@ -16,15 +16,21 @@ function EditPersonal() {
   const { dataUser } = useUserStore();
 
   return (
-    <main aria-label="แก้ไขข้อมูลส่วนตัว" className="w-full px-4 sm:px-6 lg:px-8 py-4">
-      <div className="mx-auto w-full max-w-4xl">
-        <section className={`${bgColorMain2} rounded-lg p-4 sm:p-5 lg:p-6 pb-8`}>
+    <main className="w-full" aria-labelledby="edit-personal-title">
+      {/* สำหรับ screen reader (ไม่กระทบดีไซน์) */}
+      <h1 id="edit-personal-title" className="sr-only">
+        แก้ไขข้อมูลส่วนตัว
+      </h1>
+
+      {/* ✅ ใช้ wrapper แนวเดิม: ไม่บังคับ max-width และไม่ใส่ padding ที่ทำให้เพี้ยน */}
+      <div className={`${bgColorMain2} py-5 flex justify-center px-5 pb-10`}>
+        <div className="w-full">
           <PersonalForm
             dataUser={dataUser}
             // ส่ง flag ไปให้ PersonalForm ทำการ sync เลขบัตรอัตโนมัติ
             autoSyncDisabilityCardFromIdCard
           />
-        </section>
+        </div>
       </div>
     </main>
   );
