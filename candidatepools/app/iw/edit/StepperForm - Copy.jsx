@@ -1,37 +1,36 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-// MUI
+//mui
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepButton from "@mui/material/StepButton";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useTheme as useMuiTheme } from "@mui/material/styles";
 
 import { useTheme } from "@/app/ThemeContext";
 
-// store
+//store
 import { useUserStore } from "@/stores/useUserStore";
 import { useEducationStore } from "@/stores/useEducationStore";
 import { useHistoryWorkStore } from "@/stores/useHistoryWorkStore";
 import { useSkillStore } from "@/stores/useSkillStore";
 import { useResumeStore } from "@/stores/useResumeStore";
-import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
 
-// components
+//components
 import ResumeComponent from "@/app/components/Resume/ResumeComponent";
 import PersonalForm from "@/app/components/Form/PersonalForm";
 import EducationForm from "@/app/components/Form/EducationForm";
 import HistoryWorkForm from "@/app/components/Form/HistoryWorkForm";
 import SkillForm from "@/app/components/Form/SkillForm";
-import InterestedWorkForm from "@/app/components/Form/InterestedWorkForm";
-import SumaryData from "@/app/components/Form/SumaryData";
 
 import { mdiArrowLeftCircle, mdiArrowRightCircle } from "@mdi/js";
 import ButtonBG1 from "@/app/components/Button/ButtonBG1";
+import InterestedWorkForm from "@/app/components/Form/InterestedWorkForm";
+import SumaryData from "@/app/components/Form/SumaryData";
+import { useInterestedWorkStore } from "@/stores/useInterestedworkStore";
 
 const steps = [
   "ข้อมูลส่วนบุคคล",
@@ -40,7 +39,6 @@ const steps = [
   "ความสามารถ/การอบรม",
   "เรซูเม่",
   "ลักษณะงานที่สนใจ",
-  "สรุปข้อมูล", // ✅ ให้ตรงกับ case 6 + ปุ่ม "สรุปข้อมูล"
 ];
 
 const stepStyle = {
@@ -54,115 +52,105 @@ const stepStyle = {
       color: "#F97201",
     },
   },
-  // ✅ WCAG: focus visible สำหรับการคีย์บอร์ด
-  "& .MuiStepButton-root:focus-visible": {
-    outline: "3px solid #1d4ed8",
-    outlineOffset: "3px",
-    borderRadius: "10px",
-  },
 };
 
 export default function StepperForm() {
-  // params
+  //params
   const searchParams = useSearchParams();
+  const stepper = searchParams.get("stepper");
+
   const router = useRouter();
 
-  const rawStepper = searchParams.get("stepper");
-
-  // ✅ ป้องกัน NaN / null
-  const stepFromQuery = useMemo(() => {
-    const n = Number(rawStepper);
-    if (!Number.isFinite(n) || n < 1) return 1;
-    if (n > steps.length) return steps.length;
-    return n;
-  }, [rawStepper]);
-
-  // store
+  //store
   const { dataUser } = useUserStore();
   const { dataEducations } = useEducationStore();
   const { dataHistoryWork } = useHistoryWorkStore();
   const { dataSkills } = useSkillStore();
   const { dataWorks } = useInterestedWorkStore();
   const { resumeFiles, fetchResumeFiles, clearResumeFiles } = useResumeStore();
-
-  const [activeStep, setActiveStep] = useState(stepFromQuery - 1);
+  const [activeStep, setActiveStep] = useState(stepper - 1);
   const [completed, setCompleted] = useState({});
-
-  // theme
-  const { bgColorMain2 } = useTheme();
-
-  // ✅ Responsive: mobile = vertical, desktop = horizontal
-  const muiTheme = useMuiTheme();
-  const isMobile = useMediaQuery(muiTheme.breakpoints.down("sm"));
 
   useEffect(() => {
     fetchResumeFiles(dataUser?.uuid);
     return () => {
       clearResumeFiles();
     };
-  }, [dataUser, fetchResumeFiles, clearResumeFiles]);
+  }, [dataUser]);
 
   useEffect(() => {
-    setActiveStep(stepFromQuery - 1);
-  }, [stepFromQuery]);
+    setActiveStep(stepper - 1);
+  }, [stepper]);
 
-  // check complete
+  //check complete
   useEffect(() => {
     const newCompleted = {};
 
-    if (dataUser?.idCardDisabled) newCompleted[0] = true;
+    if (dataUser?.idCardDisabled) {
+      newCompleted[0] = true;
+    }
 
-    if (dataEducations?.educationLevel?.[0]) newCompleted[1] = true;
+    if (dataEducations?.educationLevel[0]) {
+      newCompleted[1] = true;
+    }
 
-    if (
-      dataHistoryWork?.internships?.[0]?.place ||
-      dataHistoryWork?.projects?.[0]?.name ||
-      dataHistoryWork?.workExperience?.[0]?.place
-    ) {
+    if (dataHistoryWork?.internships[0]?.place || dataHistoryWork?.projects[0]?.name || dataHistoryWork?.workExperience[0]?.place) {
       newCompleted[2] = true;
     }
 
-    if (dataSkills?.skills?.[0]?.type || dataSkills?.trains?.[0]?.name) {
+    if (dataSkills?.skills[0]?.type || dataSkills?.trains[0]?.name) {
       newCompleted[3] = true;
     }
 
-    // resume: เมื่อ step 0-3 ครบ ให้ถือว่า step 4 ครบ
-    if (newCompleted[0] && newCompleted[1] && newCompleted[2] && newCompleted[3]) {
+    if (
+      newCompleted[0] &&
+      newCompleted[1] &&
+      newCompleted[2] &&
+      newCompleted[3]
+    ) {
       newCompleted[4] = true;
     }
 
-    if (dataWorks?.interestedWork?.[0]?.type) {
+    if (dataWorks?.interestedWork[0]?.type) {
       newCompleted[5] = true;
-    }
-
-    // สรุปข้อมูล (step 6) = เมื่อครบทุกส่วนก่อนหน้า
-    if (newCompleted[0] && newCompleted[1] && newCompleted[2] && newCompleted[3] && newCompleted[4] && newCompleted[5]) {
-      newCompleted[6] = true;
     }
 
     setCompleted((prev) => ({ ...prev, ...newCompleted }));
   }, [dataUser, dataEducations, dataHistoryWork, dataSkills, dataWorks]);
 
-  const totalSteps = () => steps.length;
-  const completedSteps = () => Object.keys(completed).length;
-  const isLastStep = () => activeStep === totalSteps() - 1;
-  const allStepsCompleted = () => completedSteps() === totalSteps();
+  const { bgColorMain2 } = useTheme();
+
+  const totalSteps = () => {
+    return steps.length;
+  };
+
+  const completedSteps = () => {
+    return Object.keys(completed).length;
+  };
+
+  const isLastStep = () => {
+    return activeStep === totalSteps() - 1;
+  };
+
+  const allStepsCompleted = () => {
+    return completedSteps() === totalSteps();
+  };
 
   const handleNext = () => {
-    // ✅ กันหลุดช่วง
-    if (activeStep >= steps.length - 1) return;
-
+    if (steps.length === activeStep) {
+      return;
+    }
     const newActiveStep =
-      activeStep === steps.length - 2 && !completed[activeStep + 1]
-        ? activeStep + 1
+      isLastStep() && !allStepsCompleted()
+        ? steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
-
+    // setActiveStep(newActiveStep);
     router.push(`?stepper=${newActiveStep + 1}&path=edit`);
     setActiveStep(newActiveStep);
   };
 
   const handleBack = () => {
-    const newActiveStep = Math.max(0, activeStep - 1);
+    const newActiveStep = activeStep - 1;
     setActiveStep(newActiveStep);
     router.push(`?stepper=${newActiveStep + 1}&path=edit`);
   };
@@ -173,16 +161,26 @@ export default function StepperForm() {
   };
 
   const handleComplete = () => {
-    setCompleted((prev) => ({
-      ...prev,
+    setCompleted({
+      ...completed,
       [activeStep]: true,
-    }));
+    });
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+    setCompleted({});
   };
 
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return <PersonalForm dataUser={dataUser} handleStep={() => handleComplete()} />;
+        return (
+          <PersonalForm
+            dataUser={dataUser}
+            handleStep={() => handleComplete()}
+          />
+        );
       case 1:
         return (
           <EducationForm
@@ -234,42 +232,16 @@ export default function StepperForm() {
     }
   }
 
-  const currentStepLabel = steps[activeStep] || "";
-
   return (
     <div className={`${bgColorMain2} rounded-lg p-5`}>
       <Box sx={{ width: "100%" }}>
-        {/* ✅ WCAG: ประกาศ step ปัจจุบันให้ screen reader */}
-        <p className="sr-only" aria-live="polite">
-          ขณะนี้อยู่ขั้นตอน: {currentStepLabel}
-        </p>
-
-        <nav aria-label="ขั้นตอนการกรอกข้อมูล">
-          <Stepper
-            nonLinear
-            activeStep={activeStep}
-            orientation={isMobile ? "vertical" : "horizontal"}
-          >
-            {steps.map((label, index) => {
-              const isActive = index === activeStep;
-              const isDone = !!completed[index];
-
-              return (
-                <Step key={label} completed={isDone} sx={stepStyle}>
-                  <StepButton
-                    onClick={handleStep(index)}
-                    aria-label={`ขั้นตอนที่ ${index + 1} จาก ${steps.length}: ${label}${
-                      isDone ? " (เสร็จสิ้น)" : ""
-                    }`}
-                    aria-current={isActive ? "step" : undefined}
-                  >
-                    {label}
-                  </StepButton>
-                </Step>
-              );
-            })}
-          </Stepper>
-        </nav>
+        <Stepper nonLinear activeStep={activeStep}>
+          {steps.map((label, index) => (
+            <Step key={label} completed={completed[index]} sx={stepStyle}>
+              <StepButton onClick={handleStep(index)}>{label}</StepButton>
+            </Step>
+          ))}
+        </Stepper>
 
         {/* เนื้อหาแต่ละ Step */}
         <Box sx={{ mt: 3 }}>{getStepContent(activeStep)}</Box>
@@ -283,14 +255,34 @@ export default function StepperForm() {
               mdiIcon={mdiArrowLeftCircle}
             />
           )}
-
+          {/* <Button
+            color="inherit"
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{ mr: 1 }}
+          >
+            ย้อนกลับ
+          </Button> */}
           <Box sx={{ flex: "1 1 auto" }} />
-
-          {/* ปุ่มถัดไป */}
-          {activeStep < steps.length - 1 && (
+          {/* <Button onClick={handleNext} sx={{ mr: 1 }}>
+            <p className="text-[#F97201]">
+              {activeStep + 1 === steps.length && allStepsCompleted()
+                ? "สรุปข้อมูล"
+                : activeStep + 1 > steps.length
+                ? ""
+                : "ต่อไป"}
+            </p>
+          </Button> */}
+          {activeStep <= steps.length - 1 && (
             <ButtonBG1
               handleClick={handleNext}
-              text={activeStep + 1 === steps.length - 1 ? "สรุปข้อมูล" : "ต่อไป"}
+              text={
+                activeStep + 1 === steps.length && allStepsCompleted()
+                  ? "สรุปข้อมูล"
+                  : activeStep + 1 > steps.length
+                  ? ""
+                  : "ต่อไป"
+              }
               mdiIcon={mdiArrowRightCircle}
               tailwind={"flex-row-reverse"}
             />

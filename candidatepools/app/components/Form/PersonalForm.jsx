@@ -68,14 +68,17 @@ function PersonalForm({
   const [addressIdCardAmphor, setAddressIdCardAmphor] = useState(null);
   const [addressIdCardTambon, setAddressIdCardTambon] = useState(null);
   const [addressIdCardZipCode, setAddressIdCardZipCode] = useState(null);
+
   const [address, setAddress] = useState(null);
   const [addressProvince, setAddressProvince] = useState(null);
   const [addressAmphor, setAddressAmphor] = useState(null);
   const [addressTambon, setAddressTambon] = useState(null);
   const [addressZipCode, setAddressZipCode] = useState(null);
+
   const [tel, setTel] = useState(null);
   const [telEmergency, setTelEmergency] = useState(null);
   const [relationship, setRelationship] = useState(null);
+
   const [selectTypeDisabled, setSelectTypeDisabled] = useState("");
   const [position, setPosition] = useState(null);
   const [role, setRole] = useState(null);
@@ -147,6 +150,7 @@ function PersonalForm({
   const [IDaddressIdCardProvince, setIDAddressIdCardProvince] = useState("");
   const [IDaddressIdCardAmphor, setIDAddressIdCardAmphor] = useState("");
   const [IDaddressIdCardTambon, setIDAddressIdCardTambon] = useState("");
+
   const [IDaddressProvince, setIDAddressProvince] = useState("");
   const [IDaddressAmphor, setIDAddressAmphor] = useState("");
   const [IDaddressTambon, setIDAddressTambon] = useState("");
@@ -396,52 +400,58 @@ function PersonalForm({
         onSubmit={(e) => handleForm(e, bodyData)}
         className={`${fontSize} flex gap-x-10 gap-y-5 flex-wrap w-full`}
       >
-        <SelectLabelForm
-          label={"คำนำหน้า"}
-          isRequire
-          setValue={(val) => {
-            setPrefix(val);
-            setSex(
-              val === "นาย"
-                ? "ชาย"
-                : val === "นาง" || val === "นางสาว"
-                ? "หญิง"
-                : ""
-            );
-          }}
-          value={prefix}
-          editMode={editMode}
-          tailwind={"w-24"}
-          options={[
-            { id: "นาย", value: "นาย" },
-            { id: "นาง", value: "นาง" },
-            { id: "นางสาว", value: "นางสาว" },
-          ]}
-        />
+        {/* ✅ คำนำหน้า/ชื่อ/นามสกุล/ชื่อเล่น: แถวเดียวกันบนจอใหญ่ */}
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[6rem_1fr_1fr_1fr] gap-x-10 gap-y-5">
+          <SelectLabelForm
+            label={"คำนำหน้า"}
+            isRequire
+            setValue={(val) => {
+              setPrefix(val);
+              setSex(
+                val === "นาย"
+                  ? "ชาย"
+                  : val === "นาง" || val === "นางสาว"
+                  ? "หญิง"
+                  : ""
+              );
+            }}
+            value={prefix}
+            editMode={editMode}
+            tailwind={"w-full"}
+            options={[
+              { id: "นาย", value: "นาย" },
+              { id: "นาง", value: "นาง" },
+              { id: "นางสาว", value: "นางสาว" },
+            ]}
+          />
 
-        <InputLabelForm
-          label={"ชื่อ"}
-          value={firstName}
-          setValue={setFirstName}
-          editMode={editMode}
-          isRequire
-          placeholder={"ชื่อจริง"}
-        />
-        <InputLabelForm
-          label={"นามสกุล"}
-          value={lastName}
-          setValue={setLastName}
-          editMode={editMode}
-          isRequire
-          placeholder={"นามสกุล"}
-        />
-        <InputLabelForm
-          label={"ชื่อเล่น"}
-          value={nickname}
-          setValue={setNickname}
-          editMode={editMode}
-          placeholder={"ชื่อเล่น"}
-        />
+          <InputLabelForm
+            label={"ชื่อ"}
+            value={firstName}
+            setValue={setFirstName}
+            editMode={editMode}
+            isRequire
+            placeholder={"ชื่อจริง"}
+            tailwind={"w-full"}
+          />
+          <InputLabelForm
+            label={"นามสกุล"}
+            value={lastName}
+            setValue={setLastName}
+            editMode={editMode}
+            isRequire
+            placeholder={"นามสกุล"}
+            tailwind={"w-full"}
+          />
+          <InputLabelForm
+            label={"ชื่อเล่น"}
+            value={nickname}
+            setValue={setNickname}
+            editMode={editMode}
+            placeholder={"ชื่อเล่น"}
+            tailwind={"w-full"}
+          />
+        </div>
 
         {prefix !== "0" && prefix ? (
           <InputLabelForm
@@ -540,7 +550,11 @@ function PersonalForm({
             placeholder={"เลขบัตร 13 หลัก"}
           />
           {errorIdCard && (
-            <div className="text-xs text-red-500 w-full text-end mt-1 ">
+            <div
+              className="text-xs text-red-500 w-full text-end mt-1"
+              role="alert"
+              aria-live="polite"
+            >
               {errorIdCard}
             </div>
           )}
@@ -559,251 +573,378 @@ function PersonalForm({
               placeholder={"เลขบัตร 13 หลัก"}
             />
             {errorIdCardDisabled && (
-              <div className="text-xs text-red-500 w-full text-end mt-1 ">
+              <div
+                className="text-xs text-red-500 w-full text-end mt-1"
+                role="alert"
+                aria-live="polite"
+              >
                 {errorIdCardDisabled}
               </div>
             )}
           </div>
         )}
 
-        {/* =========================
-            ที่อยู่ตามบัตรประชาชน
-        ========================= */}
-        <div className="flex gap-x-10 gap-y-5 flex-wrap w-full">
+{/* =========================
+    ที่อยู่ตามบัตรประชาชน
+========================= */}
+<div className="w-full flex flex-wrap gap-x-10 gap-y-5">
+  {/* ✅ ทำเหมือนที่อยู่ปัจจุบัน: LabelForm + InputForm เพื่อไม่ให้ component บังคับ full row */}
+  <div className="w-full sm:w-64 flex flex-col gap-1">
+    <LabelForm label={"ที่อยู่ตามบัตรประชาชน"} isRequire editMode={editMode} />
+
+    <InputForm
+      editMode={editMode}
+      value={addressIdCard}
+      setValue={setAddressIdCard}
+      isRequire
+      placeholder={"บ้านเลขที่, หมู่บ้าน, หอพัก"}
+      tailwind={"w-full"}
+    />
+  </div>
+
+  <SelectLabelForm
+    label={"จังหวัด"}
+    isRequire
+    editMode={editMode}
+    setValue={(e) => {
+      setIDAddressIdCardProvince(e);
+      setIDAddressIdCardAmphor("");
+      setIDAddressIdCardTambon("");
+      setAddressIdCardAmphor("");
+      setAddressIdCardTambon("");
+      setAddressIdCardZipCode("");
+      setAddressIdCardProvince(
+        dataProvince?.find((p) => p.id === parseInt(e))?.name_th
+      );
+    }}
+    value={
+      dataProvince.find((p) => p.id === parseInt(IDaddressIdCardProvince))?.id ||
+      "0"
+    }
+    tailwind={"w-full sm:w-64"}
+    options={dataProvince?.map((d) => ({ id: d.id, value: d.name_th })) || []}
+  />
+
+  {IDaddressIdCardProvince ? (
+    <SelectLabelForm
+      label={IDaddressIdCardProvince.toString() === "1" ? "แขวง" : "อำเภอ"}
+      isRequire
+      editMode={editMode}
+      setValue={(e) => {
+        setIDAddressIdCardAmphor(e);
+        setIDAddressIdCardTambon("");
+        setAddressIdCardTambon("");
+        setAddressIdCardZipCode("");
+
+        const province = dataProvince.find(
+          (p) => p.id === parseInt(IDaddressIdCardProvince)
+        );
+        const amphur = province?.amphure.find((a) => a.id === parseInt(e));
+        setAddressIdCardAmphor(amphur?.name_th || "");
+      }}
+      value={
+        dataProvince
+          ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+          ?.amphure.find((a) => a.id === parseInt(IDaddressIdCardAmphor))?.id ||
+        "0"
+      }
+      tailwind={"w-full sm:w-64"}
+      options={
+        dataProvince
+          ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+          ?.amphure.map((d) => ({ id: d.id, value: d.name_th })) || []
+      }
+    />
+  ) : null}
+
+  {IDaddressIdCardProvince && IDaddressIdCardAmphor ? (
+    <SelectLabelForm
+      label={IDaddressIdCardProvince.toString() === "1" ? "เขต" : "ตำบล"}
+      isRequire
+      editMode={editMode}
+      setValue={(e) => {
+        setIDAddressIdCardTambon(e);
+
+        const tambon = dataProvince
+          ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+          ?.amphure.find((a) => a.id === parseInt(IDaddressIdCardAmphor))
+          ?.tambon.find((t) => t.id === parseInt(e));
+
+        setAddressIdCardTambon(tambon?.name_th || "");
+        setAddressIdCardZipCode(tambon?.zip_code || "");
+      }}
+      value={
+        dataProvince
+          ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+          ?.amphure.find((a) => a.id === parseInt(IDaddressIdCardAmphor))
+          ?.tambon.find((t) => t.id === parseInt(IDaddressIdCardTambon))?.id ||
+        "0"
+      }
+      tailwind={"w-full sm:w-64"}
+      options={
+        dataProvince
+          ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+          ?.amphure.find((a) => a.id === parseInt(IDaddressIdCardAmphor))
+          ?.tambon.map((t) => ({ id: t.id, value: t.name_th })) || []
+      }
+    />
+  ) : null}
+
+  {IDaddressIdCardProvince && IDaddressIdCardAmphor && IDaddressIdCardTambon ? (
+    <InputLabelForm
+      label={"รหัสไปรษณีย์"}
+      value={addressIdCardZipCode}
+      disabled
+      editMode={editMode}
+      isRequire
+      tailwind={"w-full sm:w-64"}
+    />
+  ) : null}
+</div>
+
+{/* =========================
+    ที่อยู่ปัจจุบัน
+========================= */}
+<div className="w-full flex flex-wrap gap-x-10 gap-y-5">
+  {/* ที่อยู่ปัจจุบัน (กว้างเท่าช่องเลขบัตร) */}
+  <div className="w-full sm:w-64 flex flex-col gap-1">
+    <div className="flex gap-x-2">
+      <LabelForm label={"ที่อยู่ปัจจุบัน"} isRequire editMode={editMode} />
+
+      {/* ✅ WCAG: checkbox ผูก label */}
+      <div className={`${!editMode ? "hidden" : ""} flex gap-x-1 items-center`}>
+        <input
+          id="sameAddressIdCard"
+          onChange={(e) => CheckAddressSameIDCard(e.target.checked)}
+          type="checkbox"
+          className="cursor-pointer w-3 h-3 border"
+          checked={statusSameAddress}
+        />
+        <label htmlFor="sameAddressIdCard" className="cursor-pointer">
+          (ตามบัตรประชาชน)
+        </label>
+      </div>
+    </div>
+
+    <InputForm
+      editMode={editMode}
+      value={statusSameAddress ? addressIdCard : address}
+      setValue={setAddress}
+      isRequire
+      placeholder={"บ้านเลขที่, หมู่บ้าน, หอพัก"}
+      tailwind={"w-full"}
+    />
+  </div>
+
+  {/* จังหวัด */}
+  <SelectLabelForm
+    label={"จังหวัด"}
+    isRequire
+    editMode={editMode && !statusSameAddress}
+    setValue={(e) => {
+      setIDAddressProvince(e);
+      setIDAddressAmphor("");
+      setIDAddressTambon("");
+      setAddressAmphor("");
+      setAddressTambon("");
+      setAddressZipCode("");
+
+      const province = dataProvince.find((p) => p.id === parseInt(e));
+      setAddressProvince(province?.name_th || "");
+    }}
+    value={
+      statusSameAddress
+        ? dataProvince.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+            ?.id || "0"
+        : dataProvince.find((p) => p.id === parseInt(IDaddressProvince))?.id ||
+          "0"
+    }
+    tailwind={"w-full sm:w-64"}
+    options={dataProvince?.map((d) => ({ id: d.id, value: d.name_th })) || []}
+  />
+
+  {/* อำเภอ/แขวง */}
+  {(statusSameAddress ? IDaddressIdCardProvince : IDaddressProvince) ? (
+    <SelectLabelForm
+      label={
+        (statusSameAddress ? IDaddressIdCardProvince : IDaddressProvince).toString() === "1"
+          ? "แขวง"
+          : "อำเภอ"
+      }
+      isRequire
+      editMode={editMode && !statusSameAddress}
+      setValue={(e) => {
+        setIDAddressAmphor(e);
+        setIDAddressTambon("");
+        setAddressTambon("");
+        setAddressZipCode("");
+
+        const province = dataProvince.find((p) => p.id === parseInt(IDaddressProvince));
+        const amphur = province?.amphure.find((a) => a.id === parseInt(e));
+        setAddressAmphor(amphur?.name_th || "");
+      }}
+      value={
+        statusSameAddress
+          ? dataProvince
+              ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+              ?.amphure.find((a) => a.id === parseInt(IDaddressIdCardAmphor))?.id || "0"
+          : dataProvince
+              ?.find((p) => p.id === parseInt(IDaddressProvince))
+              ?.amphure.find((a) => a.id === parseInt(IDaddressAmphor))?.id || "0"
+      }
+      tailwind={"w-full sm:w-64"}
+      options={
+        (statusSameAddress
+          ? dataProvince?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+          : dataProvince?.find((p) => p.id === parseInt(IDaddressProvince))
+        )?.amphure.map((d) => ({ id: d.id, value: d.name_th })) || []
+      }
+    />
+  ) : null}
+
+  {/* ตำบล/เขต */}
+  {(statusSameAddress ? IDaddressIdCardProvince : IDaddressProvince) &&
+  (statusSameAddress ? IDaddressIdCardAmphor : IDaddressAmphor) ? (
+    <SelectLabelForm
+      label={
+        (statusSameAddress ? IDaddressIdCardProvince : IDaddressProvince).toString() === "1"
+          ? "เขต"
+          : "ตำบล"
+      }
+      isRequire
+      editMode={editMode && !statusSameAddress}
+      setValue={(e) => {
+        setIDAddressTambon(e);
+
+        const tambon = dataProvince
+          ?.find((p) => p.id === parseInt(IDaddressProvince))
+          ?.amphure.find((a) => a.id === parseInt(IDaddressAmphor))
+          ?.tambon.find((t) => t.id === parseInt(e));
+
+        setAddressTambon(tambon?.name_th || "");
+        setAddressZipCode(tambon?.zip_code || "");
+      }}
+      value={
+        statusSameAddress
+          ? dataProvince
+              ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+              ?.amphure.find((a) => a.id === parseInt(IDaddressIdCardAmphor))
+              ?.tambon.find((t) => t.id === parseInt(IDaddressIdCardTambon))?.id || "0"
+          : dataProvince
+              ?.find((p) => p.id === parseInt(IDaddressProvince))
+              ?.amphure.find((a) => a.id === parseInt(IDaddressAmphor))
+              ?.tambon.find((t) => t.id === parseInt(IDaddressTambon))?.id || "0"
+      }
+      tailwind={"w-full sm:w-64"}
+      options={
+        (statusSameAddress
+          ? dataProvince
+              ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
+              ?.amphure.find((a) => a.id === parseInt(IDaddressIdCardAmphor))
+          : dataProvince
+              ?.find((p) => p.id === parseInt(IDaddressProvince))
+              ?.amphure.find((a) => a.id === parseInt(IDaddressAmphor))
+        )?.tambon.map((t) => ({ id: t.id, value: t.name_th })) || []
+      }
+    />
+  ) : null}
+
+  {/* รหัสไปรษณีย์ */}
+  {(statusSameAddress ? IDaddressIdCardProvince : IDaddressProvince) &&
+  (statusSameAddress ? IDaddressIdCardAmphor : IDaddressAmphor) &&
+  (statusSameAddress ? IDaddressIdCardTambon : IDaddressTambon) ? (
+    <InputLabelForm
+      label={"รหัสไปรษณีย์"}
+      value={statusSameAddress ? addressIdCardZipCode : addressZipCode}
+      disabled
+      editMode={editMode}
+      isRequire
+      tailwind={"w-full sm:w-64"}
+    />
+  ) : null}
+</div>
+
+        {/* ✅ กลุ่ม: เบอร์ติดต่อ / เบอร์ติดต่อฉุกเฉิน / ความสัมพันธ์ */}
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5">
           <InputLabelForm
-            label={`ที่อยู่ตามบัตรประชาชน`}
-            value={addressIdCard}
-            setValue={setAddressIdCard}
-            editMode={editMode}
-            tailwind={"w-full sm:w-72"}
+            label={"เบอร์ติดต่อ"}
             isRequire
-            placeholder={"บ้านเลขที่, หมู่บ้าน, หอพัก"}
+            value={tel}
+            setValue={setTel}
+            placeholder={"หมายเลขโทรศัพท์ 10 หลัก"}
+            tailwind={"w-full"}
+            styles={"tel"}
+            editMode={editMode}
           />
 
-          <SelectLabelForm
-            label={"จังหวัด"}
-            isRequire
+          <InputLabelForm
+            label={"เบอร์ติดต่อฉุกเฉิน"}
+            value={telEmergency}
+            setValue={setTelEmergency}
+            placeholder={"หมายเลขโทรศัพท์ 10 หลัก"}
+            tailwind={"w-full"}
+            styles={"tel"}
             editMode={editMode}
-            setValue={(e) => {
-              setIDAddressIdCardProvince(e);
-              setIDAddressIdCardAmphor("");
-              setIDAddressIdCardTambon("");
-              setAddressIdCardAmphor("");
-              setAddressIdCardTambon("");
-              setAddressIdCardZipCode("");
-              setAddressIdCardProvince(
-                dataProvince?.find((p) => p.id === parseInt(e))?.name_th
-              );
-            }}
-            value={
-              dataProvince.find(
-                (p) => p.id === parseInt(IDaddressIdCardProvince)
-              )?.id || "0"
-            }
-            tailwind={"w-full sm:w-48"}
-            options={
-              dataProvince?.map((d) => ({ id: d.id, value: d.name_th })) || []
-            }
           />
 
-          {IDaddressIdCardProvince ? (
-            <SelectLabelForm
-              label={
-                IDaddressIdCardProvince.toString() === "1" ? "แขวง" : "อำเภอ"
-              }
-              isRequire
-              editMode={editMode}
-              setValue={(e) => {
-                setIDAddressIdCardAmphor(e);
-                setIDAddressIdCardTambon("");
-                setAddressIdCardTambon("");
-                setAddressIdCardZipCode("");
-
-                const province = dataProvince.find(
-                  (p) => p.id === parseInt(IDaddressIdCardProvince)
-                );
-                const amphur = province?.amphure.find(
-                  (a) => a.id === parseInt(e)
-                );
-                setAddressIdCardAmphor(amphur?.name_th || "");
-              }}
-              value={
-                dataProvince
-                  ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
-                  ?.amphure.find(
-                    (a) => a.id === parseInt(IDaddressIdCardAmphor)
-                  )?.id || "0"
-              }
-              tailwind={"w-full sm:w-48"}
-              options={
-                dataProvince
-                  ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
-                  ?.amphure.map((d) => ({ id: d.id, value: d.name_th })) || []
-              }
-            />
-          ) : null}
-
-          {IDaddressIdCardProvince && IDaddressIdCardAmphor ? (
-            <SelectLabelForm
-              label={
-                IDaddressIdCardProvince.toString() === "1" ? "เขต" : "ตำบล"
-              }
-              isRequire
-              editMode={editMode}
-              setValue={(e) => {
-                setIDAddressIdCardTambon(e);
-
-                const tambon = dataProvince
-                  ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
-                  ?.amphure.find(
-                    (a) => a.id === parseInt(IDaddressIdCardAmphor)
-                  )
-                  ?.tambon.find((t) => t.id === parseInt(e));
-
-                setAddressIdCardTambon(tambon?.name_th || "");
-                setAddressIdCardZipCode(tambon?.zip_code || "");
-              }}
-              value={
-                dataProvince
-                  ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
-                  ?.amphure.find(
-                    (a) => a.id === parseInt(IDaddressIdCardAmphor)
-                  )
-                  ?.tambon.find(
-                    (t) => t.id === parseInt(IDaddressIdCardTambon)
-                  )?.id || "0"
-              }
-              tailwind={"w-full sm:w-48"}
-              options={
-                dataProvince
-                  ?.find((p) => p.id === parseInt(IDaddressIdCardProvince))
-                  ?.amphure.find(
-                    (a) => a.id === parseInt(IDaddressIdCardAmphor)
-                  )
-                  ?.tambon.map((t) => ({ id: t.id, value: t.name_th })) || []
-              }
-            />
-          ) : null}
-
-          {IDaddressIdCardProvince &&
-          IDaddressIdCardAmphor &&
-          IDaddressIdCardTambon ? (
+          {isStudent ? (
             <InputLabelForm
-              label={"รหัสไปรษณีย์"}
-              value={addressIdCardZipCode}
-              disabled
+              label={"ความสัมพันธ์"}
+              value={relationship}
+              setValue={setRelationship}
+              placeholder={"บุคคลใกล้ชิด"}
+              tailwind={"w-full"}
               editMode={editMode}
-              isRequire
-              tailwind={"w-full sm:w-36"}
             />
-          ) : null}
+          ) : (
+            <div />
+          )}
         </div>
 
-        {/* =========================
-            ที่อยู่ปัจจุบัน
-        ========================= */}
-        <div className="flex gap-x-10 gap-y-5 flex-wrap w-full">
-          <div className="flex col flex-col gap-1 w-full sm:w-auto">
-            <div className="flex gap-x-2 ">
-              <LabelForm
-                label={"ที่อยู่ปัจจุบัน"}
-                isRequire
-                editMode={editMode}
-              />
-              <div className={`${!editMode ? "hidden" : ""} flex gap-x-1`}>
-                <input
-                  aria-label="ที่อยู่ปัจจุบันเหมือนที่อยู่ตามบัตรประชาชน"
-                  onChange={(e) => CheckAddressSameIDCard(e.target.checked)}
-                  type="checkbox"
-                  className={`cursor-pointer w-3 h-full border`}
-                  checked={statusSameAddress}
-                />
-                <p>(ตามบัตรประชาชน)</p>
-              </div>
-            </div>
-            <InputForm
-              editMode={editMode}
-              value={statusSameAddress ? addressIdCard : address}
-              setValue={setAddress}
-              isRequire
-              placeholder={"บ้านเลขที่, หมู่บ้าน, หอพัก"}
-              tailwind={"w-full sm:w-72"}
-            />
-          </div>
-
-          <SelectLabelForm
-            label={"จังหวัด"}
-            isRequire
-            editMode={editMode && !statusSameAddress}
-            setValue={(e) => {
-              setIDAddressProvince(e);
-              setIDAddressAmphor("");
-              setIDAddressTambon("");
-              setAddressAmphor("");
-              setAddressTambon("");
-              setAddressZipCode("");
-
-              const province = dataProvince.find((p) => p.id === parseInt(e));
-              setAddressProvince(province?.name_th || "");
-            }}
-            value={
-              statusSameAddress
-                ? dataProvince.find(
-                    (p) => p.id === parseInt(IDaddressIdCardProvince)
-                  )?.id || "0"
-                : dataProvince.find((p) => p.id === parseInt(IDaddressProvince))
-                    ?.id || "0"
-            }
-            tailwind={"w-full sm:w-48"}
-            options={dataProvince.map((d) => ({ id: d.id, value: d.name_th })) || []}
-          />
-        </div>
-
-        {/* โทรศัพท์ */}
-        <InputLabelForm
-          label={"เบอร์ติดต่อ"}
-          isRequire
-          value={tel}
-          setValue={setTel}
-          placeholder={"หมายเลขโทรศัพท์ 10 หลัก"}
-          tailwind={"w-full sm:w-60"}
-          styles={"tel"}
-          editMode={editMode}
-        />
-
-        <InputLabelForm
-          label={"เบอร์ติดต่อฉุกเฉิน"}
-          value={telEmergency}
-          setValue={setTelEmergency}
-          placeholder={"หมายเลขโทรศัพท์ 10 หลัก"}
-          tailwind={"w-full sm:w-60"}
-          styles={"tel"}
-          editMode={editMode}
-        />
-
-        {isStudent && (
+        {/* ✅ กลุ่ม: อีเมล์ / ประเภทความพิการ / รายละเอียดเพิ่มเติม */}
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5">
           <InputLabelForm
-            label={"ความสัมพันธ์"}
-            value={relationship}
-            setValue={setRelationship}
-            placeholder={"บุคคลใกล้ชิด"}
-            tailwind={"w-full sm:w-60"}
+            disabled={isStudent}
+            isRequire
+            label={"อีเมล์"}
+            value={email}
+            setValue={setEmail}
+            tailwind={"w-full"}
             editMode={editMode}
+            placeholder={"กรอกที่อยู่อีเมล์"}
+            type={"email"}
           />
-        )}
 
-        {/* อีเมล */}
-        <InputLabelForm
-          disabled={isStudent}
-          isRequire
-          label={"อีเมล์"}
-          value={email}
-          setValue={setEmail}
-          tailwind={"w-full sm:w-60"}
-          editMode={editMode}
-          placeholder={"กรอกที่อยู่อีเมล์"}
-          type={"email"}
-        />
+          {isStudent ? (
+            <SelectLabelForm
+              label={"ประเภทความพิการ"}
+              isRequire
+              editMode={editMode}
+              setValue={(e) => setSelectTypeDisabled(e)}
+              value={selectTypeDisabled || "0"}
+              tailwind={"w-full"}
+              options={[
+                { id: "พิการ 1 ประเภท", value: "พิการ 1 ประเภท" },
+                { id: "พิการมากกว่า 1 ประเภท", value: "พิการมากกว่า 1 ประเภท" },
+              ]}
+            />
+          ) : (
+            <div />
+          )}
+
+          {isStudent ? (
+            <InputLabelForm
+              label={"รายละเอียดเพิ่มเติม"}
+              value={detailDisabled}
+              setValue={setDetailDisabled}
+              tailwind={"w-full"}
+              editMode={editMode}
+              placeholder={"รายละเอียด"}
+            />
+          ) : (
+            <div />
+          )}
+        </div>
 
         {/* staff/admin form */}
         {!isStudent && (
@@ -816,6 +957,7 @@ function PersonalForm({
               editMode={editMode}
               placeholder={"ตำแหน่ง"}
             />
+
             <div className="w-full sm:w-auto">
               <LabelForm label="มหาวิทยาลัย" isRequire editMode={editMode} />
               <InputUniversityAutoComplete
@@ -825,6 +967,7 @@ function PersonalForm({
                 editMode={editMode}
               />
             </div>
+
             <InputLabelForm
               isRequire
               label={"Username"}
@@ -834,6 +977,7 @@ function PersonalForm({
               editMode={editMode}
               placeholder={"กรอกชื่อผู้ใช้"}
             />
+
             <InputLabelForm
               isRequire
               label={"Password"}
@@ -844,6 +988,7 @@ function PersonalForm({
               placeholder={"กรอกรหัสผ่าน"}
               styles={"password"}
             />
+
             <SelectLabelForm
               label={"ประเภทผู้ใช้งาน"}
               value={role}
@@ -864,19 +1009,7 @@ function PersonalForm({
         {isStudent && (
           <>
             <div className="flex gap-x-10 gap-y-5 flex-wrap w-full">
-              <SelectLabelForm
-                label={"ประเภทความพิการ"}
-                isRequire
-                editMode={editMode}
-                setValue={(e) => setSelectTypeDisabled(e)}
-                value={selectTypeDisabled || "0"}
-                tailwind={"w-full sm:w-64"}
-                options={[
-                  { id: "พิการ 1 ประเภท", value: "พิการ 1 ประเภท" },
-                  { id: "พิการมากกว่า 1 ประเภท", value: "พิการมากกว่า 1 ประเภท" },
-                ]}
-              />
-
+              {/* “เลือกความพิการ” และ checkbox list ยังทำงานเหมือนเดิม */}
               <SelectLabelForm
                 label="เลือกความพิการ"
                 isRequire
@@ -893,7 +1026,9 @@ function PersonalForm({
 
               <div
                 className={`flex flex-col my-5 ${
-                  selectTypeDisabled === "พิการมากกว่า 1 ประเภท" ? "block" : "hidden"
+                  selectTypeDisabled === "พิการมากกว่า 1 ประเภท"
+                    ? "block"
+                    : "hidden"
                 }`}
               >
                 {dataDisabled.map((type, idx) => (
@@ -918,15 +1053,6 @@ function PersonalForm({
                   </div>
                 ))}
               </div>
-
-              <InputLabelForm
-                label={"รายละเอียดเพิ่มเติม"}
-                value={detailDisabled}
-                setValue={setDetailDisabled}
-                tailwind={"w-full sm:w-60"}
-                editMode={editMode}
-                placeholder={"รายละเอียด"}
-              />
             </div>
 
             <div className="w-full flex">
@@ -955,7 +1081,11 @@ function PersonalForm({
         )}
 
         <div className="w-full text-center">
-          {error ? <TextError text={error} /> : null}
+          {error ? (
+            <div role="alert" aria-live="polite">
+              <TextError text={error} />
+            </div>
+          ) : null}
         </div>
 
         {editMode && <ProgressBarForm fields={fields} />}
