@@ -63,8 +63,17 @@ function NavbarMain() {
       link: `${mainRoute}?path=posts`,
       activeWhen: () => path === "posts",
     },
-    // เกี่ยวกับเรา (ทำเป็นเมนูย่อยด้านล่าง)
+    
     {
+  id: 5,
+  label: "เกี่ยวกับเรา",
+  icon: mdiAccountMultiple,
+  link: "/iw/about?path=about",
+  activeWhen: () => path === "about",
+},
+
+    // เกี่ยวกับเรา (ทำเป็นเมนูย่อยด้านล่าง)
+      {
       id: 6,
       label: "ติดต่อเรา",
       icon: mdiHelpCircle,
@@ -74,32 +83,32 @@ function NavbarMain() {
   ];
 
   // ✅ เมนูย่อย “เกี่ยวกับเรา” (แบบไฟล์เก่า)
-  const aboutSubItems = [
-    {
-      id: "about-origin",
-      label: "ที่มา",
-      icon: mdiAlertBox,
-      link: `${mainRoute}/about/origin?path=about`,
-    },
-    {
-      id: "about-mission",
-      label: "พันธกิจ",
-      icon: mdiBullseyeArrow,
-      link: `${mainRoute}/about/mission?path=about`,
-    },
-    {
-      id: "about-university",
-      label: "มหาวิทยาลัย",
-      icon: mdiTownHall,
-      link: `${mainRoute}/about/university?path=about`,
-    },
-    {
-      id: "about-employer",
-      label: "นายจ้าง/สถานประกอบการ",
-      icon: mdiDomain,
-      link: `${mainRoute}/about/employer?path=about`,
-    },
-  ];
+  // const aboutSubItems = [
+  //   {
+  //     id: "about-origin",
+  //     label: "ที่มา",
+  //     icon: mdiAlertBox,
+  //     link: `${mainRoute}/about/origin?path=about`,
+  //   },
+  //   {
+  //     id: "about-mission",
+  //     label: "พันธกิจ",
+  //     icon: mdiBullseyeArrow,
+  //     link: `${mainRoute}/about/mission?path=about`,
+  //   },
+  //   {
+  //     id: "about-university",
+  //     label: "มหาวิทยาลัย",
+  //     icon: mdiTownHall,
+  //     link: `${mainRoute}/about/university?path=about`,
+  //   },
+  //   {
+  //     id: "about-employer",
+  //     label: "นายจ้าง/สถานประกอบการ",
+  //     icon: mdiDomain,
+  //     link: `${mainRoute}/about/employer?path=about`,
+  //   },
+  // ];
 
   const baseItem =
     "cursor-pointer flex items-center px-7 gap-5 py-3 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
@@ -164,7 +173,9 @@ function NavbarMain() {
           );
         })}
 
+        
         {/* ✅ เกี่ยวกับเรา (dropdown เมนูย่อย) */}
+{/*
         <div ref={aboutWrapRef} className="relative">
           <button
             id={aboutBtnId}
@@ -217,7 +228,7 @@ function NavbarMain() {
             </div>
           )}
         </div>
-
+*/}
         {/* เมนูหลัง about */}
         {menuItems.slice(4).map((item) => {
           const isActive = item.activeWhen?.() ?? false;
