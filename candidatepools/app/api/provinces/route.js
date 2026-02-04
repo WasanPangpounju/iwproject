@@ -1,13 +1,21 @@
 import fs from "fs/promises";
 import path from "path";
 
-export async function GET() {
+// region_id mapping:
+// 1 = เหนือ
+// 2 = ตะวันออกเฉียงเหนือ
+// 3 = กลาง
+// 4 = ใต้
+// 5 = ตะวันตก
+// 6 = ตะวันออก
+
+export async function GET(request) {
   try {
     const filePath = path.join(process.cwd(), "assets", "dataThailand.json");
-
     const rawData = await fs.readFile(filePath, "utf-8");
     const data = JSON.parse(rawData);
 
+    // Clean เขต prefix for amphure in กรุงเทพมหานคร
     const cleanedData = data.map((province) => {
       if (province.id === 1) {
         return {
@@ -20,14 +28,25 @@ export async function GET() {
           })),
         };
       }
-      return province; 
+      return province;
     });
 
-    cleanedData.sort((a, b) =>
+    // Get region_id from query params
+    const url = request?.url ? new URL(request.url) : null;
+    const regionIdParam = url?.searchParams.get("region_id");
+    const regionId = regionIdParam && regionIdParam.trim() !== "" ? Number(regionIdParam) : null;
+
+    // Filter by region_id if provided and valid
+    let filteredData = cleanedData;
+    if (regionId && [1,2,3,4,5,6].includes(regionId)) {
+      filteredData = cleanedData.filter((province) => province.region_id === regionId);
+    }
+
+    filteredData.sort((a, b) =>
       a.name_th.localeCompare(b.name_th, "th", { sensitivity: "base" })
     );
 
-    return new Response(JSON.stringify(cleanedData), {
+    return new Response(JSON.stringify(filteredData), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
