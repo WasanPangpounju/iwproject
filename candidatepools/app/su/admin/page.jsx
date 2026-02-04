@@ -24,6 +24,9 @@ import TableRow from "@mui/material/TableRow";
 import Link from "next/link";
 import { useUserStore } from "@/stores/useUserStore";
 import { REPORT_TYPE_ALL, ROLE } from "@/const/enum";
+import { regionData } from "@/assets/regionData";
+import ButtonView from "@/app/components/Button/ButtonView";
+import TextError from "@/app/components/TextError";
 
 //store
 
@@ -52,7 +55,6 @@ const columns = [
     id: "details",
     label: "รายละเอียด",
     minWidth: 170,
-    align: "center",
   },
 ];
 
@@ -61,9 +63,6 @@ function AdminManagement() {
 
   //store
   const { dataAdmin } = useUserStore();
-
-  //data Province
-  const { dataProvince } = useProvince();
 
   //Theme
   const { bgColor, bgColorWhite, bgColorMain, bgColorMain2, inputGrayColor } =
@@ -77,9 +76,13 @@ function AdminManagement() {
   //type search
   const [wordSearch, setWordSearch] = useState("");
   const [addressProvince, setAddressProvince] = useState(REPORT_TYPE_ALL.ALL);
+  const [regionId, setRegionId] = useState(null);
 
   //handle search filter
   const [wordSearchFilter, setWordSearchFilter] = useState([]);
+
+  //data Province
+  const { dataProvince } = useProvince(regionId);
 
   function handleSearch(e) {
     e.preventDefault();
@@ -100,6 +103,13 @@ function AdminManagement() {
 
   const [rows, setRows] = useState([]);
 
+  // reset addressProvince when regionId is cleared
+  useEffect(() => {
+    if (regionId === REPORT_TYPE_ALL.ALL) {
+      setAddressProvince(REPORT_TYPE_ALL.ALL);
+    }
+  }, [regionId]);
+
   useEffect(() => {
     if (!dataAdmin) return;
 
@@ -111,16 +121,16 @@ function AdminManagement() {
           wordSearchFilter?.length === 0 ? [wordSearch] : wordSearchFilter;
 
         const hasMatchUniversityFilter = tempWordSearch?.some((word) =>
-          std?.university?.toLowerCase().includes(word.toLowerCase())
+          std?.university?.toLowerCase().includes(word.toLowerCase()),
         );
 
         const name = `${std?.firstName} ${std?.lastName}`;
         const hasMatchNameFilter = tempWordSearch?.some((word) =>
-          name?.toLowerCase().includes(word.toLowerCase())
+          name?.toLowerCase().includes(word.toLowerCase()),
         );
 
         const hasMatchUniversity = tempWordSearch?.some((word) =>
-          std?.university?.toLowerCase().includes(word.toLowerCase())
+          std?.university?.toLowerCase().includes(word.toLowerCase()),
         );
 
         const hasMatchName = name
@@ -140,7 +150,7 @@ function AdminManagement() {
             `${std?.position || "ไม่มีข้อมูล"}`,
             `${std?.addressProvince || "-"}`,
             "s",
-            `${std?.uuid}`
+            `${std?.uuid}`,
           );
         }
 
@@ -192,13 +202,45 @@ function AdminManagement() {
               />
             </div>
 
+            <div className="flex flex-col gap-1 relative">
+              <label>ภูมิภาค</label>
+              <div className="relative col w-fit">
+                <select
+                  className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
+                  style={{ appearance: "none" }}
+                  onChange={(e) => setRegionId(e.target.value)}
+                >
+                  <option value={REPORT_TYPE_ALL.ALL}>
+                    {REPORT_TYPE_ALL.ALL}
+                  </option>
+                  {regionData?.map((item, index) => (
+                    <option key={index} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+                <Icon
+                  className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}
+                  path={mdiArrowDownDropCircle}
+                  size={0.5}
+                />
+              </div>
+            </div>
+
             <div className="flex flex-col gap-1">
-              <label>จังหวัด</label>
+              <label>
+                {/* แสดง * เมื่อเลือกภูมิภาค (regionId ไม่ใช่ ALL/ว่าง/null) และยังไม่เลือกจังหวัด (addressProvince === ALL) */}
+                {regionId && regionId !== REPORT_TYPE_ALL.ALL && addressProvince === REPORT_TYPE_ALL.ALL && (
+                  <span className="text-red-500">*</span>
+                )}
+                {` `}จังหวัด
+              </label>
               <div className="relative col w-fit">
                 <select
                   className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
                   style={{ appearance: "none" }}
                   onChange={(e) => setAddressProvince(e.target.value)}
+                  value={addressProvince}
                 >
                   <option value={REPORT_TYPE_ALL.ALL}>
                     {REPORT_TYPE_ALL.ALL}
@@ -240,8 +282,8 @@ function AdminManagement() {
                         index % 2 !== 0
                           ? "bg-gray-400"
                           : index % 2 === 0
-                          ? "bg-orange-400"
-                          : ""
+                            ? "bg-orange-400"
+                            : ""
                       }`
                     : "border border-white"
                 }
@@ -295,7 +337,7 @@ function AdminManagement() {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
                       const student = dataAdmin?.find(
-                        (std) => std?.uuid === row?.uuid
+                        (std) => std?.uuid === row?.uuid,
                       );
                       if (student) {
                         return (
@@ -312,16 +354,7 @@ function AdminManagement() {
                                     key={column.id}
                                     align={column.align}
                                   >
-                                    <Link
-                                      href={student?.uuid}
-                                      className="cursor-pointer text-center flex justify-center"
-                                    >
-                                      <Icon
-                                        className={`cursor-pointer text-black`}
-                                        path={mdiAlertCircle}
-                                        size={1}
-                                      />
-                                    </Link>
+                                    <ButtonView link={student?.uuid} />
                                   </TableCell>
                                 );
                               } else {
