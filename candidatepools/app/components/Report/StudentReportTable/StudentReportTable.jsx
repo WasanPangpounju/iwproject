@@ -8,6 +8,7 @@ import {
   mdiMagnify,
   mdiArrowDownDropCircle,
   mdiCloseThick,
+  mdiEyeOutline,
 } from "@mdi/js";
 import dataWorkType from "@/assets/dataWorkType";
 import Link from "next/link";
@@ -22,6 +23,8 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { ROLE, TYPE_PERSON } from "@/const/enum";
+import ButtonView from "../../Button/ButtonView";
+import { useProvince } from "@/hooks/useProvince";
 
 const columns = [
   {
@@ -40,6 +43,11 @@ const columns = [
     minWidth: 170,
   },
   {
+    id: "province",
+    label: "จังหวัดปัจจุบัน",
+    minWidth: 170,
+  },
+  {
     id: "disabled",
     label: "ความพิการ",
     minWidth: 170,
@@ -48,7 +56,6 @@ const columns = [
     id: "details",
     label: "รายละเอียด",
     minWidth: 170,
-    align: "center",
   },
 ];
 
@@ -64,8 +71,16 @@ function StudentReportTable({
     useTheme();
 
   //table
-  function createData(name, university, level, disabled, details, uuid) {
-    return { name, university, level, disabled, details, uuid };
+  function createData(
+    name,
+    university,
+    level,
+    province,
+    disabled,
+    details,
+    uuid,
+  ) {
+    return { name, university, level, province, disabled, details, uuid };
   }
 
   //type search
@@ -74,9 +89,13 @@ function StudentReportTable({
   const [typePersonSearch, setTypePersonSearch] = useState("");
   const [workSearch, setWorkSearch] = useState("");
   const [statusWorkSearch, setStatusWorkSearch] = useState("");
+  const [addressProvince, setAddressProvince] = useState("");
 
   //handle search filter
   const [wordSearchFilter, setWordSearchFilter] = useState([]);
+
+  //data Province
+  const { dataProvince } = useProvince();
 
   function handleSearch(e) {
     e.preventDefault();
@@ -101,15 +120,15 @@ function StudentReportTable({
       const tempWordSearch =
         wordSearchFilter?.length === 0 ? [wordSearch] : wordSearchFilter;
       const education = dataEducationAll?.find(
-        (edu) => edu?.uuid === std?.uuid
+        (edu) => edu?.uuid === std?.uuid,
       );
       const statusNowWork = dataHistoryWorkAll?.find(
-        (w) => w.uuid === std?.uuid
+        (w) => w.uuid === std?.uuid,
       );
       const name = `${std?.firstName} ${std?.lastName}`;
 
       const interestedWork = dataWorkAll?.find(
-        (work) => work?.uuid === std?.uuid
+        (work) => work?.uuid === std?.uuid,
       );
       const updatedStd = {
         ...std,
@@ -128,19 +147,19 @@ function StudentReportTable({
 
       const hasMatchUniversityFilter = education?.university?.find((uni) =>
         tempWordSearch?.some((word) =>
-          uni.toLowerCase().includes(word.toLowerCase())
-        )
+          uni.toLowerCase().includes(word.toLowerCase()),
+        ),
       );
 
       const hasMatchNameFilter = tempWordSearch?.some((word) =>
-        name?.toLowerCase().includes(word.toLowerCase())
+        name?.toLowerCase().includes(word.toLowerCase()),
       );
 
       const tempWordUniversity = education?.university?.find((uni) =>
-        uni.toLowerCase().includes(wordSearch.toLowerCase())
+        uni.toLowerCase().includes(wordSearch.toLowerCase()),
       );
       const hasMatchUniversity = education?.university?.some((uni) =>
-        uni.toLowerCase().includes(tempWordUniversity?.toLowerCase())
+        uni.toLowerCase().includes(tempWordUniversity?.toLowerCase()),
       );
 
       const hasMatchName = name
@@ -148,7 +167,7 @@ function StudentReportTable({
         .includes(wordSearch.toLowerCase());
 
       const hasMatchDisabled = std?.typeDisabled?.some((disa) =>
-        disa.toLowerCase().includes(typeDisabledSearch?.toLowerCase())
+        disa.toLowerCase().includes(typeDisabledSearch?.toLowerCase()),
       );
 
       const hasMatchTypePerson = education?.typePerson
@@ -156,13 +175,13 @@ function StudentReportTable({
         .includes(typePersonSearch.toLowerCase());
 
       const tempInterestedWork = updatedStd?.interestedWork?.find((work) =>
-        work?.type.toLowerCase().includes(workSearch.toLowerCase())
+        work?.type.toLowerCase().includes(workSearch.toLowerCase()),
       );
 
       const hasMatchInterestedWork = updatedStd?.interestedWork?.some((work) =>
         work?.type
           .toLowerCase()
-          .includes(tempInterestedWork?.type.toLowerCase())
+          .includes(tempInterestedWork?.type.toLowerCase()),
       );
 
       let hasStatusNowWork = true;
@@ -171,18 +190,25 @@ function StudentReportTable({
           statusNowWork?.statusNow?.trim() === statusWorkSearch.trim();
       }
 
+      // Province filter logic
+      let hasMatchProvince = true;
+      if (addressProvince && addressProvince !== "") {
+        hasMatchProvince = std?.addressProvince === addressProvince;
+      }
+
       if (!hasStatusNowWork) {
         return null;
       }
       if (!hasMatchInterestedWork) {
         return null;
       }
-
       if (!hasMatchTypePerson && typePersonSearch) {
         return null;
       }
-
       if (!hasMatchDisabled && typeDisabledSearch) {
+        return null;
+      }
+      if (!hasMatchProvince) {
         return null;
       }
       if (!wordSearch) {
@@ -202,13 +228,13 @@ function StudentReportTable({
             education?.educationLevel.length >= 1
               ? `${education?.educationLevel[0]} ปี ${education?.level[0]}`
               : education?.typePerson === TYPE_PERSON.GRADUATION
-              ? TYPE_PERSON.GRADUATION
-              : "ไม่มีข้อมูล"
+                ? TYPE_PERSON.GRADUATION
+                : "ไม่มีข้อมูล"
           }`}`,
-          // `${std.typeDisabled?.length > 1 ? std.typeDisabled[0] : `${std.typeDisabled[0]}...`}`,
+          `${std?.addressProvince || "-"}`,
           `${std?.typeDisabled?.join(",\n") || "ไม่มีข้อมูล"}`,
           "",
-          `${std?.uuid}`
+          `${std?.uuid}`,
         );
       }
       return null;
@@ -245,6 +271,28 @@ function StudentReportTable({
                 placeholder="ชื่อ-สกุล, มหาวิทยาลัย"
                 onChange={(e) => setWordSearch(e.target.value)}
               />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label>จังหวัด</label>
+              <div className="relative col w-fit">
+                <select
+                  className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
+                  style={{ appearance: "none" }}
+                  onChange={(e) => setAddressProvince(e.target.value)}
+                >
+                  <option value="">ทั้งหมด</option>
+                  {dataProvince?.map((pv, index) => (
+                    <option key={index} value={pv.name_th}>
+                      {pv.name_th}
+                    </option>
+                  ))}
+                </select>
+                <Icon
+                  className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}
+                  path={mdiArrowDownDropCircle}
+                  size={0.5}
+                />
+              </div>
             </div>
             <div className="flex flex-col gap-1">
               <label>ประเภทความพิการ</label>
@@ -364,8 +412,8 @@ function StudentReportTable({
                         index % 2 !== 0
                           ? "bg-gray-400"
                           : index % 2 === 0
-                          ? "bg-orange-400"
-                          : ""
+                            ? "bg-orange-400"
+                            : ""
                       }`
                     : "border border-white"
                 }
@@ -422,7 +470,7 @@ function StudentReportTable({
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
                       const student = dataStudents.find(
-                        (std) => std?.uuid === row.uuid
+                        (std) => std?.uuid === row.uuid,
                       );
                       if (student) {
                         return (
@@ -439,16 +487,9 @@ function StudentReportTable({
                                     key={column.id}
                                     align={column.align}
                                   >
-                                    <Link
-                                      href={`${path}/${student?.uuid}`}
-                                      className="cursor-pointer text-center flex justify-center"
-                                    >
-                                      <Icon
-                                        className={`cursor-pointer text-black`}
-                                        path={mdiAlertCircle}
-                                        size={1}
-                                      />
-                                    </Link>
+                                    <ButtonView
+                                      link={`${path}/${student?.uuid}`}
+                                    />
                                   </TableCell>
                                 );
                               } else {
