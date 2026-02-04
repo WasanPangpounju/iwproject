@@ -27,6 +27,7 @@ import TableRow from "@mui/material/TableRow";
 
 //store
 import { useCompanyStore } from "@/stores/useCompanyStore";
+import ButtonView from "@/app/components/Button/ButtonView";
 
 const columns = [
   {
@@ -46,14 +47,13 @@ const columns = [
   },
   {
     id: "disabled",
-    label: "ประสานงาน",
+    label: "ผู้ประสานงาน",
     minWidth: 170,
   },
   {
     id: "details",
     label: "รายละเอียด",
     minWidth: 170,
-    align: "center",
   },
 ];
 
@@ -110,7 +110,7 @@ function CompanyPage() {
       const name = `${cpn?.nameCompany}`;
 
       const hasMatchNameFilter = tempWordSearch?.some((word) =>
-        name?.toLowerCase().includes(word.toLowerCase())
+        name?.toLowerCase().includes(word.toLowerCase()),
       );
 
       const hasMatchName = name
@@ -146,7 +146,7 @@ function CompanyPage() {
         `${cpn?.province || "ไม่มีข้อมูล"}`,
         `${cpn?.coordinator}`,
         "s",
-        `${cpn?._id}`
+        `${cpn?._id}`,
       );
     })
     .filter((row) => row !== null);
@@ -264,8 +264,8 @@ function CompanyPage() {
                         index % 2 !== 0
                           ? "bg-gray-400"
                           : index % 2 === 0
-                          ? "bg-orange-400"
-                          : ""
+                            ? "bg-orange-400"
+                            : ""
                       }`
                     : "border border-white"
                 }
@@ -326,16 +326,7 @@ function CompanyPage() {
                             if (column.id === "details") {
                               return (
                                 <TableCell key={column.id} align={column.align}>
-                                  <Link
-                                    href={row?.uuid}
-                                    className="cursor-pointer text-center flex justify-center"
-                                  >
-                                    <Icon
-                                      className={`cursor-pointer text-black`}
-                                      path={mdiAlertCircle}
-                                      size={1}
-                                    />
-                                  </Link>
+                                  <ButtonView link={row?.uuid} />
                                 </TableCell>
                               );
                             } else {

@@ -39,6 +39,7 @@ export async function PUT(req) {
     addressWork,
     budget,
     timeStartWork,
+    lineId
   } = await req.json();
   try {
     await mongoDB();
@@ -71,6 +72,7 @@ export async function PUT(req) {
         addressWork,
         budget,
         timeStartWork,
+        lineId
       },
       { new: true } // ส่งกลับเอกสารที่อัปเดตใหม่
     );

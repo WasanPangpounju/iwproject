@@ -55,6 +55,7 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
   const [budget, setBudget] = useState(null);
   const [timeStartWork, setTimeStartWork] = useState(null);
   const [welfare, setWelfare] = useState([]);
+  const [lineId, setLineId] = useState("");
 
   const [getAddressIdCard, setGetAddressIdCard] = useState("");
   const [IDaddressIdCardProvince, setIDAddressIdCardProvince] = useState("");
@@ -207,7 +208,6 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
       !mergedWelfare[mergedWelfare?.length - 1] ||
       !typeBusiness ||
       !dutyWork ||
-      !quantityEmployee ||
       !quantityDisabled ||
       !emailCompany ||
       !positionWork ||
@@ -247,6 +247,7 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
       addressWork: addressWork,
       budget: budget,
       timeStartWork: timeStartWork,
+      lineId: lineId,
     };
     try {
       const res = (await isEdit)
@@ -293,18 +294,18 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
     setGetTelCoordinator(dataCompany?.coordinator_tel);
 
     setIDAddressIdCardProvince(
-      dataProvince.find((p) => p.name_th === dataCompany.province)?.id || null
+      dataProvince.find((p) => p.name_th === dataCompany.province)?.id || null,
     );
     setIDAddressIdCardAmphor(
       dataProvince
         .find((p) => p.name_th === dataCompany.province)
-        ?.amphure.find((a) => a.name_th === dataCompany.amphor)?.id || null
+        ?.amphure.find((a) => a.name_th === dataCompany.amphor)?.id || null,
     );
     setIDAddressIdCardTambon(
       dataProvince
         .find((p) => p.name_th === dataCompany.province)
         ?.amphure.find((a) => a.name_th === dataCompany.amphor)
-        ?.tambon.find((t) => t.name_th === dataCompany.tambon)?.id || null
+        ?.tambon.find((t) => t.name_th === dataCompany.tambon)?.id || null,
     );
     // set ฟิลด์เริ่มต้น
     if (
@@ -322,7 +323,7 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
     }
     if (checked === true) {
       setAddressWork(
-        `${addressIdCard} ${addressIdCardProvince} ${addressIdCardAmphor} ${addressIdCardTambon} ${addressIdCardZipCode}`
+        `${addressIdCard} ${addressIdCardProvince} ${addressIdCardAmphor} ${addressIdCardTambon} ${addressIdCardZipCode}`,
       );
     }
   };
@@ -370,7 +371,7 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
                   setAddressIdCardZipCode("");
                   setAddressIdCardProvince(
                     dataProvince.find((p) => p.id === parseInt(e.target.value))
-                      .name_th
+                      .name_th,
                   );
                 }}
                 className={`${
@@ -382,7 +383,7 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
                 disabled={!editMode}
                 value={
                   dataProvince.find(
-                    (p) => p.id === parseInt(IDaddressIdCardProvince)
+                    (p) => p.id === parseInt(IDaddressIdCardProvince),
                   )?.id || "0"
                 }
               >
@@ -423,7 +424,7 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
                       dataProvince
                         .find((p) => p.id === parseInt(IDaddressIdCardProvince))
                         .amphure.find((a) => a.id === parseInt(e.target.value))
-                        .name_th
+                        .name_th,
                     );
                   }}
                   className={`${
@@ -437,7 +438,7 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
                     dataProvince
                       .find((p) => p.id === parseInt(IDaddressIdCardProvince))
                       .amphure.find(
-                        (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                        (a) => a.id === parseInt(IDaddressIdCardAmphor),
                       )?.id || "0"
                   }
                 >
@@ -476,19 +477,19 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
                       dataProvince
                         .find((p) => p.id === parseInt(IDaddressIdCardProvince))
                         .amphure.find(
-                          (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                          (a) => a.id === parseInt(IDaddressIdCardAmphor),
                         )
                         .tambon.find((t) => t.id === parseInt(e.target.value))
-                        .name_th
+                        .name_th,
                     );
                     setAddressIdCardZipCode(
                       dataProvince
                         .find((p) => p.id === parseInt(IDaddressIdCardProvince))
                         .amphure.find(
-                          (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                          (a) => a.id === parseInt(IDaddressIdCardAmphor),
                         )
                         .tambon.find((t) => t.id === parseInt(e.target.value))
-                        .zip_code
+                        .zip_code,
                     );
                   }}
                   className={`${
@@ -502,10 +503,10 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
                     dataProvince
                       .find((p) => p.id === parseInt(IDaddressIdCardProvince))
                       .amphure.find(
-                        (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                        (a) => a.id === parseInt(IDaddressIdCardAmphor),
                       )
                       .tambon.find(
-                        (t) => t.id === parseInt(IDaddressIdCardTambon)
+                        (t) => t.id === parseInt(IDaddressIdCardTambon),
                       )?.id || "0"
                   }
                 >
@@ -513,7 +514,7 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
                   {dataProvince
                     .find((p) => p.id === parseInt(IDaddressIdCardProvince))
                     .amphure.find(
-                      (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                      (a) => a.id === parseInt(IDaddressIdCardAmphor),
                     )
                     .tambon.map((d, index) => (
                       <option key={index} value={d.id}>
@@ -567,7 +568,6 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
         />
         <InputLabelForm
           label="จำนวนพนักงานทั้งหมด"
-          isRequire
           value={quantityEmployee}
           setValue={setQuantityEmployee}
           editMode={editMode}
@@ -614,6 +614,15 @@ function CompanyForm({ id, dataCompany, isEdit = false, path }) {
             editMode={editMode}
             placeholder={"example@gmail.com"}
             tailwind={"w-64"}
+          />
+          {/* ช่องกรอก Line ID */}
+          <InputLabelForm
+            label="Line ID"
+            value={lineId}
+            setValue={setLineId}
+            editMode={editMode}
+            placeholder={"ระบุ Line ID (ถ้ามี)"}
+            tailwind={"w-56"}
           />
         </div>
         <div className="flex gap-5 flex-wrap">
