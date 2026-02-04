@@ -37,6 +37,7 @@ export async function POST(req) {
       addressWork,
       budget,
       timeStartWork,
+      lineId
     } = data;
 
     // สร้างเอกสารใหม่ใน MongoDB
@@ -65,6 +66,7 @@ export async function POST(req) {
       addressWork,
       budget,
       timeStartWork,
+      lineId
     });
 
     await SystemLog.create({

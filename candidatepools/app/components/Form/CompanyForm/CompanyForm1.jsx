@@ -36,75 +36,28 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
   const [coordinator, setCoordinator] = useState("");
   const [telCoordinator, setTelCoordinator] = useState("");
   const [emailCompany, setEmailCompany] = useState("");
-  const [welfare, setWelfare] = useState([]);
 
-  const [getAddressIdCard, setGetAddressIdCard] = useState("");
+  // เพิ่มช่องกรอก Line ID
+  const [lineId, setLineId] = useState("");
+
   const [IDaddressIdCardProvince, setIDAddressIdCardProvince] = useState("");
   const [IDaddressIdCardAmphor, setIDAddressIdCardAmphor] = useState("");
   const [IDaddressIdCardTambon, setIDAddressIdCardTambon] = useState("");
-
-  const [getAddressIdCardProvince, setGetAddressIdCardProvince] = useState("");
-  const [getAddressIdCardAmphor, setGetAddressIdCardAmphor] = useState("");
-  const [getAddressIdCardTambon, setGetAddressIdCardTambon] = useState("");
-  const [getAddressIdCardZipCode, setGetAddressIdCardZipCode] = useState("");
   const { dataProvince } = useProvince();
 
   const [error, setError] = useState("");
 
-  //worktype
-
-  const [getWorkType, setGetWorkType] = useState("");
-  const [getWorkDetail, setGetWorkDetail] = useState("");
-
-  //dateWork
-
-  const [getDateStart, setGetDateStart] = useState("");
-  const [getDateEnd, setGetDateEnd] = useState("");
-
-  //time
-
-  const [getTimeStart, setGetTimeStart] = useState("");
-  const [getTimeEnd, setGetTimeEnd] = useState("");
-
-  //welfare
-  const [getWelfare, setGetWelfare] = useState([]);
-  //Coordinator
-
-  const [getCoordinator, setGetCoordinator] = useState("");
-  const [getTetCoordinator, setGetTelCoordinator] = useState("");
-
-  //name company
-  const [getNameCompany, setGetNameCompany] = useState("");
-
-  //handle array
-  function mergeArrayValues(nonGetArray, getArray) {
-    // ถ้า nonGetArray เป็นอาร์เรย์ว่าง ให้คืนค่า getArray โดยตรง
-    if (nonGetArray.length === 0) {
-      return getArray;
-    }
-
-    if (nonGetArray.length > getArray.length) {
-      return nonGetArray.map((value, index) => {
-        return value || getArray[index] || "";
-      });
-    } else {
-      return getArray.map((value, index) => {
-        return nonGetArray[index] || value || "";
-      });
-    }
-  }
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const tempNameCompany = nameCompany || getNameCompany;
-    const tempAddress = addressIdCard || getAddressIdCard;
-    const tempProvince = addressIdCardProvince || getAddressIdCardProvince;
-    const tempAmphor = addressIdCardAmphor || getAddressIdCardAmphor;
-    const tempTambon = addressIdCardTambon || getAddressIdCardTambon;
-    const tempZipcode = addressIdCardZipCode || getAddressIdCardZipCode;
-    const tempCoordinator = coordinator || getCoordinator;
-    const tempCoordinatorTel = telCoordinator || getTetCoordinator;
-    const mergedWelfare = mergeArrayValues(welfare, getWelfare);
+    const tempNameCompany = nameCompany ;
+    const tempAddress = addressIdCard ;
+    const tempProvince = addressIdCardProvince ;
+    const tempAmphor = addressIdCardAmphor;
+    const tempTambon = addressIdCardTambon ;
+    const tempZipcode = addressIdCardZipCode ;
+    const tempCoordinator = coordinator;
+    const tempCoordinatorTel = telCoordinator;
 
     if (
       !tempNameCompany ||
@@ -116,7 +69,6 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
       !tempCoordinator ||
       !tempCoordinatorTel ||
       !typeBusiness ||
-      !quantityEmployee ||
       !quantityDisabled ||
       !emailCompany
     ) {
@@ -134,13 +86,13 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
       amphor: tempAmphor,
       tambon: tempTambon,
       zipcode: tempZipcode,
-      welfare: mergedWelfare,
       coordinator: tempCoordinator,
       coordinator_tel: tempCoordinatorTel,
       typeBusiness: typeBusiness,
       quantityEmployee: quantityEmployee,
       quantityDisabled: quantityDisabled,
       emailCompany: emailCompany,
+      lineId: lineId,
     };
     try {
       const res = (await isEdit)
@@ -169,7 +121,7 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
   useEffect(() => {
     if (!dataCompany) return;
 
-    // // ตั้งค่าตัวแปรต่าง ๆ จากข้อมูลใน dataHistoryWork
+    // ตั้งค่าตัวแปรต่าง ๆ จากข้อมูลใน dataCompany
     setNameCompany(dataCompany?.nameCompany);
     setAddressIdCard(dataCompany?.address);
     setAddressIdCardProvince(dataCompany?.province);
@@ -182,20 +134,21 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
     setQuantityEmployee(dataCompany?.quantityEmployee);
     setQuantityDisabled(dataCompany?.quantityDisabled);
     setEmailCompany(dataCompany?.emailCompany);
+    setLineId(dataCompany?.lineId || "");
 
     setIDAddressIdCardProvince(
-      dataProvince.find((p) => p.name_th === dataCompany.province)?.id || null
+      dataProvince.find((p) => p.name_th === dataCompany.province)?.id || null,
     );
     setIDAddressIdCardAmphor(
       dataProvince
         .find((p) => p.name_th === dataCompany.province)
-        ?.amphure.find((a) => a.name_th === dataCompany.amphor)?.id || null
+        ?.amphure.find((a) => a.name_th === dataCompany.amphor)?.id || null,
     );
     setIDAddressIdCardTambon(
       dataProvince
         .find((p) => p.name_th === dataCompany.province)
         ?.amphure.find((a) => a.name_th === dataCompany.amphor)
-        ?.tambon.find((t) => t.name_th === dataCompany.tambon)?.id || null
+        ?.tambon.find((t) => t.name_th === dataCompany.tambon)?.id || null,
     );
     // set ฟิลด์เริ่มต้น
   }, [dataCompany, dataProvince]);
@@ -209,17 +162,18 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
         <InputLabelForm
           label="ชื่อบริษัท"
           isRequire
-          value={nameCompany || getNameCompany || ""}
+          value={nameCompany || ""}
           setValue={setNameCompany}
           editMode={editMode}
           placeholder={"ตัวอย่าง: บริษัทเฟรนลี่เดฟ จำกัด"}
           tailwind={"w-96"}
         />
+
         <div className="flex gap-x-10 gap-y-5 flex-wrap w-full">
           <InputLabelForm
             label="ที่ตั้ง"
             isRequire
-            value={addressIdCard || getAddressIdCard || ""}
+            value={addressIdCard || ""}
             setValue={setAddressIdCard}
             editMode={editMode}
             placeholder={"สถานที่ใกล้สถานีรถไฟฟ้า พหลโยธิน 59"}
@@ -243,7 +197,7 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
                   setAddressIdCardZipCode("");
                   setAddressIdCardProvince(
                     dataProvince.find((p) => p.id === parseInt(e.target.value))
-                      .name_th
+                      .name_th,
                   );
                 }}
                 className={`${
@@ -255,7 +209,7 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
                 disabled={!editMode}
                 value={
                   dataProvince.find(
-                    (p) => p.id === parseInt(IDaddressIdCardProvince)
+                    (p) => p.id === parseInt(IDaddressIdCardProvince),
                   )?.id || "0"
                 }
               >
@@ -296,7 +250,7 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
                       dataProvince
                         .find((p) => p.id === parseInt(IDaddressIdCardProvince))
                         .amphure.find((a) => a.id === parseInt(e.target.value))
-                        .name_th
+                        .name_th,
                     );
                   }}
                   className={`${
@@ -310,7 +264,7 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
                     dataProvince
                       .find((p) => p.id === parseInt(IDaddressIdCardProvince))
                       .amphure.find(
-                        (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                        (a) => a.id === parseInt(IDaddressIdCardAmphor),
                       )?.id || "0"
                   }
                 >
@@ -349,19 +303,19 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
                       dataProvince
                         .find((p) => p.id === parseInt(IDaddressIdCardProvince))
                         .amphure.find(
-                          (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                          (a) => a.id === parseInt(IDaddressIdCardAmphor),
                         )
                         .tambon.find((t) => t.id === parseInt(e.target.value))
-                        .name_th
+                        .name_th,
                     );
                     setAddressIdCardZipCode(
                       dataProvince
                         .find((p) => p.id === parseInt(IDaddressIdCardProvince))
                         .amphure.find(
-                          (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                          (a) => a.id === parseInt(IDaddressIdCardAmphor),
                         )
                         .tambon.find((t) => t.id === parseInt(e.target.value))
-                        .zip_code
+                        .zip_code,
                     );
                   }}
                   className={`${
@@ -375,10 +329,10 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
                     dataProvince
                       .find((p) => p.id === parseInt(IDaddressIdCardProvince))
                       .amphure.find(
-                        (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                        (a) => a.id === parseInt(IDaddressIdCardAmphor),
                       )
                       .tambon.find(
-                        (t) => t.id === parseInt(IDaddressIdCardTambon)
+                        (t) => t.id === parseInt(IDaddressIdCardTambon),
                       )?.id || "0"
                   }
                 >
@@ -386,7 +340,7 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
                   {dataProvince
                     .find((p) => p.id === parseInt(IDaddressIdCardProvince))
                     .amphure.find(
-                      (a) => a.id === parseInt(IDaddressIdCardAmphor)
+                      (a) => a.id === parseInt(IDaddressIdCardAmphor),
                     )
                     .tambon.map((d, index) => (
                       <option key={index} value={d.id}>
@@ -418,7 +372,7 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
                 <p
                   className={`${inputEditColor}  focus:outline-none cursor-default w-36 ${bgColorMain}  border border-gray-400 py-2 px-4 rounded-lg`}
                 >
-                  {addressIdCardZipCode || getAddressIdCardZipCode || "-"}
+                  {addressIdCardZipCode || "-"}
                 </p>
               </div>
             </div>
@@ -440,7 +394,6 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
         />
         <InputLabelForm
           label="จำนวนพนักงานทั้งหมด"
-          isRequire
           value={quantityEmployee}
           setValue={setQuantityEmployee}
           editMode={editMode}
@@ -462,7 +415,7 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
           <InputLabelForm
             label="ผู้ประสานงาน"
             isRequire
-            value={coordinator || getCoordinator || ""}
+            value={coordinator || ""}
             setValue={setCoordinator}
             editMode={editMode}
             placeholder={"ตัวอย่าง: คุณสมชาย มานะ"}
@@ -472,7 +425,7 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
           <InputLabelForm
             label="เบอร์ติดต่อ"
             isRequire
-            value={telCoordinator || getTetCoordinator || ""}
+            value={telCoordinator || ""}
             setValue={setTelCoordinator}
             editMode={editMode}
             placeholder={'ระบุเฉพาะตัวเลข เช่น " 0923235223 "'}
@@ -488,6 +441,15 @@ function CompanyForm1({ id, dataCompany, isEdit = false, path }) {
             placeholder={"example@gmail.com"}
             tailwind={"w-64"}
             type="email"
+          />
+          {/* ช่องกรอก Line ID (ไม่บังคับ) */}
+          <InputLabelForm
+            label="Line ID"
+            value={lineId}
+            setValue={setLineId}
+            editMode={editMode}
+            placeholder={"ระบุ Line ID (ถ้ามี)"}
+            tailwind={"w-56"}
           />
         </div>
       </div>

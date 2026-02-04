@@ -52,6 +52,7 @@ const CompanySchema = new Schema(
     quantityEmployee: { type: String },
     quantityDisabled: { type: String },
     emailCompany: { type: String },
+    lineId: { type: String },
     positionWork: { type: String },
     addressWork: { type: String },
     budget: { type: String },
