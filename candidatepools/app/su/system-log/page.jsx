@@ -75,7 +75,7 @@ function page() {
     { id: "account", label: "บัญชี", minWidth: 170, align: "left" },
     {
       id: "action",
-      label: "การกระทำ",
+      label: "สถานะ",
       minWidth: 170,
       align: "center",
       render: (value, row) => (
@@ -99,8 +99,8 @@ function page() {
 
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
-      <p>บันทึกกิจกรรมของผู้ใช้งาน</p>
-      <div className="flex items-end gap-5 mt-5">
+      <p>บันทึกสถานะของผู้ใช้งาน</p>
+      <div className="flex  items-end gap-5 mt-5">
         <InputLabelForm
           label={"ค้นหา"}
           editMode={true}
@@ -112,7 +112,7 @@ function page() {
         <SelectLabelForm
           editMode={true}
           value={targetValue}
-          label="การกระทำ"
+          label="สถานะ"
           setValue={setTagetValue}
           options={targetOtions}
           tailwind={"w-56"}

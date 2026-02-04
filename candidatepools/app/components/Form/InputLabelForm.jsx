@@ -28,7 +28,7 @@ function InputLabelForm({
     `${(label || "input").toString().replace(/\s+/g, "-")}-${uid}`;
 
   return (
-    <div className="w-full flex flex-col gap-1">
+    <div className=" flex flex-col gap-1">
       <LabelForm
         label={label}
         isRequire={isRequire}

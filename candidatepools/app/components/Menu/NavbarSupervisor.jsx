@@ -232,7 +232,7 @@ function NavbarSupervisor() {
         <p
           className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
         >
-          บันทึกกิจกรรม
+          สถานะผู้ใช้งาน
         </p>
       </Link>
       <Link
