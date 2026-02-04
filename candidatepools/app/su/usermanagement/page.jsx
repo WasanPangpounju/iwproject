@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
@@ -26,6 +26,10 @@ import Link from "next/link";
 //store
 import { useUserStore } from "@/stores/useUserStore";
 import { useEducationStore } from "@/stores/useEducationStore";
+import ButtonView from "@/app/components/Button/ButtonView";
+import { REPORT_TYPE_ALL } from "@/const/enum";
+import { useProvince } from "@/hooks/useProvince";
+import { regionData } from "@/assets/regionData";
 
 const columns = [
   {
@@ -36,6 +40,11 @@ const columns = [
   {
     id: "university",
     label: "สถาบันการศึกษา",
+    minWidth: 170,
+  },
+  {
+    id: "addressProvince",
+    label: "จังหวัด",
     minWidth: 170,
   },
   {
@@ -52,7 +61,6 @@ const columns = [
     id: "details",
     label: "รายละเอียด",
     minWidth: 170,
-    align: "center",
   },
 ];
 
@@ -63,27 +71,33 @@ function UserManagement() {
 
   const { data: session } = useSession();
 
-
   //Theme
-  const {
-    bgColor,
-    bgColorWhite,
-    bgColorMain,
-    bgColorMain2,
-    inputGrayColor,
-  } = useTheme();
+  const { bgColor, bgColorWhite, bgColorMain, bgColorMain2, inputGrayColor } =
+    useTheme();
 
   //table
-  function createData(name, university, level, disabled, details, uuid) {
-    return { name, university, level, disabled, details, uuid };
+  function createData(name, university, level, disabled, details, uuid, addressProvince) {
+    return { name, university, level, disabled, details, uuid, addressProvince };
   }
 
   //type search
   const [wordSearch, setWordSearch] = useState("");
   const [typePersonSearch, setTypePersonSearch] = useState("");
+  const [addressProvince, setAddressProvince] = useState(REPORT_TYPE_ALL.ALL);
+  const [regionId, setRegionId] = useState(null);
 
   //handle search filter
   const [wordSearchFilter, setWordSearchFilter] = useState([]);
+
+  //data Province
+  const { dataProvince } = useProvince(regionId);
+
+  // reset addressProvince when regionId is cleared
+  useEffect(() => {
+    if (regionId === REPORT_TYPE_ALL.ALL) {
+      setAddressProvince(REPORT_TYPE_ALL.ALL);
+    }
+  }, [regionId]);
 
   function handleSearch(e) {
     e.preventDefault();
@@ -112,24 +126,24 @@ function UserManagement() {
         wordSearchFilter?.length === 0 ? [wordSearch] : wordSearchFilter;
 
       const education = dataEducationAll?.find(
-        (edu) => edu?.uuid === std?.uuid
+        (edu) => edu?.uuid === std?.uuid,
       );
       const name = `${std?.firstName} ${std?.lastName}`;
 
       const hasMatchUniversityFilter = education?.university?.find((uni) =>
         tempWordSearch?.some((word) =>
-          uni.toLowerCase().includes(word.toLowerCase())
-        )
+          uni.toLowerCase().includes(word.toLowerCase()),
+        ),
       );
       const hasMatchNameFilter = tempWordSearch?.some((word) =>
-        name?.toLowerCase().includes(word.toLowerCase())
+        name?.toLowerCase().includes(word.toLowerCase()),
       );
 
       const tempWordUniversity = education?.university?.find((uni) =>
-        uni.toLowerCase().includes(wordSearch.toLowerCase())
+        uni.toLowerCase().includes(wordSearch.toLowerCase()),
       );
       const hasMatchUniversity = education?.university?.some((uni) =>
-        uni.toLowerCase().includes(tempWordUniversity?.toLowerCase())
+        uni.toLowerCase().includes(tempWordUniversity?.toLowerCase()),
       );
 
       const hasMatchName = name
@@ -140,7 +154,16 @@ function UserManagement() {
         ?.toLowerCase()
         .includes(typePersonSearch.toLowerCase());
 
+      // filter by province
+      const hasMatchProvince =
+        addressProvince === REPORT_TYPE_ALL.ALL ||
+        (std?.addressProvince && std?.addressProvince === addressProvince);
+
       if (!hasMatchTypePerson) {
+        return null;
+      }
+
+      if (!hasMatchProvince) {
         return null;
       }
 
@@ -162,14 +185,15 @@ function UserManagement() {
           std?.role === "user"
             ? "user"
             : std?.role === "admin"
-            ? "super user"
-            : "admin"
+              ? "super user"
+              : "admin"
         }`,
         "",
-        `${std?.uuid}`
+        `${std?.uuid}`,
+        `${std?.addressProvince || "ไม่มีข้อมูล"}`,
       );
     })
-    .filter((row) => row !== null);
+    .filter((row) => row !== null); // กรองค่า null ออก
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -183,6 +207,7 @@ function UserManagement() {
     setPage(0);
   };
 
+  console.log(rows)
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
       <>
@@ -215,6 +240,64 @@ function UserManagement() {
                   <option value="user">user</option>
                   <option value="admin">super user</option>
                   <option value="supervisor">admin</option>
+                </select>
+                <Icon
+                  className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}
+                  path={mdiArrowDownDropCircle}
+                  size={0.5}
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1 relative">
+              <label>ภูมิภาค</label>
+              <div className="relative col w-fit">
+                <select
+                  className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
+                  style={{ appearance: "none" }}
+                  onChange={(e) => setRegionId(e.target.value)}
+                >
+                  <option value={REPORT_TYPE_ALL.ALL}>
+                    {REPORT_TYPE_ALL.ALL}
+                  </option>
+                  {regionData?.map((item, index) => (
+                    <option key={index} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+                <Icon
+                  className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}
+                  path={mdiArrowDownDropCircle}
+                  size={0.5}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label>
+                {/* แสดง * เมื่อเลือกภูมิภาค (regionId ไม่ใช่ ALL/ว่าง/null) และยังไม่เลือกจังหวัด (addressProvince === ALL) */}
+                {regionId &&
+                  regionId !== REPORT_TYPE_ALL.ALL &&
+                  addressProvince === REPORT_TYPE_ALL.ALL && (
+                    <span className="text-red-500">*</span>
+                  )}
+                {` `}จังหวัด
+              </label>
+              <div className="relative col w-fit">
+                <select
+                  className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
+                  style={{ appearance: "none" }}
+                  onChange={(e) => setAddressProvince(e.target.value)}
+                  value={addressProvince}
+                >
+                  <option value={REPORT_TYPE_ALL.ALL}>
+                    {REPORT_TYPE_ALL.ALL}
+                  </option>
+                  {dataProvince?.map((pv, index) => (
+                    <option key={index} value={pv.name_th}>
+                      {pv.name_th}
+                    </option>
+                  ))}
                 </select>
                 <Icon
                   className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}
@@ -261,8 +344,8 @@ function UserManagement() {
                         index % 2 !== 0
                           ? "bg-gray-400"
                           : index % 2 === 0
-                          ? "bg-orange-400"
-                          : ""
+                            ? "bg-orange-400"
+                            : ""
                       }`
                     : "border border-white"
                 }
@@ -313,7 +396,7 @@ function UserManagement() {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
                       const student = dataUserAll.find(
-                        (std) => std?.uuid === row.uuid
+                        (std) => std?.uuid === row.uuid,
                       );
                       if (student) {
                         return (
@@ -330,16 +413,7 @@ function UserManagement() {
                                     key={column.id}
                                     align={column.align}
                                   >
-                                    <Link
-                                      href={student?.uuid}
-                                      className="cursor-pointer text-center flex justify-center"
-                                    >
-                                      <Icon
-                                        className={`cursor-pointer text-black`}
-                                        path={mdiAlertCircle}
-                                        size={1}
-                                      />
-                                    </Link>
+                                    <ButtonView link={student?.uuid} />
                                   </TableCell>
                                 );
                               } else {
