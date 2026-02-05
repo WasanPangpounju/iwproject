@@ -8,6 +8,7 @@ export const useExcelExport = () => {
     rows,
     sheetName = "Exported Data",
     fileName = "exported_data.xlsx",
+    align
   }) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet(sheetName);
@@ -20,7 +21,7 @@ export const useExcelExport = () => {
 
     const headerRow = worksheet.getRow(1);
     headerRow.font = { bold: true };
-    headerRow.alignment = { horizontal: "center" };
+    headerRow.alignment = { horizontal: align };
 
     rows.forEach((row) => {
       worksheet.addRow(row);
@@ -29,7 +30,7 @@ export const useExcelExport = () => {
     worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
       if (rowNumber === 1) return;
       row.eachCell((cell) => {
-        cell.alignment = { horizontal: "left" };
+        cell.alignment = { horizontal: align };
       });
     });
 

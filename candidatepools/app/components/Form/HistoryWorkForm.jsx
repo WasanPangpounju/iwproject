@@ -34,7 +34,6 @@ import { toast } from "react-toastify";
 import { ACTION_ACTIVITY, TARGET_MODEL } from "@/const/enum";
 
 function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) {
-  const { data: session } = useSession();
 
   const { updateHistoryWorkById } = useHistoryWorkStore();
   const [error, setError] = useState("");
