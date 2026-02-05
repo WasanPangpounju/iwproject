@@ -8,11 +8,13 @@ import {
   mdiMicrosoftExcel,
   mdiMagnify,
   mdiAlertCircle,
+  mdiDownload,
 } from "@mdi/js";
 
 //select datas
 import dataWorkType from "@/assets/dataWorkType";
 import dataDisabled from "@/assets/dataDisabled";
+import dataTypePerson from "@/assets/dataTypePerson";
 
 //hooks
 import { useExcelExport } from "@/hooks/useExcelExport";
@@ -22,6 +24,7 @@ import { exportToCSV } from "@/hooks/useCsvExport"; // หรือ "@/utils/csv
 import ReportTable from "@/app/components/Table/ReportTable";
 import SelectFilter from "@/app/components/Form/SelectFilter";
 import InputUniversityAutoComplete from "@/app/components/Form/InputUniversityAutoComplete";
+import ColumnSelectModal from "@/app/components/Report/ColumnSelectModal";
 
 //enum
 import {
@@ -32,38 +35,47 @@ import {
 } from "@/const/enum";
 
 import { dataStatus } from "@/assets/dataStatus";
-import { render } from "@react-pdf/renderer";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ButtonView from "../../Button/ButtonView";
 
 // รายงานลักษณะงานที่สนใจ
 const columnWork = [
-  { id: "number", label: "ลำดับ", minWidth: 50 },
+  { id: "number", label: "ลำดับ", minWidth: 50, align: "center" },
   { id: "work", label: "ลักษณะงานที่สนใจ", minWidth: 170 },
-  { id: "totalStudent", label: "จำนวนนักศึกษา", minWidth: 170 },
-  { id: "totalGraduation", label: "จำนวนบัณฑิต", minWidth: 170 },
+  {
+    id: "totalStudent",
+    label: "จำนวนนักศึกษา",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "totalGraduation",
+    label: "จำนวนบัณฑิต",
+    minWidth: 170,
+    align: "center",
+  },
   { id: "total", label: "ทั้งหมด", minWidth: 170, align: "center" },
 ];
 
 // รายงานตามประเภทบุคคล
 const columnTypePerson = [
-  { id: "number", label: "ลำดับ", minWidth: 50 },
+  { id: "number", label: "ลำดับ", minWidth: 50, align: "center" },
   { id: "typePerson", label: "ประเภทบุคคล", minWidth: 170 },
   { id: "total", label: "ทั้งหมด", minWidth: 170, align: "center" },
 ];
 
 // รายงานตามประเภทความพิการ
 const columnDisabled = [
-  { id: "number", label: "ลำดับ", minWidth: 50 },
+  { id: "number", label: "ลำดับ", minWidth: 50, align: "center" },
   { id: "disabledType", label: "ประเภทความพิการ", minWidth: 170 },
-  { id: "totalStudent", label: "จำนวนนักศึกษา", minWidth: 170 },
-  { id: "totalGraduation", label: "จำนวนบัณฑิต", minWidth: 170 },
+  { id: "totalStudent", label: "จำนวนนักศึกษา", minWidth: 170, align: "center" },
+  { id: "totalGraduation", label: "จำนวนบัณฑิต", minWidth: 170, align: "center" },
   { id: "total", label: "ทั้งหมด", minWidth: 170, align: "center" },
 ];
 
 // รายงานนักศึกษาตามสถาบันการศึกษา
 const columnCountUni = [
-  { id: "name", label: "ลำดับ", minWidth: 170 },
+  { id: "name", label: "ลำดับ", minWidth: 170, align: "center" },
   { id: "university", label: "สถาบันการศึกษา", minWidth: 170 },
   { id: "student", label: "จำนวนนักศึกษา", minWidth: 170, align: "center" },
   {
@@ -76,7 +88,7 @@ const columnCountUni = [
 ];
 
 const columnCountStatus = [
-  { id: "no", label: "ลำดับ", minWidth: 170 },
+  { id: "no", label: "ลำดับ", minWidth: 170, align: "center" },
   { id: "status", label: "สถานะ", minWidth: 170 },
   { id: "student", label: "จำนวนนักศึกษา", minWidth: 170, align: "center" },
   {
@@ -88,244 +100,109 @@ const columnCountStatus = [
   { id: "total", label: "ทั้งหมด", minWidth: 170, align: "center" },
 ];
 
-// รายงานนักศึกษาตามประเภท
-const columnStudentCatagory = [
-  { id: "id", label: "ลำดับ", minWidth: 170 },
-  { id: "name", label: "ชื่อ-สกุล", minWidth: 170 },
-  { id: "university", label: "สถาบันการศึกษา", minWidth: 170, align: "center" },
-  { id: "typePerson", label: "ประเภทบุคคล", minWidth: 170, align: "center" },
-  { id: "level", label: "ระดับชั้น", minWidth: 170, align: "center" },
-  { id: "disabled", label: "ความพิการ", minWidth: 170, align: "center" },
-];
-
 const columnAll = [
-  // { id: "prefix", label: "คำนำหน้า", minWidth: 170, align: "center" },
-  // { id: "firstName", label: "ชื่อ", minWidth: 170, align: "center" },
-  // { id: "lastName", label: "นามสกุล", minWidth: 170, align: "center" },
-  { id: "fullName", label: "ชื่อ", minWidth: 200, align: "center" },
-  { id: "email", label: "อีเมล", minWidth: 170, align: "center" },
-  { id: "dateBirthday", label: "วันเกิด", minWidth: 170, align: "center" },
-  { id: "monthBirthday", label: "เดือนเกิด", minWidth: 170, align: "center" },
-  { id: "yearBirthday", label: "ปีเกิด", minWidth: 170, align: "center" },
-  { id: "nationality", label: "สัญชาติ", minWidth: 170, align: "center" },
-  { id: "idCard", label: "เลขบัตรประชาชน", minWidth: 170, align: "center" },
+  { id: "no", label: "ลำดับ", minWidth: 50, align: "center" },
+  { id: "fullName", label: "ชื่อ", minWidth: 200, align: "left" },
+  { id: "disabled", label: "ประเภทความพิการ", minWidth: 170, align: "left" },
+  { id: "age", label: "อายุ", minWidth: 170, align: "center" },
+  { id: "address", label: "ที่อยู่ปัจจุบัน", minWidth: 170, align: "left" },
+  { id: "statusNow", label: "สถานะปัจจุบัน", minWidth: 170, align: "left" },
+  { id: "typePerson", label: "ประเภทบุคคล", minWidth: 170, align: "left" },
+  { id: "university", label: "มหาวิทยาลัย", minWidth: 170, align: "left" },
   {
-    id: "idCardDisabled",
-    label: "บัตรคนพิการ",
+    id: "faculty",
+    label: "คณะ",
+    minWidth: 170,
+    align: "left",
+  },
+  {
+    id: "branch",
+    label: "สาขา",
+    minWidth: 170,
+    align: "left",
+  },
+  {
+    id: "educationLevel",
+    label: "ชั้นปี",
     minWidth: 170,
     align: "center",
   },
   {
-    id: "addressIdCard",
-    label: "ที่อยู่ตามบัตร",
+    id: "workPlace",
+    label: "สถานที่ทำงาน",
     minWidth: 170,
-    align: "center",
+    align: "left",
   },
   {
-    id: "addressIdCardProvince",
-    label: "จังหวัด (บัตร)",
+    id: "workPosition",
+    label: "ตำแหน่งงาน",
     minWidth: 170,
-    align: "center",
+    align: "left",
   },
   {
-    id: "addressIdCardAmphor",
-    label: "อำเภอ (บัตร)",
+    id: "interestedType",
+    label: "งานที่สนใจ",
     minWidth: 170,
-    align: "center",
+    align: "left",
   },
-  {
-    id: "addressIdCardTambon",
-    label: "ตำบล (บัตร)",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "addressIdCardZipCode",
-    label: "รหัสไปรษณีย์ (บัตร)",
-    minWidth: 170,
-    align: "center",
-  },
-  { id: "address", label: "ที่อยู่ปัจจุบัน", minWidth: 170, align: "center" },
-  {
-    id: "addressProvince",
-    label: "จังหวัด (ปัจจุบัน)",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "addressAmphor",
-    label: "อำเภอ (ปัจจุบัน)",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "addressTambon",
-    label: "ตำบล (ปัจจุบัน)",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "addressZipCode",
-    label: "รหัสไปรษณีย์ (ปัจจุบัน)",
-    minWidth: 170,
-    align: "center",
-  },
-  { id: "role", label: "บทบาท", minWidth: 170, align: "center" },
-  { id: "tel", label: "เบอร์โทร", minWidth: 170, align: "center" },
-  { id: "typePerson", label: "ประเภทบุคคล", minWidth: 170, align: "center" },
-
-  // ข้อมูลการศึกษา
-  { id: "educationLevel", label: "ระดับชั้น", minWidth: 170, align: "center" },
-  { id: "yearGraduation", label: "ปีที่จบ", minWidth: 170, align: "center" },
-  { id: "university", label: "มหาวิทยาลัย", minWidth: 170, align: "center" },
-  { id: "campus", label: "วิทยาเขต", minWidth: 170, align: "center" },
-  { id: "faculty", label: "คณะ", minWidth: 170, align: "center" },
-  { id: "branch", label: "สาขา", minWidth: 170, align: "center" },
-  { id: "grade", label: "เกรด", minWidth: 170, align: "center" },
-  { id: "level", label: "ชั้นปี", minWidth: 170, align: "center" },
-
-  // ข้อมูลฝึกงาน
-  {
-    id: "internshipPlace",
-    label: "สถานที่ฝึกงาน",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "internshipPosition",
-    label: "ตำแหน่งฝึกงาน",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "internshipDateStart",
-    label: "เริ่มฝึกงาน (ปี)",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "internshipDateStartMonth",
-    label: "เริ่มฝึกงาน (เดือน)",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "internshipDateEnd",
-    label: "สิ้นสุดฝึกงาน (ปี)",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "internshipDateEndMonth",
-    label: "สิ้นสุดฝึกงาน (เดือน)",
-    minWidth: 170,
-    align: "center",
-  },
-
-  // ข้อมูลโครงงาน
-  { id: "projectName", label: "ชื่อโครงงาน", minWidth: 170, align: "center" },
-  {
-    id: "projectDetail",
-    label: "รายละเอียดโครงงาน",
-    minWidth: 170,
-    align: "center",
-  },
-
-  // ข้อมูลประสบการณ์การทำงาน
-  { id: "workPlace", label: "สถานที่ทำงาน", minWidth: 170, align: "center" },
-  { id: "workPosition", label: "ตำแหน่งงาน", minWidth: 170, align: "center" },
-  {
-    id: "workDateStart",
-    label: "เริ่มงาน (ปี)",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "workDateStartMonth",
-    label: "เริ่มงาน (เดือน)",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "workDateEnd",
-    label: "สิ้นสุดงาน (ปี)",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "workDateEndMonth",
-    label: "สิ้นสุดงาน (เดือน)",
-    minWidth: 170,
-    align: "center",
-  },
-
-  // ความสนใจในการทำงาน
-  { id: "interestedType", label: "งานที่สนใจ", minWidth: 170, align: "center" },
   {
     id: "interestedDetail",
     label: "รายละเอียดงานที่สนใจ",
     minWidth: 170,
-    align: "center",
+    align: "left",
   },
   {
-    id: "interestedProvince1",
-    label: "จังหวัดที่สนใจ (1)",
+    id: "skillType",
+    label: "ประเภททักษะที่ถนัด",
     minWidth: 170,
-    align: "center",
+    align: "left",
   },
-  {
-    id: "interestedProvince2",
-    label: "จังหวัดที่สนใจ (2)",
-    minWidth: 170,
-    align: "center",
-  },
-  {
-    id: "interestedProvince3",
-    label: "จังหวัดที่สนใจ (3)",
-    minWidth: 170,
-    align: "center",
-  },
-
-  //skills
-  { id: "skillType", label: "ประเภททักษะ", minWidth: 170, align: "center" },
-  { id: "skillName", label: "ชื่อทักษะ", minWidth: 170, align: "center" },
   {
     id: "skillDetail",
     label: "รายละเอียดทักษะ",
     minWidth: 170,
-    align: "center",
+    align: "left",
   },
-
-  { id: "trainName", label: "ชื่อการอบรม", minWidth: 170, align: "center" },
   {
-    id: "trainDetail",
-    label: "รายละเอียดอบรม",
+    id: "tel",
+    label: "เบอร์โทร",
     minWidth: 170,
-    align: "center",
+    align: "left",
   },
   {
-    id: "comeForm",
-    label: "รู้จักจาก",
+    id: "email",
+    label: "อีเมล",
     minWidth: 170,
-    align: "center",
+    align: "left",
   },
   {
-    id: "uuid",
+    id: "resume",
     label: "เรซูเม่",
     minWidth: 170,
     align: "center",
-    render: (id, row) => {
+    selectable: false,
+    render: (id) => {
       const pathname = usePathname();
       const firstPath = pathname?.split("/")[1] || "";
       return (
-        <Link
-          href={`/${firstPath}/students/${id}/resume`}
+        <ButtonView
+          link={`/${firstPath}/students/${id}/resume`}
           target="_blank"
-          rel="noopener noreferrer"
-          className={`cursor-pointer text-black`}
-        >
-          <Icon path={mdiAlertCircle} size={1} />
-        </Link>
+        />
+      );
+    },
+  },
+  {
+    id: "detail",
+    label: "รายละเอียด",
+    minWidth: 170,
+    align: "center",
+    selectable: false,
+    render: (id) => {
+      const pathname = usePathname();
+      const firstPath = pathname?.split("/")[1] || "";
+      return (
+        <ButtonView link={`/${firstPath}/students/${id}`} target="_blank" />
       );
     },
   },
@@ -339,7 +216,7 @@ function ReportTablePage({
   dataSkillAll,
 }) {
   // Theme
-  const { bgColor, bgColorWhite, bgColorMain2, inputGrayColor } = useTheme();
+  const { bgColor, bgColorMain, bgColorMain2, inputGrayColor } = useTheme();
 
   //state
   const [dataState, setDataState] = useState();
@@ -350,6 +227,12 @@ function ReportTablePage({
   const [universityActive, setUniversityActive] = useState("");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [wordSearch, setWordSearch] = useState("");
+
+  // Modal state for column selection
+  const [columnModalOpen, setColumnModalOpen] = useState(false);
+  // Keep last export type (csv/excel)
+  const [pendingExportType, setPendingExportType] = useState(null); // 'csv' | 'excel'
 
   const { exportExcel } = useExcelExport();
 
@@ -390,11 +273,11 @@ function ReportTablePage({
 
     // สร้าง Map สำหรับการเข้าถึงข้อมูลรวดเร็ว
     const educationMap = new Map(
-      dataEducationAll.map((item) => [item.uuid, item])
+      dataEducationAll.map((item) => [item.uuid, item]),
     );
     const workMap = new Map(dataWorkAll.map((item) => [item.uuid, item]));
     const historyMap = new Map(
-      dataHistoryWorkAll.map((item) => [item.uuid, item])
+      dataHistoryWorkAll.map((item) => [item.uuid, item]),
     );
 
     let filteredStudents = [...dataStudents];
@@ -405,19 +288,23 @@ function ReportTablePage({
         return year === yearActive;
       });
     }
-    if (universityActive) {
+    if (wordSearch) {
       filteredStudents = filteredStudents.filter((student) => {
         const edu = educationMap.get(student.uuid);
-        return edu?.university?.some((uniName) =>
-          uniName.toLowerCase().includes(universityActive.toLowerCase())
-        );
+        const fullName = `${student.prefix ? student.prefix : ""}${student.firstName} ${student.lastName}`;
+        const university = edu?.university?.join(" ") || "";
+        const faculty = edu?.faculty?.join(" ") || "";
+        const branch = edu?.branch?.join(" ") || "";
+        const searchString =
+          `${fullName} ${university} ${faculty} ${branch}`.toLowerCase();
+        return searchString.includes(wordSearch.toLowerCase());
       });
     }
 
     if (contentType !== REPORT_TYPE_ALL.ALL) {
       if (content === REPORT_CONTENT_TYPE.DISABLED) {
         filteredStudents = filteredStudents.filter((student) =>
-          student?.typeDisabled?.some((type) => type === contentType)
+          student?.typeDisabled?.some((type) => type === contentType),
         );
       }
 
@@ -425,7 +312,7 @@ function ReportTablePage({
         filteredStudents = filteredStudents.filter((student) => {
           const work = workMap.get(student.uuid);
           return work?.interestedWork?.some(
-            (interest) => interest.type === contentType
+            (interest) => interest.type === contentType,
           );
         });
       }
@@ -436,19 +323,26 @@ function ReportTablePage({
           return history?.statusNow === contentType;
         });
       }
+
+      if (content === REPORT_CONTENT_TYPE.PERSON_TYPE) {
+        filteredStudents = filteredStudents.filter((student) => {
+          const edu = educationMap.get(student.uuid);
+          return edu?.typePerson === contentType;
+        });
+      }
     }
 
     // 3. ให้ dataEducationAll, dataWorkAll, dataHistoryWorkAll สอดคล้องกับ filteredStudents
     const filteredUUIDs = new Set(filteredStudents.map((s) => s.uuid));
 
     const filteredEducation = dataEducationAll.filter((edu) =>
-      filteredUUIDs.has(edu.uuid)
+      filteredUUIDs.has(edu.uuid),
     );
     const filteredWork = dataWorkAll.filter((work) =>
-      filteredUUIDs.has(work.uuid)
+      filteredUUIDs.has(work.uuid),
     );
     const filteredHistory = dataHistoryWorkAll.filter((hist) =>
-      filteredUUIDs.has(hist.uuid)
+      filteredUUIDs.has(hist.uuid),
     );
 
     // 4. Set state
@@ -463,6 +357,7 @@ function ReportTablePage({
     universityActive,
     contentType,
     content,
+    wordSearch,
     yearActive,
     dataStudents,
     dataEducationAll,
@@ -509,6 +404,7 @@ function ReportTablePage({
   const disabledData = [REPORT_TYPE_ALL.ALL, ...dataDisabled];
   const workData = [REPORT_TYPE_ALL.ALL, ...dataWorkType];
   const statusData = [REPORT_TYPE_ALL.ALL, ...dataStatus];
+  const personTypeData = [REPORT_TYPE_ALL.ALL, ...dataTypePerson];
 
   //set rows
   //student rows
@@ -552,20 +448,39 @@ function ReportTablePage({
     return result;
   })();
 
-  //student rows
-  const rowCatagoryStudents = () => {
-    return dataState?.dataStudents?.map((std, index) => {
-      const education = dataState?.dataEducationAll?.find(
-        (edu) => edu.uuid === std.uuid
-      );
+  //all column rows
+  const dataAll = mergeDataByUUID(
+    dataState.dataStudents,
+    dataState.dataEducationAll,
+    dataState.dataWorkAll,
+    dataState.dataHistoryWorkAll,
+    dataState.dataSkillAll,
+  );
 
+  const rowAllData = () => {
+    return dataAll?.map((row, index) => {
       return {
-        id: index + 1,
-        name: `${std.prefix ? std.prefix : ""}${std.firstName} ${std.lastName}`,
-        university: education?.university?.join(", ") || "-",
-        typePerson: std.typePerson,
-        level: education?.educationLevel?.join(", ") || "-",
-        disabled: std?.typeDisabled?.join(", ") || "-",
+        no: index + 1,
+        fullName: row?.fullName,
+        disabled: row?.typeDisabled?.join(", ") || "-",
+        age: `${row?.yearBirthday ? new Date().getFullYear() - parseInt(row.yearBirthday) : "-"}`,
+        address: `${row?.address} ${row?.addressProvince} ${row.addressAmphor} ${row.addressTambon} ${row?.addressZipCode}`,
+        statusNow: row?.statusNow,
+        typePerson: row?.typePerson,
+        university: row?.university?.join(", ") || "-",
+        faculty: row?.faculty?.join(", ") || "-",
+        branch: row?.branch?.join(", ") || "-",
+        level: row?.educationLevel?.join(", ") || "-",
+        workPlace: row?.workPlace,
+        workPosition: row?.workPosition,
+        interestedType: row?.interestedType,
+        interestedDetail: row?.interestedDetail,
+        skillType: row?.skillType,
+        skillDetail: row?.skillDetail,
+        tel: row?.tel,
+        email: row?.email,
+        resume: row?.uuid,
+        detail: row?.uuid,
       };
     });
   };
@@ -599,7 +514,7 @@ function ReportTablePage({
     .filter((row) =>
       contentType === REPORT_TYPE_ALL.ALL
         ? true
-        : row.disabledType === contentType
+        : row.disabledType === contentType,
     );
 
   //typePerson rows
@@ -636,12 +551,12 @@ function ReportTablePage({
 
       dataState?.dataWorkAll?.forEach((work) => {
         const isInterested = work?.interestedWork?.some(
-          (interest) => interest.type === item
+          (interest) => interest.type === item,
         );
         if (!isInterested) return;
 
         const edu = dataState?.dataEducationAll?.find(
-          (e) => e.uuid === work.uuid
+          (e) => e.uuid === work.uuid,
         );
         if (!edu?.typePerson) return;
 
@@ -660,7 +575,7 @@ function ReportTablePage({
       };
     })
     .filter((row) =>
-      contentType === REPORT_TYPE_ALL.ALL ? true : row.work === contentType
+      contentType === REPORT_TYPE_ALL.ALL ? true : row.work === contentType,
     );
 
   //status rows
@@ -671,7 +586,7 @@ function ReportTablePage({
 
       dataState?.dataStudents?.forEach((std) => {
         const work = dataState?.dataHistoryWorkAll.find(
-          (his) => his.uuid === std.uuid // แก้ตรงนี้
+          (his) => his.uuid === std.uuid, // แก้ตรงนี้
         );
 
         if (!work || work.statusNow !== item) return;
@@ -692,7 +607,7 @@ function ReportTablePage({
       };
     })
     .filter((row) =>
-      contentType === REPORT_TYPE_ALL.ALL ? true : row.status === contentType
+      contentType === REPORT_TYPE_ALL.ALL ? true : row.status === contentType,
     );
 
   //all data
@@ -701,7 +616,7 @@ function ReportTablePage({
     dataEducationAll,
     dataWorkAll,
     dataHistoryWorkAll,
-    dataSkillAll
+    dataSkillAll,
   ) {
     const mergedMap = new Map();
 
@@ -761,6 +676,8 @@ function ReportTablePage({
         workDateStartMonth: workExp.dateStartMonth || "",
         workDateEnd: workExp.dateEnd || "",
         workDateEndMonth: workExp.dateEndMonth || "",
+
+        statusNow: work.statusNow || "",
       });
     });
 
@@ -802,21 +719,11 @@ function ReportTablePage({
     return Array.from(mergedMap.values());
   }
 
-  // ตัวอย่างการใช้
-  const dataAll = mergeDataByUUID(
-    dataState.dataStudents,
-    dataState.dataEducationAll,
-    dataState.dataWorkAll,
-    dataState.dataHistoryWorkAll,
-    dataState.dataSkillAll
-  );
-
-  // console.log(dataAll.find((item) => item.firstName === "คุโด้"));
   const tableConfig = {
     หัวข้อทั้งหมด: {
       เลือกประเภท: {
         columns: columnAll,
-        rows: dataAll,
+        rows: rowAllData(),
       },
     },
     แยกตามจำนวน: {
@@ -843,24 +750,24 @@ function ReportTablePage({
     },
     แยกตามประเภท: {
       ตามมหาวิทยาลัย: {
-        columns: columnStudentCatagory,
-        rows: rowCatagoryStudents(),
+        columns: columnAll,
+        rows: rowAllData(),
       },
       ตามประเภทความพิการ: {
-        columns: columnStudentCatagory,
-        rows: rowCatagoryStudents(),
+        columns: columnAll,
+        rows: rowAllData(),
       },
       ตามประเภทบุคคล: {
-        columns: columnStudentCatagory,
-        rows: rowCatagoryStudents(),
+        columns: columnAll,
+        rows: rowAllData(),
       },
       ตามลักษณะงานที่สนใจ: {
-        columns: columnStudentCatagory,
-        rows: rowCatagoryStudents(),
+        columns: columnAll,
+        rows: rowAllData(),
       },
       ตามสถานะ: {
-        columns: columnStudentCatagory,
-        rows: rowCatagoryStudents(),
+        columns: columnAll,
+        rows: rowAllData(),
       },
     },
   };
@@ -898,10 +805,41 @@ function ReportTablePage({
     setPage(0);
   };
 
+  // ---------- Export Handlers ----------
+  // Open modal and set export type
+  const handleExportClick = (type) => {
+    setPendingExportType(type); // 'csv' or 'excel'
+    setColumnModalOpen(true);
+  };
+
+  // Confirm export with selected columns
+  const handleConfirmExport = (selectedColumnIds) => {
+    setColumnModalOpen(false);
+    const exportColumns = config.columns.filter((col) =>
+      selectedColumnIds.includes(col.id),
+    );
+    if (pendingExportType === "csv") {
+      exportToCSV({
+        columns: exportColumns,
+        rows: config.rows,
+        fileName: "report.csv",
+      });
+    } else if (pendingExportType === "excel") {
+      exportExcel({
+        columns: exportColumns,
+        rows: config.rows,
+        sheetName: "รายงาน",
+        fileName: "report.xlsx",
+        align: config.align,
+      });
+    }
+    setPendingExportType(null);
+  };
+
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
       <div className={`flex flex-col`}>
-        <label>หัวข้อรายงาน</label>
+        <label>หัวข้อของข้อมูลผู้ใช้งาน</label>
         <div className="flex gap-5 mt-3">
           <SelectFilter setValue={handleHeaderChange} data={haederData} />
           {header !== REPORT_TYPE_ALL.HEADER_ALL && (
@@ -909,48 +847,62 @@ function ReportTablePage({
           )}
           {content === REPORT_CONTENT_TYPE.DISABLED ||
           content === REPORT_CONTENT_TYPE.INTERESTED_WORK ||
-          content === REPORT_CONTENT_TYPE.STATUS ? (
+          content === REPORT_CONTENT_TYPE.STATUS ||
+          content === REPORT_CONTENT_TYPE.PERSON_TYPE ? (
             <SelectFilter
               setValue={handleContentType}
               data={
                 content === REPORT_CONTENT_TYPE.DISABLED
                   ? disabledData
                   : content === REPORT_CONTENT_TYPE.INTERESTED_WORK
-                  ? workData
-                  : statusData
+                    ? workData
+                    : content === REPORT_CONTENT_TYPE.STATUS
+                      ? statusData
+                      : personTypeData
               }
             />
           ) : null}
         </div>
 
-        <div className="mt-5">
+        <div className="flex flex-col gap-1 mt-5">
+          <label>คำค้นหา</label>
+          <input
+            value={wordSearch}
+            type="text"
+            className={`${bgColorMain} w-64 border border-gray-400 py-1 px-4 rounded-md`}
+            placeholder="ชื่อ-สกุล, มหาวิทยาลัย, คณะ, สาขา"
+            onChange={(e) => setWordSearch(e.target.value)}
+          />
+        </div>
+        {/* <div className="mt-5">
           <InputUniversityAutoComplete
             value={universityActive}
             onChange={handleChangeUniSearch}
             placeholder="ค้นหาจากชื่อมหาวิทยาลัย"
             tailwind={`w-96`}
           />
-        </div>
+        </div> */}
       </div>
       <div className="mt-10 flex flex-col gap-1 font-bold">
         <div className="flex justify-between items-end">
-          <p>รายงานจำนวนทั้งหมด</p>
+          <p>ข้อมูลผู้ใช้งานทั้งหมด</p>
           <div className="relative group">
-            <div className={`bg-gray-300 px-4 py-2  cursor-pointer`}>
-              Download Dataset
+            <div
+              className={`bg-[#6aa84f] px-4 py-2  cursor-pointer flex gap-2  items-center text-white`}
+            >
+              <Icon
+                className={`cursor-pointer  `}
+                path={mdiDownload}
+                size={0.7}
+              />
+              <p>Download Dataset</p>
             </div>
             <div
               className={`hidden group-hover:block  ${bgColorMain2} shadow absolute top-[100%] right-0 z-10 w-56`}
             >
               <div
                 className="hover:bg-gray-300 relative px-4 py-2 cursor-pointer flex gap-5  items-center"
-                onClick={() =>
-                  exportToCSV({
-                    columns: config.columns, // ใช้ column ที่ใช้ในตารางได้เลย
-                    rows: config.rows, // หรือ rowStudents, rowDisabled ฯลฯ
-                    fileName: "report.csv",
-                  })
-                }
+                onClick={() => handleExportClick("csv")}
               >
                 <Icon
                   className={`cursor-pointer text-gray-400 `}
@@ -961,14 +913,7 @@ function ReportTablePage({
               </div>
               <div
                 className="hover:bg-gray-300 relative px-4 py-2 cursor-pointer flex gap-5 items-center"
-                onClick={() =>
-                  exportExcel({
-                    columns: config.columns,
-                    rows: config.rows,
-                    sheetName: "รายงาน",
-                    fileName: "report.xlsx",
-                  })
-                }
+                onClick={() => handleExportClick("excel")}
               >
                 <Icon
                   className={`cursor-pointer text-gray-400 `}
@@ -978,6 +923,16 @@ function ReportTablePage({
                 <p className="">Download as Excel File</p>
               </div>
             </div>
+            {/* Column selection modal */}
+            <ColumnSelectModal
+              open={columnModalOpen}
+              onClose={() => setColumnModalOpen(false)}
+              columns={config.columns.filter((col) => col.selectable !== false)}
+              initialSelected={[]}
+              onConfirm={(selectedColumnIds) =>
+                handleConfirmExport(selectedColumnIds)
+              }
+            />
           </div>
         </div>
         <hr className={` mb-3 border-gray-500`} />
@@ -992,7 +947,7 @@ function ReportTablePage({
               tailwind="w-40"
             />
           </div>
-          <div className="flex items-end">
+          {/* <div className="flex items-end">
             <div
               className={` ${bgColorWhite} ${
                 inputGrayColor === "bg-[#74c7c2]" || "" ? "bg-[#0d96f8]" : ""
@@ -1001,7 +956,7 @@ function ReportTablePage({
               <Icon path={mdiMagnify} size={1} />
               <p>ค้นหา</p>
             </div>
-          </div>
+          </div> */}
         </div>
       </form>
       {config && dataState?.dataStudents?.length > 0 ? (
