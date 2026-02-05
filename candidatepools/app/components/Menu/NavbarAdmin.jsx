@@ -5,48 +5,21 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Icon from "@mdi/react";
 import {
-  mdiDomain,
-  mdiBriefcaseOutline,
   mdiAccountSchool,
-  mdiAccountGroup,
   mdiLogout,
-  mdiHelpCircle,
-  mdiMessageAlert,
-  mdiAccountDetails,
   mdiChartBox,
-  mdiFileEditOutline,
   mdiHomeAccount,
-  mdiCog,
-  mdiForum,
 } from "@mdi/js";
 
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useTheme } from "@/app/ThemeContext";
 
 function NavbarAdmin() {
   const {
-    setFontSize,
-    setBgColor,
-    setBgColorNavbar,
-    setBgColorWhite,
-    setBgColorMain,
-    setBgColorMain2,
     fontSize,
-    bgColorNavbar,
     bgColor,
-    bgColorWhite,
-    bgColorMain,
-    setLineBlack,
-    lineBlack,
-    setTextBlue,
-    textBlue,
-    setRegisterColor,
-    registerColor,
     bgColorMain2,
   } = useTheme();
-
-  const router = useRouter();
 
   useEffect(() => {
     getChats();
@@ -201,7 +174,7 @@ function NavbarAdmin() {
         <p
           className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
         >
-          รายงาน
+          สรุปข้อมูลผู้ใช้งาน
         </p>
       </Link>
 

@@ -279,7 +279,7 @@ function NavbarSupervisor() {
         <p
           className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
         >
-          รายงาน
+          สรุปข้อมูลผู้ใช้งาน
         </p>
       </Link>
       <div

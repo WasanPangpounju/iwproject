@@ -9,7 +9,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Tooltip } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
 
 function ReportTable({
   columns,
@@ -29,7 +29,10 @@ function ReportTable({
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  sx={{
+                    maxWidth: column.maxWidth ?? 200,
+                    whiteSpace: "nowrap",
+                  }}
                 >
                   {column.label}
                 </TableCell>
@@ -49,11 +52,27 @@ function ReportTable({
 
                     return (
                       // <TableCell key={column.id} align={column.align}>
-                      <TableCell key={column.id} align={"left"} className="">
-                        <Tooltip title={content}>
-                          <span className="whitespace-nowrap text-ellipsis overflow-hidden w-[200px]">
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        sx={{
+                          maxWidth: column.maxWidth ?? 200,
+                        }}
+                      >
+                        <Tooltip title={String(content)} arrow>
+                          <Typography
+                            variant="body2"
+                            component="span" // ✅ สำคัญมาก
+                            noWrap
+                            sx={{
+                              display: "block",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
                             {content}
-                          </span>
+                          </Typography>
                         </Tooltip>
                       </TableCell>
                     );
