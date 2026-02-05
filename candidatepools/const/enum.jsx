@@ -1,5 +1,4 @@
 export const REPORT_CONTENT_TYPE = {
-  UNIVERSITY: "ตามมหาวิทยาลัย",
   DISABLED: "ตามประเภทความพิการ",
   PERSON_TYPE: "ตามประเภทบุคคล",
   INTERESTED_WORK: "ตามลักษณะงานที่สนใจ",
