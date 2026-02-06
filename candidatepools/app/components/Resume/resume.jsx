@@ -145,6 +145,7 @@ function Resume({
       tel: tempTel,
       firstNameEng: tempFirstNameEng,
       lastNameEng: tempLastNameEng,
+      role: dataUser?.role,
     };
 
     //skill
