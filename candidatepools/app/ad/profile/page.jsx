@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useParams } from "next/navigation";
 
 import { useTheme } from "@/app/ThemeContext";
 
@@ -10,33 +9,30 @@ import { useUserStore } from "@/stores/useUserStore";
 
 // components
 import PersonalForm from "@/app/components/Form/PersonalForm";
-import ManageForm from "@/app/components/Form/ManageStudentForm/ManageForm";
+import { useSession } from "next-auth/react";
 
 function Page() {
   const { bgColorMain2, bgColor } = useTheme();
   const { getUserById, dataUserById, clearUserById } = useUserStore();
-  const { id } = useParams();
+  const { data: session } = useSession();
 
   useEffect(() => {
-    if (id) {
-      getUserById(id);
+    if (session?.user?.id) {
+      getUserById(session.user.id);
     }
 
     return () => {
       clearUserById(); // clear ข้อมูลเมื่อออกจากหน้า
     };
-  }, [id, getUserById, clearUserById]);
+  }, [session?.user?.id, getUserById, clearUserById]);
 
   // แสดง loading หรือ error ได้ตามต้องการ
   if (!dataUserById) return <div>Loading...</div>;
 
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
-      <ManageForm rootPath={"/su/usermanagement"} isUser={true}>
-        <div className="mt-5">
-          <PersonalForm dataUser={dataUserById} isStudent={false} />
-        </div>
-      </ManageForm>
+      <p className="mb-5">ตั้งค่าข้อมูลส่วนตัว</p>
+      <PersonalForm dataUser={dataUserById} isStudent={false} />
     </div>
   );
 }

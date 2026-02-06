@@ -8,10 +8,9 @@ export function checkUserPermission(sessionRole, targetRole) {
     return { allowed: false, message: "Error Invalid Role", status: 401 };
   }
 
-  // ADMIN และ SUPERVISOR ต้องมี session เป็น SUPERVISOR เท่านั้น
   if (
     (targetRole === ROLE.ADMIN || targetRole === ROLE.SUPERVISOR) &&
-    sessionRole !== ROLE.SUPERVISOR
+    sessionRole !== ROLE.SUPERVISOR && sessionRole !== ROLE.ADMIN
   ) {
     return {
       allowed: false,

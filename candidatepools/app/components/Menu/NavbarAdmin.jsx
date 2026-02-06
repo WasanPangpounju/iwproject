@@ -9,6 +9,7 @@ import {
   mdiLogout,
   mdiChartBox,
   mdiHomeAccount,
+  mdiAccount,
 } from "@mdi/js";
 
 import { signOut } from "next-auth/react";
@@ -103,6 +104,10 @@ function NavbarAdmin() {
       id: 3,
       link: `${mainRoute}/students`,
     },
+    {
+      id: 4,
+      link: `${mainRoute}/profile`,
+    }
   ];
 
   const getLink = (id) => {
@@ -175,6 +180,29 @@ function NavbarAdmin() {
           className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
         >
           สรุปข้อมูลผู้ใช้งาน
+        </p>
+      </Link>
+
+      <Link
+        href={getLink(4)}
+        className={`${
+          status === "profile"
+            ? "bg-[#fee2d9] text-[#ff7201]"
+            : "hover:bg-[#fee2d9] hover:text-[#ff7201]"
+        } focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-7 gap-5 py-3`}
+        role="menuitem"
+        aria-label="แก้ไขข้อมูลส่วนตัว"
+      >
+        <Icon
+          path={mdiAccount}
+          size={1}
+          aria-hidden="true"
+          aria-label="แก้ไขข้อมูลส่วนตัว"
+        />
+        <p
+          className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
+        >
+          แก้ไขข้อมูลส่วนตัว
         </p>
       </Link>
 
