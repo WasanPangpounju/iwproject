@@ -54,7 +54,7 @@ export async function POST(req) {
     typePerson,
     role,
     position,
-    comeForm
+    comeForm,
   } = await req.json();
 
   const permission = checkUserPermission(session?.user?.role, role);
@@ -62,10 +62,50 @@ export async function POST(req) {
   if (!permission.allowed) {
     return NextResponse.json(
       { message: permission.message },
-      { status: permission.status }
+      { status: permission.status },
     );
   }
 
+  const dataLog = {
+    user: user,
+    firstName: firstName,
+    lastName: lastName,
+    firstNameEng: firstNameEng,
+    lastNameEng: lastNameEng,
+    profile: profile,
+    typeDisabled: typeDisabled,
+    detailDisabled: detailDisabled,
+    university: university,
+    email: email,
+    prefix: prefix,
+    nickname: nickname,
+    sex: sex,
+    dateBirthday: dateBirthday,
+    monthBirthday: monthBirthday,
+    yearBirthday: yearBirthday,
+    nationality: nationality,
+    religion: religion,
+    idCard: idCard,
+    idCardDisabled: idCardDisabled,
+    addressIdCard: addressIdCard,
+    addressIdCardProvince: addressIdCardProvince,
+    addressIdCardAmphor: addressIdCardAmphor,
+    addressIdCardTambon: addressIdCardTambon,
+    addressIdCardZipCode: addressIdCardZipCode,
+    address: address,
+    addressProvince: addressProvince,
+    addressAmphor: addressAmphor,
+    addressTambon: addressTambon,
+    addressZipCode: addressZipCode,
+    tel: tel,
+    telEmergency: telEmergency,
+    relationship: relationship,
+    typePerson: typePerson,
+    role: role,
+    position: position,
+    comeForm: comeForm,
+  };
+    
   try {
     // เชื่อมต่อ MongoDB
     await mongoDB();
@@ -111,7 +151,7 @@ export async function POST(req) {
       typePerson: typePerson,
       role: role,
       position: position,
-      comeForm: comeForm
+      comeForm: comeForm,
     });
 
     await Educations.create({
@@ -132,46 +172,6 @@ export async function POST(req) {
     await Resume.create({
       uuid: uuid,
     });
-
-    const dataLog = {
-      user: user,
-      firstName: firstName,
-      lastName: lastName,
-      firstNameEng: firstNameEng,
-      lastNameEng: lastNameEng,
-      profile: profile,
-      typeDisabled: typeDisabled,
-      detailDisabled: detailDisabled,
-      university: university,
-      email: email,
-      prefix: prefix,
-      nickname: nickname,
-      sex: sex,
-      dateBirthday: dateBirthday,
-      monthBirthday: monthBirthday,
-      yearBirthday: yearBirthday,
-      nationality: nationality,
-      religion: religion,
-      idCard: idCard,
-      idCardDisabled: idCardDisabled,
-      addressIdCard: addressIdCard,
-      addressIdCardProvince: addressIdCardProvince,
-      addressIdCardAmphor: addressIdCardAmphor,
-      addressIdCardTambon: addressIdCardTambon,
-      addressIdCardZipCode: addressIdCardZipCode,
-      address: address,
-      addressProvince: addressProvince,
-      addressAmphor: addressAmphor,
-      addressTambon: addressTambon,
-      addressZipCode: addressZipCode,
-      tel: tel,
-      telEmergency: telEmergency,
-      relationship: relationship,
-      typePerson: typePerson,
-      role: role,
-      position: position,
-      comeForm: comeForm
-    };
 
     await SystemLog.create({
       actorUuid: uuid,
