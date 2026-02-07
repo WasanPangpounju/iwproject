@@ -81,6 +81,10 @@ function NavbarSupervisor() {
       id: 9,
       link: `${mainRoute}/setting/uni`,
     },
+        {
+      id: 10,
+      link: `${mainRoute}/setting/AdminAnnouncementsClient`,
+    },
   ];
 
   const getLink = (id) => {
@@ -314,6 +318,20 @@ function NavbarSupervisor() {
             className={`${bgColorMain2} ${bgColor}  max-w-fit absolute left-full top-0 z-10`}
             role="menu"
           >
+                      <Link
+              href={getLink(10)}
+              className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3"
+              role="menuitem"
+              aria-label="ลงประกาศ"
+            >
+              <Icon path={mdiSchool} size={1} aria-hidden="true" aria-label="" />
+              <p
+                className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
+              >
+                ลงประกาศ
+              </p>
+            </Link>
+
             <Link
               href={getLink(9)}
               className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3"
