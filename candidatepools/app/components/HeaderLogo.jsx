@@ -2,23 +2,12 @@
 
 import React from "react";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { useTheme } from "../ThemeContext";
 import Profile from "./Profile/Profile";
-import { Tooltip } from "@mui/material";
+import { Tooltip, Skeleton } from "@mui/material";
 
 function HeaderLogo({ title, dataUser }) {
   const {
-    setFontSize,
-    setBgColor,
-    setBgColorNavbar,
-    setBgColorWhite,
-    setBgColorMain,
-    fontSize,
-    bgColorNavbar,
-    bgColor,
-    bgColorWhite,
     bgColorMain,
   } = useTheme();
 
@@ -26,29 +15,39 @@ function HeaderLogo({ title, dataUser }) {
     <nav
       className={`${bgColorMain} text-lg relative gap-1 flex justify-between border-b-8  border-[#75C7C2] `}
     >
-      {dataUser ? (
-        <div className=" flex items-center ">
+       {dataUser && (
+         <div className=" flex items-center ">
           {/* <div className='h-full flex items-center bg-[#eeeeee] py-4 px-5 w-60 gap-5'> */}
           <div
             className={`h-full flex items-center ${bgColorMain} py-4 px-5 w-60 gap-5`}
           >
             <Profile
-              imageSrc={dataUser.profile}
+              imageSrc={dataUser?.profile}
               tailwind="w-11 h-11"
+              loading={!dataUser}
             />
-            <Tooltip title={`${dataUser.firstName} ${dataUser.lastName}`}>
-              <p className=" font-bold text-ellipsis  overflow-hidden whitespace-nowrap ">
-                {dataUser.firstName} {dataUser.lastName}
-              </p>
-            </Tooltip>
+            {dataUser ? (
+              <Tooltip title={`${dataUser?.firstName ?? ''} ${dataUser?.lastName ?? ''}`}>
+                <p className=" font-bold text-ellipsis  overflow-hidden whitespace-nowrap ">
+                  {dataUser?.firstName ?? ''} {dataUser?.lastName ?? ''}
+                </p>
+              </Tooltip>
+            ) : (
+              <Skeleton variant="text" width={100} height={32} />
+            )}
           </div>
           {title && (
             <div className="mx-7 my-1 font-bold ">
-              <p>{title}</p>
+              {dataUser ? (
+                <p>{title}</p>
+              ) : (
+                <Skeleton variant="text" width={80} height={28} />
+              )}
             </div>
           )}
         </div>
-      ) : null}
+       )}
+  
       <div></div>
       <div className=" flex py-2 px-5">
         <Image

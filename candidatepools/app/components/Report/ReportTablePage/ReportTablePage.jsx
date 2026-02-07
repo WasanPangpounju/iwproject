@@ -740,8 +740,6 @@ function ReportTablePage({
     );
   }
 
-  console.log(dataAll);
-
   const tableConfig = {
     หัวข้อทั้งหมด: {
       เลือกประเภท: {

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
+import Skeleton from '@mui/material/Skeleton';
 import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
 import { mdiCloseCircle } from "@mdi/js";
@@ -94,7 +94,6 @@ function ManageForm({ children, rootPath, isUser = false }) {
           <div className="flex gap-10 mt-5 relative">
             <div>
               <Profile imageSrc={dataUserById.profile}/>
-
             </div>
             <div className="flex flex-col gap-2 justify-center">
               <p>
@@ -131,7 +130,15 @@ function ManageForm({ children, rootPath, isUser = false }) {
             </div>
           </div>
         ) : (
-          <div>กำลังโหลดข้อมูล...</div>
+          <div className="flex gap-10 mt-5 relative">
+            <Skeleton variant="rectangular" width={100} height={100} />
+            <div className="flex flex-col justify-center">
+              <Skeleton variant="text" width={150} height={32} />
+              <Skeleton variant="text" width={120} height={24} />
+              <Skeleton variant="text" width={120} height={24} />
+              {isUser && <Skeleton variant="text" width={100} height={24} />}
+            </div>
+          </div>
         )}
         <div>
           <nav className="flex gap-2 mt-5">

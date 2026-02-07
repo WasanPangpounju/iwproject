@@ -14,6 +14,7 @@ import { useParams, useRouter } from "next/navigation";
 
 //store
 import { useCompanyStore } from "@/stores/useCompanyStore";
+import { Skeleton } from "@mui/material";
 
 function LayoutCompanyForm({ children }) {
   //Theme
@@ -135,7 +136,14 @@ function LayoutCompanyForm({ children }) {
             </div>
           </div>
         ) : (
-          <div>กำลังโหลดข้อมูล...</div>
+          <div className="flex gap-10 mt-5 relative">
+            <Skeleton variant="rectangular" width={100} height={100} />
+            <div className="flex flex-col justify-center">
+              <Skeleton variant="text" width={150} height={32} />
+              <Skeleton variant="text" width={120} height={24} />
+              <Skeleton variant="text" width={120} height={24} />
+            </div>
+          </div>
         )}
         <div>
           <nav className="flex gap-2 mt-5">
