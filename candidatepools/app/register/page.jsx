@@ -214,7 +214,7 @@ useEffect(() => {
       const res = await createUser(body);
 
       // Keep original intent: auto sign-in for credentials flow
-      if (!session) {
+      if (res?.ok) {
         const resSessionEmail = await signIn("credentials", {
           email,
           password,
@@ -228,9 +228,6 @@ useEffect(() => {
             toast.error("ลงทะเบียนไม่สำเร็จ กรุณาลองใหม่ในภายหลัง");
           }
         }
-      } else {
-        // If already session (social login), just show success if createUser ok
-        if (res?.ok !== false) toast.success("ลงทะเบียนสำเร็จ");
       }
     } catch (err) {
       console.log(err);
