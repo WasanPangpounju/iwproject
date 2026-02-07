@@ -28,9 +28,6 @@ function Page() {
     };
   }, [id, getUserById, clearUserById]);
 
-  // แสดง loading หรือ error ได้ตามต้องการ
-  if (!dataUserById) return <div>Loading...</div>;
-
   return (
     <div className={`${bgColorMain2} ${bgColor} rounded-lg p-5`}>
       <ManageForm rootPath={"/su/admin"} isUser={true}>
