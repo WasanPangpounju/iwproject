@@ -68,8 +68,18 @@ const columnTypePerson = [
 const columnDisabled = [
   { id: "number", label: "ลำดับ", minWidth: 50, align: "center" },
   { id: "disabledType", label: "ประเภทความพิการ", minWidth: 170 },
-  { id: "totalStudent", label: "จำนวนนักศึกษา", minWidth: 170, align: "center" },
-  { id: "totalGraduation", label: "จำนวนบัณฑิต", minWidth: 170, align: "center" },
+  {
+    id: "totalStudent",
+    label: "จำนวนนักศึกษา",
+    minWidth: 170,
+    align: "center",
+  },
+  {
+    id: "totalGraduation",
+    label: "จำนวนบัณฑิต",
+    minWidth: 170,
+    align: "center",
+  },
   { id: "total", label: "ทั้งหมด", minWidth: 170, align: "center" },
 ];
 
@@ -464,7 +474,16 @@ function ReportTablePage({
         fullName: row?.fullName,
         disabled: row?.typeDisabled?.join(", ") || "-",
         age: `${row?.yearBirthday ? new Date().getFullYear() - parseInt(row.yearBirthday) : "-"}`,
-        address: `${row?.address} ${row?.addressProvince} ${row.addressAmphor} ${row.addressTambon} ${row?.addressZipCode}`,
+        address:
+          [
+            row?.address,
+            row?.addressProvince,
+            row?.addressAmphor,
+            row?.addressTambon,
+            row?.addressZipCode,
+          ]
+            .filter(Boolean)
+            .join(" ") || "-",
         statusNow: row?.statusNow,
         typePerson: row?.typePerson,
         university: row?.university?.join(", ") || "-",
@@ -716,8 +735,12 @@ function ReportTablePage({
       });
     });
 
-    return Array.from(mergedMap.values());
+    return Array.from(mergedMap.values()).filter(
+      (item) => item.fullName && item.fullName.trim() !== "",
+    );
   }
+
+  console.log(dataAll);
 
   const tableConfig = {
     หัวข้อทั้งหมด: {
@@ -851,6 +874,7 @@ function ReportTablePage({
           content === REPORT_CONTENT_TYPE.PERSON_TYPE ? (
             <SelectFilter
               setValue={handleContentType}
+              value={contentType}
               data={
                 content === REPORT_CONTENT_TYPE.DISABLED
                   ? disabledData

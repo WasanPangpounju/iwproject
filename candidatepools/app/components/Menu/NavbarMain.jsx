@@ -146,7 +146,7 @@ function NavbarMain() {
   return (
     <nav
       aria-label="เมนูหลัก"
-      className={`${bgColorMain2} ${bgColor} w-full md:w-[18rem] shrink-0 border-r`}
+      className={`${bgColorMain2} ${bgColor} w-full md:w-[18rem] shrink-0 border-r min-h-screen`}
     >
       <div role="menu" className="py-2">
         {/* เมนูทั่วไป */}
