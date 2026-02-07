@@ -30,8 +30,14 @@ import SkillForm from "@/app/components/Form/SkillForm";
 import InterestedWorkForm from "@/app/components/Form/InterestedWorkForm";
 import SumaryData from "@/app/components/Form/SumaryData";
 
-import { mdiArrowLeftCircle, mdiArrowRightCircle } from "@mdi/js";
+import {
+  mdiArrowLeftCircle,
+  mdiArrowRightCircle,
+  mdiContentSave,
+} from "@mdi/js";
 import ButtonBG1 from "@/app/components/Button/ButtonBG1";
+import ButtonBG3 from "@/app/components/Button/ButtonBG3";
+import { toast } from "react-toastify";
 
 const steps = [
   "ข้อมูลส่วนบุคคล",
@@ -127,7 +133,12 @@ export default function StepperForm() {
     }
 
     // resume: เมื่อ step 0-3 ครบ ให้ถือว่า step 4 ครบ
-    if (newCompleted[0] && newCompleted[1] && newCompleted[2] && newCompleted[3]) {
+    if (
+      newCompleted[0] &&
+      newCompleted[1] &&
+      newCompleted[2] &&
+      newCompleted[3]
+    ) {
       newCompleted[4] = true;
     }
 
@@ -136,7 +147,14 @@ export default function StepperForm() {
     }
 
     // สรุปข้อมูล (step 6) = เมื่อครบทุกส่วนก่อนหน้า
-    if (newCompleted[0] && newCompleted[1] && newCompleted[2] && newCompleted[3] && newCompleted[4] && newCompleted[5]) {
+    if (
+      newCompleted[0] &&
+      newCompleted[1] &&
+      newCompleted[2] &&
+      newCompleted[3] &&
+      newCompleted[4] &&
+      newCompleted[5]
+    ) {
       newCompleted[6] = true;
     }
 
@@ -161,6 +179,11 @@ export default function StepperForm() {
     setActiveStep(newActiveStep);
   };
 
+  const handleSuccess = () => {
+    toast.success("บันทึกข้อมูลเรียบร้อยแล้ว");
+    router.push(`?stepper=1&path=edit`);
+  };
+
   const handleBack = () => {
     const newActiveStep = Math.max(0, activeStep - 1);
     setActiveStep(newActiveStep);
@@ -182,7 +205,12 @@ export default function StepperForm() {
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return <PersonalForm dataUser={dataUser} handleStep={() => handleComplete()} />;
+        return (
+          <PersonalForm
+            dataUser={dataUser}
+            handleStep={() => handleComplete()}
+          />
+        );
       case 1:
         return (
           <EducationForm
@@ -290,8 +318,19 @@ export default function StepperForm() {
           {activeStep < steps.length - 1 && (
             <ButtonBG1
               handleClick={handleNext}
-              text={activeStep + 1 === steps.length - 1 ? "สรุปข้อมูล" : "ต่อไป"}
+              text={
+                activeStep + 1 === steps.length - 1 ? "สรุปข้อมูล" : "ต่อไป"
+              }
               mdiIcon={mdiArrowRightCircle}
+              tailwind={"flex-row-reverse"}
+            />
+          )}
+
+          {activeStep === steps.length - 1 && (
+            <ButtonBG3
+              handleClick={handleSuccess}
+              mdiIcon={mdiContentSave}
+              text={"เสร็จสิ้น"}
               tailwind={"flex-row-reverse"}
             />
           )}

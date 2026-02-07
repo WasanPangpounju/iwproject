@@ -2,7 +2,7 @@ import React from "react";
 import Icon from "@mdi/react";
 import { useTheme } from "@/app/ThemeContext";
 
-function ButtonBG1({
+function ButtonBG3({
   handleClick,
   mdiIcon,
   text,
@@ -11,7 +11,7 @@ function ButtonBG1({
   type,               // ✅ ใหม่: ให้ parent override ได้
   ariaLabel,          // ✅ ใหม่: สำหรับ screen reader
 }) {
-  const { bgColorNavbar, bgColorWhite } = useTheme();
+  const { inputGrayColor, bgColorWhite } = useTheme();
 
   const focusRing =
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white";
@@ -21,7 +21,7 @@ function ButtonBG1({
       type={type || (btn ? "submit" : "button")}
       onClick={handleClick}
       aria-label={ariaLabel || text}
-      className={`${bgColorNavbar} ${bgColorWhite} ${tailwind}
+      className={`${inputGrayColor} ${bgColorWhite} ${tailwind}
         hover:cursor-pointer py-2 px-6 rounded-2xl
         flex justify-center items-center gap-1 border border-white
         ${focusRing}`}
@@ -32,4 +32,4 @@ function ButtonBG1({
   );
 }
 
-export default ButtonBG1;
+export default ButtonBG3;

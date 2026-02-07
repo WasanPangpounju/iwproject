@@ -31,7 +31,7 @@ function ButtonBG2({
         disabled:opacity-60 disabled:cursor-not-allowed
         ${focusRing}`}
     >
-      {mdiIcon ? <Icon path={mdiIcon} size={1} aria-hidden="true" /> : null}
+      {mdiIcon ? <Icon path={mdiIcon} size={.8} aria-hidden="true" /> : null}
       {text ? <span>{text}</span> : null}
     </button>
   );
