@@ -18,18 +18,22 @@ const ChatSchema = new Schema(
       {
         message: {
           type: String,
-          required: true,
           trim: true,
-        },
-        nameDocument: {
-          type: [String],
         },
         file: [
           {
-            type: [String],
-            name: [String],
-            size: [String],
-            url: [String],
+            fileType: {
+              type: String,
+            },
+            name: {
+              type: String,
+            },
+            size: {
+              type: String,
+            },
+            url: {
+              type: String,
+            },
           },
         ],
         senderRole: {

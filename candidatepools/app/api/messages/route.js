@@ -3,37 +3,75 @@ import { mongoDB } from "@/lib/mongodb"; // เชื่อมต่อ MongoDB 
 import Chats from "@/models/chat";
 
 export async function GET(req) {
-    try {
-        await mongoDB();
-        const chats = await Chats.find({});
-        return NextResponse.json({ chats })
-    } catch (err) {
-        console.log(err)
-        return NextResponse.json({ message: "Error get chat message" }, { status: 500 });
-    }
+  try {
+    await mongoDB();
+    const chats = await Chats.find({});
+    return NextResponse.json({ chats });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      { message: "Error get chat message" },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(req) {
-    try {
+  try {
+    await mongoDB();
 
-        const { userId, message, senderRole, statusRead, statusReadAdmin } = await req.json(); // ดึงข้อมูลจาก body ของ POST request
+    const {
+      userId,
+      message,
+      senderRole,
+      nameDocument,
+      file,
+      statusRead = false,
+      statusReadAdmin = false,
+    } = await req.json();
 
-        // เชื่อมต่อกับ MongoDB
-        await mongoDB();
-
-        // บันทึกข้อความใน MongoDB
-        const chat = await Chats.findOneAndUpdate(
-            { uuid: userId }, // ใช้ userId เพื่อค้นหา chat
-            {
-                $push: { roomChat: { message, senderRole, timestamp: new Date() } }, // เพิ่มข้อความใหม่ลงใน array
-                $set: { statusRead: statusRead, statusReadAdmin: statusReadAdmin } // เพิ่มการอัปเดต statusRead ในการอัปเดตเดียวกัน
-            },
-           
-            { upsert: true, new: true } // upsert: true -> ถ้าไม่พบจะสร้างใหม่, new: true -> ส่งค่าผลลัพธ์ใหม่หลังการอัพเดต
-        );
-        return NextResponse.json({ message: "success", data: chat }, { status: 200 });
-    } catch (error) {
-        console.error('Error saving chat message:', error);
-        return NextResponse.json({ message: "Error saving chat message" }, { status: 500 });
+    if (!userId || (!message && !file)) {
+      return NextResponse.json(
+        { message: "Missing required fields" },
+        { status: 400 },
+      );
     }
+
+    const chat = await Chats.findOneAndUpdate(
+      { uuid: userId },
+      {
+        $push: {
+          roomChat: {
+            message,
+            senderRole,
+            nameDocument: nameDocument || [],
+            file: file || [],
+            timestamp: new Date(),
+          },
+        },
+        $set: {
+          statusRead,
+          statusReadAdmin,
+        },
+        $setOnInsert: {
+          uuid: userId,
+        },
+      },
+      {
+        upsert: true,
+        new: true,
+      },
+    );
+
+    return NextResponse.json(
+      { message: "success", data: chat },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Error saving chat message:", error);
+    return NextResponse.json(
+      { message: "Error saving chat message" },
+      { status: 500 },
+    );
+  }
 }

@@ -6,16 +6,26 @@ import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
 import { mdiSend, mdiShieldAccount, mdiMagnify, mdiPaperclip } from "@mdi/js";
 import { ClipLoader } from "react-spinners";
+import { useFileUpload } from "@/hooks/useFileUpload";
 
 //store
 import { useChatStore } from "@/stores/useChatStore";
 import { useUserStore } from "@/stores/useUserStore";
+import { isImageFile } from "@/helper/isImageFile";
+import { getFileIcon } from "@/helper/getFileIcon";
+import { toast } from "react-toastify";
 
 function ChatPage() {
   // state สำหรับไฟล์ที่เลือก
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const {
+    files,
+    uploadFile,
+    removeFile,
+    uploadProgress,
+    isUploading,
+    resetFiles,
+  } = useFileUpload();
 
-  console.log(selectedFiles);
   //store
   const { fetchChats, sendMessage, updateStatusRead, chats } = useChatStore();
   const { getUserById } = useUserStore();
@@ -83,10 +93,10 @@ function ChatPage() {
   async function sendMessageFunctiom(e, id) {
     e.preventDefault();
 
-    setLoaderMessage(true);
-    if (!input.trim()) {
+    if (!input.trim() && files.length === 0) {
       return;
     }
+    setLoaderMessage(true);
 
     if (!id) {
       return;
@@ -100,6 +110,14 @@ function ChatPage() {
         {
           message: input, // ข้อความใหม่
           senderRole: "admin", // role ของผู้ส่งข้อความ
+          file: files.map((f) => {
+            return {
+              name: f.name,
+              size: f.sizeMB,
+              fileType: f.type,
+              url: f.url,
+            };
+          }),
         },
       ],
     }));
@@ -111,6 +129,14 @@ function ChatPage() {
         senderRole: "admin",
         statusRead: true,
         statusReadAdmin: false,
+        file: files.map((f) => {
+          return {
+            name: f.name,
+            size: f.sizeMB,
+            fileType: f.type,
+            url: f.url,
+          };
+        }),
       });
 
       if (res.ok) {
@@ -119,6 +145,7 @@ function ChatPage() {
 
         fetchChatData();
         setInput(""); // เคลียร์ input หลังจากส่ง
+        resetFiles();
       }
     } catch (err) {
       console.error("Error fetching API", err);
@@ -169,18 +196,6 @@ function ChatPage() {
     } catch (err) {
       console.log(err);
     }
-  }
-
-  // handle file change
-  function handleFileChange(e) {
-    const files = Array.from(e.target.files);
-    setSelectedFiles((prev) => [...prev, ...files]);
-    e.target.value = null;
-  }
-
-  // handle remove file
-  function handleRemoveFile(idx) {
-    setSelectedFiles((prev) => prev.filter((_, i) => i !== idx));
   }
 
   return (
@@ -268,6 +283,7 @@ function ChatPage() {
                       setStatusChat(user?.uuid);
                       setInput("");
                       handleUpdateStatusRead(user?.uuid);
+                      resetFiles();
                     }}
                   >
                     <Image
@@ -293,10 +309,8 @@ function ChatPage() {
                         } whitespace-nowrap text-ellipsis overflow-hidden `}
                       >
                         {sender ? "คุณ: " : ""}{" "}
-                        {
-                          chatLatest?.roomChat[chatLatest?.roomChat?.length - 1]
-                            ?.message
-                        }
+                        {chatLatest?.roomChat[chatLatest?.roomChat?.length - 1]
+                          ?.message || "ส่งไฟล์แนบ"}
                       </p>
                     </div>
                     <div
@@ -371,11 +385,56 @@ function ChatPage() {
                                 chat?.senderRole === "user"
                                   ? `${bgColorNavbar} ${bgColorWhite} rounded-tl-none self-start`
                                   : `self-end rounded-tr-none`
-                              } border py-1 px-2  rounded-lg ${bgColor} w-fit`}
+                              } border py-1 px-2 rounded-lg ${bgColor} w-fit max-w-96`}
                             >
-                              <p className="max-w-96 break-words">
-                                {chat?.message}
-                              </p>
+                              {/* ข้อความ */}
+                              {chat?.message && (
+                                <p className="break-words mb-1">
+                                  {chat.message}
+                                </p>
+                              )}
+
+                              {/* ไฟล์ */}
+                              {chat?.file?.length > 0 && (
+                                <div className="flex flex-col gap-1">
+                                  {chat.file.map((file, i) =>
+                                    isImageFile(file.fileType) ? (
+                                      <a
+                                        key={i}
+                                        href={file.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-block"
+                                      >
+                                        <img
+                                          src={file.url}
+                                          alt={file.name}
+                                          className=" rounded border cursor-pointer hover:opacity-90"
+                                        />
+                                      </a>
+                                    ) : (
+                                      <a
+                                        key={i}
+                                        href={file.url}
+                                        download
+                                        target="_blank"
+                                        className="flex text-ellipsis whitespace-nowrap overflow-hidden items-center gap-2 px-2 py-1 bg-gray-100 rounded border hover:bg-gray-200"
+                                      >
+                                        <Icon
+                                          path={getFileIcon(file.fileType)}
+                                          size={1}
+                                          className="text-gray-600 flex-shrink-0"
+                                        />
+                                        <p
+                                          className={`text-black text-xs truncate ]`}
+                                        >
+                                          {file.name}
+                                        </p>
+                                      </a>
+                                    ),
+                                  )}
+                                </div>
+                              )}
                             </div>
                           </div>
                           {chat?.senderRole === "admin" &&
@@ -386,12 +445,10 @@ function ChatPage() {
                                 ) : showChat?.statusRead ? (
                                   <div className="flex gap-1 items-center">
                                     <p className="text-[10px]">ส่งแล้ว</p>
-                                    {/* <Icon className='' path={mdiCheck} size={.5} aria-hidden="true" aria-label="close_chat" /> */}
                                   </div>
                                 ) : (
                                   <div className="flex gap-1 items-center">
                                     <p className="text-[10px]">เห็นแล้ว</p>
-                                    {/* <Icon className='' path={mdiCheck} size={.5} aria-hidden="true" aria-label="close_chat" /> */}
                                   </div>
                                 )}
                               </div>
@@ -424,39 +481,53 @@ function ChatPage() {
             </div>
             <div className="">
               {/* Preview ไฟล์/รูปที่เลือก */}
-              {selectedFiles.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {selectedFiles.map((file, idx) => (
-                    <div
-                      key={idx}
-                      className="relative flex flex-col items-center"
-                    >
-                      {file.type.startsWith("image/") ? (
-                        <img
-                          src={URL.createObjectURL(file)}
-                          alt={file.name}
-                          className="w-16 h-16 object-cover rounded border"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 flex items-center justify-center bg-gray-200 rounded border text-xs text-gray-600">
-                          {file.name.split(".").pop()?.toUpperCase() || "FILE"}
-                        </div>
-                      )}
-                      <button
-                        type="button"
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
-                        onClick={() => handleRemoveFile(idx)}
-                        title="ลบไฟล์นี้"
+              <div className="flex items-end flex-wrap gap-2 mb-2">
+                {files.map((file, idx) => (
+                  <div
+                    key={idx}
+                    className="relative flex flex-col items-center "
+                  >
+                    {isImageFile(file.type) ? (
+                      <img
+                        src={file.url}
+                        alt={file.name}
+                        className="w-16 h-16  object-cover rounded border"
+                      />
+                    ) : (
+                      <div
+                        key={idx}
+                        href={file.url}
+                        download
+                        target="_blank"
+                        className="w-16 h-16  flex flex-col text-ellipsis whitespace-nowrap overflow-hidden items-center gap-2 px-2 py-1 bg-gray-100 rounded border hover:bg-gray-200"
                       >
-                        ×
-                      </button>
-                      <span className="text-[10px] mt-1 max-w-16 truncate text-center">
-                        {file.name}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
+                        <Icon
+                          path={getFileIcon(file.type)}
+                          size={1}
+                          className="text-gray-600 flex-shrink-0"
+                        />
+                        <p className="text-xs truncate max-w-[140px]">
+                          {file.name.split(".").pop()?.toUpperCase() || "FILE"}
+                        </p>
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                      onClick={() => removeFile(idx)}
+                      title="ลบไฟล์นี้"
+                    >
+                      ×
+                    </button>
+                    <span className="text-[10px] mt-1 max-w-16 truncate text-center">
+                      {file.name}
+                    </span>
+                  </div>
+                ))}
+                {/* overlay progress */}
+                {isUploading && <span className="">{uploadProgress}%</span>}
+              </div>
               <div className={`flex items-end rounded-lg ${bgColor}`}>
                 {/* ปุ่มแนบไฟล์/รูป */}
                 <label
@@ -469,7 +540,15 @@ function ChatPage() {
                     type="file"
                     multiple
                     className="hidden"
-                    onChange={handleFileChange}
+                    onChange={async (e) => {
+                      if (isUploading) {
+                        toast.error("กรุณารอให้การอัปโหลดไฟล์เสร็จก่อน");
+                        return;
+                      }
+                      if (!e.target.files?.[0]) return;
+                      await uploadFile(e.target.files[0], `users/message/file`);
+                      e.target.value = "";
+                    }}
                   />
                 </label>
                 <input

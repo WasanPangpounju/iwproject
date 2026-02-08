@@ -49,6 +49,7 @@ export const useChatStore = create((set) => ({
     senderRole,
     statusRead,
     statusReadAdmin,
+    file
   }) => {
     // const setLoading = useAppStore.getState().setLoading;
     // setLoading(true);
@@ -62,6 +63,7 @@ export const useChatStore = create((set) => ({
           senderRole,
           statusRead,
           statusReadAdmin,
+          file
         }
       );
       return { ok: true, data: res.data.data };
