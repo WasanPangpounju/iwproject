@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
-import { mdiSend, mdiShieldAccount, mdiMagnify } from "@mdi/js";
+import { mdiSend, mdiShieldAccount, mdiMagnify, mdiPaperclip } from "@mdi/js";
 import { ClipLoader } from "react-spinners";
 
 //store
@@ -12,24 +12,19 @@ import { useChatStore } from "@/stores/useChatStore";
 import { useUserStore } from "@/stores/useUserStore";
 
 function ChatPage() {
+  // state สำหรับไฟล์ที่เลือก
+  const [selectedFiles, setSelectedFiles] = useState([]);
 
-
+  console.log(selectedFiles);
   //store
-  const {
-    fetchChats,
-    fetchChatById,
-    sendMessage,
-    updateStatusRead,
-    chats,
-    chatById,
-  } = useChatStore();
+  const { fetchChats, sendMessage, updateStatusRead, chats } = useChatStore();
   const { getUserById } = useUserStore();
 
   // Validate session and fetch user data
   const fetchChatData = () => {
     fetchChats();
   };
-  
+
   //Theme
   const { bgColorNavbar, bgColor, bgColorWhite, bgColorMain2 } = useTheme();
 
@@ -54,7 +49,7 @@ function ChatPage() {
 
   async function getUserChat(id) {
     try {
-      const res = await getUserById(id)
+      const res = await getUserById(id);
 
       if (!res) {
         throw new Error("Error getting data from API");
@@ -68,7 +63,7 @@ function ChatPage() {
       } else {
         console.error(
           "Expected 'data.user' to be a valid object but got:",
-          data
+          data,
         );
       }
     } catch (err) {
@@ -160,8 +155,11 @@ function ChatPage() {
 
   async function handleUpdateStatusRead(id) {
     try {
-      const res = await updateStatusRead({userId: id, statusReadAdmin: false})
-   
+      const res = await updateStatusRead({
+        userId: id,
+        statusReadAdmin: false,
+      });
+
       if (res.ok) {
         const data = await res.json(); // รับข้อมูลที่ได้จาก API
         if (chats?.some((u) => u?.uuid === id)) {
@@ -171,6 +169,18 @@ function ChatPage() {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  // handle file change
+  function handleFileChange(e) {
+    const files = Array.from(e.target.files);
+    setSelectedFiles((prev) => [...prev, ...files]);
+    e.target.value = null;
+  }
+
+  // handle remove file
+  function handleRemoveFile(idx) {
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== idx));
   }
 
   return (
@@ -212,10 +222,10 @@ function ChatPage() {
                 const chatB = chats?.find((c) => c?.uuid === b?.uuid);
 
                 const timeA = new Date(
-                  chatA?.roomChat[chatA?.roomChat?.length - 1]?.timestamp || 0
+                  chatA?.roomChat[chatA?.roomChat?.length - 1]?.timestamp || 0,
                 ).getTime();
                 const timeB = new Date(
-                  chatB?.roomChat[chatB?.roomChat?.length - 1]?.timestamp || 0
+                  chatB?.roomChat[chatB?.roomChat?.length - 1]?.timestamp || 0,
                 ).getTime();
 
                 return timeB - timeA; // จัดเรียงจากเวลาล่าสุดไปยังเก่าสุด
@@ -233,9 +243,8 @@ function ChatPage() {
                 const isRead = chatLatest?.statusReadAdmin;
 
                 const date = new Date(
-                  chatLatest?.roomChat[
-                    chatLatest?.roomChat?.length - 1
-                  ]?.timestamp
+                  chatLatest?.roomChat[chatLatest?.roomChat?.length - 1]
+                    ?.timestamp,
                 );
                 const formattedDate = date.toLocaleDateString("th-TH", {
                   weekday: "short", // วันในสัปดาห์ (เช่น "จ.", "อ.", "พ.")
@@ -414,10 +423,57 @@ function ChatPage() {
               <div ref={chatEndRef} />
             </div>
             <div className="">
+              {/* Preview ไฟล์/รูปที่เลือก */}
+              {selectedFiles.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {selectedFiles.map((file, idx) => (
+                    <div
+                      key={idx}
+                      className="relative flex flex-col items-center"
+                    >
+                      {file.type.startsWith("image/") ? (
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={file.name}
+                          className="w-16 h-16 object-cover rounded border"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 flex items-center justify-center bg-gray-200 rounded border text-xs text-gray-600">
+                          {file.name.split(".").pop()?.toUpperCase() || "FILE"}
+                        </div>
+                      )}
+                      <button
+                        type="button"
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                        onClick={() => handleRemoveFile(idx)}
+                        title="ลบไฟล์นี้"
+                      >
+                        ×
+                      </button>
+                      <span className="text-[10px] mt-1 max-w-16 truncate text-center">
+                        {file.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
               <div className={`flex items-end rounded-lg ${bgColor}`}>
-                <textarea
+                {/* ปุ่มแนบไฟล์/รูป */}
+                <label
+                  className="p-2 cursor-pointer flex items-center"
+                  htmlFor="chat-file-input"
+                >
+                  <Icon path={mdiPaperclip} size={1} />
+                  <input
+                    id="chat-file-input"
+                    type="file"
+                    multiple
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </label>
+                <input
                   type="text"
-                  rows={3}
                   value={input}
                   className={`${bgColor} outline-none w-full py-2 px-4 rounded-xl resize-none`}
                   placeholder="พิมพ์ข้อความ"

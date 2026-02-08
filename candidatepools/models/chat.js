@@ -1,39 +1,51 @@
 import mongoose, { Schema } from "mongoose";
 
-
 const ChatSchema = new Schema(
-    {
-        uuid: {
-            type: String,
-            required: true,
-        },
-        statusRead: {
-            type: Boolean,
-            required: true,
-        },
-        statusReadAdmin: {
-            type: Boolean,
-            required: true,
-        },
-        roomChat: [{
-            message: {
-                type: String,
-                required: true,
-                trim: true,
-            },
-            senderRole: {
-                type: String,
-                required: true,
-            },
-            timestamp: {
-                type: Date,
-                default: Date.now,
-            },
-        }]
+  {
+    uuid: {
+      type: String,
+      required: true,
     },
-    {
-        timestamps: true,
-    }
+    statusRead: {
+      type: Boolean,
+      required: true,
+    },
+    statusReadAdmin: {
+      type: Boolean,
+      required: true,
+    },
+    roomChat: [
+      {
+        message: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        nameDocument: {
+          type: [String],
+        },
+        file: [
+          {
+            type: [String],
+            name: [String],
+            size: [String],
+            url: [String],
+          },
+        ],
+        senderRole: {
+          type: String,
+          required: true,
+        },
+        timestamp: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  },
 );
 
 const Chats = mongoose.models.Chats || mongoose.model("Chats", ChatSchema);
