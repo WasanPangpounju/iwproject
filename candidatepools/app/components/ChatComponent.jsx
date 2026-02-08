@@ -2,16 +2,35 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "@mdi/react";
-import { mdiForum, mdiSend, mdiClose, mdiShieldAccount } from "@mdi/js";
+import {
+  mdiForum,
+  mdiSend,
+  mdiClose,
+  mdiShieldAccount,
+  mdiPaperclip,
+} from "@mdi/js";
 import { useTheme } from "../ThemeContext";
 import { ClipLoader } from "react-spinners";
 import Image from "next/image";
+import { useFileUpload } from "@/hooks/useFileUpload";
+import { isImageFile } from "@/helper/isImageFile";
+import { getFileIcon } from "@/helper/getFileIcon";
 
 function ChatComponent({ id, dataUser }) {
   // Theme
   const { bgColorNavbar, bgColor, bgColorWhite, bgColorMain2 } = useTheme();
 
   const [openChat, setOpenChat] = useState(false);
+
+  // state สำหรับไฟล์ที่เลือก
+  const {
+    files,
+    uploadFile,
+    removeFile,
+    uploadProgress,
+    isUploading,
+    resetFiles,
+  } = useFileUpload();
 
   // sendMessage
   const [input, setInput] = useState("");
@@ -55,32 +74,57 @@ function ChatComponent({ id, dataUser }) {
     e.preventDefault();
     if (!id) return;
     const text = String(input || "").trim();
-    if (!text) return;
+    if (!text && files.length === 0) return;
 
     setLoaderMessage(true);
 
     // optimistic update
     setMessage((prev) => [
       ...(Array.isArray(prev) ? prev : []),
-      { message: text, senderRole: "user", timestamp: new Date().toISOString() },
+      {
+        message: text,
+        senderRole: "user",
+        timestamp: new Date().toISOString(),
+        file: files.map((f) => {
+          return {
+            name: f.name,
+            size: f.sizeMB,
+            fileType: f.type,
+            url: f.url,
+          };
+        }),
+      },
     ]);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: id,
-          message: text,
-          senderRole: "user",
-          statusRead: false,
-          statusReadAdmin: true,
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: id,
+            message: text,
+            senderRole: "user",
+            statusRead: false,
+            statusReadAdmin: true,
+            file: files.map((f) => {
+              return {
+                name: f.name,
+                size: f.sizeMB,
+                fileType: f.type,
+                url: f.url,
+              };
+            }),
+          }),
+        },
+      );
 
       if (res.ok) {
         const data = await res.json();
-        setMessage(Array.isArray(data?.data?.roomChat) ? data.data.roomChat : []);
+        setMessage(
+          Array.isArray(data?.data?.roomChat) ? data.data.roomChat : [],
+        );
         setDataMessage(data?.data || null);
         setInput("");
       } else {
@@ -93,20 +137,26 @@ function ChatComponent({ id, dataUser }) {
       window.location.reload();
     } finally {
       setLoaderMessage(false);
+      resetFiles();
     }
   }
 
   async function getMessage() {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages/${id}`, {
-        method: "GET",
-        cache: "no-store",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages/${id}`,
+        {
+          method: "GET",
+          cache: "no-store",
+        },
+      );
 
       if (!res.ok) throw new Error("Error getting data from API");
 
       const data = await res.json();
-      setMessage(Array.isArray(data?.chats?.roomChat) ? data.chats.roomChat : []);
+      setMessage(
+        Array.isArray(data?.chats?.roomChat) ? data.chats.roomChat : [],
+      );
       setDataMessage(data?.chats || null);
     } catch (err) {
       console.error("Error fetching API", err);
@@ -115,11 +165,14 @@ function ChatComponent({ id, dataUser }) {
 
   async function handleUpdateStatusRead(userId) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages/${userId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ statusRead: false }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/messages/${userId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ statusRead: false }),
+        },
+      );
 
       if (res.ok) {
         const data = await res.json();
@@ -146,7 +199,10 @@ function ChatComponent({ id, dataUser }) {
           });
       const formattedTime = isNaN(date.getTime())
         ? ""
-        : date.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
+        : date.toLocaleTimeString("th-TH", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
 
       const isUser = chat?.senderRole === "user";
       const ariaLabel = `${isUser ? "คุณ" : "เจ้าหน้าที่"}: ${chat?.message || ""}${
@@ -203,129 +259,254 @@ function ChatComponent({ id, dataUser }) {
                 msOverflowStyle: "none",
               }}
             >
-              {renderedMessages.map(({ chat, index, formattedDate, formattedTime, isUser, ariaLabel }) => {
-                const showStatus =
-                  isUser && index === renderedMessages.length - 1; // แสดงสถานะเฉพาะข้อความล่าสุดของ user
+              {renderedMessages.map(
+                ({
+                  chat,
+                  index,
+                  formattedDate,
+                  formattedTime,
+                  isUser,
+                  ariaLabel,
+                }) => {
+                  const showStatus =
+                    isUser && index === renderedMessages.length - 1; // แสดงสถานะเฉพาะข้อความล่าสุดของ user
 
-                return (
-                  <div
-                    key={index}
-                    className={`mt-2 flex items-end gap-2 ${
-                      isUser ? "self-end" : "flex-row-reverse self-start"
-                    }`}
-                    role="article"
-                    aria-label={ariaLabel}
-                  >
-                    <div className="flex flex-col items-end">
-                      <div className={`${isUser ? "" : "self-start"} text-[10px]`}>
-                        {formattedDate && formattedTime ? `${formattedDate}, ${formattedTime}` : ""}
-                      </div>
-
-                      <div className={`${isUser ? "" : "self-start"} flex flex-col items-end gap-1`}>
+                  return (
+                    <div
+                      key={index}
+                      className={`mt-2 flex items-end gap-2 ${
+                        isUser ? "self-end" : "flex-row-reverse self-start"
+                      }`}
+                      role="article"
+                      aria-label={ariaLabel}
+                    >
+                      <div className="flex flex-col items-end">
                         <div
-                          className={`border py-1 px-2 rounded-xl ${bgColor} w-fit ${
-                            isUser
-                              ? "self-end rounded-tr-none"
-                              : `rounded-tl-none self-start ${bgColorNavbar} ${bgColorWhite}`
-                          }`}
+                          className={`${isUser ? "" : "self-start"} text-[10px]`}
                         >
-                          <p className="max-w-44 break-words">{chat?.message}</p>
+                          {formattedDate && formattedTime
+                            ? `${formattedDate}, ${formattedTime}`
+                            : ""}
                         </div>
+
+                        <div
+                          className={`${isUser ? "" : "self-start"} flex flex-col items-end gap-1`}
+                        >
+                          <div
+                            className={`border py-1 px-2 rounded-xl ${bgColor} w-fit ${
+                              isUser
+                                ? "self-end rounded-tr-none"
+                                : `rounded-tl-none self-start ${bgColorNavbar} ${bgColorWhite}`
+                            }`}
+                          >
+                            <p className="max-w-44 break-words">
+                              {chat?.message}
+                            </p>
+                            {chat?.file?.length > 0 && (
+                              <div className="flex flex-col gap-1">
+                                {chat.file.map((file, i) =>
+                                  isImageFile(file.fileType) ? (
+                                    <a
+                                      key={i}
+                                      href={file.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-block"
+                                    >
+                                      <img
+                                        src={file.url}
+                                        alt={file.name}
+                                        className="max-w-48 rounded border cursor-pointer hover:opacity-90"
+                                      />
+                                    </a>
+                                  ) : (
+                                    <a
+                                      key={i}
+                                      href={file.url}
+                                      download
+                                      target="_blank"
+                                      className="flex text-ellipsis whitespace-nowrap overflow-hidden items-center gap-2 px-2 py-1 bg-gray-100 rounded border hover:bg-gray-200"
+                                    >
+                                      <Icon
+                                        path={getFileIcon(file.fileType)}
+                                        size={1}
+                                        className="text-gray-600 flex-shrink-0"
+                                      />
+                                      <p className="text-xs text-black truncate max-w-[140px]">
+                                        {file.name}
+                                      </p>
+                                    </a>
+                                  ),
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {showStatus && (
+                          <div className="mt-1" aria-live="polite">
+                            {loaderMessage ? (
+                              <div className="flex items-center gap-1">
+                                <ClipLoader color="" size={10} />
+                                <span className="text-[10px]">กำลังส่ง</span>
+                              </div>
+                            ) : dataMessage?.statusReadAdmin ? (
+                              <p className="text-[10px]">ส่งแล้ว</p>
+                            ) : (
+                              <p className="text-[10px]">เห็นแล้ว</p>
+                            )}
+                          </div>
+                        )}
                       </div>
 
-                      {showStatus && (
-                        <div className="mt-1" aria-live="polite">
-                          {loaderMessage ? (
-                            <div className="flex items-center gap-1">
-                              <ClipLoader color="" size={10} />
-                              <span className="text-[10px]">กำลังส่ง</span>
-                            </div>
-                          ) : dataMessage?.statusReadAdmin ? (
-                            <p className="text-[10px]">ส่งแล้ว</p>
-                          ) : (
-                            <p className="text-[10px]">เห็นแล้ว</p>
-                          )}
-                        </div>
-                      )}
+                      <div className="self-start">
+                        {isUser ? (
+                          <Image
+                            priority
+                            alt="รูปโปรไฟล์ผู้ใช้"
+                            className="w-5 h-5 shadow flex-shrink-0 rounded-full border"
+                            src={dataUser?.profile || "/image/main/user.png"}
+                            height={1000}
+                            width={1000}
+                          />
+                        ) : (
+                          <Icon
+                            path={mdiShieldAccount}
+                            size={0.8}
+                            aria-label="เจ้าหน้าที่"
+                          />
+                        )}
+                      </div>
                     </div>
-
-                    <div className="self-start">
-                      {isUser ? (
-                        <Image
-                          priority
-                          alt="รูปโปรไฟล์ผู้ใช้"
-                          className="w-5 h-5 shadow flex-shrink-0 rounded-full border"
-                          src={dataUser?.profile || "/image/main/user.png"}
-                          height={1000}
-                          width={1000}
-                        />
-                      ) : (
-                        <Icon path={mdiShieldAccount} size={0.8} aria-label="เจ้าหน้าที่" />
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                },
+              )}
 
               <div ref={chatEndRef} />
             </div>
+            <div>
+              <div className="flex items-end flex-wrap gap-2 mb-2 px-2">
+                {files.map((file, idx) => (
+                  <div
+                    key={idx}
+                    className="relative flex flex-col items-center "
+                  >
+                    {isImageFile(file.type) ? (
+                      <img
+                        src={file.url}
+                        alt={file.name}
+                        className="w-16 h-16  object-cover rounded border"
+                      />
+                    ) : (
+                      <div
+                        key={idx}
+                        href={file.url}
+                        download
+                        target="_blank"
+                        className="w-16 h-16  flex flex-col text-ellipsis whitespace-nowrap overflow-hidden items-center gap-2 px-2 py-1 bg-gray-100 rounded border hover:bg-gray-200"
+                      >
+                        <Icon
+                          path={getFileIcon(file.type)}
+                          size={1}
+                          className="text-gray-600 flex-shrink-0"
+                        />
+                        <p className="text-xs truncate max-w-[140px]">
+                          {file.name.split(".").pop()?.toUpperCase() || "FILE"}
+                        </p>
+                      </div>
+                    )}
 
-            {/* Input area */}
-            <form
-              onSubmit={sendMessage}
-              className={`py-2 px-4 ${bgColor} flex justify-between items-center gap-2 shadow-lg`}
-              aria-label="ส่งข้อความแชท"
-            >
-              {/* ✅ label สำหรับ screen reader */}
-              <label htmlFor={chatInputId} className="sr-only">
-                พิมพ์ข้อความ
-              </label>
-
-              <textarea
-                id={chatInputId}
-                ref={inputRef}
-                rows={1}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onInput={(e) => {
-                  e.target.style.height = "auto";
-                  e.target.style.height = `${e.target.scrollHeight}px`;
-                }}
-                className={`${bgColorMain2} w-full py-1 px-4 rounded-xl resize-none border focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2`}
-                placeholder="พิมพ์ข้อความ"
-                aria-describedby={chatHintId}
-                // ✅ Enter ส่ง / Shift+Enter ขึ้นบรรทัดใหม่
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage(e);
-                  }
-                }}
-              />
-
-              <p id={chatHintId} className="sr-only">
-                กด Enter เพื่อส่งข้อความ หรือ Shift+Enter เพื่อขึ้นบรรทัดใหม่
-              </p>
-
-              <button
-                type="submit"
-                className="rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                aria-label="ส่งข้อความ"
+                    <button
+                      type="button"
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                      onClick={() => removeFile(idx)}
+                      title="ลบไฟล์นี้"
+                    >
+                      ×
+                    </button>
+                    <span className="text-[10px] mt-1 max-w-16 truncate text-center">
+                      {file.name}
+                    </span>
+                  </div>
+                ))}
+                {/* overlay progress */}
+                {isUploading && <span className="">{uploadProgress}%</span>}
+              </div>
+              {/* Input area */}
+              <form
+                onSubmit={sendMessage}
+                className={`py-2 px-4 ${bgColor} flex justify-between items-center gap-2 shadow-lg`}
+                aria-label="ส่งข้อความแชท"
               >
-                <Icon path={mdiSend} size={1} aria-hidden="true" />
-              </button>
-            </form>
+                {/* แสดงไฟล์ที่แนบมา */}
+
+                {/* ปุ่มแนบไฟล์/รูป */}
+                <label
+                  className="p-2 cursor-pointer flex items-center"
+                  htmlFor="chat-file-input"
+                >
+                  <Icon path={mdiPaperclip} size={1} />
+                  <input
+                    id="chat-file-input"
+                    type="file"
+                    multiple
+                    className="hidden"
+                    onChange={async (e) => {
+                      if (isUploading) {
+                        toast.error("กรุณารอให้การอัปโหลดไฟล์เสร็จก่อน");
+                        return;
+                      }
+                      if (!e.target.files?.[0]) return;
+                      await uploadFile(e.target.files[0], `users/message/file`);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+                <input
+                  id={chatInputId}
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onInput={(e) => {
+                    e.target.style.height = "auto";
+                    e.target.style.height = `${e.target.scrollHeight}px`;
+                  }}
+                  className={`${bgColorMain2} w-full py-1 px-4 rounded-xl resize-none border focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2`}
+                  placeholder="พิมพ์ข้อความ"
+                  aria-describedby={chatHintId}
+                  // ✅ Enter ส่ง / Shift+Enter ขึ้นบรรทัดใหม่
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      sendMessage(e);
+                    }
+                  }}
+                />
+
+                <p id={chatHintId} className="sr-only">
+                  กด Enter เพื่อส่งข้อความ หรือ Shift+Enter เพื่อขึ้นบรรทัดใหม่
+                </p>
+
+                <button
+                  type="submit"
+                  className="rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  aria-label="ส่งข้อความ"
+                >
+                  <Icon path={mdiSend} size={1} aria-hidden="true" />
+                </button>
+              </form>
+            </div>
           </div>
         </section>
       ) : (
         // ✅ ปุ่มเปิดแชท ต้องเป็น button
         <button
-  type="button"
-  onClick={() => {
-    setOpenChat(true);
-    handleUpdateStatusRead(id);
-  }}
-  className={`
+          type="button"
+          onClick={() => {
+            setOpenChat(true);
+            handleUpdateStatusRead(id);
+          }}
+          className={`
     cursor-pointer relative
     flex items-center gap-2
     px-3 py-2
@@ -334,18 +515,20 @@ function ChatComponent({ id, dataUser }) {
     shadow
     focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
   `}
-  aria-label="คุยกับเจ้าหน้าที่"
-  aria-controls={chatPanelId}
-  aria-expanded="false"
->
-  {hasUnread && (
-    <span
-      className={`${
-        bgColorNavbar === "bg-[#F97201]" ? "bg-red-500" : `${bgColorNavbar}`
-      } w-2 h-2 rounded-full absolute top-1 right-1`}
-      aria-hidden="true"
-    />
-  )}
+          aria-label="คุยกับเจ้าหน้าที่"
+          aria-controls={chatPanelId}
+          aria-expanded="false"
+        >
+          {hasUnread && (
+            <span
+              className={`${
+                bgColorNavbar === "bg-[#F97201]"
+                  ? "bg-red-500"
+                  : `${bgColorNavbar}`
+              } w-2 h-2 rounded-full absolute top-1 right-1`}
+              aria-hidden="true"
+            />
+          )}
 
           <Icon
             className={`${bgColorNavbar === "bg-[#F97201]" ? "text-[#F97201]" : `${bgColor}`}`}
@@ -354,12 +537,11 @@ function ChatComponent({ id, dataUser }) {
             aria-hidden="true"
           />
 
-  {/* ✅ ข้อความที่มองเห็นได้ */}
-  <span className="text-sm font-semibold whitespace-nowrap">
-    คุยกับเจ้าหน้าที่
-  </span>
-</button>
-
+          {/* ✅ ข้อความที่มองเห็นได้ */}
+          <span className="text-sm font-semibold whitespace-nowrap">
+            คุยกับเจ้าหน้าที่
+          </span>
+        </button>
       )}
     </div>
   );
