@@ -23,7 +23,6 @@ import { exportToCSV } from "@/hooks/useCsvExport"; // หรือ "@/utils/csv
 //component
 import ReportTable from "@/app/components/Table/ReportTable";
 import SelectFilter from "@/app/components/Form/SelectFilter";
-import InputUniversityAutoComplete from "@/app/components/Form/InputUniversityAutoComplete";
 import ColumnSelectModal from "@/app/components/Report/ColumnSelectModal";
 
 //enum

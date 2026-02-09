@@ -4,6 +4,7 @@ import Educations from "@/models/education";
 import SystemLog from "@/models/systemLog";
 import { ACTION_ACTIVITY, ROLE, TARGET_MODEL } from "@/const/enum";
 import Users from "@/models/user";
+import UniModel from "@/models/university";
 
 export async function GET(req) {
   await mongoDB();
@@ -31,6 +32,20 @@ export async function POST(req) {
   try {
     await mongoDB();
 
+    // ตรวจสอบชื่อมหาวิทยาลัยว่าตรงกับฐานข้อมูลหรือไม่
+    let uniArr = Array.isArray(university) ? university : [university];
+    // ตรวจสอบทุกชื่อใน array ว่าตรงกับฐานข้อมูล
+    const uniChecks = await Promise.all(
+      uniArr.map((name) => UniModel.findOne({ university: name })),
+    );
+    const allValid = uniChecks.every((found) => !!found);
+    if (!allValid) {
+      return NextResponse.json(
+        { message: "ชื่อมหาวิทยาลัยไม่ถูกต้อง" },
+        { status: 400 },
+      );
+    }
+
     const educations = await Educations.findOne({ uuid });
 
     if (educations) {
@@ -51,10 +66,10 @@ export async function POST(req) {
           sizeDocument: sizeFile,
           typeDocument: typeFile,
         },
-        { new: true }
+        { new: true },
       );
 
-      await Users.findOneAndUpdate({ uuid }, {university: university[0]});
+      await Users.findOneAndUpdate({ uuid }, { university: university[0] });
 
       await SystemLog.create({
         actorUuid: uuid,
@@ -66,7 +81,7 @@ export async function POST(req) {
 
       return NextResponse.json(
         { educations: updatedEducation },
-        { status: 200 }
+        { status: 200 },
       );
     } else {
       const newEducation = await Educations.create({
@@ -105,7 +120,7 @@ export async function POST(req) {
     });
     return NextResponse.json(
       { message: "Error creating/updating education data" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

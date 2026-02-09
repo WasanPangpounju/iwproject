@@ -16,11 +16,7 @@ import {
 import universitys from "@/app/data/universitys.json";
 
 //firebase
-import {
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage"; // Import Firebase Storage
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"; // Import Firebase Storage
 import { storage } from "@/app/firebaseConfig";
 
 import { useTheme } from "@/app/ThemeContext";
@@ -48,7 +44,7 @@ function EducationForm({
   const { updateEducationById, updateFileName } = useEducationStore();
 
   //Theme
-  const { bgColor, bgColorMain, inputEditColor } = useTheme();
+  const { bgColorMain, inputEditColor } = useTheme();
 
   //value data user
   const [typePerson, setTypePerson] = useState(null);
@@ -78,8 +74,8 @@ function EducationForm({
         .concat(
           Array(
             updatedFaculties.length -
-              updatedFaculties.filter((fac) => fac !== "").length
-          ).fill("")
+              updatedFaculties.filter((fac) => fac !== "").length,
+          ).fill(""),
         );
     });
   };
@@ -91,25 +87,6 @@ function EducationForm({
       return updated;
     });
   };
-
-  // const handleUniversity = (e, index) => {
-  //   const newFaculty = e; // ค่าที่ได้รับจาก input
-  //   setUniversity((prevFaculties) => {
-  //     const updatedFaculties = Array.isArray(prevFaculties)
-  //       ? [...prevFaculties]
-  //       : []; // ตรวจสอบว่า prevUniversities เป็น array หรือไม่
-  //     updatedFaculties[index] = newFaculty; // อัปเดตค่าใหม่
-  //     // ขยับค่าทั้งหมดถ้ามีตำแหน่งที่ว่าง
-  //     return updatedFaculties
-  //       .filter((fac) => fac !== "")
-  //       .concat(
-  //         Array(
-  //           updatedFaculties.length -
-  //             updatedFaculties.filter((fac) => fac !== "").length
-  //         ).fill("")
-  //       );
-  //   });
-  // };
 
   const handleBranch = (e, index) => {
     const newBranch = e; // ค่าที่ได้รับจาก input
@@ -124,8 +101,8 @@ function EducationForm({
         .concat(
           Array(
             updatedBranches.length -
-              updatedBranches.filter((branch) => branch !== "").length
-          ).fill("")
+              updatedBranches.filter((branch) => branch !== "").length,
+          ).fill(""),
         );
     });
   };
@@ -143,8 +120,8 @@ function EducationForm({
         .concat(
           Array(
             updatedCampuses.length -
-              updatedCampuses.filter((campus) => campus !== "").length
-          ).fill("")
+              updatedCampuses.filter((campus) => campus !== "").length,
+          ).fill(""),
         );
     });
   };
@@ -160,8 +137,8 @@ function EducationForm({
         .concat(
           Array(
             updatedGrades.length -
-              updatedGrades.filter((grade) => grade !== "").length
-          ).fill("")
+              updatedGrades.filter((grade) => grade !== "").length,
+          ).fill(""),
         );
     });
   };
@@ -326,7 +303,7 @@ function EducationForm({
 
       const storageRef = ref(
         storage,
-        `users/documents/${dataUser?.email}/${fileName}`
+        `users/documents/${dataUser?.email}/${fileName}`,
       );
       const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
@@ -356,7 +333,7 @@ function EducationForm({
             .catch((error) => {
               console.error("Error getting download URL:", error);
             });
-        }
+        },
       );
     }
   };
@@ -435,19 +412,17 @@ function EducationForm({
       const res = await updateEducationById(bodyEducation);
 
       if (!res.ok) {
-        toast.error("เกิดข้อผิดพลาด");
-        setEditMode(false);
+        toast.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
         return;
       }
 
       toast.success("บันทึกข้อมูลสำเร็จ");
-
       setEditMode(false);
       if (handleStep) {
         handleStep();
       }
     } catch (err) {
-      console.log(err);
+      toast.error(err || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
       setError("เกิดข้อผิดพลาดในการเชื่อมต่อ");
     }
   }
@@ -555,7 +530,7 @@ function EducationForm({
     const temp = uni;
     // ค้นหาคำที่มีความคล้าย
     const filteredOptions = universitys.filter(
-      (uni) => uni.university.toLowerCase().includes(temp.toLowerCase()) // เปรียบเทียบแบบ case-insensitive
+      (uni) => uni.university.toLowerCase().includes(temp.toLowerCase()), // เปรียบเทียบแบบ case-insensitive
     );
     setOptionUniversity(filteredOptions);
 
@@ -787,37 +762,37 @@ function EducationForm({
                     inputUniversity[index] !== undefined
                       ? inputUniversity[index]
                       : Array.isArray(university) &&
-                        university[index] !== undefined
-                      ? university[index]
-                      : ""
+                          university[index] !== undefined
+                        ? university[index]
+                        : ""
                   }
                   onChange={(value) => handleUniversity(value, index)}
                   placeholder="ระบุสถานศึกษา"
                   editMode={editMode}
-                  tailwind={'py-2 mt-1'}
+                  tailwind={"py-2 mt-1"}
                 />
               </div>
             </div>
             {/* วิทยาเขต */}
-          
-              <div className="flex col flex-col">
-                <label>วิทยาเขต</label>
-                <input
-                  type="text"
-                  className={`${
-                    !editMode ? `cursor-default ${inputEditColor}` : ""
-                  } ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
-                  onBlur={(e) => handleCampus(e.target.value, index)}
-                  defaultValue={
-                    Array.isArray(campus) && campus[index] !== undefined
-                      ? campus[index]
-                      : ""
-                  }
-                  readOnly={!editMode}
-                  placeholder="ระบุวิทยาเขตการศึกษา"
-                />
-              </div>
-      
+
+            <div className="flex col flex-col">
+              <label>วิทยาเขต</label>
+              <input
+                type="text"
+                className={`${
+                  !editMode ? `cursor-default ${inputEditColor}` : ""
+                } ${bgColorMain} mt-1 whitespace-nowrap text-ellipsis overflow-hidden w-56 border border-gray-400 py-2 px-4 rounded-lg`}
+                onBlur={(e) => handleCampus(e.target.value, index)}
+                defaultValue={
+                  Array.isArray(campus) && campus[index] !== undefined
+                    ? campus[index]
+                    : ""
+                }
+                readOnly={!editMode}
+                placeholder="ระบุวิทยาเขตการศึกษา"
+              />
+            </div>
+
             {/* คณะ */}
             <div className="flex col flex-col">
               <label>
@@ -994,7 +969,8 @@ function EducationForm({
             <div className="flex mt-5">
               <p>
                 <span className="text-red-500 font-bold">ตัวอย่าง</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;หนังสือรับรองผลการเรียน (Transcript)/วุฒิการศึกษา
+                &nbsp;&nbsp;&nbsp;&nbsp;หนังสือรับรองผลการเรียน
+                (Transcript)/วุฒิการศึกษา
               </p>
               <Icon
                 onClick={openFileExample}

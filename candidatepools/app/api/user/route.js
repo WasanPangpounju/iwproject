@@ -11,6 +11,7 @@ import Skills from "@/models/skill";
 import Resume from "@/models/resume";
 import { authOption } from "../auth/[...nextauth]/route";
 import { checkUserPermission } from "@/utils/auth/checkUserPermission";
+import UniModel from "@/models/university";
 
 export async function POST(req) {
   const session = await getServerSession(authOption);
@@ -105,11 +106,20 @@ export async function POST(req) {
     position: position,
     comeForm: comeForm,
   };
-    
+
   try {
     // เชื่อมต่อ MongoDB
     await mongoDB();
     const uuid = id || uuidv4();
+
+    // ตรวจสอบชื่อมหาวิทยาลัยว่าตรงกับฐานข้อมูลหรือไม่
+    const uniCheck = await UniModel.findOne({ university });
+    if (!uniCheck) {
+      return NextResponse.json(
+        { message: "ชื่อมหาวิทยาลัยไม่ถูกต้อง" },
+        { status: 400 },
+      );
+    }
 
     // สร้างผู้ใช้งานใน MongoDB
     await Users.create({

@@ -21,12 +21,12 @@ import { useUserStore } from "@/stores/useUserStore";
 import { toast } from "react-toastify";
 import { ROLE } from "@/const/enum";
 import comeFormChoice from "@/assets/comeFormChoice";
+import dataDisabled from "@/assets/dataDisabled";
 
 function Register({ statusAgreement }) {
   // Store
   const { universities, loading, fetchUniversities } = useUniversityStore();
   const { checkUserExists, createUser } = useUserStore();
-
 
   // Theme
   const {
@@ -70,11 +70,11 @@ function Register({ statusAgreement }) {
   }, [agreement, router, session, status]);
 
   // Ensure universities loaded (safe even in dev if your store guards duplicates)
-useEffect(() => {
-  if (!loading && universities.length === 0) {
-    fetchUniversities();
-  }
-}, [fetchUniversities, loading, universities.length]);
+  useEffect(() => {
+    if (!loading && universities.length === 0) {
+      fetchUniversities();
+    }
+  }, [fetchUniversities, loading, universities.length]);
 
   // Form state (controlled)
   const [user, setUser] = useState("");
@@ -105,7 +105,7 @@ useEffect(() => {
     setUniversity(input);
 
     const filteredOptions = universityList.filter((u) =>
-      (u?.university || "").toLowerCase().includes((input || "").toLowerCase())
+      (u?.university || "").toLowerCase().includes((input || "").toLowerCase()),
     );
 
     setOptionUniversity(filteredOptions);
@@ -153,7 +153,7 @@ useEffect(() => {
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
       if (!passwordRegex.test(password)) {
         setError(
-          "รหัสผ่านต้องมีตัวอักษรภาษาอังกฤษ ตัวเลข และสัญลักษณ์พิเศษอย่างน้อย 1 ตัว และความยาวไม่ต่ำกว่า 8 ตัวอักษร"
+          "รหัสผ่านต้องมีตัวอักษรภาษาอังกฤษ ตัวเลข และสัญลักษณ์พิเศษอย่างน้อย 1 ตัว และความยาวไม่ต่ำกว่า 8 ตัวอักษร",
         );
         return;
       }
@@ -164,8 +164,16 @@ useEffect(() => {
       }
     }
 
+    if (!universities.some((uni) => uni.university === university)) {
+      setError("กรุณากรอกชื่อสถาบันการศึกษาให้ถูกต้อง");
+      return;
+    }
+
     try {
-      const { userExists, emailExists } = await checkUserExists({ user, email });
+      const { userExists, emailExists } = await checkUserExists({
+        user,
+        email,
+      });
 
       if (userExists) {
         setError("username มีการใช้งานแล้ว");
@@ -182,7 +190,7 @@ useEffect(() => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ idCard }),
-        }
+        },
       );
 
       if (!resCheckID.ok) {
@@ -291,7 +299,8 @@ useEffect(() => {
                   htmlFor={`username-${uid}`}
                   className="font-bold sm:col-span-4"
                 >
-                  ชื่อผู้ใช้ (เป็นภาษาอังกฤษ) <span className="text-red-600"> *</span>
+                  ชื่อผู้ใช้ (เป็นภาษาอังกฤษ){" "}
+                  <span className="text-red-600"> *</span>
                 </label>
                 <div className="sm:col-span-8">
                   <input
@@ -334,7 +343,8 @@ useEffect(() => {
                         id={pwHelpId}
                         className="mt-1 text-sm font-normal text-gray-600"
                       >
-                        อย่างน้อย 8 ตัวอักษร และต้องมี ตัวอักษรอังกฤษ/ตัวเลข/สัญลักษณ์
+                        อย่างน้อย 8 ตัวอักษร และต้องมี
+                        ตัวอักษรอังกฤษ/ตัวเลข/สัญลักษณ์
                       </p>
                     </div>
                   </div>
@@ -344,7 +354,8 @@ useEffect(() => {
                       htmlFor={`confirmPassword-${uid}`}
                       className="font-bold sm:col-span-4"
                     >
-                     ยืนยันรหัสผ่านอีกครั้ง <span className="text-red-600"> *</span>
+                      ยืนยันรหัสผ่านอีกครั้ง{" "}
+                      <span className="text-red-600"> *</span>
                     </label>
                     <div className="sm:col-span-8">
                       <input
@@ -393,7 +404,8 @@ useEffect(() => {
                   htmlFor={`firstName-${uid}`}
                   className="font-bold sm:col-span-4"
                 >
-                  ชื่อ (ไม่ต้องใส่คำนำหน้า)<span className="text-red-600"> *</span>
+                  ชื่อ (ไม่ต้องใส่คำนำหน้า)
+                  <span className="text-red-600"> *</span>
                 </label>
                 <div className="sm:col-span-8">
                   <input
@@ -450,20 +462,11 @@ useEffect(() => {
                       required
                     >
                       <option value="0">เลือกประเภทความพิการ</option>
-                      <option value="พิการทางการเห็น">พิการทางการเห็น</option>
-                      <option value="พิการทางการได้ยินหรือสื่อความหมาย">
-                        พิการทางการได้ยินหรือสื่อความหมาย
-                      </option>
-                      <option value="พิการทางการเคลื่อนไหวหรือทางร่างกาย">
-                        พิการทางการเคลื่อนไหวหรือทางร่างกาย
-                      </option>
-                      <option value="พิการทางจิตใจหรือพฤติกรรม">
-                        พิการทางจิตใจหรือพฤติกรรม
-                      </option>
-                      <option value="พิการทางสติปัญญา">พิการทางสติปัญญา</option>
-                      <option value="พิการทางการเรียนรู้">พิการทางการเรียนรู้</option>
-                      <option value="พิการทางออทิสติก">พิการทางออทิสติก</option>
-                      <option value="พิการซ้ำซ้อน">พิการซ้ำซ้อน</option>
+                      {dataDisabled.map((item, index) => (
+                        <option key={index} value={item}>
+                          {item}
+                        </option>
+                      ))}
                     </select>
                     <Icon
                       className="pointer-events-none text-gray-400 absolute right-0 top-[10px] mx-3"
@@ -494,8 +497,12 @@ useEffect(() => {
                       required
                     >
                       <option value="0">เลือกประเภทบุคคล</option>
-                      <option value="นักศึกษาพิการ">นักศึกษาพิการ (กำลังเรียนอยู่)</option>
-                      <option value="บัณฑิตพิการ">บัณฑิตพิการ (เรียนจบแล้ว)</option>
+                      <option value="นักศึกษาพิการ">
+                        นักศึกษาพิการ (กำลังเรียนอยู่)
+                      </option>
+                      <option value="บัณฑิตพิการ">
+                        บัณฑิตพิการ (เรียนจบแล้ว)
+                      </option>
                     </select>
                     <Icon
                       className="pointer-events-none text-gray-400 absolute right-0 top-[10px] mx-3"
@@ -513,7 +520,8 @@ useEffect(() => {
                   htmlFor={`university-${uid}`}
                   className="font-bold sm:col-span-4"
                 >
-                  สถาบันการศึกษา (ชื่อเต็มของสถาบันการศึกษา) <span className="text-red-600"> *</span>
+                  สถาบันการศึกษา (ชื่อเต็มของสถาบันการศึกษา){" "}
+                  <span className="text-red-600"> *</span>
                 </label>
                 <div className="sm:col-span-8">
                   <div className="relative">
@@ -572,7 +580,8 @@ useEffect(() => {
                   htmlFor={`email-${uid}`}
                   className="font-bold sm:col-span-4"
                 >
-                  อีเมล (ที่สามารถติดต่อได้)<span className="text-red-600"> *</span>
+                  อีเมล (ที่สามารถติดต่อได้)
+                  <span className="text-red-600"> *</span>
                 </label>
                 <div className="sm:col-span-8">
                   <input
@@ -582,7 +591,9 @@ useEffect(() => {
                     type="email"
                     autoComplete="email"
                     className={`${bgColorMain} w-full border border-gray-400 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                      session?.user?.email ? "bg-gray-200 cursor-not-allowed" : ""
+                      session?.user?.email
+                        ? "bg-gray-200 cursor-not-allowed"
+                        : ""
                     }`}
                     placeholder="กรอกอีเมลที่สามารถติดต่อได้"
                     readOnly={!!session?.user?.email}
