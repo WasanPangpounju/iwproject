@@ -11,6 +11,7 @@ import { ACTION_ACTIVITY, ROLE, TARGET_MODEL } from "@/const/enum";
 import { getServerSession } from "next-auth";
 import { authOption } from "../../auth/[...nextauth]/route";
 import { checkUserPermission } from "@/utils/auth/checkUserPermission";
+import UniModel from "@/models/university";
 
 export async function GET(req) {
   const id = req.nextUrl.pathname.split("/").filter(Boolean).pop();
@@ -22,7 +23,10 @@ export async function GET(req) {
 export async function DELETE(req) {
   const session = await getServerSession(authOption);
 
-  if (session?.user?.role !== ROLE.SUPERVISOR && session?.user?.role !== ROLE.ADMIN) {
+  if (
+    session?.user?.role !== ROLE.SUPERVISOR &&
+    session?.user?.role !== ROLE.ADMIN
+  ) {
     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
   }
 
@@ -54,7 +58,7 @@ export async function DELETE(req) {
         {
           status: 404,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
@@ -72,7 +76,7 @@ export async function DELETE(req) {
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   } catch (error) {
     await SystemLog.create({
@@ -88,7 +92,7 @@ export async function DELETE(req) {
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   }
 }
@@ -143,7 +147,7 @@ export async function PUT(req) {
       typePerson,
       role,
       position,
-      comeForm
+      comeForm,
     } = await req.json();
 
     const permission = checkUserPermission(session?.user?.role, role);
@@ -151,7 +155,16 @@ export async function PUT(req) {
     if (!permission.allowed) {
       return NextResponse.json(
         { message: permission.message },
-        { status: permission.status }
+        { status: permission.status },
+      );
+    }
+
+    // ตรวจสอบชื่อมหาวิทยาลัยว่าตรงกับฐานข้อมูลหรือไม่
+    const uniCheck = await UniModel.findOne({ university });
+    if (!uniCheck) {
+      return NextResponse.json(
+        { message: "ชื่อมหาวิทยาลัยไม่ถูกต้อง" },
+        { status: 400 },
       );
     }
 
@@ -192,7 +205,7 @@ export async function PUT(req) {
       typePerson: typePerson,
       role: role,
       position: position,
-      comeForm: comeForm
+      comeForm: comeForm,
     };
 
     // อัปเดตข้อมูลผู้ใช้ในฐานข้อมูล
@@ -236,9 +249,9 @@ export async function PUT(req) {
         typePerson,
         role,
         position,
-        comeForm
+        comeForm,
       },
-      { new: true } // ส่งกลับเอกสารที่อัปเดตใหม่
+      { new: true }, // ส่งกลับเอกสารที่อัปเดตใหม่
     );
 
     if (!result) {
@@ -254,7 +267,7 @@ export async function PUT(req) {
     });
     return NextResponse.json(
       { message: "User updated successfully", user: result },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     await SystemLog.create({
@@ -267,7 +280,7 @@ export async function PUT(req) {
     console.error("Error updating user:", error);
     return NextResponse.json(
       { message: "Error updating user" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

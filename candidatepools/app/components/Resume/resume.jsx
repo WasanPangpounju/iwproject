@@ -458,21 +458,8 @@ function Resume({
                                   {dataEducations.educationLevel[index] || "-"}
                                 </p>
                                 <div>
-                                  <label>มหาวิทยาลัย: </label>
-                                  <input
-                                    type="text"
-                                    className="inputResume"
-                                    defaultValue={
-                                      dataEducations.university[index] || ""
-                                    }
-                                    onBlur={(e) =>
-                                      handleArray(
-                                        e.target.value,
-                                        index,
-                                        setNewUniversity
-                                      )
-                                    }
-                                  />
+                                  <label>มหาวิทยาลัย: {dataEducations.university[index]}</label>
+        
                                 </div>
                                 <div>
                                   <label>คณะ: </label>
@@ -917,8 +904,8 @@ function Resume({
                                         "-"}
                                     </p>
                                     <div>
-                                      <label>มหาวิทยาลัย: </label>
-                                      <input
+                                      <label>มหาวิทยาลัย: {dataEducations.university[index]}</label>
+                                      {/* <input
                                         type="text"
                                         className="inputResume"
                                         defaultValue={
@@ -931,7 +918,7 @@ function Resume({
                                             setNewUniversity
                                           )
                                         }
-                                      />
+                                      /> */}
                                     </div>
                                     <div>
                                       <label>คณะ: </label>
@@ -1416,8 +1403,8 @@ function Resume({
                                   {dataEducations.educationLevel[index] || "-"}
                                 </p>
                                 <div>
-                                  <label>มหาวิทยาลัย: </label>
-                                  <input
+                                  <label>มหาวิทยาลัย: {dataEducations.university[index]}</label>
+                                  {/* <input
                                     type="text"
                                     className="inputResume"
                                     defaultValue={
@@ -1430,7 +1417,7 @@ function Resume({
                                         setNewUniversity
                                       )
                                     }
-                                  />
+                                  /> */}
                                 </div>
                                 <div>
                                   <label>คณะ: </label>

@@ -1,5 +1,6 @@
 import React, { useId, useMemo, useState } from "react";
 import useUniversityStore from "@/stores/useUniversityStore";
+import TextError from "../TextError";
 
 function InputUniversityAutoComplete({
   id, // ✅ รับ id จาก parent เพื่อให้ label htmlFor โฟกัสได้
@@ -22,10 +23,12 @@ function InputUniversityAutoComplete({
   const [optionUniversity, setOptionUniversity] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [notFound, setNotFound] = useState(false);
 
   const options = useMemo(() => optionUniversity || [], [optionUniversity]);
 
-  const getUniName = (item) => (item?.university ? String(item.university) : "");
+  const getUniName = (item) =>
+    item?.university ? String(item.university) : "";
 
   function filterOptions(input) {
     const source = universities?.data || universities || [];
@@ -35,18 +38,26 @@ function InputUniversityAutoComplete({
       Array.isArray(source) && text
         ? source.filter((u) => getUniName(u).toLowerCase().includes(text))
         : Array.isArray(source)
-        ? source.slice(0, 10) // ถ้าไม่พิมพ์อะไร แสดงตัวอย่างบางส่วนได้ (ไม่หนักเครื่อง)
-        : [];
+          ? source.slice(0, 10) // ถ้าไม่พิมพ์อะไร แสดงตัวอย่างบางส่วนได้ (ไม่หนักเครื่อง)
+          : [];
 
     setOptionUniversity(filtered);
     setIsOpen(true);
     setActiveIndex(-1);
   }
 
+  function isNotFoundValue(input) {
+    // ตรวจสอบว่าตรงกับชื่อมหาวิทยาลัยใดหรือไม่
+    const found = universities?.some((uni) => uni.university === input);
+    setNotFound(input && !found);
+  }
+
   function handleInputChange(input) {
     // ✅ ส่งค่ากลับ parent เหมือนเดิม (string)
     onChange?.(input);
     filterOptions(input);
+    // ตรวจสอบว่าตรงกับชื่อมหาวิทยาลัยใดหรือไม่
+    isNotFoundValue(input);
   }
 
   function handleSelectOption(uniName) {
@@ -54,6 +65,8 @@ function InputUniversityAutoComplete({
     setOptionUniversity([]);
     setIsOpen(false);
     setActiveIndex(-1);
+    // ตรวจสอบว่าตรงกับชื่อมหาวิทยาลัยใดหรือไม่
+    isNotFoundValue(uniName);
   }
 
   function handleKeyDown(e) {
@@ -121,7 +134,7 @@ function InputUniversityAutoComplete({
         onKeyDown={handleKeyDown}
         disabled={!editMode}
         placeholder={placeholder}
-        className={`${tailwind} ${!editMode ? "bg-gray-200 cursor-default" : ""} border border-gray-400 px-4 py-2 rounded-lg`}
+        className={`${tailwind} ${!editMode ? "bg-gray-200 cursor-default" : ""} w-64 border px-4 py-2 rounded-lg ${notFound ? "border-red-500" : "border-gray-400"}`}
         // ✅ WCAG combobox pattern
         role="combobox"
         aria-autocomplete="list"
@@ -129,7 +142,7 @@ function InputUniversityAutoComplete({
         aria-controls={listboxId}
         aria-activedescendant={activeDescendantId}
         aria-describedby={describedBy}
-        aria-invalid={ariaInvalid ? "true" : "false"}
+        aria-invalid={notFound || ariaInvalid ? "true" : "false"}
         autoComplete="off"
       />
 
@@ -163,6 +176,12 @@ function InputUniversityAutoComplete({
             );
           })}
         </div>
+      )}
+      {notFound && (
+        <TextError
+          className="mt-1"
+          text={`กรุณากรอกชื่อสถาบันการศึกษาให้ถูกต้อง`}
+        />
       )}
     </div>
   );
