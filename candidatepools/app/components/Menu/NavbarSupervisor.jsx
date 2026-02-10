@@ -86,7 +86,11 @@ function NavbarSupervisor() {
     {
       id: 10,
       link: `${mainRoute}/setting/profile`,
-    }
+    },
+    {
+      id: 11,
+      link: `${mainRoute}/setting/AdminAnnouncementsClient`,
+    },
   ];
 
   const getLink = (id) => {
@@ -321,12 +325,36 @@ function NavbarSupervisor() {
             role="menu"
           >
             <Link
+              href={getLink(11)}
+              className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3"
+              role="menuitem"
+              aria-label="ลงประกาศ"
+            >
+              <Icon
+                path={mdiSchool}
+                size={1}
+                aria-hidden="true"
+                aria-label=""
+              />
+              <p
+                className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
+              >
+                ลงประกาศ
+              </p>
+            </Link>
+
+            <Link
               href={getLink(9)}
               className="hover:bg-[#fee2d9] hover:text-[#ff7201] focus:bg-[#fee2d9] focus:text-[#ff7201] cursor-pointer flex items-center px-5 gap-5 py-3"
               role="menuitem"
               aria-label="ตั้งค่าสถาบันการศึกษา"
             >
-              <Icon path={mdiSchool} size={1} aria-hidden="true" aria-label="" />
+              <Icon
+                path={mdiSchool}
+                size={1}
+                aria-hidden="true"
+                aria-label=""
+              />
               <p
                 className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
               >
@@ -339,7 +367,12 @@ function NavbarSupervisor() {
               role="menuitem"
               aria-label="ตั้งค่าข้อมูลส่วนตัว"
             >
-              <Icon path={mdiAccount} size={1} aria-hidden="true" aria-label="" />
+              <Icon
+                path={mdiAccount}
+                size={1}
+                aria-hidden="true"
+                aria-label=""
+              />
               <p
                 className={`${fontSize} font-extrabold whitespace-nowrap text-ellipsis`}
               >
