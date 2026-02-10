@@ -50,79 +50,113 @@ export default function HomePage() {
           return (
             <article
               key={post.id}
-              className="flex flex-col md:flex-row gap-5 border rounded-lg p-4 bg-white shadow-sm"
+              className="group relative flex flex-col md:flex-row gap-6
+             rounded-xl border border-gray-200 bg-white p-5
+             shadow-sm hover:shadow-md transition-shadow"
             >
-              {/* เนื้อหา */}
-              <div className="flex-1">
-                {/* badge */}
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs px-2 py-1 rounded bg-blue-600 text-white">
-                    ประกาศจากระบบ
-                  </span>
-
-                  {post.pinned && (
-                    <span className="text-xs px-2 py-1 rounded bg-yellow-500 text-white">
-                      ปักหมุด
+              {/* ===== Content ===== */}
+              <div className="flex-1 flex flex-col">
+                {/* Header */}
+                <div className="flex items-start justify-between gap-4 mb-3">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span
+                      className="inline-flex items-center gap-1 text-xs font-medium
+                         px-2.5 py-1 rounded-full
+                         bg-blue-100 text-blue-700"
+                    >
+                      ประกาศจากระบบ
                     </span>
-                  )}
+
+                    {post.pinned && (
+                      <span
+                        className="inline-flex items-center gap-1 text-xs font-medium
+                           px-2.5 py-1 rounded-full
+                           bg-yellow-100 text-yellow-700"
+                      >
+                        ปักหมุด
+                      </span>
+                    )}
+                  </div>
                 </div>
 
-                {/* title */}
+                {/* Title */}
                 {post.title && (
-                  <h2 className="font-bold text-lg mb-2 line-clamp-2">
+                  <h2 className="text-lg md:text-xl font-semibold text-gray-900 mb-2 leading-snug">
                     {post.title}
                   </h2>
                 )}
 
-                {/* description / content */}
+                {/* Body */}
                 {!isExpanded ? (
-                  <p className="text-gray-800 line-clamp-4">
-                    {post.description}
+                  <p className="text-gray-700 leading-relaxed line-clamp-4">
+                    {post.description || post.content}
                   </p>
                 ) : (
                   <div
-                    className="text-gray-800 whitespace-pre-wrap"
                     id={`admin-full-${post.id}`}
+                    className="text-gray-800 whitespace-pre-wrap leading-relaxed line-clamp-4 overflow-y-scroll max-h-64"
                   >
-                    {post.content}
+                    <p>{post.description}</p>
+                    <p>{post.content}</p>
                   </div>
                 )}
 
-                {/* อ่านเพิ่มเติม */}
-                <button
-                  type="button"
-                  onClick={() => toggleExpanded(post.id)}
-                  className="mt-3 inline-flex items-center gap-2 text-blue-700 underline
-                             focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                  aria-expanded={isExpanded}
-                  aria-controls={`admin-full-${post.id}`}
+                {/* เวลา */}
+                <time
+                  dateTime={post.created_time}
+                  className="text-xs text-gray-500 whitespace-nowrap mt-4"
                 >
-                  {isExpanded ? "ย่อกลับ" : "อ่านเพิ่มเติม"}
-                </button>
-
-                {/* ลิงก์เสริม (ถ้ามี) */}
-                {post.linkUrl && (
-                  <a
-                    href={post.linkUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block mt-2 text-sm text-blue-600 hover:underline"
+                  {new Date(post.created_time).toLocaleDateString("th-TH", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </time>
+                {/* Actions */}
+                <div className="mt-2 flex items-center gap-4 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => toggleExpanded(post.id)}
+                    aria-expanded={isExpanded}
+                    aria-controls={`admin-full-${post.id}`}
+                    className="inline-flex items-center gap-1 text-sm font-medium
+                   text-blue-700 hover:text-blue-800
+                   focus:outline-none focus-visible:ring-2
+                   focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                   >
-                    {post.linkText || "เปิดลิงก์เพิ่มเติม"}
-                    <span className="sr-only"> (เปิดในแท็บใหม่)</span>
-                  </a>
-                )}
+                    {isExpanded ? "ย่อกลับ" : "อ่านเพิ่มเติม"}
+                  </button>
+
+                  {post.linkUrl && (
+                    <a
+                      href={post.linkUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-sm
+                     text-blue-600 hover:underline"
+                    >
+                      {post.linkText || "เปิดลิงก์เพิ่มเติม"}
+                      <span className="sr-only"> (เปิดในแท็บใหม่)</span>
+                    </a>
+                  )}
+                </div>
               </div>
 
-              {/* รูป */}
+              {/* ===== Image ===== */}
               {post.full_picture && (
-                <Image
-                  src={post.full_picture}
-                  alt={post.title ? `รูปประกอบ: ${post.title}` : "รูปประกอบประกาศ"}
-                  width={640}
-                  height={400}
-                  className="w-full md:w-96 h-56 object-cover rounded-lg border"
-                />
+                <div className="shrink-0">
+                  <Image
+                    src={post.full_picture}
+                    alt={
+                      post.title
+                        ? `รูปประกอบ: ${post.title}`
+                        : "รูปประกอบประกาศ"
+                    }
+                    width={640}
+                    height={400}
+                    className="w-full md:w-96 h-56 object-cover rounded-lg border bg-gray-100"
+                  />
+                </div>
               )}
             </article>
           );
@@ -134,18 +168,30 @@ export default function HomePage() {
         return (
           <article
             key={post.id}
-            className="flex flex-col md:flex-row gap-5 border rounded-lg p-4 bg-white shadow-sm"
+            className="flex flex-col md:flex-row gap-5 border rounded-lg p-4 bg-white shadow-sm max-h-64"
           >
             <div className="flex-1">
               <p className="font-bold text-gray-900 line-clamp-6">
                 {post.message || "ไม่มีข้อความ"}
               </p>
-
+              {/* เวลา */}
+              <div className="mt-4"> 
+                <time
+                  dateTime={post.created_time}
+                  className="text-xs text-gray-500 whitespace-nowrap mt-4"
+                >
+                  {new Date(post.created_time).toLocaleDateString("th-TH", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </time>
+              </div>
               <a
                 href={`https://www.facebook.com/${post.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block mt-2 text-blue-600 text-sm hover:underline
+                className="inline-block mt-1 text-blue-600 text-sm hover:underline
                            focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
               >
                 อ่านต่อ...

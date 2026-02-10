@@ -18,6 +18,7 @@ import {
   mdiSchool,
   mdiAccountSupervisor,
   mdiAccount,
+  mdiPost,
 } from "@mdi/js";
 
 import { signOut } from "next-auth/react";
@@ -331,7 +332,7 @@ function NavbarSupervisor() {
               aria-label="ลงประกาศ"
             >
               <Icon
-                path={mdiSchool}
+                path={mdiPost}
                 size={1}
                 aria-hidden="true"
                 aria-label=""
