@@ -54,6 +54,9 @@ function Dashboard({ dataStudents, dataEducationAll }) {
   const count_d7 = dataStudents?.filter((user) =>
     user?.typeDisabled?.some((disa) => disa === "พิการทางออทิสติก")
   )?.length;
+  const count_d8 = dataStudents?.filter((user) =>
+    user?.typeDisabled?.some((disa) => disa === "พิการซ้ำซ้อน")
+  )?.length;
 
   //level
   const count_level1 = dataEducationAll?.filter(
@@ -266,6 +269,7 @@ function Dashboard({ dataStudents, dataEducationAll }) {
                 d5={count_d5}
                 d6={count_d6}
                 d7={count_d7}
+                d8={count_d8}
                 allStudents={count_graduation + count_students}
               />
             </div>

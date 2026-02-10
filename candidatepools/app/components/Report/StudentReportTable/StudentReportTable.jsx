@@ -25,6 +25,7 @@ import TableRow from "@mui/material/TableRow";
 import { ROLE, TYPE_PERSON } from "@/const/enum";
 import ButtonView from "../../Button/ButtonView";
 import { useProvince } from "@/hooks/useProvince";
+import dataDisabled from "@/assets/dataDisabled";
 
 const columns = [
   {
@@ -303,21 +304,11 @@ function StudentReportTable({
                   onChange={(e) => setTypeDisabledSearch(e.target.value)}
                 >
                   <option value="">ทั้งหมด</option>
-                  <option value="พิการทางการมองเห็น">พิการทางการมองเห็น</option>
-                  <option value="พิการทางการได้ยินหรือสื่อความหมาย">
-                    พิการทางการได้ยินหรือสื่อความหมาย
-                  </option>
-                  <option value="พิการทางการเคลื่อนไหวหรือทางร่างกาย">
-                    พิการทางการเคลื่อนไหวหรือทางร่างกาย
-                  </option>
-                  <option value="พิการทางจิตใจหรือพฤติกรรม">
-                    พิการทางจิตใจหรือพฤติกรรม
-                  </option>
-                  <option value="พิการทางสติปัญญา">พิการทางสติปัญญา</option>
-                  <option value="พิการทางการเรียนรู้">
-                    พิการทางการเรียนรู้
-                  </option>
-                  <option value="พิการทางออทิสติก">พิการทางออทิสติก</option>
+                  {dataDisabled?.map((disa, index) => (
+                    <option key={index} value={disa}>
+                      {disa}
+                    </option>
+                  ))}
                 </select>
                 <Icon
                   className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}

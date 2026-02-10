@@ -8,6 +8,7 @@ import {
   Legend,
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import dataDisabled from "@/assets/dataDisabled";
 
 // ลงทะเบียน ChartJS components ที่ใช้
 ChartJS.register(
@@ -19,20 +20,14 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const BarChart = ({ d1, d2, d3, d4, d5, d6, d7, allStudents }) => {
-  const rawData = [d1, d2, d3, d4, d5, d6, d7];
+const BarChart = ({ d1, d2, d3, d4, d5, d6, d7, d8, allStudents }) => {
+  const rawData = [d1, d2, d3, d4, d5, d6, d7, d8];
   const sum = rawData.reduce((a, b) => a + b, 0);
 
   const data = {
-    labels: [
-      `พิการทางการมองเห็น`,
-      "พิการทางการได้ยินหรือสื่อความหมาย",
-      "พิการทางการเคลื่อนไหวหรือทางร่างกาย",
-      "พิการทางจิตใจหรือพฤติกรรม",
-      "พิการทางสติปัญญา",
-      "พิการทางการเรียนรู้",
-      "พิการทางออทิสติก",
-    ],
+    labels: dataDisabled.map((item) => {
+      return item;
+    }),
     datasets: [
       {
         label: "จำนวนนักศึกษาพิการ",
