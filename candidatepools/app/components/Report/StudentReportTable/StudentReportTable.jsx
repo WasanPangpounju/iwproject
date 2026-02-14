@@ -4,14 +4,11 @@ import React, { useState } from "react";
 import { useTheme } from "@/app/ThemeContext";
 import Icon from "@mdi/react";
 import {
-  mdiAlertCircle,
   mdiMagnify,
   mdiArrowDownDropCircle,
   mdiCloseThick,
-  mdiEyeOutline,
 } from "@mdi/js";
 import dataWorkType from "@/assets/dataWorkType";
-import Link from "next/link";
 
 //table
 import Paper from "@mui/material/Paper";
@@ -45,7 +42,12 @@ const columns = [
   },
   {
     id: "province",
-    label: "จังหวัดปัจจุบัน",
+    label: "จังหวัดที่อยู่ปัจจุบัน",
+    minWidth: 170,
+  },
+  {
+    id: "province_work",
+    label: "จังหวัดที่ต้องการทำงาน",
     minWidth: 170,
   },
   {
@@ -77,11 +79,12 @@ function StudentReportTable({
     university,
     level,
     province,
+    province_work,
     disabled,
     details,
     uuid,
   ) {
-    return { name, university, level, province, disabled, details, uuid };
+    return { name, university, level, province, province_work, disabled, details, uuid };
   }
 
   //type search
@@ -91,6 +94,7 @@ function StudentReportTable({
   const [workSearch, setWorkSearch] = useState("");
   const [statusWorkSearch, setStatusWorkSearch] = useState("");
   const [addressProvince, setAddressProvince] = useState("");
+  const [addressProvinceWork, setAddressProvinceWork] = useState("");
 
   //handle search filter
   const [wordSearchFilter, setWordSearchFilter] = useState([]);
@@ -117,7 +121,7 @@ function StudentReportTable({
   }
 
   const rows = dataStudents
-    ?.map((std, index) => {
+    ?.map((std) => {
       const tempWordSearch =
         wordSearchFilter?.length === 0 ? [wordSearch] : wordSearchFilter;
       const education = dataEducationAll?.find(
@@ -197,6 +201,18 @@ function StudentReportTable({
         hasMatchProvince = std?.addressProvince === addressProvince;
       }
 
+      // Province work filter logic
+      let hasMatchProvinceWork = true;
+      if (addressProvinceWork && addressProvinceWork !== "") {
+        if (Array.isArray(interestedWork?.interestedWork)) {
+          hasMatchProvinceWork = interestedWork.interestedWork.some(w =>
+            [w.province1, w.province2, w.province3].filter(Boolean).includes(addressProvinceWork)
+          );
+        } else {
+          hasMatchProvinceWork = false;
+        }
+      }
+
       if (!hasStatusNowWork) {
         return null;
       }
@@ -210,6 +226,9 @@ function StudentReportTable({
         return null;
       }
       if (!hasMatchProvince) {
+        return null;
+      }
+      if (!hasMatchProvinceWork) {
         return null;
       }
       if (!wordSearch) {
@@ -233,6 +252,11 @@ function StudentReportTable({
                 : "ไม่มีข้อมูล"
           }`}`,
           `${std?.addressProvince || "-"}`,
+          `${Array.isArray(interestedWork?.interestedWork)
+            ? interestedWork.interestedWork
+                .flatMap(w => [w.province1, w.province2, w.province3].filter(Boolean))
+                .join(", ")
+            : "-"}`,
           `${std?.typeDisabled?.join(",\n") || "ไม่มีข้อมูล"}`,
           "",
           `${std?.uuid}`,
@@ -274,12 +298,34 @@ function StudentReportTable({
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label>จังหวัด</label>
+              <label>จังหวัดที่อยู่ปัจจุบัน</label>
               <div className="relative col w-fit">
                 <select
                   className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
                   style={{ appearance: "none" }}
                   onChange={(e) => setAddressProvince(e.target.value)}
+                >
+                  <option value="">ทั้งหมด</option>
+                  {dataProvince?.map((pv, index) => (
+                    <option key={index} value={pv.name_th}>
+                      {pv.name_th}
+                    </option>
+                  ))}
+                </select>
+                <Icon
+                  className={`cursor-pointer text-gray-400 absolute right-0 top-[8px] mx-3`}
+                  path={mdiArrowDownDropCircle}
+                  size={0.5}
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label>จังหวัดที่ต้องการทำงาน</label>
+              <div className="relative col w-fit">
+                <select
+                  className={`${bgColorMain} cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-40 border border-gray-400 py-1 px-4 rounded-lg`}
+                  style={{ appearance: "none" }}
+                  onChange={(e) => setAddressProvinceWork(e.target.value)}
                 >
                   <option value="">ทั้งหมด</option>
                   {dataProvince?.map((pv, index) => (
