@@ -325,15 +325,6 @@ function AdminManagement() {
                 </TableHead>
                 <TableBody>
                   {rows
-                    .sort((a, b) => {
-                      const columnToSort = "name";
-                      const aValue = a?.[columnToSort] ?? "";
-                      const bValue = b?.[columnToSort] ?? "";
-
-                      if (aValue < bValue) return 1;
-                      if (aValue > bValue) return -1;
-                      return 0;
-                    })
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
                       const student = dataAdmin?.find(
