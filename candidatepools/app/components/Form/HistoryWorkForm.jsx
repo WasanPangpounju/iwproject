@@ -10,6 +10,7 @@ import {
   mdiDownload,
   mdiArrowDownDropCircle,
   mdiDelete,
+  mdiAlertCircle,
 } from "@mdi/js";
 import Swal from "sweetalert2";
 
@@ -32,9 +33,14 @@ import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
 
 import { toast } from "react-toastify";
 import { ACTION_ACTIVITY, TARGET_MODEL } from "@/const/enum";
+import ExampleFile from "../ExampleFile/ExampleFile";
 
-function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) {
-
+function HistoryWorkForm({
+  id,
+  dataHistoryWork,
+  handleStep,
+  readOnly = false,
+}) {
   const { updateHistoryWorkById } = useHistoryWorkStore();
   const [error, setError] = useState("");
 
@@ -91,7 +97,10 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
   const [errorField, setErrorField] = useState("");
 
   const handleAddProject = () => {
-    if (!projectName[projects.length - 1] || !projectDetail[projects.length - 1]) {
+    if (
+      !projectName[projects.length - 1] ||
+      !projectDetail[projects.length - 1]
+    ) {
       setErrorField("กรุณากรอกข้อความให้ครบก่อนเพิ่มข้อมูลใหม่");
       return;
     }
@@ -168,7 +177,7 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
 
     const storageRef = ref(
       storage,
-      `users/documents/workHistory/${id}/${fileName}`
+      `users/documents/workHistory/${id}/${fileName}`,
     );
     const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
@@ -176,7 +185,8 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
       "state_changed",
       (snapshot) => {
         setError("");
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setProjectUploadProgress(progress);
       },
       (error) => console.error("Error uploading file:", error),
@@ -197,10 +207,13 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
             });
 
             setProjectUploadProgress(0);
-            if (projectFileInputRef.current) projectFileInputRef.current.value = "";
+            if (projectFileInputRef.current)
+              projectFileInputRef.current.value = "";
           })
-          .catch((error) => console.error("Error getting download URL:", error));
-      }
+          .catch((error) =>
+            console.error("Error getting download URL:", error),
+          );
+      },
     );
   };
 
@@ -250,8 +263,12 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
 
   const handleDateStartInternship = handleArraySet(setDateStartInternship);
   const handleDateEndInternship = handleArraySet(setDateEndInternship);
-  const handleDateStartMonthInternship = handleArraySet(setDateStartMonthInternship);
-  const handleDateEndMonthInternship = handleArraySet(setDateEndMonthInternship);
+  const handleDateStartMonthInternship = handleArraySet(
+    setDateStartMonthInternship,
+  );
+  const handleDateEndMonthInternship = handleArraySet(
+    setDateEndMonthInternship,
+  );
   const handlePlaceInternship = handleArraySet(setPlaceInternship);
   const handlePositionInternship = handleArraySet(setPositionInternship);
 
@@ -296,7 +313,9 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
         setErrorFieldInterships("");
         setDateStartInternship((prev) => prev.filter((_, i) => i !== index));
         setDateEndInternship((prev) => prev.filter((_, i) => i !== index));
-        setDateStartMonthInternship((prev) => prev.filter((_, i) => i !== index));
+        setDateStartMonthInternship((prev) =>
+          prev.filter((_, i) => i !== index),
+        );
         setDateEndMonthInternship((prev) => prev.filter((_, i) => i !== index));
         setPlaceInternship((prev) => prev.filter((_, i) => i !== index));
         setPositionInternship((prev) => prev.filter((_, i) => i !== index));
@@ -322,12 +341,12 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
       const updated = [...merged];
       updated[index] = undefined;
       setInternshipFile(updated);
-      toast.success("ลบไฟล์สำเร็จ ", `${name} ถูกลบเรียบร้อยแล้ว`);
     }
   }
 
   const internFileInputRef = useRef(null);
-  const [internshipFileUploadProgress, setInternshipUploadProgress] = useState(0);
+  const [internshipFileUploadProgress, setInternshipUploadProgress] =
+    useState(0);
 
   const openFileDialogInternship = () => {
     if (internFileInputRef.current) internFileInputRef.current.click();
@@ -346,14 +365,18 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
     const fileSizeMB = (selectedFile.size / (1024 * 1024)).toFixed(2);
     const fileName = selectedFile.name.split(".").slice(0, -1).join(".");
 
-    const storageRef = ref(storage, `users/documents/internship/${id}/${fileName}`);
+    const storageRef = ref(
+      storage,
+      `users/documents/internship/${id}/${fileName}`,
+    );
     const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
     uploadTask.on(
       "state_changed",
       (snapshot) => {
         setError("");
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setInternshipUploadProgress(progress);
       },
       (error) => console.error("Error uploading file:", error),
@@ -374,10 +397,13 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
             });
 
             setInternshipUploadProgress(0);
-            if (internFileInputRef.current) internFileInputRef.current.value = "";
+            if (internFileInputRef.current)
+              internFileInputRef.current.value = "";
           })
-          .catch((error) => console.error("Error getting download URL:", error));
-      }
+          .catch((error) =>
+            console.error("Error getting download URL:", error),
+          );
+      },
     );
   };
 
@@ -466,7 +492,6 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
       const updated = [...merged];
       updated[index] = undefined;
       setWorkFile(updated);
-      toast.success("ลบไฟล์สำเร็จ ", `${name} ถูกลบเรียบร้อยแล้ว`);
     }
   }
 
@@ -482,7 +507,11 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
     if (!selectedFile) return;
 
     const fileExtension = selectedFile.name.split(".").pop();
-    if (fileExtension !== "pdf" && fileExtension !== "docx" && fileExtension !== "doc") {
+    if (
+      fileExtension !== "pdf" &&
+      fileExtension !== "docx" &&
+      fileExtension !== "doc"
+    ) {
       setError("กรุณาอัปโหลดไฟล์ PDF, Word เท่านั้น");
       return;
     }
@@ -497,7 +526,8 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
       "state_changed",
       (snapshot) => {
         setError("");
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setWorkFileUploadProgress(progress);
       },
       (error) => console.error("Error uploading file:", error),
@@ -520,8 +550,10 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
             setWorkFileUploadProgress(0);
             if (workFileInputRef.current) workFileInputRef.current.value = "";
           })
-          .catch((error) => console.error("Error getting download URL:", error));
-      }
+          .catch((error) =>
+            console.error("Error getting download URL:", error),
+          );
+      },
     );
   };
 
@@ -554,10 +586,12 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
     const tempStatusNow = statusNow;
 
     // check date range internship (year compares)
-    const isInvalidDateRange = mergedDateStartInternship.find((dateStart, i) => {
-      const dateEnd = mergedDateEndInternship[i];
-      return new Date(dateEnd) < new Date(dateStart);
-    });
+    const isInvalidDateRange = mergedDateStartInternship.find(
+      (dateStart, i) => {
+        const dateEnd = mergedDateEndInternship[i];
+        return new Date(dateEnd) < new Date(dateStart);
+      },
+    );
     if (isInvalidDateRange) {
       setError("ระบุปีการฝึกงานไม่ถูกต้อง");
       return;
@@ -623,7 +657,8 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
       return;
     }
 
-    const hasAnyField = hasAnyProjectField || hasAnyInternshipField || hasAnyWorkField;
+    const hasAnyField =
+      hasAnyProjectField || hasAnyInternshipField || hasAnyWorkField;
     if (!hasAnyField) {
       setError("ไม่มีข้อมูลที่บันทึก");
       return;
@@ -705,31 +740,60 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
     setProjectDetail(dataHistoryWork.projects?.map((p) => p.detail) || []);
     setProjectFile(dataHistoryWork.projects?.flatMap((p) => p.files) || []);
 
-    setDateStartInternship(dataHistoryWork.internships?.map((i) => i.dateStart) || []);
-    setDateEndInternship(dataHistoryWork.internships?.map((i) => i.dateEnd) || []);
-    setDateStartMonthInternship(dataHistoryWork.internships?.map((i) => i.dateStartMonth) || []);
-    setDateEndMonthInternship(dataHistoryWork.internships?.map((i) => i.dateEndMonth) || []);
+    setDateStartInternship(
+      dataHistoryWork.internships?.map((i) => i.dateStart) || [],
+    );
+    setDateEndInternship(
+      dataHistoryWork.internships?.map((i) => i.dateEnd) || [],
+    );
+    setDateStartMonthInternship(
+      dataHistoryWork.internships?.map((i) => i.dateStartMonth) || [],
+    );
+    setDateEndMonthInternship(
+      dataHistoryWork.internships?.map((i) => i.dateEndMonth) || [],
+    );
     setPlaceInternship(dataHistoryWork.internships?.map((i) => i.place) || []);
-    setPositionInternship(dataHistoryWork.internships?.map((i) => i.position) || []);
-    setInternshipFile(dataHistoryWork.internships?.flatMap((i) => i.files) || []);
+    setPositionInternship(
+      dataHistoryWork.internships?.map((i) => i.position) || [],
+    );
+    setInternshipFile(
+      dataHistoryWork.internships?.flatMap((i) => i.files) || [],
+    );
 
-    setDateStartWork(dataHistoryWork.workExperience?.map((w) => w.dateStart) || []);
+    setDateStartWork(
+      dataHistoryWork.workExperience?.map((w) => w.dateStart) || [],
+    );
     setDateEndWork(dataHistoryWork.workExperience?.map((w) => w.dateEnd) || []);
-    setDateStartMonthWork(dataHistoryWork.workExperience?.map((w) => w.dateStartMonth) || []);
-    setDateEndMonthWork(dataHistoryWork.workExperience?.map((w) => w.dateEndMonth) || []);
+    setDateStartMonthWork(
+      dataHistoryWork.workExperience?.map((w) => w.dateStartMonth) || [],
+    );
+    setDateEndMonthWork(
+      dataHistoryWork.workExperience?.map((w) => w.dateEndMonth) || [],
+    );
     setPlaceWork(dataHistoryWork.workExperience?.map((w) => w.place) || []);
-    setPositionWork(dataHistoryWork.workExperience?.map((w) => w.position) || []);
+    setPositionWork(
+      dataHistoryWork.workExperience?.map((w) => w.position) || [],
+    );
     setWorkFile(dataHistoryWork.workExperience?.flatMap((w) => w.files) || []);
 
     setStatusNow(dataHistoryWork?.statusNow || "0");
 
-    if (Array.isArray(dataHistoryWork.projects) && dataHistoryWork.projects.length > 0) {
+    if (
+      Array.isArray(dataHistoryWork.projects) &&
+      dataHistoryWork.projects.length > 0
+    ) {
       setProjects(dataHistoryWork.projects);
     }
-    if (Array.isArray(dataHistoryWork.internships) && dataHistoryWork.internships.length > 0) {
+    if (
+      Array.isArray(dataHistoryWork.internships) &&
+      dataHistoryWork.internships.length > 0
+    ) {
       setInternships(dataHistoryWork.internships);
     }
-    if (Array.isArray(dataHistoryWork.workExperience) && dataHistoryWork.workExperience.length > 0) {
+    if (
+      Array.isArray(dataHistoryWork.workExperience) &&
+      dataHistoryWork.workExperience.length > 0
+    ) {
       setWorks(dataHistoryWork.workExperience);
     }
   }, [dataHistoryWork]);
@@ -779,7 +843,9 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
 
   return (
     <form
-      onSubmit={(e) => handleSubmit(e, projects.length, internships.length, works.length)}
+      onSubmit={(e) =>
+        handleSubmit(e, projects.length, internships.length, works.length)
+      }
       className={`${bgColorMain2} ${bgColor} ${fontSize} flex flex-col gap-16`}
       aria-describedby={formDescribedBy}
     >
@@ -973,7 +1039,12 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                     onClick={() => handleRemoveInternship(index)}
                     aria-label="ลบการฝึกงานรายการนี้"
                   >
-                    <Icon className="text-red-500" path={mdiCloseCircle} size={1} aria-hidden="true" />
+                    <Icon
+                      className="text-red-500"
+                      path={mdiCloseCircle}
+                      size={1}
+                      aria-hidden="true"
+                    />
                   </button>
                 </div>
               )}
@@ -985,25 +1056,35 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                 <div className="flex flex-col gap-1 w-full sm:w-auto">
                   <label>
                     ตั้งแต่{" "}
-                    <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                    <span
+                      className={`${!editMode ? "hidden" : ""} text-red-500`}
+                    >
+                      *
+                    </span>
                   </label>
 
                   <div className="flex gap-2 flex-wrap">
                     <div className="relative w-full sm:w-fit mt-1">
-                      <label className="sr-only" htmlFor={sYearId}>ปีเริ่มฝึกงาน</label>
+                      <label className="sr-only" htmlFor={sYearId}>
+                        ปีเริ่มฝึกงาน
+                      </label>
                       <select
                         id={sYearId}
                         className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} ${focusRing}
                           cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-full sm:w-36
                           border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
-                        onChange={(e) => handleDateStartInternship(e.target.value, index)}
+                        onChange={(e) =>
+                          handleDateStartInternship(e.target.value, index)
+                        }
                         value={dateStartInternship[index] || ""}
                         disabled={!editMode}
                       >
                         <option value="">ปี</option>
                         {years.map((y, i) => (
-                          <option key={i} value={y}>{y}</option>
+                          <option key={i} value={y}>
+                            {y}
+                          </option>
                         ))}
                       </select>
                       <Icon
@@ -1015,20 +1096,26 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                     </div>
 
                     <div className="relative w-full sm:w-fit mt-1">
-                      <label className="sr-only" htmlFor={sMonthId}>เดือนเริ่มฝึกงาน</label>
+                      <label className="sr-only" htmlFor={sMonthId}>
+                        เดือนเริ่มฝึกงาน
+                      </label>
                       <select
                         id={sMonthId}
                         className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} ${focusRing}
                           cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-full sm:w-36
                           border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
-                        onChange={(e) => handleDateStartMonthInternship(e.target.value, index)}
+                        onChange={(e) =>
+                          handleDateStartMonthInternship(e.target.value, index)
+                        }
                         value={dateStartMonthInternship[index] || ""}
                         disabled={!editMode}
                       >
                         <option value="">เดือน</option>
                         {thaiMonths.map((m, i) => (
-                          <option key={i} value={m}>{m}</option>
+                          <option key={i} value={m}>
+                            {m}
+                          </option>
                         ))}
                       </select>
                       <Icon
@@ -1045,26 +1132,36 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                 <div className="flex flex-col gap-1 w-full sm:w-auto">
                   <label>
                     ถึง{" "}
-                    <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                    <span
+                      className={`${!editMode ? "hidden" : ""} text-red-500`}
+                    >
+                      *
+                    </span>
                   </label>
 
                   <div className="flex gap-2 flex-wrap">
                     <div className="relative w-full sm:w-fit mt-1">
-                      <label className="sr-only" htmlFor={eYearId}>ปีสิ้นสุดฝึกงาน</label>
+                      <label className="sr-only" htmlFor={eYearId}>
+                        ปีสิ้นสุดฝึกงาน
+                      </label>
                       <select
                         id={eYearId}
                         className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} ${focusRing}
                           cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-full sm:w-36
                           border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
-                        onChange={(e) => handleDateEndInternship(e.target.value, index)}
+                        onChange={(e) =>
+                          handleDateEndInternship(e.target.value, index)
+                        }
                         value={dateEndInternship[index] || ""}
                         disabled={!editMode}
                       >
                         <option value="">-</option>
                         <option value="ปัจจุบัน">ปัจจุบัน</option>
                         {years.map((y, i) => (
-                          <option key={i} value={y}>{y}</option>
+                          <option key={i} value={y}>
+                            {y}
+                          </option>
                         ))}
                       </select>
                       <Icon
@@ -1076,21 +1173,27 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                     </div>
 
                     <div className="relative w-full sm:w-fit mt-1">
-                      <label className="sr-only" htmlFor={eMonthId}>เดือนสิ้นสุดฝึกงาน</label>
+                      <label className="sr-only" htmlFor={eMonthId}>
+                        เดือนสิ้นสุดฝึกงาน
+                      </label>
                       <select
                         id={eMonthId}
                         className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} ${focusRing}
                           cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-full sm:w-36
                           border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
-                        onChange={(e) => handleDateEndMonthInternship(e.target.value, index)}
+                        onChange={(e) =>
+                          handleDateEndMonthInternship(e.target.value, index)
+                        }
                         value={dateEndMonthInternship[index] || ""}
                         disabled={!editMode}
                       >
                         <option value="">เดือน</option>
                         <option value="ปัจจุบัน">ปัจจุบัน</option>
                         {thaiMonths.map((m, i) => (
-                          <option key={i} value={m}>{m}</option>
+                          <option key={i} value={m}>
+                            {m}
+                          </option>
                         ))}
                       </select>
                       <Icon
@@ -1107,7 +1210,11 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                 <div className="flex flex-col gap-1 w-full sm:w-auto">
                   <label htmlFor={placeId}>
                     สถานที่ฝึกงาน{" "}
-                    <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                    <span
+                      className={`${!editMode ? "hidden" : ""} text-red-500`}
+                    >
+                      *
+                    </span>
                   </label>
                   <input
                     id={placeId}
@@ -1125,7 +1232,11 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                 <div className="flex flex-col gap-1 w-full sm:w-auto">
                   <label htmlFor={posId}>
                     ตำแหน่ง{" "}
-                    <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                    <span
+                      className={`${!editMode ? "hidden" : ""} text-red-500`}
+                    >
+                      *
+                    </span>
                   </label>
                   <input
                     id={posId}
@@ -1133,19 +1244,24 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                     className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} ${focusRing}
                       mt-1 w-full sm:w-80 border border-gray-400 py-2 px-4 rounded-lg`}
                     placeholder="ระบุตำแหน่งที่ฝึกงาน"
-                    onBlur={(e) => handlePositionInternship(e.target.value, index)}
+                    onBlur={(e) =>
+                      handlePositionInternship(e.target.value, index)
+                    }
                     defaultValue={positionInternship[index] || ""}
                     readOnly={!editMode}
                   />
                 </div>
 
                 {/* ไฟล์ */}
-                <div className={`${bgColorMain} flex flex-col gap-1 w-full sm:w-auto`}>
+                <div
+                  className={`${bgColorMain} flex flex-col gap-1 w-full sm:w-auto`}
+                >
                   {internshipFile[index]?.fileUrl || editMode ? (
                     <label htmlFor={fileId}>เอกสารประกอบ</label>
                   ) : null}
 
-                  {internshipFile[index] && internshipFile[index]?.fileUrl !== "" ? (
+                  {internshipFile[index] &&
+                  internshipFile[index]?.fileUrl !== "" ? (
                     <div className="mt-1 w-full sm:w-fit py-2 flex flex-wrap gap-4 sm:gap-8 items-center">
                       <button
                         type="button"
@@ -1153,10 +1269,13 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                         onClick={() => openFile(internshipFile[index]?.fileUrl)}
                         aria-label={`เปิดไฟล์ ${internshipFile[index]?.fileName}.${internshipFile[index]?.fileType}`}
                       >
-                        {internshipFile[index]?.fileName}.{internshipFile[index]?.fileType}
+                        {internshipFile[index]?.fileName}.
+                        {internshipFile[index]?.fileType}
                       </button>
 
-                      <p className="text-gray-500">{internshipFile[index]?.fileSize} MB</p>
+                      <p className="text-gray-500">
+                        {internshipFile[index]?.fileSize} MB
+                      </p>
 
                       <div className="flex gap-2">
                         <button
@@ -1165,12 +1284,16 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                           onClick={() =>
                             handleDownloadFile(
                               internshipFile[index]?.fileUrl,
-                              internshipFile[index]?.fileName
+                              internshipFile[index]?.fileName,
                             )
                           }
                           aria-label="ดาวน์โหลดไฟล์"
                         >
-                          <Icon path={mdiDownload} size={1} aria-hidden="true" />
+                          <Icon
+                            path={mdiDownload}
+                            size={1}
+                            aria-hidden="true"
+                          />
                         </button>
 
                         {editMode && (
@@ -1178,11 +1301,18 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                             type="button"
                             className={focusRing}
                             onClick={() =>
-                              handleDeleteFileInternship(internshipFile[index]?.fileName, index)
+                              handleDeleteFileInternship(
+                                internshipFile[index]?.fileName,
+                                index,
+                              )
                             }
                             aria-label="ลบไฟล์"
                           >
-                            <Icon path={mdiDelete} size={1} aria-hidden="true" />
+                            <Icon
+                              path={mdiDelete}
+                              size={1}
+                              aria-hidden="true"
+                            />
                           </button>
                         )}
                       </div>
@@ -1207,10 +1337,15 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                         >
                           Choose File
                         </button>
-
+                        <ExampleFile
+                          className="mt-3"
+                          link="https://drive.google.com/file/d/1bXA1ZrBHK_KuA1PKxC9IrFjG-FN6nItw/view?usp=drive_link"
+                          title="ตัวอย่างเอกสารรับรองการฝึกงาน"
+                        />
                         {internshipFileUploadProgress > 0 && (
                           <p className="mt-2" aria-live="polite">
-                            กำลังอัปโหลด: {internshipFileUploadProgress.toFixed(2)}%
+                            กำลังอัปโหลด:{" "}
+                            {internshipFileUploadProgress.toFixed(2)}%
                           </p>
                         )}
                       </div>
@@ -1223,7 +1358,12 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
         })}
 
         {errorFieldInterships && (
-          <div id={errorInternId} className="mt-3 text-red-500" role="alert" aria-live="polite">
+          <div
+            id={errorInternId}
+            className="mt-3 text-red-500"
+            role="alert"
+            aria-live="polite"
+          >
             *{errorFieldInterships}
           </div>
         )}
@@ -1236,7 +1376,12 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
               onClick={handleAddInterships}
               aria-label="เพิ่มการฝึกงาน"
             >
-              <Icon className="text-white mx-3" path={mdiPlus} size={1.5} aria-hidden="true" />
+              <Icon
+                className="text-white mx-3"
+                path={mdiPlus}
+                size={1.5}
+                aria-hidden="true"
+              />
             </button>
           </div>
         )}
@@ -1266,7 +1411,12 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                     onClick={() => handleRemoveWork(index)}
                     aria-label="ลบการทำงานรายการนี้"
                   >
-                    <Icon className="text-red-500" path={mdiCloseCircle} size={1} aria-hidden="true" />
+                    <Icon
+                      className="text-red-500"
+                      path={mdiCloseCircle}
+                      size={1}
+                      aria-hidden="true"
+                    />
                   </button>
                 </div>
               )}
@@ -1278,25 +1428,35 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                 <div className="flex flex-col gap-1 w-full sm:w-auto">
                   <label>
                     ตั้งแต่{" "}
-                    <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                    <span
+                      className={`${!editMode ? "hidden" : ""} text-red-500`}
+                    >
+                      *
+                    </span>
                   </label>
 
                   <div className="flex gap-2 flex-wrap">
                     <div className="relative w-full sm:w-fit mt-1">
-                      <label className="sr-only" htmlFor={sYearId}>ปีเริ่มทำงาน</label>
+                      <label className="sr-only" htmlFor={sYearId}>
+                        ปีเริ่มทำงาน
+                      </label>
                       <select
                         id={sYearId}
                         className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} ${focusRing}
                           cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-full sm:w-36
                           border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
-                        onChange={(e) => handleDateStartWork(e.target.value, index)}
+                        onChange={(e) =>
+                          handleDateStartWork(e.target.value, index)
+                        }
                         value={dateStartWork[index] || ""}
                         disabled={!editMode}
                       >
                         <option value="">-</option>
                         {years.map((y, i) => (
-                          <option key={i} value={y}>{y}</option>
+                          <option key={i} value={y}>
+                            {y}
+                          </option>
                         ))}
                       </select>
                       <Icon
@@ -1308,20 +1468,26 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                     </div>
 
                     <div className="relative w-full sm:w-fit mt-1">
-                      <label className="sr-only" htmlFor={sMonthId}>เดือนเริ่มทำงาน</label>
+                      <label className="sr-only" htmlFor={sMonthId}>
+                        เดือนเริ่มทำงาน
+                      </label>
                       <select
                         id={sMonthId}
                         className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} ${focusRing}
                           cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-full sm:w-36
                           border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
-                        onChange={(e) => handleDateStartMonthWork(e.target.value, index)}
+                        onChange={(e) =>
+                          handleDateStartMonthWork(e.target.value, index)
+                        }
                         value={dateStartMonthWork[index] || ""}
                         disabled={!editMode}
                       >
                         <option value="">เดือน</option>
                         {thaiMonths.map((m, i) => (
-                          <option key={i} value={m}>{m}</option>
+                          <option key={i} value={m}>
+                            {m}
+                          </option>
                         ))}
                       </select>
                       <Icon
@@ -1338,26 +1504,36 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                 <div className="flex flex-col gap-1 w-full sm:w-auto">
                   <label>
                     ถึง{" "}
-                    <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                    <span
+                      className={`${!editMode ? "hidden" : ""} text-red-500`}
+                    >
+                      *
+                    </span>
                   </label>
 
                   <div className="flex gap-2 flex-wrap">
                     <div className="relative w-full sm:w-fit mt-1">
-                      <label className="sr-only" htmlFor={eYearId}>ปีสิ้นสุดทำงาน</label>
+                      <label className="sr-only" htmlFor={eYearId}>
+                        ปีสิ้นสุดทำงาน
+                      </label>
                       <select
                         id={eYearId}
                         className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} ${focusRing}
                           cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-full sm:w-36
                           border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
-                        onChange={(e) => handleDateEndWork(e.target.value, index)}
+                        onChange={(e) =>
+                          handleDateEndWork(e.target.value, index)
+                        }
                         value={dateEndWork[index] || ""}
                         disabled={!editMode}
                       >
                         <option value="">-</option>
                         <option value="ปัจจุบัน">ปัจจุบัน</option>
                         {years.map((y, i) => (
-                          <option key={i} value={y}>{y}</option>
+                          <option key={i} value={y}>
+                            {y}
+                          </option>
                         ))}
                       </select>
                       <Icon
@@ -1369,21 +1545,27 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                     </div>
 
                     <div className="relative w-full sm:w-fit mt-1">
-                      <label className="sr-only" htmlFor={eMonthId}>เดือนสิ้นสุดทำงาน</label>
+                      <label className="sr-only" htmlFor={eMonthId}>
+                        เดือนสิ้นสุดทำงาน
+                      </label>
                       <select
                         id={eMonthId}
                         className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} ${focusRing}
                           cursor-pointer whitespace-nowrap text-ellipsis overflow-hidden w-full sm:w-36
                           border border-gray-400 py-2 px-4 rounded-lg`}
                         style={{ appearance: "none" }}
-                        onChange={(e) => handleDateEndMonthWork(e.target.value, index)}
+                        onChange={(e) =>
+                          handleDateEndMonthWork(e.target.value, index)
+                        }
                         value={dateEndMonthWork[index] || ""}
                         disabled={!editMode}
                       >
                         <option value="">เดือน</option>
                         <option value="ปัจจุบัน">ปัจจุบัน</option>
                         {thaiMonths.map((m, i) => (
-                          <option key={i} value={m}>{m}</option>
+                          <option key={i} value={m}>
+                            {m}
+                          </option>
                         ))}
                       </select>
                       <Icon
@@ -1400,7 +1582,11 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                 <div className="flex flex-col gap-1 w-full sm:w-auto">
                   <label htmlFor={placeId}>
                     สถานที่ทำงาน{" "}
-                    <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                    <span
+                      className={`${!editMode ? "hidden" : ""} text-red-500`}
+                    >
+                      *
+                    </span>
                   </label>
                   <input
                     id={placeId}
@@ -1418,7 +1604,11 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                 <div className="flex flex-col gap-1 w-full sm:w-auto">
                   <label htmlFor={posId}>
                     ตำแหน่ง{" "}
-                    <span className={`${!editMode ? "hidden" : ""} text-red-500`}>*</span>
+                    <span
+                      className={`${!editMode ? "hidden" : ""} text-red-500`}
+                    >
+                      *
+                    </span>
                   </label>
                   <input
                     id={posId}
@@ -1433,7 +1623,9 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                 </div>
 
                 {/* ไฟล์ */}
-                <div className={`${bgColorMain} flex flex-col gap-1 w-full sm:w-auto`}>
+                <div
+                  className={`${bgColorMain} flex flex-col gap-1 w-full sm:w-auto`}
+                >
                   {workFile[index]?.fileUrl || editMode ? (
                     <label htmlFor={fileId}>เอกสารประกอบ</label>
                   ) : null}
@@ -1449,28 +1641,46 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                         {workFile[index]?.fileName}.{workFile[index]?.fileType}
                       </button>
 
-                      <p className="text-gray-500">{workFile[index]?.fileSize} MB</p>
+                      <p className="text-gray-500">
+                        {workFile[index]?.fileSize} MB
+                      </p>
 
                       <div className="flex gap-2">
                         <button
                           type="button"
                           className={focusRing}
                           onClick={() =>
-                            handleDownloadFile(workFile[index]?.fileUrl, workFile[index]?.fileName)
+                            handleDownloadFile(
+                              workFile[index]?.fileUrl,
+                              workFile[index]?.fileName,
+                            )
                           }
                           aria-label="ดาวน์โหลดไฟล์"
                         >
-                          <Icon path={mdiDownload} size={1} aria-hidden="true" />
+                          <Icon
+                            path={mdiDownload}
+                            size={1}
+                            aria-hidden="true"
+                          />
                         </button>
 
                         {editMode && (
                           <button
                             type="button"
                             className={focusRing}
-                            onClick={() => handleDeleteFileWork(workFile[index]?.fileName, index)}
+                            onClick={() =>
+                              handleDeleteFileWork(
+                                workFile[index]?.fileName,
+                                index,
+                              )
+                            }
                             aria-label="ลบไฟล์"
                           >
-                            <Icon path={mdiDelete} size={1} aria-hidden="true" />
+                            <Icon
+                              path={mdiDelete}
+                              size={1}
+                              aria-hidden="true"
+                            />
                           </button>
                         )}
                       </div>
@@ -1495,7 +1705,11 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
                         >
                           Choose File
                         </button>
-
+                        <ExampleFile
+                          className="mt-3"
+                          link="https://drive.google.com/file/d/1bXA1ZrBHK_KuA1PKxC9IrFjG-FN6nItw/view?usp=drive_link"
+                          title="ตัวอย่างเอกสารรับรองการทำงาน"
+                        />
                         {workFileUploadProgress > 0 && (
                           <p className="mt-2" aria-live="polite">
                             กำลังอัปโหลด: {workFileUploadProgress.toFixed(2)}%
@@ -1511,7 +1725,12 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
         })}
 
         {errorFieldWorks && (
-          <div id={errorWorkId} className="mt-3 text-red-500" role="alert" aria-live="polite">
+          <div
+            id={errorWorkId}
+            className="mt-3 text-red-500"
+            role="alert"
+            aria-live="polite"
+          >
             *{errorFieldWorks}
           </div>
         )}
@@ -1524,7 +1743,12 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
               onClick={handleAddWork}
               aria-label="เพิ่มการทำงาน"
             >
-              <Icon className="text-white mx-3" path={mdiPlus} size={1.5} aria-hidden="true" />
+              <Icon
+                className="text-white mx-3"
+                path={mdiPlus}
+                size={1.5}
+                aria-hidden="true"
+              />
             </button>
           </div>
         )}
@@ -1536,7 +1760,9 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
         <hr />
         <div className="mt-5">
           <div className="relative w-full sm:w-fit mt-1">
-            <label className="sr-only" htmlFor="statusNowSelect">เลือกสถานะปัจจุบัน</label>
+            <label className="sr-only" htmlFor="statusNowSelect">
+              เลือกสถานะปัจจุบัน
+            </label>
             <select
               id="statusNowSelect"
               className={`${!editMode ? "editModeTrue" : ""} ${bgColorMain} ${focusRing}
@@ -1549,7 +1775,9 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
             >
               <option value="">เลือกสถานะ</option>
               {dataStatus.map((item, i) => (
-                <option key={i} value={item}>{item}</option>
+                <option key={i} value={item}>
+                  {item}
+                </option>
               ))}
             </select>
             <Icon
@@ -1566,7 +1794,12 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
       <div>
         {error && (
           <div className="w-full text-center my-5">
-            <p id={formErrorId} className="text-red-500" role="alert" aria-live="polite">
+            <p
+              id={formErrorId}
+              className="text-red-500"
+              role="alert"
+              aria-live="polite"
+            >
               * {error}
             </p>
           </div>
@@ -1575,7 +1808,11 @@ function HistoryWorkForm({ id, dataHistoryWork, handleStep, readOnly = false }) 
         {editMode && <ProgressBarForm fields={fieldProgress} />}
 
         {!readOnly && (
-          <ButtonGroup editMode={editMode} setEditMode={setEditMode} tailwind="mt-5" />
+          <ButtonGroup
+            editMode={editMode}
+            setEditMode={setEditMode}
+            tailwind="mt-5"
+          />
         )}
       </div>
     </form>
