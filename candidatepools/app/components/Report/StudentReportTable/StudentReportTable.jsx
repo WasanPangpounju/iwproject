@@ -497,13 +497,6 @@ function StudentReportTable({
                 </TableHead>
                 <TableBody>
                   {rows
-                    .sort((a, b) => {
-                      // แทน 'columnToSort' ด้วยชื่อฟิลด์ที่ต้องการเรียง
-                      const columnToSort = "name"; // เช่น เรียงตามชื่อ
-                      if (a[columnToSort] < b[columnToSort]) return 1; // เรียงจากมากไปน้อย
-                      if (a[columnToSort] > b[columnToSort]) return -1;
-                      return 0; // กรณีที่เท่ากัน
-                    })
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
                       const student = dataStudents.find(
