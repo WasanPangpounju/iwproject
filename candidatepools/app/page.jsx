@@ -203,11 +203,11 @@ export default function Home() {
             onSubmit={handleSubmit}
             className={`relative bottom-[5px] rounded-lg ${bgColorMain} p-14 flex flex-col justify-center items-center`}
           >
-            <p className={`${fontSize}`}>
+            <h1 className={`${fontSize}`}>
               {loginMod === "user"
                 ? "เข้าสู่ระบบสำหรับผู้สมัครงาน"
                 : "เข้าสู่ระบบสำหรับผู้ดูแลระบบ"}
-            </p>
+            </h1>
 
             {/* Inputs with labels for WCAG (sr-only keeps design) */}
             <div className="mt-7 flex flex-col gap-5 w-full items-center">
