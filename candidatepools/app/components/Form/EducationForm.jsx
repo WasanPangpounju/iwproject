@@ -33,6 +33,7 @@ import ProgressBarForm from "./ProgressBarForm/ProgressBarForm";
 import { TYPE_PERSON } from "@/const/enum";
 import InputUniversityAutoComplete from "./InputUniversityAutoComplete";
 import dataTypePerson from "@/assets/dataTypePerson";
+import ExampleFile from "../ExampleFile/ExampleFile";
 
 function EducationForm({
   dataEducations,
@@ -966,19 +967,11 @@ function EducationForm({
                 </div>
               </div>
             </div>
-            <div className="flex mt-5">
-              <p>
-                <span className="text-red-500 font-bold">ตัวอย่าง</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;หนังสือรับรองผลการเรียน
-                (Transcript)/วุฒิการศึกษา
-              </p>
-              <Icon
-                onClick={openFileExample}
-                className={`cursor-pointer text-gray-400 mx-3`}
-                path={mdiAlertCircle}
-                size={0.8}
-              />
-            </div>
+            <ExampleFile
+              className="mt-5"
+              link="https://debtclinicbysam.com:8443/regis/images/%E0%B8%95%E0%B8%B1%E0%B8%A7%E0%B8%AD%E0%B8%A2%E0%B9%88%E0%B8%B2%E0%B8%87-%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3%E0%B8%AA%E0%B8%B3%E0%B9%80%E0%B8%99%E0%B8%B2%E0%B8%9A%E0%B8%B1%E0%B8%95%E0%B8%A3%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%8A%E0%B8%B2%E0%B8%8A%E0%B8%99.pdf"
+              title="หนังสือรับรองผลการเรียน (Transcript)/วุฒิการศึกษา"
+            />
             {uploadProgress > 0 && (
               <div className="mt-2">
                 <p>กำลังดาวน์โหลด: {uploadProgress.toFixed(2)}%</p>
